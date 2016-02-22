@@ -19,12 +19,12 @@
                         <rect key="frame" x="0.0" y="0.0" width="0.0" height="44"/>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                         <constraints>
-                            <constraint firstAttribute="height" constant="44" id="71v-lC-8Zz"/>
+                            <constraint firstAttribute="height" relation="greaterThanOrEqual" constant="44" id="71v-lC-8Zz"/>
                             <constraint firstAttribute="width" id="vFq-nW-mUB"/>
                         </constraints>
                     </view>
                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Detail" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Bw4-LA-dLF" customClass="STMLabel">
-                        <rect key="frame" x="8" y="25" width="244" height="14"/>
+                        <rect key="frame" x="8" y="25.5" width="244" height="13.5"/>
                         <fontDescription key="fontDescription" type="system" pointSize="11"/>
                         <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
                         <nil key="highlightedColor"/>
@@ -40,7 +40,7 @@
                         <nil key="highlightedColor"/>
                     </label>
                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalCompressionResistancePriority="751" text="Title" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="WCM-g8-afM" customClass="STMLabel">
-                        <rect key="frame" x="8" y="4" width="244" height="21"/>
+                        <rect key="frame" x="8" y="4" width="244" height="21.5"/>
                         <fontDescription key="fontDescription" type="system" pointSize="17"/>
                         <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
                         <nil key="highlightedColor"/>
@@ -56,6 +56,7 @@
                     <constraint firstItem="PsD-wv-nzy" firstAttribute="top" secondItem="Xd1-t8-421" secondAttribute="topMargin" constant="-8" id="Veu-Jo-iZ6"/>
                     <constraint firstItem="LUH-gj-0Ht" firstAttribute="leading" secondItem="WCM-g8-afM" secondAttribute="trailing" constant="8" id="cQ7-cb-z6y"/>
                     <constraint firstItem="Bw4-LA-dLF" firstAttribute="leading" secondItem="Xd1-t8-421" secondAttribute="leadingMargin" id="cyd-9u-mng"/>
+                    <constraint firstAttribute="bottomMargin" secondItem="PsD-wv-nzy" secondAttribute="bottom" constant="-8.5" id="oXM-62-1Mm"/>
                     <constraint firstItem="LUH-gj-0Ht" firstAttribute="leading" secondItem="Bw4-LA-dLF" secondAttribute="trailing" constant="8" id="qJy-oq-oTY"/>
                     <constraint firstItem="Bw4-LA-dLF" firstAttribute="top" secondItem="WCM-g8-afM" secondAttribute="bottom" id="ydS-lJ-ipr"/>
                 </constraints>
