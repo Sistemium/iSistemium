@@ -8,16 +8,21 @@
 
 #import "STMPickingOrderPositionsTVC.h"
 
-#import "STMWorkflowController.h"
-#import "STMWorkflowEditablesVC.h"
-#import "STMPickingPositionVolumeTVC.h"
-#import "STMPickingOrderPositionsPickedTVC.h"
 #import "STMObjectsController.h"
 
 #import "STMBarCodeScanner.h"
 #import "STMSoundController.h"
 
 #import "STMPickingOrdersProcessController.h"
+
+#import "STMWorkflowController.h"
+#import "STMWorkflowEditablesVC.h"
+
+//#import "STMPickingPositionVolumeTVC.h"
+//#import "STMPickingOrderPositionsPickedTVC.h"
+
+#import "STMPickedPositionsListTVC.h"
+#import "STMPickedPositionsInfoTVC.h"
 
 
 #define SLIDE_THRESHOLD 20
@@ -240,11 +245,11 @@
     
     if ([self orderIsProcessed]) {
         
-        STMPickingOrderPosition *position = self.tableData[indexPath.row];
+//        STMPickingOrderPosition *position = self.tableData[indexPath.row];
         
 //        NSLog(@"%@", [position.article.stockBatches valueForKeyPath:@"@distinctUnionOfObjects.barCodes"]);
         
-        [self performSegueWithIdentifier:@"showPositionVolume" sender:position];
+//        [self performSegueWithIdentifier:@"showPositionVolume" sender:position];
 
     }
     
@@ -257,25 +262,43 @@
     
     if ([segue.identifier isEqualToString:@"showPositionVolume"]) {
         
-        if ([segue.destinationViewController isKindOfClass:[STMPickingPositionVolumeTVC class]] &&
-            [sender isKindOfClass:[STMPickingOrderPosition class]]) {
-            
-            STMPickingPositionVolumeTVC *volumeTVC = (STMPickingPositionVolumeTVC *)segue.destinationViewController;
-            volumeTVC.position = (STMPickingOrderPosition *)sender;
-            volumeTVC.positionsTVC = self;
-            
-        }
+//        if ([segue.destinationViewController isKindOfClass:[STMPickingPositionVolumeTVC class]] &&
+//            [sender isKindOfClass:[STMPickingOrderPosition class]]) {
+//            
+//            STMPickingPositionVolumeTVC *volumeTVC = (STMPickingPositionVolumeTVC *)segue.destinationViewController;
+//            volumeTVC.position = (STMPickingOrderPosition *)sender;
+//            volumeTVC.positionsTVC = self;
+//            
+//        }
         
     } else if ([segue.identifier isEqualToString:@"showPickedPositions"]) {
         
-        if ([segue.destinationViewController isKindOfClass:[STMPickingOrderPositionsPickedTVC class]]) {
-            
-            STMPickingOrderPositionsPickedTVC *pickedPositionsTVC = (STMPickingOrderPositionsPickedTVC *)segue.destinationViewController;
-            pickedPositionsTVC.pickingOrder = self.pickingOrder;
-            pickedPositionsTVC.positionsTVC = self;
+//        if ([segue.destinationViewController isKindOfClass:[STMPickingOrderPositionsPickedTVC class]]) {
+//            
+//            STMPickingOrderPositionsPickedTVC *pickedPositionsTVC = (STMPickingOrderPositionsPickedTVC *)segue.destinationViewController;
+//            pickedPositionsTVC.pickingOrder = self.pickingOrder;
+//            pickedPositionsTVC.positionsTVC = self;
+//            
+//        }
+        
+    } else if ([segue.identifier isEqualToString:@"showPickedInfo"]) {
+        
+        if ([segue.destinationViewController isKindOfClass:[STMPickedPositionsListTVC class]]) {
+
+            STMPickedPositionsListTVC *pickedPositionsListTVC = (STMPickedPositionsListTVC *)segue.destinationViewController;
+            pickedPositionsListTVC.pickingOrder = self.pickingOrder;
             
         }
         
+    } else if ([segue.identifier isEqualToString:@"showPickedPositionInfo"]) {
+        
+        if ([segue.destinationViewController isKindOfClass:[STMPickedPositionsInfoTVC class]]) {
+            
+            STMPickedPositionsInfoTVC *pickedPositionsInfoTVC = (STMPickedPositionsInfoTVC *)segue.destinationViewController;
+            pickedPositionsInfoTVC.position = nil;
+            
+        }
+
     }
     
 }
@@ -297,7 +320,10 @@
 }
 
 - (void)pickedPositionsButtonPressed {
-    [self performSegueWithIdentifier:@"showPickedPositions" sender:nil];
+
+//    [self performSegueWithIdentifier:@"showPickedPositions" sender:nil];
+    [self performSegueWithIdentifier:@"showPickedInfo" sender:nil];
+    
 }
 
 - (void)updatePickedPositionsButton {
@@ -654,12 +680,13 @@
                 
             }
 
-            
         } else {
             
             [self createPositionPickedForStockBatch:stockBatch andPosition:position];
 
         }
+        
+        [self positionWasUpdated:position];
         
     } else {
         
