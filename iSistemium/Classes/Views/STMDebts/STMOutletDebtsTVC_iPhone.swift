@@ -9,7 +9,20 @@
 import UIKit
 import MessageUI
 
+extension String {
+    var first: String {
+        return String(characters.prefix(1))
+    }
+    var last: String {
+        return String(characters.suffix(1))
+    }
+    var uppercaseFirst: String {
+        return first.uppercaseString + String(characters.dropFirst())
+    }
+}
+
 class STMOutletDebtsTVC_iPhone: STMOutletDebtsTVC {
+    
     override func showLongPressActionSheetFromView(view:UIView) {
     
         if view.isKindOfClass(UITableViewCell) {
@@ -44,7 +57,25 @@ class STMOutletDebtsTVC_iPhone: STMOutletDebtsTVC {
                 NSBackgroundColorAttributeName: backgroundColor,
                 NSForegroundColorAttributeName: textColor
             ]
-            text.appendAttributedString(NSAttributedString(string: debt.ndoc + " " + NSLocalizedString("BY SUMM", comment: "") + " " + debtSumString!,attributes:attributes as? [String : AnyObject]))
+            text.appendAttributedString(NSAttributedString(string: debt.ndoc + " ",attributes:attributes as? [String : AnyObject]))
+            if debt.date != nil {
+                let dateFormatter = STMFunctions.dateMediumNoTimeFormatter
+                let debtDate = dateFormatter().stringFromDate(debt.date)
+                backgroundColor = UIColor.clearColor()
+                textColor = UIColor.blackColor()
+                attributes = [
+                    NSFontAttributeName: font,
+                    NSBackgroundColorAttributeName: backgroundColor,
+                    NSForegroundColorAttributeName: textColor
+                ]
+                text.appendAttributedString(NSAttributedString(string: NSLocalizedString("OF", comment: "") + " " + debtDate, attributes: attributes as? [String : AnyObject]))
+            }
+            attributes = [
+                NSFontAttributeName: font,
+                NSBackgroundColorAttributeName: backgroundColor,
+                NSForegroundColorAttributeName: textColor
+            ]
+            text.appendAttributedString(NSAttributedString(string: "\n" + NSLocalizedString("BY SUMM", comment: "").uppercaseFirst + " " + debtSumString!))
             return text
         }else{
             return nil
@@ -68,19 +99,9 @@ class STMOutletDebtsTVC_iPhone: STMOutletDebtsTVC {
             text.appendAttributedString(NSAttributedString(string:responsibilityString as String, attributes:attributes as? [String : AnyObject]))
             text.appendAttributedString(NSAttributedString(string: " "))
         }
-        if debt.dateE != nil {
-            let dateFormatter = STMFunctions.dateMediumNoTimeFormatter
-            let debtDate = dateFormatter().stringFromDate(debt.date)
+        if debt.dateE != nil{
             backgroundColor = UIColor.clearColor()
             textColor = UIColor.blackColor()
-            attributes = [
-                NSFontAttributeName: font,
-                NSBackgroundColorAttributeName: backgroundColor,
-                NSForegroundColorAttributeName: textColor
-            ]
-            text.appendAttributedString(NSAttributedString(string: NSLocalizedString("OF", comment: "") + " " + debtDate, attributes: attributes as? [String : AnyObject]))
-            let dueDateHeader = NSString(format: " / %@: ", NSLocalizedString("DUE DATE", comment:""))
-            text.appendAttributedString(NSAttributedString(string: dueDateHeader as String,attributes:attributes as? [String : AnyObject]))
             var numberOfDays = STMFunctions.daysFromTodayToDate(debt.dateE)
             var dueDate : NSString
             switch numberOfDays.intValue{
@@ -110,6 +131,8 @@ class STMOutletDebtsTVC_iPhone: STMOutletDebtsTVC {
                 NSBackgroundColorAttributeName: backgroundColor,
                 NSForegroundColorAttributeName: textColor
             ]
+            let dueDateHeader = NSString(format: "%@: ", NSLocalizedString("DUE DATE", comment:""))
+            text.appendAttributedString(NSAttributedString(string: dueDateHeader as String,attributes:attributes as? [String : AnyObject]))
             text.appendAttributedString(NSAttributedString(string: dueDate as String, attributes:attributes as? [String : AnyObject]))
         }
         if debt.commentText != nil {
@@ -121,7 +144,7 @@ class STMOutletDebtsTVC_iPhone: STMOutletDebtsTVC {
                 NSBackgroundColorAttributeName: backgroundColor,
                 NSForegroundColorAttributeName: textColor
             ]
-            let commentString = NSString(format:" (%@)", debt.commentText)
+            let commentString = NSString(format:"(%@)", debt.commentText)
             text.appendAttributedString(NSAttributedString(string: commentString as String, attributes:attributes as? [String : AnyObject]))
         }
         return text
@@ -139,15 +162,17 @@ class STMOutletDebtsTVC_iPhone: STMOutletDebtsTVC {
             if debt.xid != nil && STMCashingProcessController.sharedInstance().debtsDictionary.allKeys.contains({$0 as? NSObject == debt.xid}) {
                 let cashingSum = STMCashingProcessController.sharedInstance().debtsDictionary[debt.xid!!]![1]
                 fillWidth = CGFloat(cashingSum.decimalNumberByDividingBy(debt.calculatedSum).doubleValue)
+                cell.accessoryView = nil
                 cell.accessoryType = .DetailButton
                 cell.imageView?.image = UIImage(named: "checkmark_filled")
-                let itemSize:CGSize = CGSizeMake(20, 20)
+                let itemSize:CGSize = CGSizeMake(10, 10)
                 UIGraphicsBeginImageContextWithOptions(itemSize, false, UIScreen.mainScreen().scale)
-                let imageRect : CGRect = CGRectMake(0, 0, itemSize.width, itemSize.height)
+                let imageRect : CGRect = CGRectMake(0, 0, itemSize.width , itemSize.height )
                 cell.imageView!.image?.drawInRect(imageRect)
                 cell.imageView!.image = UIGraphicsGetImageFromCurrentImageContext()
                 UIGraphicsEndImageContext()
             } else {
+                cell.accessoryView = UIView(frame: CGRectMake(0, 0, 35, 35))
                 cell.accessoryType = .None
             }
             if (fillWidth != 0) {
@@ -163,6 +188,41 @@ class STMOutletDebtsTVC_iPhone: STMOutletDebtsTVC {
                 cell.contentView.sendSubviewToBack(view)
             }
         }
+        cell.textLabel?.adjustsFontSizeToFitWidth = true
+        cell.detailTextLabel?.adjustsFontSizeToFitWidth = true
+        
+    }
+    
+    
+    override func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
+        let cell = tableView.dequeueReusableCellWithIdentifier("debtDetailsCell",forIndexPath:indexPath)
+        let debt = self.resultsController.objectAtIndexPath(indexPath)
+        cell.textLabel!.attributedText = self.textLabelForDebt(debt as! STMDebt, withFont:cell.textLabel!.font)
+        cell.detailTextLabel!.attributedText = self.detailTextLabelForDebt(debt as! STMDebt, withFont:cell.detailTextLabel!.font)
+        cell.selectionStyle = .None
+        self.addLongPressToCell(cell)
+        cell.textLabel?.numberOfLines = 2
+//        cell.textLabel?.lineBreakMode = .ByWordWrapping
+//        cell.detailTextLabel?.numberOfLines = 2
+//        cell.detailTextLabel?.lineBreakMode = .ByWordWrapping
+        
+        let itemSize:CGSize = CGSizeMake(10, 10)
+        UIGraphicsBeginImageContextWithOptions(itemSize, false, UIScreen.mainScreen().scale)
+        let imageRect : CGRect = CGRectMake(0, 0, itemSize.width, itemSize.height)
+        cell.imageView!.image?.drawInRect(imageRect)
+        cell.imageView!.image = UIGraphicsGetImageFromCurrentImageContext()
+        UIGraphicsEndImageContext()
+        
+        cell.accessoryView = UIView(frame: CGRectMake(0, 0, 35, 35))
+        return cell
+    }
+    
+    override func tableView(tableView: UITableView, heightForRowAtIndexPath indexPath: NSIndexPath) -> CGFloat {
+        return UITableViewAutomaticDimension
+    }
+    
+    override func tableView(tableView: UITableView, estimatedHeightForRowAtIndexPath indexPath: NSIndexPath) -> CGFloat {
+        return 1000
     }
     
     override func tableView(tableView: UITableView, accessoryButtonTappedForRowWithIndexPath indexPath: NSIndexPath) {
@@ -170,3 +230,4 @@ class STMOutletDebtsTVC_iPhone: STMOutletDebtsTVC {
     }
     
 }
+

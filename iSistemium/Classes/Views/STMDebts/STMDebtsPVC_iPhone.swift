@@ -15,6 +15,7 @@ class STMDebtsPVC_iPhone: STMDebtsDetailsPVC, UIPopoverPresentationControllerDel
         case Default
         case SetCashing
         case CashingSum
+        case LimitedSum
     }
     
     var toolbar:Toolbar = .Default{
@@ -37,7 +38,7 @@ class STMDebtsPVC_iPhone: STMDebtsDetailsPVC, UIPopoverPresentationControllerDel
                     summLabel.frame.size.width = UIScreen.mainScreen().bounds.width - (self.setCahshingSumButton.valueForKey("view") as! UIView).frame.width - 15
 //                    summLabel.adjustsFontSizeToFitWidth = true
 //                    summLabel.minimumScaleFactor = 0.8
-                    summLabel.numberOfLines = 2
+                    summLabel.numberOfLines = 0
                     summLabel.lineBreakMode = .ByWordWrapping
                     summLabel.textAlignment = .Center
                     summLabel.sizeToFit()
@@ -48,6 +49,24 @@ class STMDebtsPVC_iPhone: STMDebtsDetailsPVC, UIPopoverPresentationControllerDel
                 let numberFormatter = STMFunctions.currencyFormatter
                 let sumString = numberFormatter().stringFromNumber(summ)
                 summLabel.text = NSLocalizedString("PICKED",comment: "") + " " + sumString!
+                summLabel.sizeToFit()
+                if summLabel.frame.size.width>UIScreen.mainScreen().bounds.width - 15{
+                    summLabel.frame.size.width = UIScreen.mainScreen().bounds.width - 15
+//                    summLabel.adjustsFontSizeToFitWidth = true
+//                    summLabel.minimumScaleFactor = 0.8
+                    summLabel.numberOfLines = 2
+                    summLabel.lineBreakMode = .ByWordWrapping
+                    summLabel.textAlignment = .Center
+                    summLabel.sizeToFit()
+                }
+            case .LimitedSum:
+                self.setToolbarItems([flexibleSpace,UIBarButtonItem(customView: summLabel),flexibleSpace],animated: false)
+                let summ = STMCashingProcessController.sharedInstance().debtsSumm()
+                let limit = STMCashingProcessController.sharedInstance().cashingSummLimit
+                let numberFormatter = STMFunctions.currencyFormatter
+                let sumString = numberFormatter().stringFromNumber(summ)!
+                let limitString = numberFormatter().stringFromNumber(limit)
+                summLabel.text = String(format: NSLocalizedString("RECEIVE2",comment: ""), arguments: [sumString]) + " " + limitString!
                 summLabel.sizeToFit()
                 if summLabel.frame.size.width>UIScreen.mainScreen().bounds.width - 15{
                     summLabel.frame.size.width = UIScreen.mainScreen().bounds.width - 15
@@ -177,8 +196,11 @@ class STMDebtsPVC_iPhone: STMDebtsDetailsPVC, UIPopoverPresentationControllerDel
     func showCashingLabel() {
         if STMCashingProcessController.sharedInstance().debtsArray.count == 0{
             toolbar = .SetCashing
-        }else{
+        }else if STMCashingProcessController.sharedInstance().cashingSummLimit == nil{
             toolbar = .CashingSum
+        }
+        else{
+            toolbar = .LimitedSum
         }
     }
     
@@ -215,7 +237,10 @@ class STMDebtsPVC_iPhone: STMDebtsDetailsPVC, UIPopoverPresentationControllerDel
         alertController.addAction(cancel)
         alertController.addTextFieldWithConfigurationHandler { (textField) -> Void in
             let numberFormatter = STMFunctions.decimalMaxTwoMinTwoDigitFormatter
-            let number = numberFormatter().stringFromNumber(STMCashingProcessController.sharedInstance().cashingSummLimit ?? 0)
+            var number = ""
+            if STMCashingProcessController.sharedInstance().cashingSummLimit != nil{
+                number = numberFormatter().stringFromNumber(STMCashingProcessController.sharedInstance().cashingSummLimit)!
+            }
             cashingSum = textField
             cashingSum?.placeholder = NSLocalizedString("CASHING SUMM PLACEHOLDER", comment: "")
             cashingSum?.delegate = self

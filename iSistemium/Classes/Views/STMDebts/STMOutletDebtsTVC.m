@@ -305,15 +305,17 @@
 
     cell.textLabel.attributedText = [self textLabelForDebt:debt withFont:cell.textLabel.font];
     
-    cell.textLabel.adjustsFontSizeToFitWidth = YES;
-    
     cell.detailTextLabel.attributedText = [self detailTextLabelForDebt:debt withFont:cell.detailTextLabel.font];
-    
-    cell.detailTextLabel.adjustsFontSizeToFitWidth = YES;
     
     cell.selectionStyle = UITableViewCellSelectionStyleNone;
     
     [self addLongPressToCell:cell];
+    
+//    cell.textLabel.numberOfLines = 2;
+//    cell.textLabel.lineBreakMode = NSLineBreakByWordWrapping;
+//    cell.detailTextLabel.numberOfLines = 2;
+//    cell.detailTextLabel.lineBreakMode = NSLineBreakByWordWrapping;
+//    [cell layoutIfNeeded];
     
     return cell;
     
