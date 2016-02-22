@@ -323,7 +323,7 @@
 - (void)pickedPositionsButtonPressed {
 
 //    [self performSegueWithIdentifier:@"showPickedPositions" sender:nil];
-//    [self performSegueWithIdentifier:@"showPickedInfo" sender:nil];
+    [self performSegueWithIdentifier:@"showPickedInfo" sender:nil];
     
 }
 
@@ -484,7 +484,7 @@
 
 - (void)startBarcodeScanning {
 
-    [self startCameraScanner];
+//    [self startCameraScanner];
     
     [self startIOSModeScanner];
     
