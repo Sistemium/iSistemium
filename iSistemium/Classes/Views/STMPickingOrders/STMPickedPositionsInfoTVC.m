@@ -60,9 +60,7 @@
     
     STMPickingOrderPositionPicked *positionPicked = [self.resultsController objectAtIndexPath:indexPath];
     
-    NSArray *barCodeScans = [[self barCodeScansForPositionPicked:positionPicked] valueForKeyPath:@"code"];
-    
-    cell.titleLabel.text = [barCodeScans componentsJoinedByString:@", "];
+    cell.titleLabel.text = [self barCodeScanStringForPositionPicked:positionPicked];
     
     cell.detailLabel.text = nil;
     
@@ -96,6 +94,48 @@
     
 }
 
+
+- (NSString *)barCodeScanStringForPositionPicked:(STMPickingOrderPositionPicked *)positionPicked {
+    
+    NSDictionary *barCodeScanStats = [self barCodeScanStatsForPositionPicked:positionPicked];
+    
+    NSMutableArray *stringComponents = @[].mutableCopy;
+    
+    for (NSString *barCodeScan in barCodeScanStats.allKeys) {
+        
+        NSInteger barCodeScanCount = [barCodeScanStats[barCodeScan] integerValue];
+        
+        if (barCodeScanCount > 1) {
+            [stringComponents addObject:[NSString stringWithFormat:@"%@(%@)", barCodeScan, barCodeScanStats[barCodeScan]]];
+        } else {
+            [stringComponents addObject:[NSString stringWithFormat:@"%@", barCodeScan]];
+        }
+        
+    }
+    
+    return [stringComponents componentsJoinedByString:@", "];
+    
+}
+
+- (NSDictionary *)barCodeScanStatsForPositionPicked:(STMPickingOrderPositionPicked *)positionPicked {
+    
+    NSMutableDictionary *barCodeScanStats = @{}.mutableCopy;
+
+    NSArray *barCodeScans = [self barCodeScansForPositionPicked:positionPicked];
+    
+    NSArray *distinctBarCodeScans = [[self barCodeScansForPositionPicked:positionPicked] valueForKeyPath:@"@distinctUnionOfObjects.code"];
+    
+    for (NSString *barCodeScan in distinctBarCodeScans) {
+        
+        NSPredicate *predicate = [NSPredicate predicateWithFormat:@"code == %@", barCodeScan];
+        
+        barCodeScanStats[barCodeScan] = @([barCodeScans filteredArrayUsingPredicate:predicate].count);
+        
+    }
+    
+    return barCodeScanStats;
+    
+}
 
 - (NSArray *)barCodeScansForPositionPicked:(STMPickingOrderPositionPicked *)positionPicked {
     
