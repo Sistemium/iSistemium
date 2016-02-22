@@ -54,6 +54,8 @@
 //@property (nonatomic, strong) NSMutableArray *scannedStockBatches;
 //@property (nonatomic, strong) NSMutableArray *scannedArticles;
 
+@property (nonatomic, strong) STMPickedPositionsInfoTVC *pickedPositionsInfoTVC;
+
 
 @end
 
@@ -295,8 +297,8 @@
         if ([segue.destinationViewController isKindOfClass:[STMPickedPositionsInfoTVC class]] &&
             [sender isKindOfClass:[STMPickingOrderPosition class]]) {
             
-            STMPickedPositionsInfoTVC *pickedPositionsInfoTVC = (STMPickedPositionsInfoTVC *)segue.destinationViewController;
-            pickedPositionsInfoTVC.position = (STMPickingOrderPosition *)sender;
+            self.pickedPositionsInfoTVC = (STMPickedPositionsInfoTVC *)segue.destinationViewController;
+            self.pickedPositionsInfoTVC.position = (STMPickingOrderPosition *)sender;
             
         }
 
@@ -583,17 +585,25 @@
 
 - (void)barCodeScanner:(STMBarCodeScanner *)scanner receiveBarCodeScan:(STMBarCodeScan *)barCodeScan withType:(STMBarCodeScannedType)type {
     
-    if (type == STMBarCodeTypeStockBatch) {
-        [self receiveStockBatchBarCodeScan:barCodeScan];
+    if ([self isInActiveTab]) {
+        
+        if (type == STMBarCodeTypeStockBatch) {
+            [self receiveStockBatchBarCodeScan:barCodeScan];
+        }
+        
     }
-
+    
 }
 
 - (void)barCodeScanner:(STMBarCodeScanner *)scanner receiveBarCode:(NSString *)barcode withType:(STMBarCodeScannedType)type {
     
-    NSLog(@"barCodeScanner receiveBarCode: %@", barcode);
-//    self.scannedBarCode = barcode;
-//    [self searchBarCode:self.scannedBarCode];
+    if ([self isInActiveTab]) {
+        
+        NSLog(@"barCodeScanner receiveBarCode: %@", barcode);
+        //    self.scannedBarCode = barcode;
+        //    [self searchBarCode:self.scannedBarCode];
+
+    }
     
 }
 
@@ -663,8 +673,6 @@
     
     if (position) {
         
-        [self performSegueWithIdentifier:@"showPickedPositionInfo" sender:position];
-        
         if (position.pickingOrderPositionsPicked.count > 0) {
 
             NSPredicate *stockTokenPredicate = [NSPredicate predicateWithFormat:@"stockToken == %@", stockToken];
@@ -678,18 +686,24 @@
 
             } else {
                 
-                STMPickingOrderPositionPicked *positionPicked = [self createPositionPickedForStockBatch:stockBatch andPosition:position];
+                STMPickingOrderPositionPicked *positionPicked = [self createPositionPickedForStockBatch:stockBatch andPosition:position withFullVolume:NO];
                 [self updateVolumeForPositionPicked:positionPicked withPosition:position];
                 
             }
 
         } else {
             
-            [self createPositionPickedForStockBatch:stockBatch andPosition:position];
+            [self createPositionPickedForStockBatch:stockBatch andPosition:position withFullVolume:YES];
 
         }
         
         [self positionWasUpdated:position];
+        
+        if ([self.navigationController.topViewController isEqual:self.pickedPositionsInfoTVC]) {
+            self.pickedPositionsInfoTVC.position = position;
+        } else {
+            [self performSegueWithIdentifier:@"showPickedPositionInfo" sender:position];    
+        }
         
     } else {
         
@@ -699,12 +713,12 @@
     
 }
 
-- (STMPickingOrderPositionPicked *)createPositionPickedForStockBatch:(STMStockBatch *)stockBatch andPosition:(STMPickingOrderPosition *)position {
+- (STMPickingOrderPositionPicked *)createPositionPickedForStockBatch:(STMStockBatch *)stockBatch andPosition:(STMPickingOrderPosition *)position withFullVolume:(BOOL)fullVolume {
     
     STMPickingOrderPositionPicked *positionPicked = (STMPickingOrderPositionPicked *)[STMObjectsController newObjectForEntityName:NSStringFromClass([STMPickingOrderPositionPicked class]) isFantom:NO];
     
     positionPicked.pickingOrderPosition = position;
-    positionPicked.volume = position.volume;
+    positionPicked.volume = (fullVolume) ? position.volume : 0;
     positionPicked.stockToken = stockBatch.stockToken;
     positionPicked.article = stockBatch.article;
     
@@ -743,10 +757,21 @@
         
         NSInteger packageRel = position.article.packageRel.integerValue;
         
-        NSUInteger volumeStep = (position.volume.integerValue > 2 * packageRel) ? packageRel : 1;
+        NSUInteger volumeStep = (position.volume.integerValue > (2 * packageRel)) ? packageRel : 1;
         
-        positionPicked.volume = @(positionPicked.volume.integerValue + volumeStep);
-        firstPositionPicked.volume = @(firstPositionPicked.volume.integerValue - volumeStep);
+        NSInteger incrementedVolume = positionPicked.volume.integerValue + volumeStep;
+        NSInteger decrementedVolume = firstPositionPicked.volume.integerValue - volumeStep;
+        
+        if (incrementedVolume < position.volume.integerValue && decrementedVolume > 0) {
+            
+            positionPicked.volume = @(positionPicked.volume.integerValue + volumeStep);
+            firstPositionPicked.volume = @(firstPositionPicked.volume.integerValue - volumeStep);
+
+        } else {
+            
+            [STMSoundController playAlert];
+            
+        }
         
     }
 
@@ -1153,14 +1178,20 @@
 - (void)viewDidAppear:(BOOL)animated {
     
     [super viewDidAppear:animated];
-    [self checkIfBarcodeScanerIsNeeded];
+    
+    if ([self isMovingToParentViewController]) {
+        [self checkIfBarcodeScanerIsNeeded];
+    }
     
 }
 
 - (void)viewDidDisappear:(BOOL)animated {
     
     [super viewDidDisappear:animated];
-    [self stopBarcodeScanning];
+    
+    if ([self isMovingFromParentViewController]) {
+        [self stopBarcodeScanning];
+    }
     
 }
 
