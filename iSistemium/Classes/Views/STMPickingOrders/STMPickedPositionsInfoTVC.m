@@ -8,6 +8,8 @@
 
 #import "STMPickedPositionsInfoTVC.h"
 
+#import "STMObjectsController.h"
+
 
 @interface STMPickedPositionsInfoTVC ()
 
@@ -72,6 +74,28 @@
     return cell;
     
 }
+
+- (UITableViewCellEditingStyle)tableView:(UITableView *)tableView editingStyleForRowAtIndexPath:(NSIndexPath *)indexPath {
+    
+    return ([self.position.pickingOrder orderIsProcessed]) ? UITableViewCellEditingStyleDelete : UITableViewCellEditingStyleNone;
+    
+}
+
+- (void)tableView:(UITableView *)tableView commitEditingStyle:(UITableViewCellEditingStyle)editingStyle forRowAtIndexPath:(NSIndexPath *)indexPath {
+    
+    if (editingStyle == UITableViewCellEditingStyleDelete) {
+        
+        STMPickingOrderPositionPicked *positionPicked = [self.resultsController objectAtIndexPath:indexPath];
+        [STMObjectsController createRecordStatusAndRemoveObject:positionPicked];
+        
+        // ????
+        [self performFetch];
+        // ????
+        
+    }
+    
+}
+
 
 - (NSArray *)barCodeScansForPositionPicked:(STMPickingOrderPositionPicked *)positionPicked {
     
