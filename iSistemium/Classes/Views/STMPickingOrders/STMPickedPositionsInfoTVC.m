@@ -8,11 +8,88 @@
 
 #import "STMPickedPositionsInfoTVC.h"
 
+
 @interface STMPickedPositionsInfoTVC ()
+
 
 @end
 
+
 @implementation STMPickedPositionsInfoTVC
+
+@synthesize resultsController = _resultsController;
+
+- (NSFetchedResultsController *)resultsController {
+    
+    if (!_resultsController) {
+        
+        STMFetchRequest *request = [STMFetchRequest fetchRequestWithEntityName:NSStringFromClass([STMPickingOrderPositionPicked class])];
+        request.sortDescriptors = @[[NSSortDescriptor sortDescriptorWithKey:@"deviceCts" ascending:YES selector:@selector(compare:)]];
+        request.predicate = [NSPredicate predicateWithFormat:@"pickingOrderPosition == %@", self.position];
+        
+        _resultsController = [[NSFetchedResultsController alloc] initWithFetchRequest:request
+                                                                 managedObjectContext:self.document.managedObjectContext
+                                                                   sectionNameKeyPath:nil
+                                                                            cacheName:nil];
+        
+    }
+    return _resultsController;
+    
+}
+
+
+#pragma mark - table data
+
+- (NSString *)tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section {
+    return self.position.article.name;
+}
+
+- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
+
+    STMCustom5TVCell *cell = [tableView dequeueReusableCellWithIdentifier:self.cellIdentifier forIndexPath:indexPath];
+    
+    STMPickingOrderPositionPicked *positionPicked = [self.resultsController objectAtIndexPath:indexPath];
+    
+    NSArray *barCodeScans = [[self barCodeScansForPositionPicked:positionPicked] valueForKeyPath:@"code"];
+    
+    cell.titleLabel.text = [barCodeScans componentsJoinedByString:@", "];
+    
+    cell.detailLabel.text = nil;
+    
+    NSString *volumeString = [STMFunctions volumeStringWithVolume:positionPicked.volume.integerValue
+                                                    andPackageRel:positionPicked.article.packageRel.integerValue];
+    
+    cell.infoLabel.text = volumeString;
+    
+    return cell;
+    
+}
+
+- (NSArray *)barCodeScansForPositionPicked:(STMPickingOrderPositionPicked *)positionPicked {
+    
+    STMFetchRequest *request = [STMFetchRequest fetchRequestWithEntityName:NSStringFromClass([STMBarCodeScan class])];
+    request.sortDescriptors = @[[NSSortDescriptor sortDescriptorWithKey:@"deviceCts" ascending:YES selector:@selector(compare:)]];
+    request.predicate = [NSPredicate predicateWithFormat:@"destinationXid == %@", positionPicked.xid];
+    
+    NSArray *barCodeScans = [self.document.managedObjectContext executeFetchRequest:request error:nil];
+    
+    return barCodeScans;
+    
+}
+
+
+#pragma mark - view lifecycle
+
+- (void)customInit {
+    
+    [super customInit];
+
+    UINib *cellNib = [UINib nibWithNibName:NSStringFromClass([STMCustom5TVCell class]) bundle:nil];
+    [self.tableView registerNib:cellNib forCellReuseIdentifier:self.cellIdentifier];
+
+    [self performFetch];
+    
+}
 
 - (void)viewDidLoad {
     [super viewDidLoad];
@@ -24,14 +101,5 @@
     // Dispose of any resources that can be recreated.
 }
 
-/*
-#pragma mark - Navigation
-
-// In a storyboard-based application, you will often want to do a little preparation before navigation
-- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
-    // Get the new view controller using [segue destinationViewController].
-    // Pass the selected object to the new view controller.
-}
-*/
 
 @end

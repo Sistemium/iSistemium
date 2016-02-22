@@ -60,8 +60,8 @@
         <attribute name="code" optional="YES" attributeType="String" indexed="YES" syncable="YES"/>
     </entity>
     <entity name="STMBarCodeScan" representedClassName="STMBarCodeScan" parentEntity="STMBarCode" syncable="YES">
-        <attribute name="destinationEntity" optional="YES" attributeType="String" syncable="YES"/>
-        <attribute name="destinationXid" optional="YES" attributeType="Binary" syncable="YES"/>
+        <attribute name="destinationEntity" optional="YES" attributeType="String" indexed="YES" syncable="YES"/>
+        <attribute name="destinationXid" optional="YES" attributeType="Binary" indexed="YES" syncable="YES"/>
     </entity>
     <entity name="STMBarCodeType" representedClassName="STMBarCodeType" parentEntity="STMComment" syncable="YES">
         <attribute name="mask" optional="YES" attributeType="String" syncable="YES"/>
@@ -486,6 +486,7 @@
         <element name="STMArticlePicture" positionX="727" positionY="-373" width="128" height="58"/>
         <element name="STMArticleProductionInfo" positionX="360" positionY="-628" width="128" height="88"/>
         <element name="STMBarCode" positionX="414" positionY="-990" width="128" height="58"/>
+        <element name="STMBarCodeScan" positionX="601" positionY="-910" width="128" height="73"/>
         <element name="STMBarCodeType" positionX="808" positionY="-841" width="128" height="103"/>
         <element name="STMBasketPosition" positionX="-765" positionY="-621" width="128" height="103"/>
         <element name="STMBatteryStatus" positionX="-513" positionY="186" width="128" height="73"/>
@@ -542,6 +543,5 @@
         <element name="STMUncashingPicture" positionX="592" positionY="-94" width="128" height="58"/>
         <element name="STMUncashingPlace" positionX="376" positionY="197" width="128" height="73"/>
         <element name="STMWorkflow" positionX="250" positionY="290" width="128" height="103"/>
-        <element name="STMBarCodeScan" positionX="601" positionY="-910" width="128" height="73"/>
     </elements>
 </model>

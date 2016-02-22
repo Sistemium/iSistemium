@@ -14,8 +14,18 @@
 #import "STMFunctions.h"
 #import "STMSessionManager.h"
 
+#import "STMWorkflowController.h"
+
 
 @implementation STMPickingOrder
+
+- (BOOL)orderIsProcessed {
+    
+    NSString *workflow = [STMWorkflowController workflowForEntityName:NSStringFromClass([self class])];
+
+    return [STMWorkflowController isEditableProcessing:self.processing inWorkflow:workflow];
+
+}
 
 - (NSString *)positionsCountString {
     

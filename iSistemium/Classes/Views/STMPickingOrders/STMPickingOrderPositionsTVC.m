@@ -233,11 +233,11 @@
     
     cell.selectionStyle = UITableViewCellSelectionStyleNone;
     
-    if ([self orderIsProcessed]) {
-        cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
-    } else {
+//    if ([self orderIsProcessed]) {
+//        cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
+//    } else {
         cell.accessoryType = UITableViewCellAccessoryNone;
-    }
+//    }
     
 }
 
@@ -292,10 +292,11 @@
         
     } else if ([segue.identifier isEqualToString:@"showPickedPositionInfo"]) {
         
-        if ([segue.destinationViewController isKindOfClass:[STMPickedPositionsInfoTVC class]]) {
+        if ([segue.destinationViewController isKindOfClass:[STMPickedPositionsInfoTVC class]] &&
+            [sender isKindOfClass:[STMPickingOrderPosition class]]) {
             
             STMPickedPositionsInfoTVC *pickedPositionsInfoTVC = (STMPickedPositionsInfoTVC *)segue.destinationViewController;
-            pickedPositionsInfoTVC.position = nil;
+            pickedPositionsInfoTVC.position = (STMPickingOrderPosition *)sender;
             
         }
 
@@ -322,7 +323,7 @@
 - (void)pickedPositionsButtonPressed {
 
 //    [self performSegueWithIdentifier:@"showPickedPositions" sender:nil];
-    [self performSegueWithIdentifier:@"showPickedInfo" sender:nil];
+//    [self performSegueWithIdentifier:@"showPickedInfo" sender:nil];
     
 }
 
@@ -627,16 +628,16 @@
 
 - (void)receiveStockBatchBarCodeScan:(STMBarCodeScan *)barcodeScan {
     
-    STMFetchRequest *request = [STMFetchRequest fetchRequestWithEntityName:NSStringFromClass([STMStockBatchBarCode class])];
-    request.predicate = [NSPredicate predicateWithFormat:@"stockToken != nil AND code == %@", barcodeScan.code];
+    STMFetchRequest *request = [STMFetchRequest fetchRequestWithEntityName:NSStringFromClass([STMStockBatch class])];
+    request.predicate = [NSPredicate predicateWithFormat:@"stockToken != nil AND ANY barCodes.code == %@", barcodeScan.code];
     
-    NSArray *stockBatchBarcodes = [self.document.managedObjectContext executeFetchRequest:request error:nil];
+    NSArray *stockBatches = [self.document.managedObjectContext executeFetchRequest:request error:nil];
     
-    if (stockBatchBarcodes.count > 0) {
+    if (stockBatches.count > 0) {
         
         self.currentBarCodeScan = barcodeScan;
         
-        STMStockBatch *stockBatch = [(STMStockBatchBarCode *)stockBatchBarcodes.firstObject stockBatch];
+        STMStockBatch *stockBatch = stockBatches.firstObject;
         
         [self receiveBarCodeScanOfStockBatch:stockBatch];
         
@@ -661,6 +662,8 @@
     STMPickingOrderPosition *position = filteredPositions.anyObject;
     
     if (position) {
+        
+        [self performSegueWithIdentifier:@"showPickedPositionInfo" sender:position];
         
         if (position.pickingOrderPositionsPicked.count > 0) {
 
@@ -700,8 +703,10 @@
     
     STMPickingOrderPositionPicked *positionPicked = (STMPickingOrderPositionPicked *)[STMObjectsController newObjectForEntityName:NSStringFromClass([STMPickingOrderPositionPicked class]) isFantom:NO];
     
+    positionPicked.pickingOrderPosition = position;
     positionPicked.volume = position.volume;
     positionPicked.stockToken = stockBatch.stockToken;
+    positionPicked.article = stockBatch.article;
     
     if (stockBatch.article.productionInfoType) {
         positionPicked.productionInfo = stockBatch.productionInfo;
@@ -726,7 +731,7 @@
 
 - (void)updateVolumeForPositionPicked:(STMPickingOrderPositionPicked *)positionPicked withPosition:(STMPickingOrderPosition *)position {
     
-    NSSortDescriptor *ctsDescriptor = [NSSortDescriptor sortDescriptorWithKey:@"cts"
+    NSSortDescriptor *ctsDescriptor = [NSSortDescriptor sortDescriptorWithKey:@"deviceCts"
                                                                     ascending:YES
                                                                      selector:@selector(compare:)];
     
