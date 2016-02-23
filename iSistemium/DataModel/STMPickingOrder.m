@@ -38,7 +38,8 @@
         
         NSString *countString = [NSString stringWithFormat:@"%lu %@", (unsigned long)positionsCount, NSLocalizedString(positionString, nil)];
         
-        NSPredicate *predicate = [NSPredicate predicateWithFormat:@"nonPickedVolume == 0"];
+//        NSPredicate *predicate = [NSPredicate predicateWithFormat:@"nonPickedVolume == 0"];
+        NSPredicate *predicate = [NSPredicate predicateWithFormat:@"pickingOrderPositionsPicked.@count > 0"];
         NSSet *pickedPositions = [self.pickingOrderPositions filteredSetUsingPredicate:predicate];
         
         if (pickedPositions.count > 0) {
