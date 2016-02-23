@@ -22,6 +22,7 @@
 //#import "STMPickingOrderPositionsPickedTVC.h"
 
 #import "STMPickedPositionsListTVC.h"
+#import "STMPickedPositionsInfoTVC.h"
 
 
 #define SLIDE_THRESHOLD 20
@@ -286,9 +287,7 @@
 
             STMPickedPositionsListTVC *pickedPositionsListTVC = (STMPickedPositionsListTVC *)segue.destinationViewController;
             pickedPositionsListTVC.pickingOrder = self.pickingOrder;
-            
-            pickedPositionsListTVC.parentVC = self;
-            
+
         }
         
     } else if ([segue.identifier isEqualToString:@"showPickedPositionInfo"]) {
@@ -296,8 +295,8 @@
         if ([segue.destinationViewController isKindOfClass:[STMPickedPositionsInfoTVC class]] &&
             [sender isKindOfClass:[STMPickingOrderPosition class]]) {
             
-            self.pickedPositionsInfoTVC = (STMPickedPositionsInfoTVC *)segue.destinationViewController;
-            self.pickedPositionsInfoTVC.position = (STMPickingOrderPosition *)sender;
+            STMPickedPositionsInfoTVC *pickedPositionsInfoTVC = (STMPickedPositionsInfoTVC *)segue.destinationViewController;
+            pickedPositionsInfoTVC.position = (STMPickingOrderPosition *)sender;
             
         }
 
@@ -700,18 +699,19 @@
         }
         
         [self positionWasUpdated:position];
-        
-        if ([self.navigationController.topViewController isEqual:self.pickedPositionsInfoTVC]) {
-            
-            self.pickedPositionsInfoTVC.position = position;
-            
-        } else {
+
+        if (![self.navigationController.topViewController isKindOfClass:[STMPickedPositionsInfoTVC class]]) {
             
             if (![self.navigationController.topViewController isEqual:self]) {
                 [self.navigationController popToViewController:self animated:YES];
             }
             
             [self performSegueWithIdentifier:@"showPickedPositionInfo" sender:position];
+            
+        } else {
+            
+            STMPickedPositionsInfoTVC *pickedPositionsInfoTVC = (STMPickedPositionsInfoTVC *)self.navigationController.topViewController;
+            pickedPositionsInfoTVC.position = position;
             
         }
         

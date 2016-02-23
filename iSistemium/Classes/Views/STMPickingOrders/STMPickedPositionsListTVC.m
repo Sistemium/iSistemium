@@ -177,9 +177,7 @@
             
             STMPickedPositionsInfoTVC *pickedPositionsInfoTVC = (STMPickedPositionsInfoTVC *)segue.destinationViewController;
             pickedPositionsInfoTVC.position = (STMPickingOrderPosition *)sender;
-            
-            self.parentVC.pickedPositionsInfoTVC = pickedPositionsInfoTVC;
-            
+                        
         }
         
     }
