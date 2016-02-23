@@ -335,7 +335,7 @@
 
 - (void)setupIPadTabs {
     
-    NSLog(@"device is iPad");
+    NSLog(@"device is iPad type");
     
     NSArray *stcTabs = [STMAuthController authController].stcTabs;
 
@@ -345,7 +345,7 @@
 
 - (void)setupIPhoneTabs {
     
-    NSLog(@"device is iPhone");
+    NSLog(@"device is iPhone type");
 
     NSArray *iPhoneStcTabs = [self iPhoneStcTabsForStcTabs:[STMAuthController authController].stcTabs];
     

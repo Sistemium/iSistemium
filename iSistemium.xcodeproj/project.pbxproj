@@ -1732,6 +1732,7 @@
 		2C1F75191BFA2C0B003699C8 /* STMPickingOrders */ = {
 			isa = PBXGroup;
 			children = (
+				2C52E1D71C7B93FA00CA59B7 /* firstVersionOfPickingProcess */,
 				2C1F751C1BFA2DE7003699C8 /* STMPickingOrdersNC.h */,
 				2C1F751D1BFA2DE7003699C8 /* STMPickingOrdersNC.m */,
 				2C1F751F1BFA2E36003699C8 /* STMPickingOrdersTVC.h */,
@@ -1742,14 +1743,6 @@
 				2C52E1C61C7B083300CA59B7 /* STMPickedPositionsListTVC.m */,
 				2C52E1C81C7B0AEE00CA59B7 /* STMPickedPositionsInfoTVC.h */,
 				2C52E1C91C7B0AEE00CA59B7 /* STMPickedPositionsInfoTVC.m */,
-				2C1C548A1C0072270095F1DD /* STMPickingOrderPositionsPickedTVC.h */,
-				2C1C548B1C0072270095F1DD /* STMPickingOrderPositionsPickedTVC.m */,
-				2C1C547B1BFE2AF80095F1DD /* STMPickingPositionVolumeTVC.h */,
-				2C1C547C1BFE2AF80095F1DD /* STMPickingPositionVolumeTVC.m */,
-				2C1C54811BFF4E230095F1DD /* STMPickingPositionInfoTVC.h */,
-				2C1C54821BFF4E230095F1DD /* STMPickingPositionInfoTVC.m */,
-				2C1C54871BFF6FA20095F1DD /* STMPickingPositionAddInfoVC.h */,
-				2C1C54881BFF6FA20095F1DD /* STMPickingPositionAddInfoVC.m */,
 			);
 			path = STMPickingOrders;
 			sourceTree = "<group>";
@@ -1773,6 +1766,21 @@
 				2CC194721BE4DAFE001F8E48 /* STMPhotoReportMapVC.m */,
 			);
 			path = STMPhotoReports;
+			sourceTree = "<group>";
+		};
+		2C52E1D71C7B93FA00CA59B7 /* firstVersionOfPickingProcess */ = {
+			isa = PBXGroup;
+			children = (
+				2C1C548A1C0072270095F1DD /* STMPickingOrderPositionsPickedTVC.h */,
+				2C1C548B1C0072270095F1DD /* STMPickingOrderPositionsPickedTVC.m */,
+				2C1C547B1BFE2AF80095F1DD /* STMPickingPositionVolumeTVC.h */,
+				2C1C547C1BFE2AF80095F1DD /* STMPickingPositionVolumeTVC.m */,
+				2C1C54811BFF4E230095F1DD /* STMPickingPositionInfoTVC.h */,
+				2C1C54821BFF4E230095F1DD /* STMPickingPositionInfoTVC.m */,
+				2C1C54871BFF6FA20095F1DD /* STMPickingPositionAddInfoVC.h */,
+				2C1C54881BFF6FA20095F1DD /* STMPickingPositionAddInfoVC.m */,
+			);
+			name = firstVersionOfPickingProcess;
 			sourceTree = "<group>";
 		};
 		2C53B88419409D64002298A5 /* Views */ = {
@@ -1813,19 +1821,19 @@
 		2C53B88519409DC4002298A5 /* Protocols */ = {
 			isa = PBXGroup;
 			children = (
+				2C9835A11C25539200CA231D /* STMArticleSelecting.h */,
+				2CEE305C1BF0CFB7009B229F /* STMBarCodeScannerDelegate.h */,
+				2CFDD8821A2EB0C2003515C5 /* STMDatePickerParent.h */,
+				2CEE30611BF48D5E009B229F /* STMImagePickerOwnerProtocol.h */,
+				2CE3F53C1C14287200D8B4F3 /* STMInventoryControlling.h */,
+				6D814A9C1C480898001B56A3 /* STMPicturesViewerDelegate.h */,
+				2C42D8E31C25591F005C857F /* STMProductionInfoSelecting.h */,
 				2C53B8AD1940A092002298A5 /* STMRequestAuthenticatable.h */,
 				2C53B8AE1940A092002298A5 /* STMSessionManagement.h */,
-				2CFDD8821A2EB0C2003515C5 /* STMDatePickerParent.h */,
-				2C420FC51A4C24DE001C65B9 /* STMTabBarItemControllable.h */,
 				2CF1264E1B7880750059701F /* STMShipmentPositionSortable.h */,
-				2C587AAF1BBAC54B00546A62 /* STMWorkflowable.h */,
-				2CEE305C1BF0CFB7009B229F /* STMBarCodeScannerDelegate.h */,
-				2CE3F53C1C14287200D8B4F3 /* STMInventoryControlling.h */,
-				2CEE30611BF48D5E009B229F /* STMImagePickerOwnerProtocol.h */,
-				2C9835A11C25539200CA231D /* STMArticleSelecting.h */,
-				2C42D8E31C25591F005C857F /* STMProductionInfoSelecting.h */,
+				2C420FC51A4C24DE001C65B9 /* STMTabBarItemControllable.h */,
 				2CAFB2591C2ADC3E00BBEDC1 /* STMVolumePickerOwner.h */,
-				6D814A9C1C480898001B56A3 /* STMPicturesViewerDelegate.h */,
+				2C587AAF1BBAC54B00546A62 /* STMWorkflowable.h */,
 			);
 			path = Protocols;
 			sourceTree = "<group>";
