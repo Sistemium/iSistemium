@@ -33,6 +33,7 @@
                                                                  managedObjectContext:self.document.managedObjectContext
                                                                    sectionNameKeyPath:nil
                                                                             cacheName:nil];
+        _resultsController.delegate = self;
         
     }
     return _resultsController;
@@ -84,11 +85,13 @@
     if (editingStyle == UITableViewCellEditingStyleDelete) {
         
         STMPickingOrderPositionPicked *positionPicked = [self.resultsController objectAtIndexPath:indexPath];
-        [STMObjectsController createRecordStatusAndRemoveObject:positionPicked];
         
-        // ????
-        [self performFetch];
-        // ????
+        if (positionPicked) {
+
+            positionPicked.pickingOrderPosition = nil;
+            [STMObjectsController createRecordStatusAndRemoveObject:positionPicked];
+            
+        }
         
     }
     
