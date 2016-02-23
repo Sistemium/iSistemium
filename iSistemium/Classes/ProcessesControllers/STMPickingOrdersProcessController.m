@@ -20,15 +20,9 @@
     
     STMPickingOrderPosition *position = positionPicked.pickingOrderPosition;
     
-    NSSortDescriptor *ctsDescriptor = [NSSortDescriptor sortDescriptorWithKey:@"deviceCts"
-                                                                    ascending:YES
-                                                                     selector:@selector(compare:)];
+    STMPickingOrderPositionPicked *firstPositionPicked = [self firstPositionPickedFromPosition:position];
     
-    NSArray *sortedPositionsPicked = [position.pickingOrderPositionsPicked sortedArrayUsingDescriptors:@[ctsDescriptor]];
-    
-    STMPickingOrderPositionPicked *firstPositionPicked = sortedPositionsPicked.firstObject;
-    
-    if (![positionPicked isEqual:firstPositionPicked]) {
+    if (firstPositionPicked && ![positionPicked isEqual:firstPositionPicked]) {
         
         NSInteger packageRel = position.article.packageRel.integerValue;
         
@@ -39,8 +33,8 @@
         
         if (incrementedVolume < position.volume.integerValue && decrementedVolume > 0) {
             
-            positionPicked.volume = @(positionPicked.volume.integerValue + volumeStep);
-            firstPositionPicked.volume = @(firstPositionPicked.volume.integerValue - volumeStep);
+            positionPicked.volume = @(incrementedVolume);
+            firstPositionPicked.volume = @(decrementedVolume);
             
         } else {
             
@@ -50,6 +44,41 @@
         
     }
     
+}
+
++ (void)updateVolumesWithDeletePositionPicked:(STMPickingOrderPositionPicked *)positionPicked {
+    
+    STMPickingOrderPosition *position = positionPicked.pickingOrderPosition;
+    NSInteger deletedPositionVolume = positionPicked.volume.integerValue;
+    
+    [STMObjectsController createRecordStatusAndRemoveObject:positionPicked];
+    
+    STMPickingOrderPositionPicked *firstPositionPicked = [self firstPositionPickedFromPosition:position];
+
+    if (firstPositionPicked) {
+        
+        NSInteger incrementedVolume = firstPositionPicked.volume.integerValue + deletedPositionVolume;
+
+        if (incrementedVolume > position.volume.integerValue) {
+            incrementedVolume = position.volume.integerValue;
+        }
+        
+        firstPositionPicked.volume = @(incrementedVolume);
+        
+    }
+    
+}
+
++ (STMPickingOrderPositionPicked *)firstPositionPickedFromPosition:(STMPickingOrderPosition *)position {
+    
+    NSSortDescriptor *ctsDescriptor = [NSSortDescriptor sortDescriptorWithKey:@"deviceCts"
+                                                                    ascending:YES
+                                                                     selector:@selector(compare:)];
+    
+    NSArray *sortedPositionsPicked = [position.pickingOrderPositionsPicked sortedArrayUsingDescriptors:@[ctsDescriptor]];
+    
+    return sortedPositionsPicked.firstObject;
+
 }
 
 + (STMPickingOrderPositionPicked *)createPositionPickedForStockBatch:(STMStockBatch *)stockBatch andPosition:(STMPickingOrderPosition *)position withFullVolume:(BOOL)fullVolume barCodeScan:(STMBarCodeScan *)barCodeScan {

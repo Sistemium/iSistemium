@@ -11,6 +11,7 @@
 @interface STMPickingOrdersProcessController : STMController
 
 + (void)updateVolumesWithIncreaseVolumeForPositionPicked:(STMPickingOrderPositionPicked *)positionPicked;
++ (void)updateVolumesWithDeletePositionPicked:(STMPickingOrderPositionPicked *)positionPicked;
 
 + (STMPickingOrderPositionPicked *)createPositionPickedForStockBatch:(STMStockBatch *)stockBatch
                                                          andPosition:(STMPickingOrderPosition *)position
@@ -19,6 +20,7 @@
 
 + (void)linkBarCodeScan:(STMBarCodeScan *)barCodeScan
      withPositionPicked:(STMPickingOrderPositionPicked *)positionPicked;
+
 
 
 #pragma mark - first version of picking process

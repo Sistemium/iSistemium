@@ -8,7 +8,7 @@
 
 #import "STMPickedPositionsInfoTVC.h"
 
-#import "STMObjectsController.h"
+#import "STMPickingOrdersProcessController.h"
 
 
 @interface STMPickedPositionsInfoTVC ()
@@ -85,18 +85,14 @@
     if (editingStyle == UITableViewCellEditingStyleDelete) {
         
         STMPickingOrderPositionPicked *positionPicked = [self.resultsController objectAtIndexPath:indexPath];
-        
-        if (positionPicked) {
-
-            positionPicked.pickingOrderPosition = nil;
-            [STMObjectsController createRecordStatusAndRemoveObject:positionPicked];
-            
-        }
+        [STMPickingOrdersProcessController updateVolumesWithDeletePositionPicked:positionPicked];
         
     }
     
 }
 
+
+#pragma mark - methods
 
 - (NSString *)barCodeScanStringForPositionPicked:(STMPickingOrderPositionPicked *)positionPicked {
     
