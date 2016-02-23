@@ -36,6 +36,10 @@
             positionPicked.volume = @(incrementedVolume);
             firstPositionPicked.volume = @(decrementedVolume);
             
+            [[self document] saveDocument:^(BOOL success) {
+                
+            }];
+            
         } else {
             
             [STMSoundController playAlert];
@@ -65,8 +69,32 @@
         
         firstPositionPicked.volume = @(incrementedVolume);
         
+        [[self document] saveDocument:^(BOOL success) {
+            
+        }];
+
     }
     
+}
+
++ (void)updateVolumesWithNewVolume:(NSInteger)newVolume forPositionPicked:(STMPickingOrderPositionPicked *)positionPicked {
+    
+    STMPickingOrderPosition *position = positionPicked.pickingOrderPosition;
+    STMPickingOrderPositionPicked *firstPositionPicked = [self firstPositionPickedFromPosition:position];
+
+    if (![positionPicked isEqual:firstPositionPicked]) {
+     
+        NSInteger diff = positionPicked.volume.integerValue - newVolume;
+        firstPositionPicked.volume = @(firstPositionPicked.volume.integerValue + diff);
+        
+    }
+
+    positionPicked.volume = @(newVolume);
+
+    [[self document] saveDocument:^(BOOL success) {
+        
+    }];
+
 }
 
 + (STMPickingOrderPositionPicked *)firstPositionPickedFromPosition:(STMPickingOrderPosition *)position {

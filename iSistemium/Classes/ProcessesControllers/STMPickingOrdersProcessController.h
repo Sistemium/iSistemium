@@ -13,6 +13,9 @@
 + (void)updateVolumesWithIncreaseVolumeForPositionPicked:(STMPickingOrderPositionPicked *)positionPicked;
 + (void)updateVolumesWithDeletePositionPicked:(STMPickingOrderPositionPicked *)positionPicked;
 
++ (void)updateVolumesWithNewVolume:(NSInteger)newVolume
+                 forPositionPicked:(STMPickingOrderPositionPicked *)positionPicked;
+
 + (STMPickingOrderPositionPicked *)createPositionPickedForStockBatch:(STMStockBatch *)stockBatch
                                                          andPosition:(STMPickingOrderPosition *)position
                                                       withFullVolume:(BOOL)fullVolume

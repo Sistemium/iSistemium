@@ -15,6 +15,7 @@
 
 @property (nonatomic, strong) UITextField *hiddenTextField;
 @property (nonatomic, strong) STMVolumePicker *volumePicker;
+@property (nonatomic, strong) STMBarButtonItemLabel *remainingLabel;
 
 
 @end
@@ -96,6 +97,18 @@
 
 - (void)volumeSelected {
 
+    NSIndexPath *selectedIndexPath = self.tableView.indexPathForSelectedRow;
+
+    if (selectedIndexPath) {
+        
+        STMPickingOrderPositionPicked *positionPicked = [self.resultsController objectAtIndexPath:selectedIndexPath];
+        
+        NSInteger newVolume = self.volumePicker.selectedVolume;
+        
+        [STMPickingOrdersProcessController updateVolumesWithNewVolume:newVolume forPositionPicked:positionPicked];
+
+    }
+    
 }
 
 - (void)packageRelSelected {
@@ -244,6 +257,48 @@
 }
 
 
+#pragma mark - NSFetchedResultsControllerDelegate
+
+- (void)controllerDidChangeContent:(NSFetchedResultsController *)controller {
+    
+    [super controllerDidChangeContent:controller];
+    
+    [self updateRemainingLabel];
+    
+}
+
+
+#pragma mark - toolbar
+
+- (void)setupRemainingLabel {
+    
+    STMBarButtonItem *flexibleSpace = [STMBarButtonItem flexibleSpace];
+    
+    self.remainingLabel = [[STMBarButtonItemLabel alloc] initWithTitle:@""
+                                                                 style:UIBarButtonItemStylePlain
+                                                                target:nil
+                                                                action:nil];
+    
+    [self setToolbarItems:@[flexibleSpace, self.remainingLabel, flexibleSpace]];
+
+    [self updateRemainingLabel];
+    
+}
+
+- (void)updateRemainingLabel {
+
+    NSNumber *volumeSum = [self.position.pickingOrderPositionsPicked valueForKeyPath:@"@sum.volume"];
+
+    NSInteger remainingVolume = self.position.volume.integerValue - volumeSum.integerValue;
+    
+    NSString *remainingVolumeString = [STMFunctions volumeStringWithVolume:remainingVolume
+                                                             andPackageRel:self.position.article.packageRel.integerValue];
+    
+    self.remainingLabel.title = [NSString stringWithFormat:@"%@%@", NSLocalizedString(@"REMAIN TO PICK", nil), remainingVolumeString];
+    
+}
+
+
 #pragma mark - view lifecycle
 
 - (void)customInit {
@@ -251,6 +306,7 @@
     [super customInit];
     
     [self setupVolumePicker];
+    [self setupRemainingLabel];
 
     UINib *cellNib = [UINib nibWithNibName:NSStringFromClass([STMCustom5TVCell class]) bundle:nil];
     [self.tableView registerNib:cellNib forCellReuseIdentifier:self.cellIdentifier];
