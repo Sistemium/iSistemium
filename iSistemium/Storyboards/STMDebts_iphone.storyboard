@@ -134,17 +134,17 @@
                     <freeformSimulatedSizeMetrics key="simulatedDestinationMetrics"/>
                     <size key="freeformSize" width="600" height="600"/>
                     <connections>
-                        <segue destination="gjJ-xG-hz2" kind="presentation" identifier="showDebtDetails" modalPresentationStyle="formSheet" id="C7C-fM-HFK"/>
+                        <segue destination="gjJ-xG-hz2" kind="show" identifier="showDebtDetails" id="C7C-fM-HFK"/>
                     </connections>
                 </tableViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="6Xo-pW-fP6" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="5095" y="1300"/>
         </scene>
-        <!--View Controller-->
+        <!--Cashing ControlsVC i Phone-->
         <scene sceneID="8UH-Z9-ByH">
             <objects>
-                <viewController id="gjJ-xG-hz2" sceneMemberID="viewController">
+                <viewController id="gjJ-xG-hz2" customClass="STMCashingControlsVC_iPhone" customModule="iSistemium" customModuleProvider="target" sceneMemberID="viewController">
                     <layoutGuides>
                         <viewControllerLayoutGuide type="top" id="sxr-TI-Pm0"/>
                         <viewControllerLayoutGuide type="bottom" id="MdF-9g-SI3"/>
@@ -152,8 +152,65 @@
                     <view key="view" contentMode="scaleToFill" id="9g8-89-ZH6">
                         <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Summ" textAlignment="right" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Hsf-4N-jyX">
+                                <rect key="frame" x="20" y="134" width="560" height="30"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="14"/>
+                                <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                            <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" text="0.00" borderStyle="roundedRect" textAlignment="right" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="cys-DL-7rv">
+                                <rect key="frame" x="20" y="96" width="560" height="30"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                <textInputTraits key="textInputTraits"/>
+                            </textField>
+                            <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Debt sum label" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="NtY-jD-ijn">
+                                <rect key="frame" x="20" y="58" width="560" height="30"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                            <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Debt info label" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="ycK-38-TiU">
+                                <rect key="frame" x="20" y="20" width="560" height="30"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                            <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" showsHorizontalScrollIndicator="NO" text="Add comment" translatesAutoresizingMaskIntoConstraints="NO" id="Rou-uT-u8y">
+                                <rect key="frame" x="20" y="172" width="560" height="408"/>
+                                <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="calibratedRGB"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="14"/>
+                                <textInputTraits key="textInputTraits" autocapitalizationType="sentences"/>
+                            </textView>
+                        </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                        <constraints>
+                            <constraint firstItem="Hsf-4N-jyX" firstAttribute="width" secondItem="cys-DL-7rv" secondAttribute="width" id="BK9-iD-5sY"/>
+                            <constraint firstItem="ycK-38-TiU" firstAttribute="top" secondItem="sxr-TI-Pm0" secondAttribute="bottom" constant="20" id="JK7-VM-n5C"/>
+                            <constraint firstItem="cys-DL-7rv" firstAttribute="height" secondItem="NtY-jD-ijn" secondAttribute="height" id="N5l-Pn-eIc"/>
+                            <constraint firstItem="MdF-9g-SI3" firstAttribute="top" secondItem="Rou-uT-u8y" secondAttribute="bottom" constant="20" id="OEh-di-7Ni"/>
+                            <constraint firstItem="Rou-uT-u8y" firstAttribute="width" secondItem="Hsf-4N-jyX" secondAttribute="width" id="Ogy-od-YT0"/>
+                            <constraint firstItem="NtY-jD-ijn" firstAttribute="width" secondItem="ycK-38-TiU" secondAttribute="width" id="PDk-uU-dTS"/>
+                            <constraint firstItem="Rou-uT-u8y" firstAttribute="top" secondItem="Hsf-4N-jyX" secondAttribute="bottom" constant="8" id="UN3-3B-dC4"/>
+                            <constraint firstItem="NtY-jD-ijn" firstAttribute="leading" secondItem="ycK-38-TiU" secondAttribute="leading" id="YaX-Ji-r1J"/>
+                            <constraint firstItem="Hsf-4N-jyX" firstAttribute="leading" secondItem="cys-DL-7rv" secondAttribute="leading" id="apy-E3-mpZ"/>
+                            <constraint firstItem="Hsf-4N-jyX" firstAttribute="top" secondItem="cys-DL-7rv" secondAttribute="bottom" constant="8" id="bUo-mF-hvb"/>
+                            <constraint firstItem="NtY-jD-ijn" firstAttribute="height" secondItem="ycK-38-TiU" secondAttribute="height" id="fMX-D2-tkS"/>
+                            <constraint firstItem="cys-DL-7rv" firstAttribute="width" secondItem="NtY-jD-ijn" secondAttribute="width" id="feR-93-1Ca"/>
+                            <constraint firstItem="Hsf-4N-jyX" firstAttribute="height" secondItem="cys-DL-7rv" secondAttribute="height" id="iE7-GE-Vir"/>
+                            <constraint firstItem="Rou-uT-u8y" firstAttribute="leading" secondItem="Hsf-4N-jyX" secondAttribute="leading" id="iYX-SE-SW4"/>
+                            <constraint firstItem="NtY-jD-ijn" firstAttribute="top" secondItem="ycK-38-TiU" secondAttribute="bottom" constant="8" id="nnl-2X-PvD"/>
+                            <constraint firstItem="cys-DL-7rv" firstAttribute="top" secondItem="NtY-jD-ijn" secondAttribute="bottom" constant="8" id="oP5-h2-ey8"/>
+                            <constraint firstItem="cys-DL-7rv" firstAttribute="leading" secondItem="NtY-jD-ijn" secondAttribute="leading" id="okb-is-DKW"/>
+                            <constraint firstAttribute="leadingMargin" secondItem="ycK-38-TiU" secondAttribute="leading" id="sjK-Cn-tkE"/>
+                            <constraint firstAttribute="trailingMargin" secondItem="ycK-38-TiU" secondAttribute="trailing" id="vDf-Ot-5hu"/>
+                        </constraints>
                     </view>
+                    <connections>
+                        <outlet property="commentTextView" destination="Rou-uT-u8y" id="lsb-wg-TWB"/>
+                        <outlet property="debtInfoLabel" destination="ycK-38-TiU" id="bnt-GD-Hp5"/>
+                        <outlet property="debtSumLabel" destination="NtY-jD-ijn" id="zOB-7Y-JC6"/>
+                        <outlet property="debtSummTextField" destination="cys-DL-7rv" id="7BT-1V-eSs"/>
+                        <outlet property="summLabel" destination="Hsf-4N-jyX" id="cp7-EC-FXb"/>
+                    </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="PnI-6n-QW2" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
@@ -184,10 +241,10 @@
             </objects>
             <point key="canvasLocation" x="5928" y="534"/>
         </scene>
-        <!--Outlet CashingVC-->
+        <!--Outlet CashingVC i Phone-->
         <scene sceneID="06x-zj-3VD">
             <objects>
-                <viewController storyboardIdentifier="outletCashingVC" extendedLayoutIncludesOpaqueBars="YES" id="AQ8-zd-d2l" customClass="STMOutletCashingVC" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="outletCashingVC" extendedLayoutIncludesOpaqueBars="YES" id="AQ8-zd-d2l" customClass="STMOutletCashingVC_iPhone" customModule="iSistemium" customModuleProvider="target" sceneMemberID="viewController">
                     <layoutGuides>
                         <viewControllerLayoutGuide type="top" id="VjZ-DO-A0O"/>
                         <viewControllerLayoutGuide type="bottom" id="A6s-QP-EH1"/>

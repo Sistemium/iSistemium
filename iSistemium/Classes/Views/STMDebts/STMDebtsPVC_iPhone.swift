@@ -16,6 +16,19 @@ class STMDebtsPVC_iPhone: STMDebtsDetailsPVC, UIPopoverPresentationControllerDel
         case SetCashing
         case CashingSum
         case LimitedSum
+        
+        mutating func reset(){
+            switch self{
+            case .SetCashing:
+                self = .SetCashing
+            case .CashingSum:
+                self = .CashingSum
+            case .LimitedSum:
+                self = .LimitedSum
+            case .Default:
+                self = .Default
+            }
+        }
     }
     
     var toolbar:Toolbar = .Default{
@@ -130,8 +143,10 @@ class STMDebtsPVC_iPhone: STMDebtsDetailsPVC, UIPopoverPresentationControllerDel
         
     }
     
-    override func viewDidAppear(animated: Bool) {
-        super.viewDidAppear(animated)
+    override func viewWillAppear(animated: Bool) {
+        super.viewWillAppear(animated)
+        self.navigationController?.setToolbarHidden(false, animated: true)
+        toolbar.reset()
     }
     
     private func removeSwipeGesture(){
@@ -227,7 +242,7 @@ class STMDebtsPVC_iPhone: STMDebtsDetailsPVC, UIPopoverPresentationControllerDel
             if number != nil{
                 STMCashingProcessController.sharedInstance().cashingSummLimit = NSDecimalNumber(decimal: number!.decimalValue)
             }
-            if number == 0 {
+            if number == 0 || number == nil {
                 STMCashingProcessController.sharedInstance().cashingSummLimit = nil
             }
             self.showCashingLabel()

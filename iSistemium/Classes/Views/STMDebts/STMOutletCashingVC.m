@@ -15,16 +15,10 @@
 #import "STMRecordStatusController.h"
 #import "STMObjectsController.h"
 
-@interface STMOutletCashingTV : UITableView
 
-@end
+@interface STMOutletCashingVC () 
 
-
-@interface STMOutletCashingVC () <UITableViewDataSource, UITableViewDelegate, NSFetchedResultsControllerDelegate>
-
-@property (nonatomic, strong) NSFetchedResultsController *resultsController;
 @property (nonatomic, strong) STMDocument *document;
-@property (weak, nonatomic) IBOutlet STMOutletCashingTV *tableView;
 
 @property (nonatomic, strong) NSMutableIndexSet *deletedSectionIndexes;
 @property (nonatomic, strong) NSMutableIndexSet *insertedSectionIndexes;

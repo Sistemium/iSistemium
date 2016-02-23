@@ -30,7 +30,6 @@ class STMOutletDebtsTVC_iPhone: STMOutletDebtsTVC {
     }
     
     override func showLongPressActionSheetFromView(view:UIView) {
-    
         if view.isKindOfClass(UITableViewCell) {
             let cell = view as! UITableViewCell
             let indexPath = self.tableView.indexPathForCell(cell)
@@ -224,7 +223,14 @@ class STMOutletDebtsTVC_iPhone: STMOutletDebtsTVC {
     }
     
     override func tableView(tableView: UITableView, accessoryButtonTappedForRowWithIndexPath indexPath: NSIndexPath) {
-        performSegueWithIdentifier("showDebtDetails", sender: nil)
+        performSegueWithIdentifier("showDebtDetails", sender: resultsController.objectAtIndexPath(indexPath) as! STMDebt)
+    }
+    
+    override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
+        super.prepareForSegue(segue, sender: sender)
+        if segue.identifier == "showDebtDetails"{
+            (segue.destinationViewController as! STMCashingControlsVC_iPhone).selectedDebt = sender as! STMDebt
+        }
     }
     
 }

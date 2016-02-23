@@ -26,7 +26,7 @@ class STMOutletsTVC_iPhone: STMOutletsTVC {
     }
     override func viewWillAppear(animated: Bool) {
         super.viewWillAppear(animated)
-        self.navigationController!.toolbarHidden = true
+        self.navigationController?.setToolbarHidden(true, animated: true)
     }
     
     override func cashingProcessStart() {

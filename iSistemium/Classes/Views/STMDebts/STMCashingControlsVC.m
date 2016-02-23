@@ -19,16 +19,6 @@
 
 @interface STMCashingControlsVC () <UITextFieldDelegate, UITextViewDelegate>
 
-@property (weak, nonatomic) IBOutlet UILabel *summLabel;
-@property (weak, nonatomic) IBOutlet UITextField *debtSummTextField;
-@property (weak, nonatomic) IBOutlet UILabel *remainderLabel;
-@property (weak, nonatomic) IBOutlet UIButton *dateButton;
-@property (weak, nonatomic) IBOutlet UITextField *cashingSummTextField;
-@property (weak, nonatomic) IBOutlet UILabel *cashingSumLabel;
-@property (weak, nonatomic) IBOutlet UILabel *debtSumLabel;
-@property (weak, nonatomic) IBOutlet UITextView *commentTextView;
-@property (weak, nonatomic) IBOutlet UILabel *debtInfoLabel;
-
 @property (nonatomic) CGFloat textViewShiftDistance;
 @property (nonatomic) BOOL textViewIsShifted;
 
@@ -37,7 +27,6 @@
 @property (nonatomic, strong) NSString *initialTextFieldValue;
 
 @property (nonatomic, weak) STMDebtsSVC *splitVC;
-@property (nonatomic, strong) STMDebt *selectedDebt;
 
 @end
 
@@ -114,6 +103,8 @@
 }
 
 - (void)setSelectedDebt:(STMDebt *)selectedDebt {
+    
+    [self view]; //this loads view hierarchy, fixes problem when IBOutlets are nil if debt is set from prepare for segue
     
     if (_selectedDebt != selectedDebt) {
         
