@@ -77,7 +77,12 @@
 }
 
 -(void)dismissKeyboard {
+    
+    NSIndexPath *selectedIndexPath = self.tableView.indexPathForSelectedRow;
+    if (selectedIndexPath) [self.tableView deselectRowAtIndexPath:selectedIndexPath animated:YES];
+    
     [self.hiddenTextField resignFirstResponder];
+    
 }
 
 - (void)updateVolumePickerWithDataOfPositionPicked:(STMPickingOrderPositionPicked *)positionPicked {
