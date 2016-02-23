@@ -10,6 +10,22 @@
 
 @interface STMPickingOrdersProcessController : STMController
 
++ (void)updateVolumesWithIncreaseVolumeForPositionPicked:(STMPickingOrderPositionPicked *)positionPicked;
+
++ (STMPickingOrderPositionPicked *)createPositionPickedForStockBatch:(STMStockBatch *)stockBatch
+                                                         andPosition:(STMPickingOrderPosition *)position
+                                                      withFullVolume:(BOOL)fullVolume
+                                                         barCodeScan:(STMBarCodeScan *)barCodeScan;
+
++ (void)linkBarCodeScan:(STMBarCodeScan *)barCodeScan
+     withPositionPicked:(STMPickingOrderPositionPicked *)positionPicked;
+
+
+#pragma mark - first version of picking process
+
+// ----
+// first version of picking process
+
 + (void)   position:(STMPickingOrderPosition *)position
 wasPickedWithVolume:(NSUInteger)volume
   andProductionInfo:(NSString *)info
@@ -24,6 +40,9 @@ wasPickedWithVolume:(NSUInteger)volume
      andProductionInfo:(NSString *)info;
 
 + (void)deletePickedPosition:(STMPickingOrderPositionPicked *)pickedPosition;
+
+// end of first version of picking process
+// ----
 
 
 @end

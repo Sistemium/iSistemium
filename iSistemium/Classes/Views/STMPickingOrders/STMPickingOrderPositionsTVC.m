@@ -47,12 +47,16 @@
 @property (nonatomic, strong) STMBarCodeScanner *HIDBarCodeScanner;
 @property (nonatomic, strong) STMBarCodeScanner *iOSModeBarCodeScanner;
 
-@property (nonatomic, strong) STMBarCodeScan *currentBarCodeScan;
-//@property (nonatomic, strong) NSString *currentStockToken;
+
+// ----
+// first version of picking process
 
 //@property (nonatomic, strong) NSString *scannedBarCode;
 //@property (nonatomic, strong) NSMutableArray *scannedStockBatches;
 //@property (nonatomic, strong) NSMutableArray *scannedArticles;
+
+// end of first version of picking process
+// ----
 
 
 @end
@@ -637,20 +641,18 @@
 
 #pragma mark - barcodes
 
-- (void)receiveStockBatchBarCodeScan:(STMBarCodeScan *)barcodeScan {
+- (void)receiveStockBatchBarCodeScan:(STMBarCodeScan *)barCodeScan {
     
     STMFetchRequest *request = [STMFetchRequest fetchRequestWithEntityName:NSStringFromClass([STMStockBatch class])];
-    request.predicate = [NSPredicate predicateWithFormat:@"stockToken != nil AND ANY barCodes.code == %@", barcodeScan.code];
+    request.predicate = [NSPredicate predicateWithFormat:@"stockToken != nil AND ANY barCodes.code == %@", barCodeScan.code];
     
     NSArray *stockBatches = [self.document.managedObjectContext executeFetchRequest:request error:nil];
     
     if (stockBatches.count > 0) {
         
-        self.currentBarCodeScan = barcodeScan;
-        
         STMStockBatch *stockBatch = stockBatches.firstObject;
         
-        [self receiveBarCodeScanOfStockBatch:stockBatch];
+        [self receiveBarCodeScan:barCodeScan ofStockBatch:stockBatch];
         
     } else {
         
@@ -660,7 +662,7 @@
     
 }
 
-- (void)receiveBarCodeScanOfStockBatch:(STMStockBatch *)stockBatch {
+- (void)receiveBarCodeScan:(STMBarCodeScan *)barCodeScan ofStockBatch:(STMStockBatch *)stockBatch {
     
     if (!stockBatch.stockToken) return;
 
@@ -682,19 +684,26 @@
             
             if (positionPicked) {
                 
-                [self updateVolumeForPositionPicked:positionPicked withPosition:position];
-                [self linkCurrentBarCodeScanWithPositionPicked:positionPicked];
+                [STMPickingOrdersProcessController updateVolumesWithIncreaseVolumeForPositionPicked:positionPicked];
+                [STMPickingOrdersProcessController linkBarCodeScan:barCodeScan withPositionPicked:positionPicked];
 
             } else {
                 
-                STMPickingOrderPositionPicked *positionPicked = [self createPositionPickedForStockBatch:stockBatch andPosition:position withFullVolume:NO];
-                [self updateVolumeForPositionPicked:positionPicked withPosition:position];
+                STMPickingOrderPositionPicked *positionPicked = [STMPickingOrdersProcessController createPositionPickedForStockBatch:stockBatch
+                                                                                                                         andPosition:position
+                                                                                                                      withFullVolume:NO
+                                                                                                                         barCodeScan:barCodeScan];
+                
+                [STMPickingOrdersProcessController updateVolumesWithIncreaseVolumeForPositionPicked:positionPicked];
                 
             }
 
         } else {
             
-            [self createPositionPickedForStockBatch:stockBatch andPosition:position withFullVolume:YES];
+            [STMPickingOrdersProcessController createPositionPickedForStockBatch:stockBatch
+                                                                     andPosition:position
+                                                                  withFullVolume:YES
+                                                                     barCodeScan:barCodeScan];
 
         }
         
@@ -723,70 +732,8 @@
     
 }
 
-- (STMPickingOrderPositionPicked *)createPositionPickedForStockBatch:(STMStockBatch *)stockBatch andPosition:(STMPickingOrderPosition *)position withFullVolume:(BOOL)fullVolume {
-    
-    STMPickingOrderPositionPicked *positionPicked = (STMPickingOrderPositionPicked *)[STMObjectsController newObjectForEntityName:NSStringFromClass([STMPickingOrderPositionPicked class]) isFantom:NO];
-    
-    positionPicked.pickingOrderPosition = position;
-    positionPicked.volume = (fullVolume) ? position.volume : 0;
-    positionPicked.stockToken = stockBatch.stockToken;
-    positionPicked.article = stockBatch.article;
-    
-    if (stockBatch.article.productionInfoType) {
-        positionPicked.productionInfo = stockBatch.productionInfo;
-    }
-    
-    [self linkCurrentBarCodeScanWithPositionPicked:positionPicked];
 
-    [self.document saveDocument:^(BOOL success) {
-        
-    }];
-    
-    return positionPicked;
-    
-}
-
-- (void)linkCurrentBarCodeScanWithPositionPicked:(STMPickingOrderPositionPicked *)positionPicked {
-
-    self.currentBarCodeScan.destinationEntity = NSStringFromClass([positionPicked class]);
-    self.currentBarCodeScan.destinationXid = positionPicked.xid;
-
-}
-
-- (void)updateVolumeForPositionPicked:(STMPickingOrderPositionPicked *)positionPicked withPosition:(STMPickingOrderPosition *)position {
-    
-    NSSortDescriptor *ctsDescriptor = [NSSortDescriptor sortDescriptorWithKey:@"deviceCts"
-                                                                    ascending:YES
-                                                                     selector:@selector(compare:)];
-    
-    NSArray *sortedPositionsPicked = [position.pickingOrderPositionsPicked sortedArrayUsingDescriptors:@[ctsDescriptor]];
-    
-    STMPickingOrderPositionPicked *firstPositionPicked = sortedPositionsPicked.firstObject;
-    
-    if (![positionPicked isEqual:firstPositionPicked]) {
-        
-        NSInteger packageRel = position.article.packageRel.integerValue;
-        
-        NSUInteger volumeStep = (position.volume.integerValue > (2 * packageRel)) ? packageRel : 1;
-        
-        NSInteger incrementedVolume = positionPicked.volume.integerValue + volumeStep;
-        NSInteger decrementedVolume = firstPositionPicked.volume.integerValue - volumeStep;
-        
-        if (incrementedVolume < position.volume.integerValue && decrementedVolume > 0) {
-            
-            positionPicked.volume = @(positionPicked.volume.integerValue + volumeStep);
-            firstPositionPicked.volume = @(firstPositionPicked.volume.integerValue - volumeStep);
-
-        } else {
-            
-            [STMSoundController playAlert];
-            
-        }
-        
-    }
-
-}
-
+#pragma mark - first version of picking process
 
 - (void)firstVersionOfPickingProcess {
 

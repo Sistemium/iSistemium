@@ -17,11 +17,14 @@
 
 - (BOOL)orderIsProcessed;
 
+- (void)positionWasUpdated:(STMPickingOrderPosition *)position;
+
+
+#pragma mark - first version of picking process
 // ---- ?
 - (void)position:(STMPickingOrderPosition *)position wasPickedWithVolume:(NSUInteger)volume andProductionInfo:(NSString *)info;
 // ---- ?
 
-- (void)positionWasUpdated:(STMPickingOrderPosition *)position;
 
 
 @end
