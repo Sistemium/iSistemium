@@ -29,17 +29,41 @@
         NSUInteger volumeStep = (position.volume.integerValue > (2 * packageRel)) ? packageRel : 1;
         
         NSInteger incrementedVolume = positionPicked.volume.integerValue + volumeStep;
-        NSInteger decrementedVolume = firstPositionPicked.volume.integerValue - volumeStep;
         
-        if (incrementedVolume < position.volume.integerValue && decrementedVolume > 0) {
-            
-            positionPicked.volume = @(incrementedVolume);
-            firstPositionPicked.volume = @(decrementedVolume);
-            
-            [[self document] saveDocument:^(BOOL success) {
+        if (incrementedVolume < position.volume.integerValue) {
+
+            NSInteger decrementedVolume = firstPositionPicked.volume.integerValue - volumeStep;
+
+            if (decrementedVolume > 0) {
                 
-            }];
-            
+                positionPicked.volume = @(incrementedVolume);
+                firstPositionPicked.volume = @(decrementedVolume);
+                
+                [[self document] saveDocument:^(BOOL success) {
+                    
+                }];
+                
+            } else {
+                
+                NSNumber *volumeSum = [position.pickingOrderPositionsPicked valueForKeyPath:@"@sum.volume"];
+                NSInteger remainingVolume = position.volume.integerValue - volumeSum.integerValue;
+                
+                if (volumeStep >= remainingVolume) {
+                    
+                    positionPicked.volume = @(incrementedVolume);
+
+                    [[self document] saveDocument:^(BOOL success) {
+                        
+                    }];
+                    
+                } else {
+                    
+                    [STMSoundController playAlert];
+
+                }
+                
+            }
+                
         } else {
             
             [STMSoundController playAlert];
