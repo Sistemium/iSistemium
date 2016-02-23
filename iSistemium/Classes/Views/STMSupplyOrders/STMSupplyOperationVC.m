@@ -253,7 +253,9 @@
 - (void)customInit {
     
     self.volumePicker.owner = self;
-    
+    self.volumePicker.showPackageRel = YES;
+    self.volumePicker.packageRelIsLocked = (self.supplyOrderArticleDoc.sourceOperations.count > 0);
+
     if (self.supplyOperation && [self.supplyOperation.sourceAgent isKindOfClass:[STMSupplyOrderArticleDoc class]]) {
         
         NSMutableArray *toolbarButtons = [self.toolbar.items mutableCopy];
@@ -265,7 +267,7 @@
         
         self.articleLabel.text = [self articleLabelForArticleDoc:self.supplyOrderArticleDoc];
 
-        self.volumePicker.volume = [self.supplyOrderArticleDoc volumeRemainingToSupply] + self.supplyOperation.volume.integerValue;
+        self.volumePicker.maxVolume = [self.supplyOrderArticleDoc volumeRemainingToSupply] + self.supplyOperation.volume.integerValue;
 
         self.volumePicker.packageRel = [self.supplyOrderArticleDoc operatingPackageRel].integerValue;
         
@@ -275,7 +277,7 @@
         
         self.articleLabel.text = [self articleLabelForArticleDoc:self.supplyOrderArticleDoc];
 
-        self.volumePicker.volume = [self.supplyOrderArticleDoc volumeRemainingToSupply];
+        self.volumePicker.maxVolume = [self.supplyOrderArticleDoc volumeRemainingToSupply];
 
         self.volumePicker.packageRel = [self.supplyOrderArticleDoc operatingPackageRel].integerValue;
         
@@ -285,8 +287,6 @@
 
     }
     
-    self.volumePicker.packageRelIsLoked = (self.supplyOrderArticleDoc.sourceOperations.count > 0);
-
     [self volumeSelected];
 
 }

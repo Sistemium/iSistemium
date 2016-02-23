@@ -1124,12 +1124,25 @@
     
     UINib *cellNib = [UINib nibWithNibName:NSStringFromClass([STMCustom5TVCell class]) bundle:nil];
     [self.tableView registerNib:cellNib forCellReuseIdentifier:self.cellIdentifier];
+
+// ----
+// test
     
+//    STMBarCodeScan *barCodeScan1 = (STMBarCodeScan *)[STMObjectsController newObjectForEntityName:NSStringFromClass([STMBarCodeScan class]) isFantom:NO];
+//    barCodeScan1.code = @"30000001";
+//    [self receiveStockBatchBarCodeScan:barCodeScan1];
+//
+//    STMBarCodeScan *barCodeScan2 = (STMBarCodeScan *)[STMObjectsController newObjectForEntityName:NSStringFromClass([STMBarCodeScan class]) isFantom:NO];
+//    barCodeScan2.code = @"30000101";
+//    [self receiveStockBatchBarCodeScan:barCodeScan2];
+
+// end of test
+// ----
+
 }
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-    // Do any additional setup after loading the view.
 }
 
 - (void)viewDidAppear:(BOOL)animated {

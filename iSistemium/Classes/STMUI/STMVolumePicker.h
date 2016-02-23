@@ -14,13 +14,14 @@
 @interface STMVolumePicker : UIPickerView
 
 @property (nonatomic) NSInteger packageRel;
-@property (nonatomic) NSInteger volume;
+@property (nonatomic) NSInteger maxVolume;
 
 @property (nonatomic) NSInteger selectedVolume;
 
 @property (nonatomic, strong) id <STMVolumePickerOwner> owner;
 
-@property (nonatomic) BOOL packageRelIsLoked;
+@property (nonatomic) BOOL packageRelIsLocked;
+@property (nonatomic) BOOL showPackageRel;
 
 
 @end

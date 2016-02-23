@@ -11,7 +11,10 @@
 #import "STMPickingOrdersProcessController.h"
 
 
-@interface STMPickedPositionsInfoTVC ()
+@interface STMPickedPositionsInfoTVC () <UIGestureRecognizerDelegate, STMVolumePickerOwner>
+
+@property (nonatomic, strong) UITextField *hiddenTextField;
+@property (nonatomic, strong) STMVolumePicker *volumePicker;
 
 
 @end
@@ -45,6 +48,70 @@
     _position = position;
     
     [self performFetch];
+    
+}
+
+
+#pragma mark - volume picker
+
+- (void)setupVolumePicker {
+    
+    self.volumePicker = [[STMVolumePicker alloc] initWithFrame:CGRectMake(0, 0, 320, 162)];
+    self.volumePicker.owner = self;
+    self.volumePicker.packageRelIsLocked = YES;
+    self.volumePicker.showPackageRel = NO;
+    self.volumePicker.packageRel = self.position.article.packageRel.integerValue;
+    
+    self.hiddenTextField = [[UITextField alloc] init];
+    self.hiddenTextField.inputView = self.volumePicker;
+    
+    [self.view addSubview:self.hiddenTextField];
+
+    UITapGestureRecognizer *tap = [[UITapGestureRecognizer alloc] initWithTarget:self
+                                                                          action:@selector(dismissKeyboard)];
+//    tap.cancelsTouchesInView = NO;
+    tap.delegate = self;
+    [self.view addGestureRecognizer:tap];
+
+}
+
+-(void)dismissKeyboard {
+    [self.hiddenTextField resignFirstResponder];
+}
+
+- (void)updateVolumePickerWithDataOfPositionPicked:(STMPickingOrderPositionPicked *)positionPicked {
+    
+    NSNumber *volumeSum = [self.position.pickingOrderPositionsPicked valueForKeyPath:@"@sum.volume"];
+    
+    self.volumePicker.maxVolume = self.position.volume.integerValue - (volumeSum.integerValue - positionPicked.volume.integerValue);
+
+    [self.volumePicker reloadAllComponents];
+
+    self.volumePicker.selectedVolume = positionPicked.volume.integerValue;
+    
+}
+
+
+#pragma mark - STMVolumePickerOwner
+
+- (void)volumeSelected {
+
+}
+
+- (void)packageRelSelected {
+    
+}
+
+
+#pragma mark - UIGestureRecognizerDelegate
+
+- (BOOL)gestureRecognizer:(UIGestureRecognizer *)gestureRecognizer shouldReceiveTouch:(UITouch *)touch {
+    
+    for (UITableViewCell *cell in self.tableView.visibleCells) {
+        if ([touch.view isDescendantOfView:cell]) return NO;
+    }
+    
+    return YES;
     
 }
 
@@ -89,6 +156,34 @@
         
     }
     
+}
+
+- (NSIndexPath *)tableView:(UITableView *)tableView willSelectRowAtIndexPath:(NSIndexPath *)indexPath {
+    
+    NSIndexPath *selectedIndexPath = self.tableView.indexPathForSelectedRow;
+    
+    if (selectedIndexPath && [indexPath compare:selectedIndexPath] == NSOrderedSame) {
+        
+        [self.tableView deselectRowAtIndexPath:indexPath animated:YES];
+        [self dismissKeyboard];
+        
+        return nil;
+        
+    } else {
+        
+        return indexPath;
+        
+    }
+
+}
+
+- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
+    
+    STMPickingOrderPositionPicked *positionPicked = [self.resultsController objectAtIndexPath:indexPath];
+    
+    [self updateVolumePickerWithDataOfPositionPicked:positionPicked];
+    [self.hiddenTextField becomeFirstResponder];
+
 }
 
 
@@ -154,6 +249,8 @@
 - (void)customInit {
     
     [super customInit];
+    
+    [self setupVolumePicker];
 
     UINib *cellNib = [UINib nibWithNibName:NSStringFromClass([STMCustom5TVCell class]) bundle:nil];
     [self.tableView registerNib:cellNib forCellReuseIdentifier:self.cellIdentifier];
@@ -162,9 +259,12 @@
     
 }
 
+- (void)viewDidAppear:(BOOL)animated {
+    [super viewDidAppear:animated];
+}
+
 - (void)viewDidLoad {
     [super viewDidLoad];
-    // Do any additional setup after loading the view.
 }
 
 - (void)didReceiveMemoryWarning {

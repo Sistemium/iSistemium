@@ -42,9 +42,19 @@
     if (self) {
         [self customInit];
     }
-    
     return self;
     
+}
+
+- (instancetype)initWithFrame:(CGRect)frame {
+    
+    self = [super initWithFrame:frame];
+    
+    if (self) {
+        [self customInit];
+    }
+    return self;
+
 }
 
 - (void)customInit {
@@ -72,7 +82,7 @@
         [self reloadComponent:0];
         [self reloadComponent:2];
 
-        [self selectRow:[self.packageRels indexOfObject:@(packageRel)] inComponent:4 animated:NO];
+        if (self.showPackageRel) [self selectRow:[self.packageRels indexOfObject:@(packageRel)] inComponent:4 animated:NO];
         
     }
     
@@ -80,8 +90,8 @@
 
 - (void)setSelectedVolume:(NSInteger)selectedVolume {
     
-    if (selectedVolume > self.volume) {
-        selectedVolume = self.volume;
+    if (selectedVolume > self.maxVolume) {
+        selectedVolume = self.maxVolume;
     }
     
     _selectedVolume = selectedVolume;
@@ -97,22 +107,22 @@
 #pragma mark - UIPickerViewDataSource, UIPickerViewDelegate
 
 - (NSInteger)numberOfComponentsInPickerView:(UIPickerView *)pickerView {
-    return 6;
+    return (self.showPackageRel) ? 6 : 4;
 }
 
 - (NSInteger)pickerView:(UIPickerView *)pickerView numberOfRowsInComponent:(NSInteger)component {
     
     switch (component) {
         case 0:
-            return (self.packageRel > 0) ? (self.volume / self.packageRel) + 1 : 1;
+            return (self.packageRel > 0) ? (self.maxVolume / self.packageRel) + 1 : 1;
             break;
             
         case 2:
-            return self.volume + 1;
+            return self.maxVolume + 1;
             break;
             
         case 4:
-            return (self.packageRelIsLoked) ? 1 : self.packageRels.count;
+            return (self.packageRelIsLocked) ? 1 : self.packageRels.count;
             break;
 
         default:
@@ -147,7 +157,7 @@
             break;
             
         case 4:
-            return (self.packageRelIsLoked) ? @(self.packageRel).stringValue : [self.packageRels[row] stringValue];
+            return (self.packageRelIsLocked) ? @(self.packageRel).stringValue : [self.packageRels[row] stringValue];
             break;
 
         default:
@@ -261,7 +271,7 @@
             
         case 4: {
             
-            NSInteger selectedPackageRel = (self.packageRelIsLoked) ? self.packageRel : [self.packageRels[row] integerValue];
+            NSInteger selectedPackageRel = (self.packageRelIsLocked) ? self.packageRel : [self.packageRels[row] integerValue];
             NSInteger volumeAfterUpdate = self.selectedVolume - (self.selectedBoxCount * (self.packageRel - selectedPackageRel));
             
             self.packageRel = selectedPackageRel;
