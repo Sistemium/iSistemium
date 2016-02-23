@@ -63,20 +63,43 @@
     self.volumePicker.showPackageRel = NO;
     self.volumePicker.packageRel = self.position.article.packageRel.integerValue;
     
+}
+
+- (void)setupHiddenTextField {
+    
     self.hiddenTextField = [[UITextField alloc] init];
     self.hiddenTextField.inputView = self.volumePicker;
     
+    UIToolbar *toolbar = [[UIToolbar alloc] init];
+    toolbar.frame = CGRectMake(0, 0, self.view.frame.size.width, TOOLBAR_HEIGHT);
+    
+    STMBarButtonItemDone *doneButon = [[STMBarButtonItemDone alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemDone
+                                                                                         target:self
+                                                                                         action:@selector(toolbarDoneButtonPressed)];
+    
+    [toolbar setItems:@[[STMBarButtonItem flexibleSpace], doneButon] animated:YES];
+    
+    self.hiddenTextField.inputAccessoryView = toolbar;
+
     [self.view addSubview:self.hiddenTextField];
 
+}
+
+- (void)toolbarDoneButtonPressed {
+    [self dismissKeyboard];
+}
+
+- (void)addTapGestureToDismissKeyboard {
+    
     UITapGestureRecognizer *tap = [[UITapGestureRecognizer alloc] initWithTarget:self
                                                                           action:@selector(dismissKeyboard)];
-//    tap.cancelsTouchesInView = NO;
     tap.delegate = self;
+    
     [self.view addGestureRecognizer:tap];
 
 }
 
--(void)dismissKeyboard {
+- (void)dismissKeyboard {
     
     NSIndexPath *selectedIndexPath = self.tableView.indexPathForSelectedRow;
     if (selectedIndexPath) [self.tableView deselectRowAtIndexPath:selectedIndexPath animated:YES];
@@ -311,6 +334,8 @@
     [super customInit];
     
     [self setupVolumePicker];
+    [self setupHiddenTextField];
+    [self addTapGestureToDismissKeyboard];
     [self setupRemainingLabel];
 
     UINib *cellNib = [UINib nibWithNibName:NSStringFromClass([STMCustom5TVCell class]) bundle:nil];
