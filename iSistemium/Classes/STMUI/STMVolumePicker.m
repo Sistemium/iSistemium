@@ -229,6 +229,7 @@
         case 4:
             label.textAlignment = NSTextAlignmentRight;
             label.attributedText = [self pickerView:pickerView attributedTitleForRow:row forComponent:component];
+            if (self.packageRelIsLocked) [self component:component enableRotation:NO];
             break;
 
         case 1:
@@ -236,6 +237,7 @@
         case 5:
             label.textAlignment = NSTextAlignmentLeft;
             label.attributedText = [self pickerView:pickerView attributedTitleForRow:row forComponent:component];
+            [self component:component enableRotation:NO];
             break;
             
         default:
@@ -285,6 +287,40 @@
             
         default:
             break;
+    }
+    
+}
+
+
+#pragma mark - enable/disable rotating
+
+- (void)component:(NSInteger)component enableRotation:(BOOL)enableRotation {
+
+    if (self.subviews.count > 0) {
+        
+        UIView *mainView = nil;
+        
+        for (UIView *subview in self.subviews) {
+            
+            if (CGRectGetHeight(subview.frame) == CGRectGetHeight(self.frame)) {
+                
+                mainView = subview;
+                break;
+                
+            }
+            
+        }
+        
+        if (mainView) {
+            
+            UIView *componentView = mainView.subviews[component];
+            
+            for (UIGestureRecognizer *gesture in componentView.gestureRecognizers) {
+                gesture.enabled = enableRotation;
+            }
+            
+        }
+        
     }
     
 }
