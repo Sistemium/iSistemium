@@ -153,6 +153,7 @@
 		2C52E1BE1C79E05500CA59B7 /* STMBarCodeScan.m in Sources */ = {isa = PBXBuildFile; fileRef = 2C52E1BC1C79E05500CA59B7 /* STMBarCodeScan.m */; };
 		2C52E1C71C7B083300CA59B7 /* STMPickedPositionsListTVC.m in Sources */ = {isa = PBXBuildFile; fileRef = 2C52E1C61C7B083300CA59B7 /* STMPickedPositionsListTVC.m */; };
 		2C52E1CA1C7B0AEE00CA59B7 /* STMPickedPositionsInfoTVC.m in Sources */ = {isa = PBXBuildFile; fileRef = 2C52E1C91C7B0AEE00CA59B7 /* STMPickedPositionsInfoTVC.m */; };
+		2C52E1DA1C80466200CA59B7 /* STMScanApiHelper.m in Sources */ = {isa = PBXBuildFile; fileRef = 2C52E1D91C80466200CA59B7 /* STMScanApiHelper.m */; };
 		2C53B88A19409E42002298A5 /* settings_schema.json in Resources */ = {isa = PBXBuildFile; fileRef = 2C53B88819409E42002298A5 /* settings_schema.json */; };
 		2C53B88B19409E42002298A5 /* settings.json in Resources */ = {isa = PBXBuildFile; fileRef = 2C53B88919409E42002298A5 /* settings.json */; };
 		2C53B89E19409E71002298A5 /* STMSessionManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 2C53B88D19409E71002298A5 /* STMSessionManager.m */; };
@@ -762,6 +763,9 @@
 		2C52E1C61C7B083300CA59B7 /* STMPickedPositionsListTVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = STMPickedPositionsListTVC.m; sourceTree = "<group>"; };
 		2C52E1C81C7B0AEE00CA59B7 /* STMPickedPositionsInfoTVC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = STMPickedPositionsInfoTVC.h; sourceTree = "<group>"; };
 		2C52E1C91C7B0AEE00CA59B7 /* STMPickedPositionsInfoTVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = STMPickedPositionsInfoTVC.m; sourceTree = "<group>"; };
+		2C52E1D81C80466200CA59B7 /* STMScanApiHelper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = STMScanApiHelper.h; sourceTree = "<group>"; };
+		2C52E1D91C80466200CA59B7 /* STMScanApiHelper.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = STMScanApiHelper.m; sourceTree = "<group>"; };
+		2C52E1DB1C80484E00CA59B7 /* STMScanApiHelperDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = STMScanApiHelperDelegate.h; sourceTree = "<group>"; };
 		2C53B88819409E42002298A5 /* settings_schema.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = settings_schema.json; sourceTree = "<group>"; };
 		2C53B88919409E42002298A5 /* settings.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = settings.json; sourceTree = "<group>"; };
 		2C53B88C19409E71002298A5 /* STMSessionManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = STMSessionManager.h; sourceTree = "<group>"; };
@@ -1547,6 +1551,8 @@
 				2C8EF5DC1940860A0021D202 /* STMFunctions.m */,
 				2C9D04B41ADBC01800D0421D /* STMRemoteController.h */,
 				2C9D04B51ADBC01800D0421D /* STMRemoteController.m */,
+				2C52E1D81C80466200CA59B7 /* STMScanApiHelper.h */,
+				2C52E1D91C80466200CA59B7 /* STMScanApiHelper.m */,
 				2CEE30591BF0CC43009B229F /* STMBarCodeScanner.h */,
 				2CEE305A1BF0CC43009B229F /* STMBarCodeScanner.m */,
 				2C1C548D1C031D7C0095F1DD /* STMSoundController.h */,
@@ -1829,6 +1835,7 @@
 				6D814A9C1C480898001B56A3 /* STMPicturesViewerDelegate.h */,
 				2C42D8E31C25591F005C857F /* STMProductionInfoSelecting.h */,
 				2C53B8AD1940A092002298A5 /* STMRequestAuthenticatable.h */,
+				2C52E1DB1C80484E00CA59B7 /* STMScanApiHelperDelegate.h */,
 				2C53B8AE1940A092002298A5 /* STMSessionManagement.h */,
 				2CF1264E1B7880750059701F /* STMShipmentPositionSortable.h */,
 				2C420FC51A4C24DE001C65B9 /* STMTabBarItemControllable.h */,
@@ -3195,6 +3202,7 @@
 				2C8379CA1C1713FE00621419 /* STMPickingOrdersProcessController.m in Sources */,
 				2C9D04B61ADBC01800D0421D /* STMRemoteController.m in Sources */,
 				2C1C548F1C031D7C0095F1DD /* STMSoundController.m in Sources */,
+				2C52E1DA1C80466200CA59B7 /* STMScanApiHelper.m in Sources */,
 				2C42ECB41B0B66C000B5C91A /* STMWebViewNC.m in Sources */,
 				2C5764191AA5E1E500B9FD2C /* STMAddPartnerVC.m in Sources */,
 				2C1AB2961B6F937B00BF5C50 /* STMReorderRoutePointsTVC.m in Sources */,

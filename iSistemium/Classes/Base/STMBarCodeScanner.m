@@ -10,7 +10,7 @@
 
 #import <CoreData/CoreData.h>
 #import <AVFoundation/AVFoundation.h>
-#import <ScanAPI/ScanApiHelper.h>
+#import "STMScanApiHelper.h"
 
 #import "STMNS.h"
 #import "STMDataModel.h"
@@ -19,7 +19,7 @@
 #import "STMObjectsController.h"
 
 
-@interface STMBarCodeScanner() <UITextFieldDelegate, AVCaptureMetadataOutputObjectsDelegate, ScanApiHelperDelegate>
+@interface STMBarCodeScanner() <UITextFieldDelegate, AVCaptureMetadataOutputObjectsDelegate, STMScanApiHelperDelegate>
 
 @property (nonatomic, strong) UITextField *hiddenBarCodeTextField;
 
@@ -29,7 +29,7 @@
 @property (nonatomic, strong) AVCaptureMetadataOutput *output;
 @property (nonatomic, strong) AVCaptureVideoPreviewLayer *preview;
 
-@property (nonatomic, strong) ScanApiHelper *iOSScanHelper;
+@property (nonatomic, strong) STMScanApiHelper *iOSScanHelper;
 @property (nonatomic, strong) NSTimer* scanApiConsumer;
 @property (nonatomic, strong) DeviceInfo *deviceInfo;
 
@@ -362,7 +362,7 @@
 
 + (void)addScanHelperToScanner:(STMBarCodeScanner *)scanner {
     
-    scanner.iOSScanHelper = [[ScanApiHelper alloc] init];
+    scanner.iOSScanHelper = [[STMScanApiHelper alloc] init];
     [scanner.iOSScanHelper setDelegate:scanner];
     [scanner.iOSScanHelper open];
 
@@ -653,6 +653,12 @@
 
 - (void)onError:(SKTRESULT)result {
     NSLog(@"error: %ld", result);
+}
+
+- (void)onButtonsEvent:(ISktScanObject *)scanObj {
+    
+    NSLogMethodName;
+    
 }
 
 - (void)onSetBatteryLevelNotification:(id)sender {
