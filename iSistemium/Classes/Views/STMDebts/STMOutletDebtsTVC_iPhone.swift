@@ -149,7 +149,7 @@ class STMOutletDebtsTVC_iPhone: STMOutletDebtsTVC {
             ]
             let dueDateHeader = NSString(format: "%@: ", NSLocalizedString("DUE DATE", comment:""))
             text.appendAttributedString(NSAttributedString(string: dueDateHeader as String,attributes:attributes as? [String : AnyObject]))
-            text.appendAttributedString(NSAttributedString(string: dueDate as String, attributes:attributes as? [String : AnyObject]))
+            text.appendAttributedString(NSAttributedString(string: dueDate as String + " ", attributes:attributes as? [String : AnyObject]))
         }
         if debt.commentText != nil {
             font = UIFont.systemFontOfSize(14)
@@ -160,7 +160,7 @@ class STMOutletDebtsTVC_iPhone: STMOutletDebtsTVC {
                 NSBackgroundColorAttributeName: backgroundColor,
                 NSForegroundColorAttributeName: textColor
             ]
-            let commentString = NSString(format:"(%@)", debt.commentText)
+            let commentString = NSString(format:"(%@) ", debt.commentText)
             text.appendAttributedString(NSAttributedString(string: commentString as String, attributes:attributes as? [String : AnyObject]))
         }
         if debt.responsibility != nil {
