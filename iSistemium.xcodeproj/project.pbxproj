@@ -1449,8 +1449,8 @@
 		6D720E631C5134CA008BC9F7 /* STMDebts_iphone.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = STMDebts_iphone.storyboard; sourceTree = "<group>"; };
 		6D720E671C5235AB008BC9F7 /* STMUncashing_iphone.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = STMUncashing_iphone.storyboard; sourceTree = "<group>"; };
 		6D814A9C1C480898001B56A3 /* STMPicturesViewerDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = STMPicturesViewerDelegate.h; sourceTree = "<group>"; };
-		6D814A9D1C490362001B56A3 /* STMSwiftConstants.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = STMSwiftConstants.swift; path = ../Views/STMSwiftConstants.swift; sourceTree = "<group>"; };
-		6D814A9F1C4938E5001B56A3 /* STMSplitViewController_Swift.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = STMSplitViewController_Swift.swift; path = ../Views/STMSplitViewController_Swift.swift; sourceTree = "<group>"; };
+		6D814A9D1C490362001B56A3 /* STMSwiftConstants.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = STMSwiftConstants.swift; sourceTree = "<group>"; };
+		6D814A9F1C4938E5001B56A3 /* STMSplitViewController_Swift.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = STMSplitViewController_Swift.swift; sourceTree = "<group>"; };
 		6D814AA11C494F00001B56A3 /* STMDataModel 91.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "STMDataModel 91.xcdatamodel"; sourceTree = "<group>"; };
 		6DC103DC1C5EB15400D399B2 /* STMOutletDebtsTVC_iPhone.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = STMOutletDebtsTVC_iPhone.swift; sourceTree = "<group>"; };
 		6DC103E01C5F997500D399B2 /* STMAddDebtVC_iPhone.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = STMAddDebtVC_iPhone.swift; sourceTree = "<group>"; };
@@ -2713,7 +2713,7 @@
 				6D0B03281C7B3BDA009061B8 /* STMOutletCashingVC_iPhone.swift */,
 				6D0B032A1C7B50C4009061B8 /* STMCashingControlsVC_iPhone.swift */,
 			);
-			name = Iphone;
+			path = Iphone;
 			sourceTree = "<group>";
 		};
 		6DF12A2E1C3AB80300E94C3E /* STMShippingLocations */ = {
@@ -2722,7 +2722,7 @@
 				6DF12A2F1C3ABA8E00E94C3E /* STMShippingLocationsTVC.swift */,
 				6DE2B48A1C3E7F4F001F1DE1 /* STMShippingLocationTVC.swift */,
 			);
-			name = STMShippingLocations;
+			path = STMShippingLocations;
 			sourceTree = "<group>";
 		};
 		C2F565BFB1515E69445A0A71 /* Pods */ = {
