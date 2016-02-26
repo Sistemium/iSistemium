@@ -122,6 +122,17 @@
 //    
 //    imp(receiver, selector, object);
 
+
+// another way to remove warning
+// ----
+// remove the warning about potential memory leak
+// in the _response selector because the compiler
+// doesn't know in ARC mode if it needs to apply
+// a retain or release.
+//#pragma clang diagnostic push
+//#pragma clang diagnostic ignored "-Warc-performSelector-leaks"
+// ----
+    
 }
 
 
