@@ -587,6 +587,24 @@
     
 }
 
+- (void)getVersionForDevice:(DeviceInfo *)deviceInfo {
+    
+    ISktScanObject*scanObj=[SktClassFactory createScanObject];
+    
+    [[scanObj Property] setID:kSktScanPropIdVersionDevice];
+    [[scanObj Property] setType:kSktScanPropTypeNone];
+    
+    CommandContext *command = [[CommandContext alloc] initWithParam:YES
+                                                            ScanObj:scanObj
+                                                         ScanDevice:[deviceInfo getSktScanDevice]
+                                                             Device:deviceInfo
+                                                             Target:self
+                                                           Response:@selector(onGetVersion:)];
+    
+    [self.iOSScanHelper addCommand:command];
+    
+}
+
 
 
 #pragma mark ScanApiHelperDelegate
@@ -604,6 +622,7 @@
     
     [self setBatteryLevelNotificationForDevice:deviceInfo];
     [self setPowerButtonPressNotificationForDevice:deviceInfo];
+    [self getVersionForDevice:deviceInfo];
     
     [self.delegate deviceArrivalForBarCodeScanner:self];
     
@@ -630,6 +649,10 @@
 
     }
 
+}
+
+- (void)onError:(SKTRESULT)result {
+    NSLog(@"error: %ld", result);
 }
 
 - (void)onSetBatteryLevelNotification:(id)sender {
@@ -672,6 +695,43 @@
 
 }
 
+- (void)onGetVersion:(id)sender {
+    
+    NSLog(@"onGetVersion sender %@", sender);
+    
+    if ([sender isKindOfClass:[ISktScanObject class]]) {
+        
+        ISktScanObject *scanObj = (ISktScanObject *)sender;
+        
+        SKTRESULT result = [[scanObj Msg] Result];
+        
+        if (SKTSUCCESS(result)) {
+            
+            NSLog(@"getVersion SUCCESS");
+            
+            ISktScanProperty *property = [scanObj Property];
+            
+            if ([property getType] == kSktScanPropTypeVersion) {
+                
+                NSLog(@"Version %@", [NSString stringWithFormat:@"%lx.%lx.%lx.%ld",
+                                                [[property Version] getMajor],
+                                                [[property Version] getMiddle],
+                                                [[property Version] getMinor],
+                                                [[property Version] getBuild]]
+                      );
+                
+            }
+
+            
+        } else {
+            
+            NSLog(@"getVersion NOT SUCCESS");
+            
+        }
+        
+    }
+
+}
 
 
 @end
