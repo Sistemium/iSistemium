@@ -43,8 +43,7 @@ class STMDebtsPVC_iPhone: STMDebtsDetailsPVC, UIPopoverPresentationControllerDel
                     setCahshingSumButton.title = NSLocalizedString("CASHING SUMM", comment: "") + ":"
                     summLabel.text = numberFormatter().stringFromNumber(limit)!
                 }else{
-                    setCahshingSumButton.title = NSLocalizedString("CASHING SUMM", comment: "") + ":"
-                    summLabel.text = NSLocalizedString("NO", comment: "")
+                    setCahshingSumButton.title = NSLocalizedString("CASHING SUMM", comment: "")
                 }
                 summLabel.sizeToFit()
                 if summLabel.frame.size.width>UIScreen.mainScreen().bounds.width - (self.setCahshingSumButton.valueForKey("view") as! UIView).frame.width - 15{
@@ -76,9 +75,9 @@ class STMDebtsPVC_iPhone: STMDebtsDetailsPVC, UIPopoverPresentationControllerDel
                 self.setToolbarItems([flexibleSpace,UIBarButtonItem(customView: summLabel),flexibleSpace],animated: false)
                 let summ = STMCashingProcessController.sharedInstance().debtsSumm()
                 let limit = STMCashingProcessController.sharedInstance().cashingSummLimit
-                let numberFormatter = STMFunctions.currencyFormatter
-                let sumString = numberFormatter().stringFromNumber(summ)!
-                let limitString = numberFormatter().stringFromNumber(limit)
+                let numberFormatter = STMFunctions.decimalMaxTwoMinTwoDigitFormatter()
+                let sumString = numberFormatter.stringFromNumber(summ)!
+                let limitString = numberFormatter.stringFromNumber(limit)
                 summLabel.text = String(format: NSLocalizedString("RECEIVE2",comment: ""), arguments: [sumString]) + " " + limitString!
                 summLabel.sizeToFit()
                 if summLabel.frame.size.width>UIScreen.mainScreen().bounds.width - 15{

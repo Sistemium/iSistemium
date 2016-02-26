@@ -27,6 +27,7 @@ class STMOutletDebtsTVC_iPhone: STMOutletDebtsTVC {
         super.viewDidLoad()
         tableView.rowHeight = UITableViewAutomaticDimension
         tableView.estimatedRowHeight = 100
+        tableView.registerNib(UINib(nibName: "STMThreeLinesAndCheckboxTVCell", bundle: nil), forCellReuseIdentifier: "debtDetailsCell")
     }
     
     override func showLongPressActionSheetFromView(view:UIView) {
@@ -48,13 +49,13 @@ class STMOutletDebtsTVC_iPhone: STMOutletDebtsTVC {
     }
     
     override func textLabelForDebt(debt: STMDebt!, withFont font: UIFont!) -> NSMutableAttributedString! {
+        var backgroundColor :UIColor
+        var textColor :UIColor
+        var attributes: NSDictionary
+        let text = NSMutableAttributedString()
         let numberFormatter = STMFunctions.currencyFormatter
         let debtSumString = numberFormatter().stringFromNumber(debt.calculatedSum)
-        if debtSumString != nil {
-            var backgroundColor :UIColor
-            var textColor :UIColor
-            var attributes: NSDictionary
-            let text = NSMutableAttributedString()
+        if debtSumString != nil{
             backgroundColor = UIColor.clearColor()
             textColor = UIColor.blackColor()
             attributes = [
@@ -62,48 +63,58 @@ class STMOutletDebtsTVC_iPhone: STMOutletDebtsTVC {
                 NSBackgroundColorAttributeName: backgroundColor,
                 NSForegroundColorAttributeName: textColor
             ]
-            text.appendAttributedString(NSAttributedString(string: debt.ndoc + " ",attributes:attributes as? [String : AnyObject]))
-            if debt.date != nil {
-                let dateFormatter = STMFunctions.dateMediumNoTimeFormatter
-                let debtDate = dateFormatter().stringFromDate(debt.date)
-                backgroundColor = UIColor.clearColor()
-                textColor = UIColor.blackColor()
-                attributes = [
-                    NSFontAttributeName: font,
-                    NSBackgroundColorAttributeName: backgroundColor,
-                    NSForegroundColorAttributeName: textColor
-                ]
-                text.appendAttributedString(NSAttributedString(string: NSLocalizedString("OF", comment: "") + " " + debtDate, attributes: attributes as? [String : AnyObject]))
-            }
+            text.appendAttributedString(NSAttributedString(string: debtSumString! + " ", attributes: attributes as? [String : AnyObject]))
+        }
+        if debt.ndoc != nil{
+            backgroundColor = UIColor.clearColor()
+            textColor = UIColor.blackColor()
             attributes = [
                 NSFontAttributeName: font,
                 NSBackgroundColorAttributeName: backgroundColor,
                 NSForegroundColorAttributeName: textColor
             ]
-            text.appendAttributedString(NSAttributedString(string: "\n" + NSLocalizedString("BY SUMM", comment: "").uppercaseFirst + " " + debtSumString!))
-            return text
-        }else{
-            return nil
+            text.appendAttributedString(NSAttributedString(string: NSLocalizedString("FOR", comment: "") + " " + debt.ndoc ,attributes:attributes as? [String : AnyObject]))
         }
+        return text
     }
     
-    override func detailTextLabelForDebt(debt: STMDebt!, var withFont font: UIFont!) -> NSMutableAttributedString! {
+    override func detailTextLabelForDebt(debt: STMDebt!, withFont font: UIFont!) -> NSMutableAttributedString! {
         var backgroundColor :UIColor
         var textColor :UIColor
         var attributes: NSDictionary
         let text = NSMutableAttributedString()
-        if debt.responsibility != nil {
-            backgroundColor = UIColor.grayColor()
-            textColor = UIColor.whiteColor()
+        let numberFormatter = STMFunctions.currencyFormatter
+        let debtSumOriginString = numberFormatter().stringFromNumber(debt.summOrigin)
+        if debtSumOriginString != nil {
+            backgroundColor = UIColor.clearColor()
+            textColor = UIColor.blackColor()
             attributes = [
                 NSFontAttributeName: font,
                 NSBackgroundColorAttributeName: backgroundColor,
                 NSForegroundColorAttributeName: textColor
             ]
-            let responsibilityString = NSString(format: "%@", debt.responsibility)
-            text.appendAttributedString(NSAttributedString(string:responsibilityString as String, attributes:attributes as? [String : AnyObject]))
-            text.appendAttributedString(NSAttributedString(string: " "))
+            text.appendAttributedString(NSAttributedString(string: NSLocalizedString("BY SUMM", comment: "").uppercaseFirst + " " + debtSumOriginString! + " ", attributes: attributes as? [String : AnyObject]))
         }
+        if debt.date != nil {
+            let dateFormatter = STMFunctions.dateMediumNoTimeFormatter
+            let debtDate = dateFormatter().stringFromDate(debt.date)
+            backgroundColor = UIColor.clearColor()
+            textColor = UIColor.blackColor()
+            attributes = [
+                NSFontAttributeName: font,
+                NSBackgroundColorAttributeName: backgroundColor,
+                NSForegroundColorAttributeName: textColor
+            ]
+            text.appendAttributedString(NSAttributedString(string: NSLocalizedString("OF", comment: "") + " " + debtDate, attributes: attributes as? [String : AnyObject]))
+        }
+        return text
+    }
+    
+    func messageTextLabelForDebt(debt: STMDebt!, var withFont font: UIFont!) -> NSMutableAttributedString! {
+        var backgroundColor :UIColor
+        var textColor :UIColor
+        var attributes: NSDictionary
+        let text = NSMutableAttributedString()
         if debt.dateE != nil{
             backgroundColor = UIColor.clearColor()
             textColor = UIColor.blackColor()
@@ -152,45 +163,57 @@ class STMOutletDebtsTVC_iPhone: STMOutletDebtsTVC {
             let commentString = NSString(format:"(%@)", debt.commentText)
             text.appendAttributedString(NSAttributedString(string: commentString as String, attributes:attributes as? [String : AnyObject]))
         }
+        if debt.responsibility != nil {
+            backgroundColor = UIColor.grayColor()
+            textColor = UIColor.whiteColor()
+            attributes = [
+                NSFontAttributeName: font,
+                NSBackgroundColorAttributeName: backgroundColor,
+                NSForegroundColorAttributeName: textColor
+            ]
+            let responsibilityString = NSString(format: "%@", debt.responsibility)
+            text.appendAttributedString(NSAttributedString(string:responsibilityString as String, attributes:attributes as? [String : AnyObject]))
+            text.appendAttributedString(NSAttributedString(string: " "))
+        }
         return text
     }
     
     override func tableView(tableView: UITableView, willDisplayCell cell: UITableViewCell, forRowAtIndexPath indexPath: NSIndexPath) {
+        let customCell = cell as! STMThreeLinesAndCheckboxTVCell
         let debt = self.resultsController.objectAtIndexPath(indexPath)
-        cell.contentView.viewWithTag(1)?.removeFromSuperview()
-        cell.tintColor = STMConstants.ACTIVE_BLUE_COLOR
-        cell.accessoryType = .None
-        cell.textLabel!.backgroundColor = UIColor.clearColor()
-        cell.detailTextLabel!.backgroundColor = UIColor.clearColor()
+        customCell.contentView.viewWithTag(1)?.removeFromSuperview()
+        customCell.tintColor = STMConstants.ACTIVE_BLUE_COLOR
+        customCell.accessoryType = .None
+        customCell.titleLabel!.backgroundColor = UIColor.clearColor()
+        customCell.detailLabel!.backgroundColor = UIColor.clearColor()
+        customCell.checkboxView.viewWithTag(444)?.removeFromSuperview()
         if STMCashingProcessController.sharedInstance().state == .Running {
             var fillWidth: CGFloat = 0
             if debt.xid != nil && STMCashingProcessController.sharedInstance().debtsDictionary.allKeys.contains({$0 as? NSObject == debt.xid}) {
                 let cashingSum = STMCashingProcessController.sharedInstance().debtsDictionary[debt.xid!!]![1]
                 fillWidth = CGFloat(cashingSum.decimalNumberByDividingBy(debt.calculatedSum).doubleValue)
-                cell.accessoryView = nil
-                cell.accessoryType = .DetailButton
-                cell.imageView?.image = UIImage(named: "checkmark_filled")
-                let itemSize:CGSize = CGSizeMake(10, 10)
-                UIGraphicsBeginImageContextWithOptions(itemSize, false, UIScreen.mainScreen().scale)
-                let imageRect : CGRect = CGRectMake(0, 0, itemSize.width , itemSize.height )
-                cell.imageView!.image?.drawInRect(imageRect)
-                cell.imageView!.image = UIGraphicsGetImageFromCurrentImageContext()
-                UIGraphicsEndImageContext()
+                customCell.accessoryType = .DetailButton
+                let checkLabel = STMLabel(frame: customCell.checkboxView.bounds)
+                checkLabel.adjustsFontSizeToFitWidth = true
+                checkLabel.text = "✓"
+                checkLabel.textColor = STMConstants.ACTIVE_BLUE_COLOR
+                checkLabel.textAlignment = .Left
+                checkLabel.tag = 444
+                customCell.checkboxView.addSubview(checkLabel)
             } else {
-                cell.accessoryView = UIView(frame: CGRectMake(0, 0, 35, 35))
-                cell.accessoryType = .None
+                customCell.accessoryType = .None
             }
             if (fillWidth != 0) {
-                fillWidth *= cell.frame.size.width
+                fillWidth *= customCell.frame.size.width
                 if (fillWidth < 10) {
                     fillWidth = 10
                 }
-                let rect = CGRectMake(0, 1, fillWidth, cell.frame.size.height-2)
+                let rect = CGRectMake(0, 1, fillWidth, customCell.frame.size.height-2)
                 let view = UIView(frame:rect)
                 view.backgroundColor = STMConstants.STM_SUPERLIGHT_BLUE_COLOR
                 view.tag = 1
-                cell.contentView.addSubview(view)
-                cell.contentView.sendSubviewToBack(view)
+                customCell.contentView.addSubview(view)
+                customCell.contentView.sendSubviewToBack(view)
             }
         }
         
@@ -198,27 +221,16 @@ class STMOutletDebtsTVC_iPhone: STMOutletDebtsTVC {
     
     
     override func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCellWithIdentifier("debtDetailsCell",forIndexPath:indexPath)
+        let cell = tableView.dequeueReusableCellWithIdentifier("debtDetailsCell",forIndexPath:indexPath) as! STMThreeLinesAndCheckboxTVCell
         let debt = self.resultsController.objectAtIndexPath(indexPath)
-        cell.textLabel!.attributedText = self.textLabelForDebt(debt as! STMDebt, withFont:cell.textLabel!.font)
-        cell.detailTextLabel!.attributedText = self.detailTextLabelForDebt(debt as! STMDebt, withFont:cell.detailTextLabel!.font)
+        cell.titleLabel?.attributedText = self.textLabelForDebt(debt as! STMDebt, withFont:cell.titleLabel!.font)
+        cell.detailLabel?.attributedText = self.detailTextLabelForDebt(debt as! STMDebt, withFont:cell.detailLabel!.font)
+        cell.messageLabel?.attributedText = self.messageTextLabelForDebt(debt as! STMDebt, withFont:cell.detailLabel!.font)
         cell.selectionStyle = .None
         self.addLongPressToCell(cell)
-        cell.textLabel?.numberOfLines = 2
-        cell.textLabel?.adjustsFontSizeToFitWidth = true
-        cell.detailTextLabel?.adjustsFontSizeToFitWidth = true
-//        cell.textLabel?.lineBreakMode = .ByWordWrapping
-//        cell.detailTextLabel?.numberOfLines = 2
-//        cell.detailTextLabel?.lineBreakMode = .ByWordWrapping
+        cell.titleLabel?.adjustsFontSizeToFitWidth = true
+        cell.detailLabel?.adjustsFontSizeToFitWidth = true
         
-        let itemSize:CGSize = CGSizeMake(10, 10)
-        UIGraphicsBeginImageContextWithOptions(itemSize, false, UIScreen.mainScreen().scale)
-        let imageRect : CGRect = CGRectMake(0, 0, itemSize.width, itemSize.height)
-        cell.imageView!.image?.drawInRect(imageRect)
-        cell.imageView!.image = UIGraphicsGetImageFromCurrentImageContext()
-        UIGraphicsEndImageContext()
-        
-        cell.accessoryView = UIView(frame: CGRectMake(0, 0, 35, 35))
         return cell
     }
     

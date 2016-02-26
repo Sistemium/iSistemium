@@ -493,6 +493,8 @@
 		2CFF9A901A67F2ED002B6392 /* STMObjectsController.m in Sources */ = {isa = PBXBuildFile; fileRef = 2CFF9A8F1A67F2ED002B6392 /* STMObjectsController.m */; };
 		6D0B03291C7B3BDA009061B8 /* STMOutletCashingVC_iPhone.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6D0B03281C7B3BDA009061B8 /* STMOutletCashingVC_iPhone.swift */; };
 		6D0B032B1C7B50C4009061B8 /* STMCashingControlsVC_iPhone.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6D0B032A1C7B50C4009061B8 /* STMCashingControlsVC_iPhone.swift */; };
+		6D0B03311C7F2DFB009061B8 /* STMThreeLinesAndCheckboxTVCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 6D0B03301C7F2DFB009061B8 /* STMThreeLinesAndCheckboxTVCell.xib */; };
+		6D0B03331C7F3618009061B8 /* STMThreeLinesAndCheckboxTVCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6D0B03321C7F3618009061B8 /* STMThreeLinesAndCheckboxTVCell.swift */; };
 		6D720E641C5134CA008BC9F7 /* STMDebts_iphone.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 6D720E631C5134CA008BC9F7 /* STMDebts_iphone.storyboard */; };
 		6D720E681C5235AB008BC9F7 /* STMUncashing_iphone.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 6D720E671C5235AB008BC9F7 /* STMUncashing_iphone.storyboard */; };
 		6D814A9E1C490362001B56A3 /* STMSwiftConstants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6D814A9D1C490362001B56A3 /* STMSwiftConstants.swift */; };
@@ -1442,6 +1444,8 @@
 		2CFF9A8F1A67F2ED002B6392 /* STMObjectsController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; path = STMObjectsController.m; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
 		6D0B03281C7B3BDA009061B8 /* STMOutletCashingVC_iPhone.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = STMOutletCashingVC_iPhone.swift; sourceTree = "<group>"; };
 		6D0B032A1C7B50C4009061B8 /* STMCashingControlsVC_iPhone.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = STMCashingControlsVC_iPhone.swift; sourceTree = "<group>"; };
+		6D0B03301C7F2DFB009061B8 /* STMThreeLinesAndCheckboxTVCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = STMThreeLinesAndCheckboxTVCell.xib; sourceTree = "<group>"; };
+		6D0B03321C7F3618009061B8 /* STMThreeLinesAndCheckboxTVCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = STMThreeLinesAndCheckboxTVCell.swift; sourceTree = "<group>"; };
 		6D720E631C5134CA008BC9F7 /* STMDebts_iphone.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = STMDebts_iphone.storyboard; sourceTree = "<group>"; };
 		6D720E671C5235AB008BC9F7 /* STMUncashing_iphone.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = STMUncashing_iphone.storyboard; sourceTree = "<group>"; };
 		6D814A9C1C480898001B56A3 /* STMPicturesViewerDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = STMPicturesViewerDelegate.h; sourceTree = "<group>"; };
@@ -1712,6 +1716,7 @@
 				2CC194461BDFAD35001F8E48 /* STMCustom1CVHeader.xib */,
 				2CAFB25A1C2EBEEE00BBEDC1 /* STMArticleBarcodes.storyboard */,
 				2CC1943C1BDF7227001F8E48 /* STMCustom1CVCell.xib */,
+				6D0B03301C7F2DFB009061B8 /* STMThreeLinesAndCheckboxTVCell.xib */,
 			);
 			path = STMCustomCells;
 			sourceTree = "<group>";
@@ -2292,6 +2297,7 @@
 				2CC1943F1BDF7340001F8E48 /* STMCustom1CVCell.m */,
 				2CC194431BDFA181001F8E48 /* STMCustom1CVHeader.h */,
 				2CC194441BDFA181001F8E48 /* STMCustom1CVHeader.m */,
+				6D0B03321C7F3618009061B8 /* STMThreeLinesAndCheckboxTVCell.swift */,
 			);
 			path = STMCustomTVCells;
 			sourceTree = "<group>";
@@ -2855,6 +2861,7 @@
 				2C5764541AAA096000B9FD2C /* STMOrders.storyboard in Resources */,
 				2CF1265E1B78EC390059701F /* STMCustom9TVCell.xib in Resources */,
 				2CBD25A719656CBC001613A7 /* STMCameraOverlayView.xib in Resources */,
+				6D0B03311C7F2DFB009061B8 /* STMThreeLinesAndCheckboxTVCell.xib in Resources */,
 				2CC1945D1BE272F8001F8E48 /* STMCustom10TVCell.xib in Resources */,
 				2CEE30511BECEE78009B229F /* STMBarCodeScan_iphone.storyboard in Resources */,
 				2C5764561AAA0A7D00B9FD2C /* bill-128.png in Resources */,
@@ -3248,6 +3255,7 @@
 				2CEE30161BEBAD10009B229F /* STMCashing.m in Sources */,
 				6DEB6C811C5792D6009BBE91 /* STMOutletsTVC_iPhone.swift in Sources */,
 				2CC194601BE2731F001F8E48 /* STMCustom10TVCell.m in Sources */,
+				6D0B03331C7F3618009061B8 /* STMThreeLinesAndCheckboxTVCell.swift in Sources */,
 				2CEE300F1BEBAD10009B229F /* STMBasketPosition+CoreDataProperties.m in Sources */,
 				2CEE30311BEBAD10009B229F /* STMPriceType.m in Sources */,
 				2C646F5F1BCE69C00099F034 /* SocketAckManager.swift in Sources */,
