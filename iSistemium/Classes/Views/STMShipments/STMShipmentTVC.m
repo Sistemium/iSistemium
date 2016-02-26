@@ -1219,10 +1219,6 @@
 
 - (void)viewWillAppear:(BOOL)animated {
     
-    if ([self.navigationController respondsToSelector:@selector(interactivePopGestureRecognizer)]) {
-        self.navigationController.interactivePopGestureRecognizer.enabled = NO;
-    }
-    
     if ([self isMovingToParentViewController]) {
         self.cachedCellsHeights = nil;
     }
@@ -1234,10 +1230,6 @@
 }
 
 - (void)viewWillDisappear:(BOOL)animated {
-
-    if ([self.navigationController respondsToSelector:@selector(interactivePopGestureRecognizer)]) {
-        self.navigationController.interactivePopGestureRecognizer.enabled = YES;
-    }
 
     if ([self isMovingFromParentViewController]) {
         
