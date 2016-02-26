@@ -55,7 +55,7 @@
 
 
 - (STMSupplyOrdersNC *)rootNC {
-
+    
     if (!_rootNC) {
         
         if ([self.navigationController isKindOfClass:[STMSupplyOrdersNC class]]) {
@@ -87,7 +87,7 @@
     
     [self setupToolbar];
     [self performFetch];
-
+    
 }
 
 - (void)setRepeatLastOperation:(BOOL)repeatLastOperation {
@@ -123,7 +123,7 @@
 - (NSString *)supplyOrderWorkflow {
     
     if (!_supplyOrderWorkflow) {
-    
+        
         if (IPAD) return self.splitVC.supplyOrderWorkflow;
         if (IPHONE) return self.rootNC.supplyOrderWorkflow;
         
@@ -181,20 +181,6 @@
     
 }
 
-- (BOOL)isInActiveTab {
-    
-    if (IPHONE) {
-        return [self.tabBarController.selectedViewController isEqual:self.navigationController];
-    }
-    
-    if (IPAD) {
-        return [self.tabBarController.selectedViewController isEqual:self.splitViewController];
-    }
-    
-    return NO;
-    
-}
-
 
 #pragma mark - table view data
 
@@ -206,9 +192,9 @@
     
     switch (section) {
         case 0:
-            return (self.supplyOrderArticleDoc.article) ? 2 : 1;
+            return 2;
             break;
-
+            
         case 1:
             if (self.resultsController.fetchedObjects.count > 0) {
                 return [super tableView:tableView numberOfRowsInSection:section-1];
@@ -216,7 +202,7 @@
                 return 1;
             }
             break;
-
+            
         default:
             return 0;
             break;
@@ -225,16 +211,16 @@
 }
 
 - (NSString *)tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section {
-
+    
     switch (section) {
         case 0:
             return NSLocalizedString(@"ARTICLE", nil);
             break;
-
+            
         case 1:
             return NSLocalizedString(@"OPERATIONS", nil);
             break;
-
+            
         default:
             return nil;
             break;
@@ -244,18 +230,18 @@
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
-
+    
     STMTableViewSubtitleStyleCell *cell = [tableView dequeueReusableCellWithIdentifier:self.cellIdentifier forIndexPath:indexPath];
     
     switch (indexPath.section) {
         case 0:
             [self fillArticleCell:cell atIndexPath:indexPath];
             break;
-
+            
         case 1:
             [self fillOperationCell:cell atIndexPath:indexPath];
             break;
-
+            
         default:
             break;
     }
@@ -272,7 +258,7 @@
             break;
             
         case 1:
-            [self fillRemainingCell:cell];
+            (self.supplyOrderArticleDoc.article) ? [self fillRemainingCell:cell] : [self fillArticleDocNameCell:cell];
             break;
             
         default:
@@ -282,46 +268,88 @@
 }
 
 - (void)fillArticleCell:(STMTableViewSubtitleStyleCell *)cell {
-
+    
     cell.textLabel.numberOfLines = 0;
     
     if (self.supplyOrderArticleDoc.article) {
-     
+        
         cell.textLabel.textColor = [UIColor blackColor];
+        CGFloat fontSize = cell.textLabel.font.pointSize;
+        
+        NSDictionary *attributes = @{NSFontAttributeName: [UIFont systemFontOfSize:fontSize],
+                                     NSForegroundColorAttributeName:[UIColor blackColor]};
+        
+        
+        NSMutableAttributedString *articleProperties = [[NSMutableAttributedString alloc] initWithString:@"" attributes:attributes];
         
         if (self.supplyOrderArticleDoc.code) {
-            cell.textLabel.text = [NSString stringWithFormat:@"%@\n%@", self.supplyOrderArticleDoc.code, self.supplyOrderArticleDoc.article.name];
-        } else {
-            cell.textLabel.text = [NSString stringWithFormat:@"%@", self.supplyOrderArticleDoc.article.name];
-        }
-        
-        NSMutableArray *detailTexts = @[].mutableCopy;
-        
-        if (self.supplyOrderArticleDoc.articleDoc.dateProduction) {
             
-            NSString *dateProduction = [[STMFunctions dateShortNoTimeFormatter] stringFromDate:(NSDate * _Nonnull)self.supplyOrderArticleDoc.articleDoc.dateProduction];
-            dateProduction = [NSString stringWithFormat:@"%@: %@", NSLocalizedString(@"DATE PRODUCTION", nil), dateProduction];
-            
-            [detailTexts addObject:dateProduction];
+            NSString *appendedString = [NSString stringWithFormat:@"%@\n", self.supplyOrderArticleDoc.code];
+            [articleProperties appendAttributedString:[[NSAttributedString alloc] initWithString:appendedString
+                                                                                      attributes:attributes]];
             
         }
+        
+        if (self.supplyOrderArticleDoc.article.name) {
+            
+            NSString *appendedString = [NSString stringWithFormat:@"%@\n", self.supplyOrderArticleDoc.article.name];
+            [articleProperties appendAttributedString:[[NSAttributedString alloc] initWithString:appendedString
+                                                                                      attributes:attributes]];
+            
+        }
+        
+        [articleProperties appendAttributedString:[self.supplyOrderArticleDoc operatingPackageRelStringWithFontSize:fontSize]];
+        
+        cell.textLabel.attributedText = articleProperties;
+        
         
         if (self.supplyOrderArticleDoc.articleDoc.dateImport) {
             
             NSString *dateImport = [[STMFunctions dateShortNoTimeFormatter] stringFromDate:(NSDate * _Nonnull)self.supplyOrderArticleDoc.articleDoc.dateImport];
             dateImport = [NSString stringWithFormat:@"%@: %@", NSLocalizedString(@"DATE IMPORT", nil), dateImport];
-            [detailTexts addObject:dateImport];
+            
+            cell.detailTextLabel.text = dateImport;
+            
+        } else if (self.supplyOrderArticleDoc.articleDoc.dateProduction) {
+            
+            NSString *dateProduction = [[STMFunctions dateShortNoTimeFormatter] stringFromDate:(NSDate * _Nonnull)self.supplyOrderArticleDoc.articleDoc.dateProduction];
+            dateProduction = [NSString stringWithFormat:@"%@: %@", NSLocalizedString(@"DATE PRODUCTION", nil), dateProduction];
+            
+            cell.detailTextLabel.text = dateProduction;
+            
+        } else {
+            
+            cell.detailTextLabel.text = @"";
             
         }
-        
-        cell.detailTextLabel.text  = [detailTexts componentsJoinedByString:@" / "];
         
     } else {
         
         cell.textLabel.textColor = [UIColor redColor];
         cell.textLabel.text = ([self orderIsProcessed]) ? NSLocalizedString(@"CONFIRM ARTICLE FOR START", nil) : NSLocalizedString(@"START SUPPLY PROCESS", nil);
-
+        
     }
+    
+}
+
+- (void)fillArticleDocNameCell:(STMTableViewSubtitleStyleCell *)cell {
+    
+    cell.textLabel.textColor = [UIColor blackColor];
+    CGFloat fontSize = cell.textLabel.font.pointSize;
+    
+    NSDictionary *attributes = @{NSFontAttributeName: [UIFont systemFontOfSize:fontSize],
+                                 NSForegroundColorAttributeName:[UIColor blackColor]};
+    
+    NSString *articleDocName = (self.supplyOrderArticleDoc.articleDoc.article.name) ? self.supplyOrderArticleDoc.articleDoc.article.name : NSLocalizedString(@"UNKNOWN ARTICLE", nil);
+    
+    articleDocName = [articleDocName stringByAppendingString:@"\n"];
+    
+    NSMutableAttributedString *articleDocString = [[NSMutableAttributedString alloc] initWithString:articleDocName attributes:attributes];
+    
+    [articleDocString appendAttributedString:[self.supplyOrderArticleDoc operatingPackageRelStringWithFontSize:fontSize]];
+    
+    cell.textLabel.attributedText = articleDocString;
+    cell.textLabel.numberOfLines = 0;
     
 }
 
@@ -329,13 +357,13 @@
     
     self.remainingVolume = [self.supplyOrderArticleDoc volumeRemainingToSupply];
     
-    NSString *title = [NSString stringWithFormat:@"%@: %@", NSLocalizedString(@"REMAIN TO SUPPLY", nil), [STMFunctions volumeStringWithVolume:self.remainingVolume andPackageRel:[self.supplyOrderArticleDoc operatingArticle].packageRel.integerValue]];
-
+    NSString *title = [NSString stringWithFormat:@"%@: %@", NSLocalizedString(@"REMAIN TO SUPPLY", nil), [STMFunctions volumeStringWithVolume:self.remainingVolume andPackageRel:[self.supplyOrderArticleDoc operatingPackageRel].integerValue]];
+    
     cell.textLabel.textColor = [UIColor blackColor];
     cell.textLabel.text = title;
-
+    
     cell.detailTextLabel.text = @"";
-
+    
 }
 
 - (void)fillOperationCell:(STMTableViewSubtitleStyleCell *)cell atIndexPath:(NSIndexPath *)indexPath {
@@ -345,7 +373,7 @@
     if (self.resultsController.fetchedObjects.count > 0) {
         
         cell.textLabel.textColor = [UIColor blackColor];
-
+        
         STMStockBatchOperation *operation = [self.resultsController objectAtIndexPath:indexPath];
         
         if (operation.deviceCts) cell.textLabel.text = [[STMFunctions dateShortTimeShortFormatter] stringFromDate:(NSDate * _Nonnull)operation.deviceCts];
@@ -371,7 +399,7 @@
         }
         
         NSString *volumeString = [STMFunctions volumeStringWithVolume:operation.volume.integerValue
-                                                        andPackageRel:[self.supplyOrderArticleDoc operatingArticle].packageRel.integerValue];
+                                                        andPackageRel:[self.supplyOrderArticleDoc operatingPackageRel].integerValue];
         
         STMLabel *volumeLabel = [[STMLabel alloc] initWithFrame:CGRectMake(0, 0, 46, 21)];
         volumeLabel.text = volumeString;
@@ -386,35 +414,39 @@
         cell.textLabel.text = (self.supplyOrderArticleDoc.article) ? NSLocalizedString(@"SCAN STOCK BATCH CODE", nil) : @"";
         
     }
-
+    
 }
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     
     if ([self orderIsProcessed]) {
-     
+        
         if (indexPath.section == 0) {
             
-            if (self.supplyOrderArticleDoc.article) {
-                
-                if (self.supplyOrderArticleDoc.sourceOperations.count > 0) {
-
-                    NSLog(@"should delete all operations before changing article");
-                    [self showIllegalArticleChangeAlert];
-                    
-                } else {
-                    [self showArticleSelectionWithArticles:nil];
-                }
-
-            }
+            
+            //            [self performSegueWithIdentifier:@"showSupplyOperation" sender:nil];
+            
+            
+            //            if (self.supplyOrderArticleDoc.article) {
+            //
+            //                if (self.supplyOrderArticleDoc.sourceOperations.count > 0) {
+            //
+            //                    NSLog(@"should delete all operations before changing article");
+            //                    [self showIllegalArticleChangeAlert];
+            //
+            //                } else {
+            //                    [self showArticleSelectionWithArticles:nil];
+            //                }
+            //
+            //            }
             
         } else if (indexPath.section == 1) {
             
             if (self.resultsController.fetchedObjects.count > 0) {
-
+                
                 indexPath = [NSIndexPath indexPathForRow:indexPath.row inSection:indexPath.section-1];
                 [self performSegueWithIdentifier:@"showSupplyOperation" sender:indexPath];
-
+                
             }
             
         }
@@ -442,7 +474,7 @@
     if (editingStyle == UITableViewCellEditingStyleDelete) {
         
         indexPath = [NSIndexPath indexPathForRow:indexPath.row inSection:indexPath.section-1];
-
+        
         STMStockBatchOperation *operation = [self.resultsController objectAtIndexPath:indexPath];
         [STMSupplyOrdersProcessController removeOperation:operation];
         
@@ -519,44 +551,81 @@
         
     } else {
         
-        NSArray *articles = [STMBarCodeController articlesForBarcode:barcode];
+        STMArticle *article = self.supplyOrderArticleDoc.articleDoc.article;
         
-        if (articles.count > 0) {
-    
-            self.articleBarCode = barcode;
-
-            if (articles.count == 1) {
+        NSSet *barcodes = [article.barCodes valueForKeyPath:@"@distinctUnionOfObjects.code"];
+        
+        if (barcodes.count > 0) {
+            
+            if ([barcodes containsObject:barcode]) {
                 
-                STMArticle *article = articles.firstObject;
+                self.articleBarCode = barcode;
                 [self confirmArticle:article];
                 
             } else {
                 
-                [self showArticleSelectionWithArticles:articles];
+                [STMSoundController playAlert];
+                
+                [[NSOperationQueue mainQueue] addOperationWithBlock:^{
+                    
+                    UIAlertView *alert = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"ERROR", nil)
+                                                                    message:NSLocalizedString(@"THIS ARTICLE HAVE ANOTHER BARCODES", nil)
+                                                                   delegate:nil
+                                                          cancelButtonTitle:NSLocalizedString(@"CANCEL", nil)
+                                                          otherButtonTitles:nil];
+                    [alert show];
+                    
+                }];
                 
             }
             
         } else {
             
-            [STMSoundController alertSay:NSLocalizedString(@"UNKNOWN BARCODE", nil)];
-//            [STMSoundController alertSay:NSLocalizedString(@"NO ARTICLES FOR THIS BARCODE", nil)];
-            
-            STMArticle *article = self.supplyOrderArticleDoc.articleDoc.article;
-            
-            if (article && article.barCodes.count == 0) {
-                
-                self.articleBarCode = barcode;
-//                [self confirmArticle:article];
-                [self showAddBarcodeAlertForBarcode:barcode andArticle:article];
-                
-            } else {
-                
-                [STMSoundController say:NSLocalizedString(@"MANUAL LINK BARCODE TO ARTICLE", nil)];
-                
-            }
+            self.articleBarCode = barcode;
+            [self showAddBarcodeAlertForBarcode:self.articleBarCode andArticle:article];
             
         }
-
+        
+        /* article bar codes with article selection
+         
+         NSArray *articles = [STMBarCodeController articlesForBarcode:barcode];
+         
+         if (articles.count > 0) {
+         
+         self.articleBarCode = barcode;
+         if (articles.count == 1) {
+         
+         STMArticle *article = articles.firstObject;
+         [self confirmArticle:article];
+         
+         } else {
+         
+         [self showArticleSelectionWithArticles:articles];
+         
+         }
+         
+         } else {
+         
+         [STMSoundController alertSay:NSLocalizedString(@"UNKNOWN BARCODE", nil)];
+         //            [STMSoundController alertSay:NSLocalizedString(@"NO ARTICLES FOR THIS BARCODE", nil)];
+         
+         STMArticle *article = self.supplyOrderArticleDoc.articleDoc.article;
+         
+         if (article && article.barCodes.count == 0) {
+         
+         self.articleBarCode = barcode;
+         //                [self confirmArticle:article];
+         [self showAddBarcodeAlertForBarcode:barcode andArticle:article];
+         
+         } else {
+         
+         [STMSoundController say:NSLocalizedString(@"MANUAL LINK BARCODE TO ARTICLE", nil)];
+         
+         }
+         
+         }
+         */
+        
     }
     
 }
@@ -572,7 +641,7 @@
     } else {
         
         if ([self.supplyOrderArticleDoc volumeRemainingToSupply] > 0) {
-        
+            
             if ([STMBarCodeController stockBatchForBarcode:barcode] || [self.stockBatchCodes containsObject:barcode]) {
                 
                 [STMSoundController alertSay:NSLocalizedString(@"THIS STOCK BATCH ALREADY EXIST", nil)];
@@ -590,7 +659,7 @@
                 }
                 
             }
-
+            
         } else {
             
             [STMSoundController alertSay:NSLocalizedString(@"SUPPLY POSITION COMPLETE", nil)];
@@ -628,7 +697,7 @@
         [self performSegueWithIdentifier:@"showSupplyOperation" sender:barcode];
         
     }
-
+    
 }
 
 - (void)repeatOperationComplete {
@@ -643,7 +712,7 @@
     self.stockBatchCodes = nil;
     
     [STMSoundController playOk];
-
+    
 }
 
 - (void)showRemainingBarcodesAlert {
@@ -672,93 +741,21 @@
         }
         
     }];
-
-}
-
-
-#pragma mark - article selection
-
-- (void)showArticleSelectionWithArticles:(NSArray *)articles {
-    
-    if (!self.articleBarCode) self.articleBarCode = self.supplyOrderArticleDoc.code;
-    
-    if (articles.count == 0) articles = [STMBarCodeController articlesForBarcode:self.articleBarCode];
-    
-    if (articles.count > 0) {
-        
-        STMArticleSelectionTVC *articleSelectionTVC = [[STMArticleSelectionTVC alloc] initWithStyle:UITableViewStyleGrouped];
-        articleSelectionTVC.articles = articles;
-        articleSelectionTVC.parentVC = self;
-        articleSelectionTVC.visibleArticle = [self.supplyOrderArticleDoc operatingArticle];
-        articleSelectionTVC.articleDocArticle = self.supplyOrderArticleDoc.articleDoc.article;
-        articleSelectionTVC.selectedArticle = self.supplyOrderArticleDoc.article;
-
-        if (IPAD) [self showArticleSelectionPopoverWithTVC:articleSelectionTVC];
-        if (IPHONE) [self showArticleSelectionTVC:articleSelectionTVC];
-        
-    }
-
-}
-
-- (void)showArticleSelectionTVC:(STMArticleSelectionTVC *)articleSelectionTVC {
-    [self.navigationController pushViewController:articleSelectionTVC animated:YES];
-}
-
-- (void)showArticleSelectionPopoverWithTVC:(STMArticleSelectionTVC *)articleSelectionTVC {
-
-    UINavigationController *nc = [[UINavigationController alloc] initWithRootViewController:articleSelectionTVC];
-    
-    self.articleSelectionPopover = [[UIPopoverController alloc] initWithContentViewController:nc];
-    self.articleSelectionPopover.popoverContentSize = CGSizeMake(POPOVER_SIZE, POPOVER_SIZE);
-    
-    CGRect rect = CGRectMake(self.splitVC.view.frame.size.width/2, self.splitVC.view.frame.size.height/2, 1, 1);
-    [self.articleSelectionPopover presentPopoverFromRect:rect inView:self.splitVC.view permittedArrowDirections:0 animated:YES];
-
-}
-
-- (void)dismissArticleSelectionPopover {
-    
-    [self.articleSelectionPopover dismissPopoverAnimated:YES];
-    self.articleSelectionPopover = nil;
     
 }
 
-- (void)showIllegalArticleChangeAlert {
+
+#pragma mark - barcode image
+
+- (void)addBarcodeImage {
     
-    [[NSOperationQueue mainQueue] addOperationWithBlock:^{
-        
-        NSString *alertMessage = NSLocalizedString(@"ILLEGAL ARTICLE CHANGE ATTEMPT", nil);
-        
-        if (!self.illegalArticleChangeAlert.isVisible) {
-            
-            self.illegalArticleChangeAlert = [[UIAlertView alloc] initWithTitle:@""
-                                                                     message:alertMessage
-                                                                    delegate:self
-                                                           cancelButtonTitle:NSLocalizedString(@"CLOSE", nil)
-                                                           otherButtonTitles:nil];
-            self.illegalArticleChangeAlert.tag = 334411;
-            
-            [self.illegalArticleChangeAlert show];
-            
-        }
-        
-    }];
-
-}
-
-
-#pragma mark - rotation
-
-- (void)didRotateFromInterfaceOrientation:(UIInterfaceOrientation)fromInterfaceOrientation {
+    UIImage *image = [STMFunctions resizeImage:[UIImage imageNamed:@"barcode.png"] toSize:CGSizeMake(25, 25)];
+    self.navigationItem.rightBarButtonItem = [[STMBarButtonItem alloc] initWithCustomView:[[UIImageView alloc] initWithImage:image]];
     
 }
 
-- (void)willRotateToInterfaceOrientation:(UIInterfaceOrientation)toInterfaceOrientation duration:(NSTimeInterval)duration {
-    
-    if (self.articleSelectionPopover.popoverVisible) {
-        [self dismissArticleSelectionPopover];
-    }
-    
+- (void)removeBarcodeImage {
+    self.navigationItem.rightBarButtonItem = nil;
 }
 
 
@@ -768,9 +765,13 @@
     return self.view;
 }
 
+- (void)barCodeScanner:(STMBarCodeScanner *)scanner receiveBarCodeScan:(STMBarCodeScan *)barCodeScan withType:(STMBarCodeScannedType)type {
+    
+}
+
 - (void)barCodeScanner:(STMBarCodeScanner *)scanner receiveBarCode:(NSString *)barcode withType:(STMBarCodeScannedType)type {
     
-    if ([self isInActiveTab]) {
+    if (self.isInActiveTab) {
         
         NSLog(@"barCodeScanner receiveBarCode: %@ withType:%d", barcode, type);
         
@@ -794,7 +795,7 @@
         }
         
     }
-
+    
 }
 
 - (void)barCodeScanner:(STMBarCodeScanner *)scanner receiveError:(NSError *)error {
@@ -824,22 +825,108 @@
 }
 
 
+#pragma mark - article selection
+
+- (void)showArticleSelectionWithArticles:(NSArray *)articles {
+    
+    if (!self.articleBarCode) self.articleBarCode = self.supplyOrderArticleDoc.code;
+    
+    if (articles.count == 0) articles = [STMBarCodeController articlesForBarcode:self.articleBarCode];
+    
+    if (articles.count > 0) {
+        
+        STMArticleSelectionTVC *articleSelectionTVC = [[STMArticleSelectionTVC alloc] initWithStyle:UITableViewStyleGrouped];
+        articleSelectionTVC.articles = articles;
+        articleSelectionTVC.parentVC = self;
+        articleSelectionTVC.visibleArticle = [self.supplyOrderArticleDoc operatingArticle];
+        articleSelectionTVC.articleDocArticle = self.supplyOrderArticleDoc.articleDoc.article;
+        articleSelectionTVC.selectedArticle = self.supplyOrderArticleDoc.article;
+        
+        if (IPAD) [self showArticleSelectionPopoverWithTVC:articleSelectionTVC];
+        if (IPHONE) [self showArticleSelectionTVC:articleSelectionTVC];
+        
+    }
+    
+}
+
+- (void)showArticleSelectionTVC:(STMArticleSelectionTVC *)articleSelectionTVC {
+    [self.navigationController pushViewController:articleSelectionTVC animated:YES];
+}
+
+- (void)showArticleSelectionPopoverWithTVC:(STMArticleSelectionTVC *)articleSelectionTVC {
+    
+    UINavigationController *nc = [[UINavigationController alloc] initWithRootViewController:articleSelectionTVC];
+    
+    self.articleSelectionPopover = [[UIPopoverController alloc] initWithContentViewController:nc];
+    self.articleSelectionPopover.popoverContentSize = CGSizeMake(POPOVER_SIZE, POPOVER_SIZE);
+    
+    CGRect rect = CGRectMake(self.splitVC.view.frame.size.width/2, self.splitVC.view.frame.size.height/2, 1, 1);
+    [self.articleSelectionPopover presentPopoverFromRect:rect inView:self.splitVC.view permittedArrowDirections:0 animated:YES];
+    
+}
+
+- (void)dismissArticleSelectionPopover {
+    
+    [self.articleSelectionPopover dismissPopoverAnimated:YES];
+    self.articleSelectionPopover = nil;
+    
+}
+
+- (void)showIllegalArticleChangeAlert {
+    
+    [[NSOperationQueue mainQueue] addOperationWithBlock:^{
+        
+        NSString *alertMessage = NSLocalizedString(@"ILLEGAL BARCODE CHANGE ATTEMPT", nil);
+        
+        if (!self.illegalArticleChangeAlert.isVisible) {
+            
+            self.illegalArticleChangeAlert = [[UIAlertView alloc] initWithTitle:@""
+                                                                        message:alertMessage
+                                                                       delegate:self
+                                                              cancelButtonTitle:NSLocalizedString(@"CLOSE", nil)
+                                                              otherButtonTitles:nil];
+            self.illegalArticleChangeAlert.tag = 334411;
+            
+            [self.illegalArticleChangeAlert show];
+            
+        }
+        
+    }];
+    
+}
+
+
+#pragma mark - rotation
+
+- (void)didRotateFromInterfaceOrientation:(UIInterfaceOrientation)fromInterfaceOrientation {
+    
+}
+
+- (void)willRotateToInterfaceOrientation:(UIInterfaceOrientation)toInterfaceOrientation duration:(NSTimeInterval)duration {
+    
+    if (self.articleSelectionPopover.popoverVisible) {
+        [self dismissArticleSelectionPopover];
+    }
+    
+}
+
+
 #pragma mark - Navigation
 
 - (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
-
+    
     if ([segue.identifier isEqualToString:@"showSupplyOperation"] &&
         [segue.destinationViewController isKindOfClass:[STMSupplyOperationVC class]]) {
-
+        
         self.operationVC = (STMSupplyOperationVC *)segue.destinationViewController;
         self.operationVC.supplyOrderArticleDoc = self.supplyOrderArticleDoc;
         self.operationVC.parentTVC = self;
-
+        
         if ([sender isKindOfClass:[NSString class]]) {
             
             NSString *barcode = (NSString *)sender;
             self.operationVC.initialBarcode = barcode;
-
+            
         } else if ([sender isKindOfClass:[NSIndexPath class]]) {
             
             NSIndexPath *indexPath = (NSIndexPath *)sender;
@@ -849,7 +936,7 @@
         }
         
     }
-
+    
 }
 
 
@@ -858,18 +945,6 @@
 - (void)setupToolbar {
     
     [self.tableView reloadSections:[NSIndexSet indexSetWithIndex:0] withRowAnimation:UITableViewRowAnimationNone];
-    
-//    self.remainingVolume = [self.supplyOrderArticleDoc volumeRemainingToSupply];
-//    
-//    NSString *title = [NSString stringWithFormat:@"%@: %@", NSLocalizedString(@"REMAIN TO SUPPLY", nil), [STMFunctions volumeStringWithVolume:self.remainingVolume andPackageRel:[self.supplyOrderArticleDoc operatingArticle].packageRel.integerValue]];
-//    
-//    STMBarButtonItem *infoLabel = [[STMBarButtonItem alloc] initWithTitle:title
-//                                                                    style:UIBarButtonItemStylePlain
-//                                                                   target:nil
-//                                                                   action:nil];
-//    
-//    infoLabel.enabled = NO;
-//    infoLabel.tintColor = [UIColor blackColor];
     
     STMBarButtonItem *flexibleSpace = [STMBarButtonItem flexibleSpace];
     
@@ -881,14 +956,14 @@
                                                                                   style:UIBarButtonItemStyleDone
                                                                                  target:self
                                                                                  action:@selector(stopRepeatingButtonPressed)];
-
-//        [self setToolbarItems:@[infoLabel, flexibleSpace, stopRepeatingButton] animated:NO];
+        
+        //        [self setToolbarItems:@[infoLabel, flexibleSpace, stopRepeatingButton] animated:NO];
         [self setToolbarItems:@[flexibleSpace, stopRepeatingButton, flexibleSpace] animated:NO];
-
+        
     } else {
-    
+        
         [self setToolbarItems:@[] animated:NO];
-
+        
     }
     
 }
@@ -896,7 +971,7 @@
 - (NSString *)repeatParameters {
     
     NSString *volumeString = [STMFunctions volumeStringWithVolume:self.lastSourceOperationVolume
-                                                    andPackageRel:[self.supplyOrderArticleDoc operatingArticle].packageRel.integerValue];
+                                                    andPackageRel:[self.supplyOrderArticleDoc operatingPackageRel].integerValue];
     
     NSString *pluralType = [STMFunctions pluralTypeForCount:self.lastSourceOperationNumberOfBarcodes];
     NSString *pluralString = [pluralType stringByAppendingString:@"CODES"];
@@ -910,7 +985,7 @@
     }
     
     NSString *repeatParameters = [NSString stringWithFormat:@"(%@, %@)", volumeString, numberOfBarcodesString];
-
+    
     return repeatParameters;
     
 }
@@ -918,7 +993,7 @@
 - (void)stopRepeatingButtonPressed {
     
     [[NSOperationQueue mainQueue] addOperationWithBlock:^{
-       
+        
         UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@""
                                                         message:NSLocalizedString(@"STOP REPEATING?", nil)
                                                        delegate:self
@@ -933,20 +1008,6 @@
     
 }
 
-- (void)addBarcodeImage {
-    
-    UIImage *image = [STMFunctions resizeImage:[UIImage imageNamed:@"barcode.png"] toSize:CGSizeMake(25, 25)];
-    self.navigationItem.rightBarButtonItem = [[STMBarButtonItem alloc] initWithCustomView:[[UIImageView alloc] initWithImage:image]];
-    
-}
-
-- (void)removeBarcodeImage {
-    self.navigationItem.rightBarButtonItem = nil;
-}
-
-
-
-#pragma mark - UIAlertViewDelegate
 
 #pragma mark - UIAlertViewDelegate
 
@@ -972,12 +1033,12 @@
 }
 
 - (void)alertView:(UIAlertView *)alertView didDismissWithButtonIndex:(NSInteger)buttonIndex {
-
+    
     if ([alertView isEqual:self.addBarcodeAlert]) {
         
         switch (buttonIndex) {
             case 1: {
-
+                
                 STMArticle *article = self.supplyOrderArticleDoc.articleDoc.article;
                 [STMBarCodeController addBarcode:self.articleBarCode toArticle:article];
                 [self confirmArticle:article];
@@ -991,7 +1052,7 @@
         }
         
     } else {
-
+        
         switch (alertView.tag) {
             case 341:
                 switch (buttonIndex) {
@@ -1018,7 +1079,7 @@
             default:
                 break;
         }
-
+        
     }
     
 }
@@ -1037,6 +1098,8 @@
     [self setupToolbar];
     
     [self performFetch];
+    
+    //    [self receiveArticleBarcode:@"4600587015631"];
     
 }
 

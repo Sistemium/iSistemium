@@ -13,6 +13,9 @@
 @property (nonatomic, strong) UISearchBar *searchBar;
 @property (nonatomic) BOOL searchFieldIsScrolledAway;
 
+- (NSPredicate *)textSearchPredicate;
+- (NSPredicate *)textSearchPredicateForField:(NSString *)field;
+
 - (void)searchBarTextDidBeginEditing:(UISearchBar *)searchBar;
 - (void)searchBar:(UISearchBar *)searchBar textDidChange:(NSString *)searchText;
 - (void)searchBarCancelButtonClicked:(UISearchBar *)searchBar;

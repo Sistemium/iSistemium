@@ -15,6 +15,42 @@
 
 @implementation STMSearchableTVC
 
+- (NSPredicate *)textSearchPredicate {
+    return [self textSearchPredicateForField:@"name"];
+}
+
+- (NSPredicate *)textSearchPredicateForField:(NSString *)field {
+    
+    if (!field) {
+        return nil;
+    }
+    
+    if (self.searchBar.text && ![self.searchBar.text isEqualToString:@""]) {
+        
+        NSString *trimmedSearchString = [self.searchBar.text stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceCharacterSet]];
+        NSArray *searchStringComponents = [trimmedSearchString componentsSeparatedByCharactersInSet:[NSCharacterSet whitespaceCharacterSet]];
+        
+        NSMutableArray *subpredicates = @[].mutableCopy;
+        
+        for (NSString *searchString in searchStringComponents) {
+            
+            NSString *predicateString = [field stringByAppendingString:@" CONTAINS[cd] %@"];
+            
+            [subpredicates addObject:[NSPredicate predicateWithFormat:predicateString, searchString]];
+            
+        }
+        
+        return [NSCompoundPredicate andPredicateWithSubpredicates:subpredicates];
+        
+    } else {
+        
+        return nil;
+        
+    }
+    
+}
+
+
 #pragma mark - search & UISearchBarDelegate
 
 - (void)searchButtonPressed {

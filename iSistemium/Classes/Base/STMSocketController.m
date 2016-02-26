@@ -352,8 +352,12 @@
     [socket onAny:^(SocketAnyEvent *event) {
         
         NSLog(@"%@ ___ event %@", socket, event.event);
-        NSLog(@"%@ ___ items %@", socket, event.items);
-        
+        NSLog(@"%@ ___ items (", socket);
+
+        for (id item in event.items) NSLog(@"    %@", item);
+
+        NSLog(@"%@           )", socket);
+
     }];
 
 }
@@ -653,13 +657,16 @@
     } else {
         
         errorString = @"response not a dictionary";
-        [self sendEvent:STMSocketEventInfo withStringValue:errorString];
+        NSLog(@"error: %@", data);
         
     }
     
     if (errorString) {
     
-        [[STMLogger sharedLogger] saveLogMessageWithText:errorString type:@"error"];
+        NSLog(@"error: %@", errorString);
+        
+        [self sendEvent:STMSocketEventInfo withStringValue:errorString];
+//        [[STMLogger sharedLogger] saveLogMessageWithText:errorString type:@"error"];
         
         if ([[errorString.lowercaseString stringByReplacingOccurrencesOfString:@" " withString:@""] isEqualToString:@"notauthorized"]) {
             [[STMAuthController authController] logout];
@@ -695,6 +702,7 @@
         
         [self sharedInstance].isSendingData = NO;
         [[self syncer] sendFinishedWithError:errorString];
+        [self sharedInstance].syncDataDictionary = nil;
 
     } else {
 

@@ -10,15 +10,16 @@
 
 #import <CoreData/CoreData.h>
 #import <AVFoundation/AVFoundation.h>
-#import <ScanAPI/ScanApiHelper.h>
+#import "STMScanApiHelper.h"
 
 #import "STMNS.h"
 #import "STMDataModel.h"
 #import "STMSessionManager.h"
 #import "STMLogger.h"
+#import "STMObjectsController.h"
 
 
-@interface STMBarCodeScanner() <UITextFieldDelegate, AVCaptureMetadataOutputObjectsDelegate, ScanApiHelperDelegate>
+@interface STMBarCodeScanner() <UITextFieldDelegate, AVCaptureMetadataOutputObjectsDelegate, STMScanApiHelperDelegate>
 
 @property (nonatomic, strong) UITextField *hiddenBarCodeTextField;
 
@@ -28,8 +29,9 @@
 @property (nonatomic, strong) AVCaptureMetadataOutput *output;
 @property (nonatomic, strong) AVCaptureVideoPreviewLayer *preview;
 
-@property (nonatomic, strong) ScanApiHelper *iOSScanHelper;
+@property (nonatomic, strong) STMScanApiHelper *iOSScanHelper;
 @property (nonatomic, strong) NSTimer* scanApiConsumer;
+@property (nonatomic, strong) DeviceInfo *deviceInfo;
 
 @property (nonatomic, strong) NSFetchedResultsController *barCodeTypesRC;
 
@@ -51,6 +53,25 @@
     }
     return self;
 
+}
+
+- (NSString *)scannerName {
+    
+    switch (self.mode) {
+        case STMBarCodeScannerCameraMode: {
+            return @"Camera scanner";
+            break;
+        }
+        case STMBarCodeScannerHIDKeyboardMode: {
+            return @"HID scanner";
+            break;
+        }
+        case STMBarCodeScannerIOSMode: {
+            return ([self.iOSScanHelper isDeviceConnected]) ? [self.deviceInfo getName] : nil;
+            break;
+        }
+    }
+    
 }
 
 - (BOOL)isDeviceConnected {
@@ -156,8 +177,17 @@
     
     STMBarCodeScannedType type = [STMBarCodeController barcodeTypeFromTypes:self.barCodeTypesRC.fetchedObjects forBarcode:barcode];
     
+    STMBarCodeScan *barCodeScan = (STMBarCodeScan *)[STMObjectsController newObjectForEntityName:NSStringFromClass([STMBarCodeScan class])
+                                                                                        isFantom:NO];
+    barCodeScan.code = barcode;
+    
     [self.delegate barCodeScanner:self receiveBarCode:barcode withType:type];
-
+    [self.delegate barCodeScanner:self receiveBarCodeScan:barCodeScan withType:type];
+    
+    [[STMObjectsController document] saveDocument:^(BOOL success) {
+        
+    }];
+    
 }
 
 
@@ -332,7 +362,7 @@
 
 + (void)addScanHelperToScanner:(STMBarCodeScanner *)scanner {
     
-    scanner.iOSScanHelper = [[ScanApiHelper alloc] init];
+    scanner.iOSScanHelper = [[STMScanApiHelper alloc] init];
     [scanner.iOSScanHelper setDelegate:scanner];
     [scanner.iOSScanHelper open];
 
@@ -360,13 +390,96 @@
 
 }
 
+- (void)getBeepStatus {
+    
+    [self.iOSScanHelper postGetDecodeAction:self.deviceInfo
+                                     Target:self
+                                   Response:@selector(onGetBeepStatus:)];
+    
+}
+
+- (void)getRumbleStatus {
+    
+    [self.iOSScanHelper postGetDecodeAction:self.deviceInfo
+                                     Target:self
+                                   Response:@selector(onGetRumbleStatus:)];
+    
+}
+
+- (void)setBeepStatus:(BOOL)beepStatus andRumbleStatus:(BOOL)rumbleStatus {
+    
+    int beepDecodeAction = (beepStatus) ? kSktScanLocalDecodeActionBeep : kSktScanLocalDecodeActionNone;
+    int rumbleDecodeAction = (rumbleStatus) ? kSktScanLocalDecodeActionRumble : kSktScanLocalDecodeActionNone;
+    int flashDecodeAction = kSktScanLocalDecodeActionFlash;
+    
+    int combineDecodeAction = (beepDecodeAction|rumbleDecodeAction|flashDecodeAction);
+    
+    [self.iOSScanHelper postSetDecodeAction:self.deviceInfo
+                               DecodeAction:combineDecodeAction
+                                     Target:self
+                                   Response:@selector(onSetDecodeAction:)];
+    
+}
+
+- (void)getBatteryStatus {
+
+    [self.iOSScanHelper postGetBattery:self.deviceInfo
+                                Target:self
+                              Response:@selector(onGetBatteryStatus:)];
+    
+}
+
 
 #pragma mark - Scan API callbacks
 
+- (void)onGetBeepStatus:(ISktScanObject *)scanObj {
+    [self getBeepStatusFrom:scanObj];
+}
+
+- (void)onGetRumbleStatus:(ISktScanObject *)scanObj {
+    [self getRumbleStatusFrom:scanObj];
+}
+
+- (void)onSetDecodeAction:(ISktScanObject *)scanObj {
+
+}
+
+- (void)onGetBatteryStatus:(ISktScanObject *)scanObj {
+    
+    unsigned long batteryStatus = [[scanObj Property] getUlong];
+    
+    unsigned char currentLevel = SKTBATTERY_GETCURLEVEL(batteryStatus);
+    
+    NSNumber *batteryLevel = [NSNumber numberWithUnsignedChar:currentLevel];
+
+//    [SktClassFactory releaseScanObject:scanObj];
+    
+    [self.delegate receiveBatteryLevel:batteryLevel];
+    
+}
+
+- (void)getBeepStatusFrom:(ISktScanObject *)scanObj {
+    
+    BOOL isBeepEnabled = ([[scanObj Property] getByte] & kSktScanLocalDecodeActionBeep);
+
+//    [SktClassFactory releaseScanObject:scanObj];
+
+    [self.delegate receiveScannerBeepStatus:isBeepEnabled];
+
+}
+
+- (void)getRumbleStatusFrom:(ISktScanObject *)scanObj {
+    
+    BOOL isRumbleEnabled = ([[scanObj Property] getByte] & kSktScanLocalDecodeActionRumble);
+    
+//    [SktClassFactory releaseScanObject:scanObj];
+
+    [self.delegate receiveScannerRumbleStatus:isRumbleEnabled];
+
+}
+
 - (void)postGetPostamble:(id)sender {
-    
     NSLog(@"%@", sender);
-    
 }
 
 - (void)postGetSymbology:(id)sender {
@@ -379,7 +492,7 @@
         
         if (SKTSUCCESS(result)) {
             
-            DeviceInfo* deviceInfo=[self.iOSScanHelper getDeviceInfoFromScanObject:scanObj];
+            DeviceInfo *deviceInfo=[self.iOSScanHelper getDeviceInfoFromScanObject:scanObj];
             
             if (deviceInfo){
                 
@@ -436,39 +549,92 @@
     
 }
 
-- (void)getBatteryCallback:(id)sender {
+- (void)setBatteryLevelNotificationForDevice:(DeviceInfo *)deviceInfo {
     
-    if ([sender isKindOfClass:[ISktScanObject class]]) {
-        
-        ISktScanObject *scanObj = (ISktScanObject *)sender;
-
-        NSLog(@"%@", scanObj);
-    }
+    ISktScanObject*scanObj=[SktClassFactory createScanObject];
+    
+    [[scanObj Property] setID:kSktScanPropIdNotificationsDevice];
+    [[scanObj Property] setType:kSktScanPropTypeUlong];
+    [[scanObj Property] setUlong:kSktScanNotificationsBatteryLevelChange];
+    
+    CommandContext *command = [[CommandContext alloc] initWithParam:NO
+                                                            ScanObj:scanObj
+                                                         ScanDevice:[deviceInfo getSktScanDevice]
+                                                             Device:deviceInfo
+                                                             Target:self
+                                                           Response:@selector(onSetBatteryLevelNotification:)];
+    
+    [self.iOSScanHelper addCommand:command];
+    
 }
+
+- (void)setPowerButtonPressNotificationForDevice:(DeviceInfo *)deviceInfo {
+    
+    ISktScanObject*scanObj=[SktClassFactory createScanObject];
+    
+    [[scanObj Property] setID:kSktScanPropIdNotificationsDevice];
+    [[scanObj Property] setType:kSktScanPropTypeUlong];
+    [[scanObj Property] setUlong:kSktScanNotificationsPowerButtonPress];
+    
+    CommandContext *command = [[CommandContext alloc] initWithParam:NO
+                                                            ScanObj:scanObj
+                                                         ScanDevice:[deviceInfo getSktScanDevice]
+                                                             Device:deviceInfo
+                                                             Target:self
+                                                           Response:@selector(onSetPowerButtonPressNotification:)];
+    
+    [self.iOSScanHelper addCommand:command];
+    
+}
+
+- (void)getVersionForDevice:(DeviceInfo *)deviceInfo {
+    
+    ISktScanObject*scanObj=[SktClassFactory createScanObject];
+    
+    [[scanObj Property] setID:kSktScanPropIdVersionDevice];
+    [[scanObj Property] setType:kSktScanPropTypeNone];
+    
+    CommandContext *command = [[CommandContext alloc] initWithParam:YES
+                                                            ScanObj:scanObj
+                                                         ScanDevice:[deviceInfo getSktScanDevice]
+                                                             Device:deviceInfo
+                                                             Target:self
+                                                           Response:@selector(onGetVersion:)];
+    
+    [self.iOSScanHelper addCommand:command];
+    
+}
+
 
 
 #pragma mark ScanApiHelperDelegate
 
 - (void)onDeviceArrival:(SKTRESULT)result device:(DeviceInfo *)deviceInfo {
     
+    self.deviceInfo = deviceInfo;
+    
     NSString *logMessage = [NSString stringWithFormat:@"Connect scanner: %@", [deviceInfo getName]];
     [[STMLogger sharedLogger] saveLogMessageWithText:logMessage type:@"important"];
-    
-//    [self.iOSScanHelper postGetBattery:deviceInfo Target:self Response:@selector(getBatteryCallback:)];
-    
+
     [self.iOSScanHelper postSetPostambleDevice:deviceInfo Postamble:@"" Target:nil Response:nil];
 
     [self checkSymbologiesOnDevice:deviceInfo];
+    
+    [self setBatteryLevelNotificationForDevice:deviceInfo];
+    [self setPowerButtonPressNotificationForDevice:deviceInfo];
+    [self getVersionForDevice:deviceInfo];
     
     [self.delegate deviceArrivalForBarCodeScanner:self];
     
 }
 
 - (void)onDeviceRemoval:(DeviceInfo *)deviceRemoved {
-    
+
+    self.deviceInfo = nil;
+
     NSString *logMessage = [NSString stringWithFormat:@"Disconnect scanner: %@", [deviceRemoved getName]];
     [[STMLogger sharedLogger] saveLogMessageWithText:logMessage type:@"important"];
-
+    
     [self.delegate deviceRemovalForBarCodeScanner:self];
     
 }
@@ -481,6 +647,94 @@
 
         [self checkScannedBarcode:resultString];
 
+    }
+
+}
+
+- (void)onError:(SKTRESULT)result {
+    NSLog(@"error: %ld", result);
+}
+
+- (void)onButtonsEvent:(ISktScanObject *)scanObj {
+    
+    NSLogMethodName;
+    
+}
+
+- (void)onSetBatteryLevelNotification:(id)sender {
+    
+//    NSLog(@"onSetBatteryLevelNotification sender %@", sender);
+    
+    if ([sender isKindOfClass:[ISktScanObject class]]) {
+        
+        ISktScanObject *scanObj = (ISktScanObject *)sender;
+        
+        SKTRESULT result = [[scanObj Msg] Result];
+        
+        if (SKTSUCCESS(result)) {
+            NSLog(@"setBatteryLevelNotification SUCCESS");
+        } else {
+            NSLog(@"setBatteryLevelNotification NOT SUCCESS");
+        }
+    
+    }
+    
+}
+
+- (void)onSetPowerButtonPressNotification:(id)sender {
+    
+//    NSLog(@"onSetPowerButtonPressNotification sender %@", sender);
+    
+    if ([sender isKindOfClass:[ISktScanObject class]]) {
+        
+        ISktScanObject *scanObj = (ISktScanObject *)sender;
+        
+        SKTRESULT result = [[scanObj Msg] Result];
+        
+        if (SKTSUCCESS(result)) {
+            NSLog(@"setPowerButtonPressNotification SUCCESS");
+        } else {
+            NSLog(@"setPowerButtonPressNotification NOT SUCCESS");
+        }
+        
+    }
+
+}
+
+- (void)onGetVersion:(id)sender {
+    
+    NSLog(@"onGetVersion sender %@", sender);
+    
+    if ([sender isKindOfClass:[ISktScanObject class]]) {
+        
+        ISktScanObject *scanObj = (ISktScanObject *)sender;
+        
+        SKTRESULT result = [[scanObj Msg] Result];
+        
+        if (SKTSUCCESS(result)) {
+            
+            NSLog(@"getVersion SUCCESS");
+            
+            ISktScanProperty *property = [scanObj Property];
+            
+            if ([property getType] == kSktScanPropTypeVersion) {
+                
+                NSLog(@"Version %@", [NSString stringWithFormat:@"%lx.%lx.%lx.%ld",
+                                                [[property Version] getMajor],
+                                                [[property Version] getMiddle],
+                                                [[property Version] getMinor],
+                                                [[property Version] getBuild]]
+                      );
+                
+            }
+
+            
+        } else {
+            
+            NSLog(@"getVersion NOT SUCCESS");
+            
+        }
+        
     }
 
 }

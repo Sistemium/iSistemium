@@ -72,7 +72,10 @@
         if (request) {
             
             if ([self.searchBar isFirstResponder] && ![self.searchBar.text isEqualToString:@""]) {
-                [subpredicates addObject:[NSPredicate predicateWithFormat:@"name CONTAINS[cd] %@", self.searchBar.text]];
+                
+                NSPredicate *subpredicate = [super textSearchPredicate];
+                if (subpredicate) [subpredicates addObject:subpredicate];
+                
             }
 
             NSCompoundPredicate *predicate = [NSCompoundPredicate andPredicateWithSubpredicates:subpredicates];
@@ -90,6 +93,10 @@
     }
     return _resultsController;
     
+}
+
+- (void)successfulFetchCallback {
+    [self selectingCells];
 }
 
 
@@ -259,13 +266,7 @@
             break;
         }
     }
-    
-    [self performFetchWithCompletionHandler:^(BOOL success) {
-        if (success) {
-            [self selectingCells];
-        }
-    }];
-    
+
 }
 
 - (void)viewDidLoad {

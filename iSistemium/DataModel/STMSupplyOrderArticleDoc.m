@@ -30,6 +30,39 @@
     return (self.article) ? (STMArticle * _Nonnull)self.article : self.articleDoc.article;
 }
 
+- (NSNumber *)operatingPackageRel {
+    return (self.packageRel) ? (NSNumber * _Nonnull)self.packageRel : self.articleDoc.article.packageRel;
+}
+
+- (NSAttributedString *)operatingPackageRelStringWithFontSize:(CGFloat)fontSize {
+    
+    NSDictionary *attributes = @{NSFontAttributeName: [UIFont systemFontOfSize:fontSize],
+                                 NSForegroundColorAttributeName:[UIColor blackColor]};
+
+    if (self.packageRel && self.packageRel.integerValue != [self operatingArticle].packageRel.integerValue) {
+
+        NSString *packageRelString = [NSString stringWithFormat:@"%@: %@ ", NSLocalizedString(@"PACKAGE REL", nil), self.packageRel];
+        NSMutableAttributedString *returnString = [[NSMutableAttributedString alloc] initWithString:packageRelString attributes:attributes];
+        
+        attributes = @{NSFontAttributeName: [UIFont systemFontOfSize:(fontSize - 2)],
+                       NSForegroundColorAttributeName:[UIColor lightGrayColor],
+                       NSStrikethroughStyleAttributeName  : @(NSUnderlinePatternSolid | NSUnderlineStyleSingle)};
+        
+        packageRelString = [NSString stringWithFormat:@"%@", [self operatingArticle].packageRel];
+        
+        [returnString appendAttributedString:[[NSAttributedString alloc] initWithString:packageRelString attributes:attributes]];
+        
+        return returnString;
+        
+    } else {
+    
+        NSString *packageRelString = [NSString stringWithFormat:@"%@: %@", NSLocalizedString(@"PACKAGE REL", nil), [self operatingArticle].packageRel];
+        return [[NSAttributedString alloc] initWithString:packageRelString];
+        
+    }
+    
+}
+
 - (NSInteger)volumeRemainingToSupply {
 
     NSInteger minusVolume = [[self.sourceOperations valueForKeyPath:@"@sum.volume"] integerValue];

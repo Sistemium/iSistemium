@@ -442,6 +442,7 @@
 "BARCODES REMAIN TO SCAN" = "Barcodes remain to scan";
 "SUPPLY POSITION COMPLETE" = "Supply position complete";
 "ILLEGAL ARTICLE CHANGE ATTEMPT" = "Delete all operations before change article";
+"ILLEGAL BARCODE CHANGE ATTEMPT" = "Delete all operations before change barcode";
 "DOC ARTICLE" = "Doc article";
 "ADD BARCODE TO ARTICLE?" = "Add barcode\n\n%@\n\nto article\n\n%@\n\n?";
 "REMOVE BARCODE FROM ARTICLE?" = "Remove barcode\n\n%@\n\nfrom article\n\n%@\n\n?";
@@ -454,3 +455,15 @@
 "BY SUMM" ="by summ";
 "OF" = "of";
 "FOR" = "for";
+"0BATCHES" = "no batches";
+"1BATCHES" = "batch";
+"2BATCHES" = "batches";
+"5BATCHES" = "batches";
+"SCANNER BEEP" = "Scanner beep";
+"SCANNER RUMBLE" = "Scanner rumble";
+"SCANNER BATTERY" = "Scanner battery";
+"NO SCANNER AVAILABLE" = "No scanner available";
+"THIS ARTICLE HAVE ANOTHER BARCODES" = "This article have another barcodes";
+"ALL POSITIONS ARE SUPPLIED" = "All positions are supplied";
+"WRONG VOLUME TO REPEAT" = "Wrong volume to repeat";
+"REMAIN TO PICK" = "Remain to pick: ";

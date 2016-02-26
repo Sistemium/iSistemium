@@ -29,6 +29,7 @@ typedef NS_ENUM(NSUInteger, STMBarCodeScannerStatus) {
 
 @property (nonatomic, readonly) STMBarCodeScannerMode mode;
 @property (nonatomic, readonly) STMBarCodeScannerStatus status;
+@property (nonatomic, readonly) NSString *scannerName;
 @property (nonatomic, readonly) BOOL isDeviceConnected;
 
 @property (nonatomic, strong) id <STMBarCodeScannerDelegate> delegate;
@@ -37,6 +38,12 @@ typedef NS_ENUM(NSUInteger, STMBarCodeScannerStatus) {
 
 - (void)startScan;
 - (void)stopScan;
+
+- (void)getBeepStatus;
+- (void)getRumbleStatus;
+- (void)setBeepStatus:(BOOL)beepStatus andRumbleStatus:(BOOL)rumbleStatus;
+
+- (void)getBatteryStatus;
 
 
 @end

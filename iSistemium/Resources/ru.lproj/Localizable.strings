@@ -442,6 +442,7 @@
 "BARCODES REMAIN TO SCAN" = "Осталось отсканировать наклеек";
 "SUPPLY POSITION COMPLETE" = "Позиция принята полностью";
 "ILLEGAL ARTICLE CHANGE ATTEMPT" = "Удалите все операции для данной позиции если хотите поменять товар";
+"ILLEGAL BARCODE CHANGE ATTEMPT" = "Удалите все операции для данной позиции если хотите заново сканировать штрихкод";
 "DOC ARTICLE" = "Товар по справке";
 "ADD BARCODE TO ARTICLE?" = "Добавить штрих-код\n\n%@\n\nк товару\n\n%@\n\n?";
 "REMOVE BARCODE FROM ARTICLE?" = "Удалить шрих-код\n\n%@\n\nу товара\n\n%@\n\n?";
@@ -454,3 +455,15 @@
 "BY SUMM" ="на сумму";
 "OF" = "от";
 "FOR" = "за";
+"0BATCHES" = "нет партий";
+"1BATCHES" = "партия";
+"2BATCHES" = "партии";
+"5BATCHES" = "партий";
+"SCANNER BEEP" = "Звуковой сигнал";
+"SCANNER RUMBLE" = "Вибратор";
+"SCANNER BATTERY" = "Заряд батареи";
+"NO SCANNER AVAILABLE" = "Штрих-код сканер не подключён";
+"THIS ARTICLE HAVE ANOTHER BARCODES" = "Товару по справке не соответствует этот штрихкод";
+"ALL POSITIONS ARE SUPPLIED" = "Подтвердите завершение приёмки";
+"WRONG VOLUME TO REPEAT" = "Неверное количество для повтора";
+"REMAIN TO PICK" = "Осталось собрать: ";

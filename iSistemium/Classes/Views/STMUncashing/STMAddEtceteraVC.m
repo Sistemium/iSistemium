@@ -74,7 +74,7 @@
     if (!_keyboardToolbar) {
         
         UIToolbar *toolbar = [[UIToolbar alloc] init];
-        toolbar.frame = CGRectMake(0, 0, self.view.frame.size.width, 44);
+        toolbar.frame = CGRectMake(0, 0, self.view.frame.size.width, TOOLBAR_HEIGHT);
         
         UIBarButtonItem *cancelButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemCancel target:self action:@selector(toolbarCancelButtonPressed)];
         UIBarButtonItem *flexibleSpace = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFlexibleSpace target:nil action:nil];

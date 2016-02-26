@@ -270,6 +270,9 @@
     
 }
 
+
+#pragma mark - checkPicturesPaths
+
 + (void)checkPicturesPaths {
     
     NSString *sessionUID = [STMSessionManager sharedManager].currentSessionUID;
@@ -396,6 +399,9 @@
 
 }
 
+
+#pragma mark - check Broken & Uploaded Photos
+
 + (void)checkBrokenPhotos {
     
     NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:NSStringFromClass([STMPicture class])];
@@ -466,6 +472,9 @@
     }
     
 }
+
+
+#pragma mark - other methods
 
 + (void)hrefProcessingForObject:(NSManagedObject *)object {
     
@@ -590,6 +599,9 @@
     });
     
 }
+
+
+#pragma mark - queues
 
 - (void)addOperationForObject:(NSManagedObject *)object {
     
@@ -747,6 +759,9 @@
     }];
     
 }
+
+
+#pragma mark
 
 + (void)deletePicture:(STMPicture *)picture {
 
