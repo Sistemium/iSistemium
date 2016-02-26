@@ -252,7 +252,7 @@
 - (void)scannerIsConnected {
     
     [self addBarcodeImage];
-    [self requestScannerData];
+//    [self requestScannerData];
     
     [self.tableView reloadData];
 

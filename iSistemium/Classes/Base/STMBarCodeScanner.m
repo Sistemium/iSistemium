@@ -549,6 +549,45 @@
     
 }
 
+- (void)setBatteryLevelNotificationForDevice:(DeviceInfo *)deviceInfo {
+    
+    ISktScanObject*scanObj=[SktClassFactory createScanObject];
+    
+    [[scanObj Property] setID:kSktScanPropIdNotificationsDevice];
+    [[scanObj Property] setType:kSktScanPropTypeUlong];
+    [[scanObj Property] setUlong:kSktScanNotificationsBatteryLevelChange];
+    
+    CommandContext *command = [[CommandContext alloc] initWithParam:NO
+                                                            ScanObj:scanObj
+                                                         ScanDevice:[deviceInfo getSktScanDevice]
+                                                             Device:deviceInfo
+                                                             Target:self
+                                                           Response:@selector(onSetBatteryLevelNotification:)];
+    
+    [self.iOSScanHelper addCommand:command];
+    
+}
+
+- (void)setPowerButtonPressNotificationForDevice:(DeviceInfo *)deviceInfo {
+    
+    ISktScanObject*scanObj=[SktClassFactory createScanObject];
+    
+    [[scanObj Property] setID:kSktScanPropIdNotificationsDevice];
+    [[scanObj Property] setType:kSktScanPropTypeUlong];
+    [[scanObj Property] setUlong:kSktScanNotificationsPowerButtonPress];
+    
+    CommandContext *command = [[CommandContext alloc] initWithParam:NO
+                                                            ScanObj:scanObj
+                                                         ScanDevice:[deviceInfo getSktScanDevice]
+                                                             Device:deviceInfo
+                                                             Target:self
+                                                           Response:@selector(onSetPowerButtonPressNotification:)];
+    
+    [self.iOSScanHelper addCommand:command];
+    
+}
+
+
 
 #pragma mark ScanApiHelperDelegate
 
@@ -562,6 +601,9 @@
     [self.iOSScanHelper postSetPostambleDevice:deviceInfo Postamble:@"" Target:nil Response:nil];
 
     [self checkSymbologiesOnDevice:deviceInfo];
+    
+    [self setBatteryLevelNotificationForDevice:deviceInfo];
+    [self setPowerButtonPressNotificationForDevice:deviceInfo];
     
     [self.delegate deviceArrivalForBarCodeScanner:self];
     
@@ -589,6 +631,47 @@
     }
 
 }
+
+- (void)onSetBatteryLevelNotification:(id)sender {
+    
+//    NSLog(@"onSetBatteryLevelNotification sender %@", sender);
+    
+    if ([sender isKindOfClass:[ISktScanObject class]]) {
+        
+        ISktScanObject *scanObj = (ISktScanObject *)sender;
+        
+        SKTRESULT result = [[scanObj Msg] Result];
+        
+        if (SKTSUCCESS(result)) {
+            NSLog(@"setBatteryLevelNotification SUCCESS");
+        } else {
+            NSLog(@"setBatteryLevelNotification NOT SUCCESS");
+        }
+    
+    }
+    
+}
+
+- (void)onSetPowerButtonPressNotification:(id)sender {
+    
+//    NSLog(@"onSetPowerButtonPressNotification sender %@", sender);
+    
+    if ([sender isKindOfClass:[ISktScanObject class]]) {
+        
+        ISktScanObject *scanObj = (ISktScanObject *)sender;
+        
+        SKTRESULT result = [[scanObj Msg] Result];
+        
+        if (SKTSUCCESS(result)) {
+            NSLog(@"setPowerButtonPressNotification SUCCESS");
+        } else {
+            NSLog(@"setPowerButtonPressNotification NOT SUCCESS");
+        }
+        
+    }
+
+}
+
 
 
 @end
