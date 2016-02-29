@@ -54,7 +54,7 @@ class STMOutletDebtsTVC_iPhone: STMOutletDebtsTVC {
         var attributes: NSDictionary
         let text = NSMutableAttributedString()
         let numberFormatter = STMFunctions.currencyFormatter
-        let debtSumString = numberFormatter().stringFromNumber(debt.calculatedSum)
+        let debtSumString = numberFormatter().stringFromNumber(debt.calculatedSum ?? 0)
         if debtSumString != nil{
             backgroundColor = UIColor.clearColor()
             textColor = UIColor.blackColor()
@@ -110,7 +110,7 @@ class STMOutletDebtsTVC_iPhone: STMOutletDebtsTVC {
         return text
     }
     
-    func messageTextLabelForDebt(debt: STMDebt!, var withFont font: UIFont!) -> NSMutableAttributedString! {
+    func messageTextLabelForDebt(debt: STMDebt!, withFont font: UIFont!) -> NSMutableAttributedString! {
         var backgroundColor :UIColor
         var textColor :UIColor
         var attributes: NSDictionary
@@ -152,7 +152,6 @@ class STMOutletDebtsTVC_iPhone: STMOutletDebtsTVC {
             text.appendAttributedString(NSAttributedString(string: dueDate as String + " ", attributes:attributes as? [String : AnyObject]))
         }
         if debt.commentText != nil {
-            font = UIFont.systemFontOfSize(14)
             backgroundColor = UIColor.clearColor()
             textColor = UIColor.blackColor()
             attributes = [
@@ -227,10 +226,7 @@ class STMOutletDebtsTVC_iPhone: STMOutletDebtsTVC {
         cell.detailLabel?.attributedText = self.detailTextLabelForDebt(debt as! STMDebt, withFont:cell.detailLabel!.font)
         cell.messageLabel?.attributedText = self.messageTextLabelForDebt(debt as! STMDebt, withFont:cell.detailLabel!.font)
         cell.selectionStyle = .None
-        self.addLongPressToCell(cell)
-        cell.titleLabel?.adjustsFontSizeToFitWidth = true
-        cell.detailLabel?.adjustsFontSizeToFitWidth = true
-        
+        self.addLongPressToCell(cell)      
         return cell
     }
     

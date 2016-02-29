@@ -37,7 +37,7 @@ class STMDebtsPVC_iPhone: STMDebtsDetailsPVC, UIPopoverPresentationControllerDel
             let summLabel = UILabel()
             switch toolbar{
             case .SetCashing:
-                self.setToolbarItems([flexibleSpace,self.setCahshingSumButton, UIBarButtonItem(customView: summLabel),flexibleSpace], animated: false)
+                let setCahshingSumButton:UIBarButtonItem = UIBarButtonItem(title: "", style: .Plain, target: self, action: "setCashingSum")
                 if let limit = STMCashingProcessController.sharedInstance().cashingSummLimit{
                     let numberFormatter = STMFunctions.currencyFormatter
                     setCahshingSumButton.title = NSLocalizedString("CASHING SUMM", comment: "") + ":"
@@ -46,51 +46,42 @@ class STMDebtsPVC_iPhone: STMDebtsDetailsPVC, UIPopoverPresentationControllerDel
                     setCahshingSumButton.title = NSLocalizedString("CASHING SUMM", comment: "")
                 }
                 summLabel.sizeToFit()
-                if summLabel.frame.size.width>UIScreen.mainScreen().bounds.width - (self.setCahshingSumButton.valueForKey("view") as! UIView).frame.width - 15{
-                    summLabel.frame.size.width = UIScreen.mainScreen().bounds.width - (self.setCahshingSumButton.valueForKey("view") as! UIView).frame.width - 15
-//                    summLabel.adjustsFontSizeToFitWidth = true
-//                    summLabel.minimumScaleFactor = 0.8
-                    summLabel.numberOfLines = 0
+                self.setToolbarItems([flexibleSpace,setCahshingSumButton, UIBarButtonItem(customView: summLabel),flexibleSpace], animated: true)
+                if setCahshingSumButton.valueForKey("view") != nil && summLabel.frame.size.width>UIScreen.mainScreen().bounds.width - (setCahshingSumButton.valueForKey("view")  as! UIView).frame.width - 15{
+                    summLabel.frame.size.width = UIScreen.mainScreen().bounds.width - (setCahshingSumButton.valueForKey("view") as! UIView).frame.width - 15
+                    summLabel.numberOfLines = 2
                     summLabel.lineBreakMode = .ByWordWrapping
                     summLabel.textAlignment = .Center
                     summLabel.sizeToFit()
                 }
             case .CashingSum:
-                self.setToolbarItems([flexibleSpace,UIBarButtonItem(customView: summLabel),flexibleSpace],animated: false)
-                let summ = STMCashingProcessController.sharedInstance().debtsSumm()
-                let numberFormatter = STMFunctions.currencyFormatter
-                let sumString = numberFormatter().stringFromNumber(summ)
-                summLabel.text = NSLocalizedString("PICKED",comment: "") + " " + sumString!
-                summLabel.sizeToFit()
-                if summLabel.frame.size.width>UIScreen.mainScreen().bounds.width - 15{
-                    summLabel.frame.size.width = UIScreen.mainScreen().bounds.width - 15
-//                    summLabel.adjustsFontSizeToFitWidth = true
-//                    summLabel.minimumScaleFactor = 0.8
-                    summLabel.numberOfLines = 2
-                    summLabel.lineBreakMode = .ByWordWrapping
-                    summLabel.textAlignment = .Center
+                    let summ = STMCashingProcessController.sharedInstance().debtsSumm()
+                    let numberFormatter = STMFunctions.currencyFormatter
+                    let sumString = numberFormatter().stringFromNumber(summ)
+                    summLabel.text = NSLocalizedString("PICKED",comment: "") + " " + sumString!
                     summLabel.sizeToFit()
-                }
+                    self.setToolbarItems([flexibleSpace,UIBarButtonItem(customView: summLabel),flexibleSpace],animated: true)
+                    if summLabel.frame.size.width>UIScreen.mainScreen().bounds.width - 15{
+                        summLabel.frame.size.width = UIScreen.mainScreen().bounds.width - 15
+                        summLabel.numberOfLines = 2
+                        summLabel.lineBreakMode = .ByWordWrapping
+                        summLabel.textAlignment = .Center
+                        summLabel.sizeToFit()
+                    }
             case .LimitedSum:
-                self.setToolbarItems([flexibleSpace,UIBarButtonItem(customView: summLabel),flexibleSpace],animated: false)
+                let fixedSpace = UIBarButtonItem(barButtonSystemItem: .FixedSpace , target: nil, action: nil)
+                fixedSpace.width = -5
+                let setCahshingSumButton:UIBarButtonItem = UIBarButtonItem(title: "", style: .Plain, target: self, action: "setCashingSum")
                 let summ = STMCashingProcessController.sharedInstance().debtsSumm()
                 let limit = STMCashingProcessController.sharedInstance().cashingSummLimit
                 let numberFormatter = STMFunctions.decimalMaxTwoMinTwoDigitFormatter()
                 let sumString = numberFormatter.stringFromNumber(summ)!
-                let limitString = numberFormatter.stringFromNumber(limit)
-                summLabel.text = String(format: NSLocalizedString("RECEIVE2",comment: ""), arguments: [sumString]) + " " + limitString!
+                setCahshingSumButton.title = numberFormatter.stringFromNumber(limit)
+                summLabel.text = String(format: NSLocalizedString("RECEIVE2",comment: ""), arguments: [sumString])
                 summLabel.sizeToFit()
-                if summLabel.frame.size.width>UIScreen.mainScreen().bounds.width - 15{
-                    summLabel.frame.size.width = UIScreen.mainScreen().bounds.width - 15
-//                    summLabel.adjustsFontSizeToFitWidth = true
-//                    summLabel.minimumScaleFactor = 0.8
-                    summLabel.numberOfLines = 2
-                    summLabel.lineBreakMode = .ByWordWrapping
-                    summLabel.textAlignment = .Center
-                    summLabel.sizeToFit()
-                }
+                self.setToolbarItems([flexibleSpace,UIBarButtonItem(customView: summLabel),fixedSpace,setCahshingSumButton,flexibleSpace],animated: true)
             case .Default:
-                self.setToolbarItems([flexibleSpace,self.cashingButton,flexibleSpace], animated: false)
+                self.setToolbarItems([flexibleSpace,self.cashingButton,flexibleSpace], animated: true)
             }
         }
     }
@@ -107,10 +98,6 @@ class STMDebtsPVC_iPhone: STMDebtsDetailsPVC, UIPopoverPresentationControllerDel
     private var doneButton:STMBarButtonItem?
     
     private var cancelButton:STMBarButtonItem?
-    
-    private let setCahshingSumLabel = UILabel()
-    
-    private lazy var setCahshingSumButton:UIBarButtonItem = UIBarButtonItem(title: NSLocalizedString("CASHING SUMM", comment: "") + ": " + NSLocalizedString("NO", comment: ""), style: .Plain, target: self, action: "setCashingSum")
     
     private lazy var addDebt:UIBarButtonItem = UIBarButtonItem(barButtonSystemItem: .Add, target:self, action:"addDebtButtonPressed:")
     
@@ -176,7 +163,6 @@ class STMDebtsPVC_iPhone: STMDebtsDetailsPVC, UIPopoverPresentationControllerDel
     }
     
     override func cashingProcessStart() {
-        super.cashingProcessStart()
         self.navigationItem.setRightBarButtonItem(doneButton, animated: true)
         self.navigationItem.titleView = dateButton
         self.navigationItem.setLeftBarButtonItem(cancelButton, animated: true)
@@ -316,4 +302,5 @@ class STMDebtsPVC_iPhone: STMDebtsDetailsPVC, UIPopoverPresentationControllerDel
         showCashingLabel()
         return true
     }
+    
 }

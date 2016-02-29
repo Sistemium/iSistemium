@@ -31,4 +31,10 @@ class STMOutletsTVC_iPhone: STMOutletsTVC {
     
     override func cashingProcessStart() {
     }
+    
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        //tableView.rowHeight = UITableViewAutomaticDimension
+        tableView.estimatedRowHeight = 600
+    }
 }
