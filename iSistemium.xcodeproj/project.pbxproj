@@ -484,9 +484,10 @@
 		2CC5D49A1C85C94E00193CD7 /* scanner_info.png in Resources */ = {isa = PBXBuildFile; fileRef = 2CC5D4991C85C94E00193CD7 /* scanner_info.png */; };
 		2CC5D4A01C85C9D400193CD7 /* STMScannerInfoNC.m in Sources */ = {isa = PBXBuildFile; fileRef = 2CC5D49D1C85C9D400193CD7 /* STMScannerInfoNC.m */; };
 		2CC5D4A11C85C9D400193CD7 /* STMScannerInfoTVC.m in Sources */ = {isa = PBXBuildFile; fileRef = 2CC5D49F1C85C9D400193CD7 /* STMScannerInfoTVC.m */; };
-		2CC5D4A31C85D93800193CD7 /* STMJSPicking.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 2CC5D4A21C85D93800193CD7 /* STMJSPicking.storyboard */; };
-		2CC5D4A71C85DA1300193CD7 /* STMJSPickingNC.m in Sources */ = {isa = PBXBuildFile; fileRef = 2CC5D4A61C85DA1300193CD7 /* STMJSPickingNC.m */; };
-		2CC5D4AA1C85DA7100193CD7 /* STMJSPickingVC.m in Sources */ = {isa = PBXBuildFile; fileRef = 2CC5D4A91C85DA7100193CD7 /* STMJSPickingVC.m */; };
+		2CC5D4A31C85D93800193CD7 /* STMWKWebView.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 2CC5D4A21C85D93800193CD7 /* STMWKWebView.storyboard */; };
+		2CC5D4B51C85DF7A00193CD7 /* STMWKWebViewNC.m in Sources */ = {isa = PBXBuildFile; fileRef = 2CC5D4B21C85DF7A00193CD7 /* STMWKWebViewNC.m */; };
+		2CC5D4B61C85DF7A00193CD7 /* STMWKWebViewVC.m in Sources */ = {isa = PBXBuildFile; fileRef = 2CC5D4B41C85DF7A00193CD7 /* STMWKWebViewVC.m */; };
+		2CC5D4B81C85E18600193CD7 /* WebKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2CC5D4B71C85E18600193CD7 /* WebKit.framework */; };
 		2CCD06E31B5931E6002591C4 /* STMShipmentRouteSummaryTVC.m in Sources */ = {isa = PBXBuildFile; fileRef = 2CCD06E21B5931E6002591C4 /* STMShipmentRouteSummaryTVC.m */; };
 		2CCD06E51B5B9551002591C4 /* data_in_both_directions.png in Resources */ = {isa = PBXBuildFile; fileRef = 2CCD06E41B5B9551002591C4 /* data_in_both_directions.png */; };
 		2CCD06E81B5B9EF8002591C4 /* STMRegradeArticleVC.m in Sources */ = {isa = PBXBuildFile; fileRef = 2CCD06E71B5B9EF8002591C4 /* STMRegradeArticleVC.m */; };
@@ -1383,11 +1384,12 @@
 		2CC5D49D1C85C9D400193CD7 /* STMScannerInfoNC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = STMScannerInfoNC.m; sourceTree = "<group>"; };
 		2CC5D49E1C85C9D400193CD7 /* STMScannerInfoTVC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = STMScannerInfoTVC.h; sourceTree = "<group>"; };
 		2CC5D49F1C85C9D400193CD7 /* STMScannerInfoTVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = STMScannerInfoTVC.m; sourceTree = "<group>"; };
-		2CC5D4A21C85D93800193CD7 /* STMJSPicking.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = STMJSPicking.storyboard; sourceTree = "<group>"; };
-		2CC5D4A51C85DA1300193CD7 /* STMJSPickingNC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = STMJSPickingNC.h; sourceTree = "<group>"; };
-		2CC5D4A61C85DA1300193CD7 /* STMJSPickingNC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = STMJSPickingNC.m; sourceTree = "<group>"; };
-		2CC5D4A81C85DA7100193CD7 /* STMJSPickingVC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = STMJSPickingVC.h; sourceTree = "<group>"; };
-		2CC5D4A91C85DA7100193CD7 /* STMJSPickingVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = STMJSPickingVC.m; sourceTree = "<group>"; };
+		2CC5D4A21C85D93800193CD7 /* STMWKWebView.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = STMWKWebView.storyboard; sourceTree = "<group>"; };
+		2CC5D4B11C85DF7A00193CD7 /* STMWKWebViewNC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = STMWKWebViewNC.h; sourceTree = "<group>"; };
+		2CC5D4B21C85DF7A00193CD7 /* STMWKWebViewNC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = STMWKWebViewNC.m; sourceTree = "<group>"; };
+		2CC5D4B31C85DF7A00193CD7 /* STMWKWebViewVC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = STMWKWebViewVC.h; sourceTree = "<group>"; };
+		2CC5D4B41C85DF7A00193CD7 /* STMWKWebViewVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = STMWKWebViewVC.m; sourceTree = "<group>"; };
+		2CC5D4B71C85E18600193CD7 /* WebKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = WebKit.framework; path = System/Library/Frameworks/WebKit.framework; sourceTree = SDKROOT; };
 		2CCD06E11B5931E6002591C4 /* STMShipmentRouteSummaryTVC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = STMShipmentRouteSummaryTVC.h; sourceTree = "<group>"; };
 		2CCD06E21B5931E6002591C4 /* STMShipmentRouteSummaryTVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = STMShipmentRouteSummaryTVC.m; sourceTree = "<group>"; };
 		2CCD06E41B5B9551002591C4 /* data_in_both_directions.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = data_in_both_directions.png; sourceTree = "<group>"; };
@@ -1473,6 +1475,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				2CC5D4B81C85E18600193CD7 /* WebKit.framework in Frameworks */,
 				2CC194751BE6372F001F8E48 /* AssetsLibrary.framework in Frameworks */,
 				2C1AB3231B73AD8600BF5C50 /* AVFoundation.framework in Frameworks */,
 				2C88F1DE1B30143900E30418 /* Fabric.framework in Frameworks */,
@@ -1784,7 +1787,6 @@
 				2C5764291AA5E2EE00B9FD2C /* STMCatalog */,
 				2C5763FA1AA5E16200B9FD2C /* STMDebts */,
 				2CE3F5261C12DB1F00D8B4F3 /* STMInventory */,
-				2CC5D4A41C85D9EF00193CD7 /* STMJSPicking */,
 				2C5764271AA5E29B00B9FD2C /* STMLogs */,
 				2C5764261AA5E27100B9FD2C /* STMMessages */,
 				2C5764571AAB107B00B9FD2C /* STMOrders */,
@@ -1798,6 +1800,7 @@
 				2CF858E31C1ADF32004D7BD1 /* STMSupplyOrders */,
 				2C5764251AA5E21300B9FD2C /* STMUncashing */,
 				2C5764281AA5E2C900B9FD2C /* STMWebView */,
+				2CC5D4A41C85D9EF00193CD7 /* STMWKWebView */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -2378,6 +2381,7 @@
 		2C8EF59D1940859F0021D202 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				2CC5D4B71C85E18600193CD7 /* WebKit.framework */,
 				2CC194761BE639E8001F8E48 /* ImageIO.framework */,
 				2CC194741BE6372F001F8E48 /* AssetsLibrary.framework */,
 				2C1AB3221B73AD8600BF5C50 /* AVFoundation.framework */,
@@ -2529,15 +2533,15 @@
 			path = STMScannerInfo;
 			sourceTree = "<group>";
 		};
-		2CC5D4A41C85D9EF00193CD7 /* STMJSPicking */ = {
+		2CC5D4A41C85D9EF00193CD7 /* STMWKWebView */ = {
 			isa = PBXGroup;
 			children = (
-				2CC5D4A51C85DA1300193CD7 /* STMJSPickingNC.h */,
-				2CC5D4A61C85DA1300193CD7 /* STMJSPickingNC.m */,
-				2CC5D4A81C85DA7100193CD7 /* STMJSPickingVC.h */,
-				2CC5D4A91C85DA7100193CD7 /* STMJSPickingVC.m */,
+				2CC5D4B11C85DF7A00193CD7 /* STMWKWebViewNC.h */,
+				2CC5D4B21C85DF7A00193CD7 /* STMWKWebViewNC.m */,
+				2CC5D4B31C85DF7A00193CD7 /* STMWKWebViewVC.h */,
+				2CC5D4B41C85DF7A00193CD7 /* STMWKWebViewVC.m */,
 			);
-			path = STMJSPicking;
+			path = STMWKWebView;
 			sourceTree = "<group>";
 		};
 		2CD4311A1A85098A00AFB5DE /* Frameworks */ = {
@@ -2664,7 +2668,7 @@
 				2CC5D1CE1C85C70000193CD7 /* STMCatalog.storyboard */,
 				2CC5D1CF1C85C70000193CD7 /* STMDebts.storyboard */,
 				2CC5D1D01C85C70000193CD7 /* STMInventory.storyboard */,
-				2CC5D4A21C85D93800193CD7 /* STMJSPicking.storyboard */,
+				2CC5D4A21C85D93800193CD7 /* STMWKWebView.storyboard */,
 				2CC5D1D11C85C70000193CD7 /* STMLogs.storyboard */,
 				2CC5D1D21C85C70000193CD7 /* STMMessages.storyboard */,
 				2CC5D1D31C85C70000193CD7 /* STMMessageVC.storyboard */,
@@ -2947,7 +2951,7 @@
 				2CA9AFE61C43A8E40071D429 /* ok.mp3 in Resources */,
 				2CF126631B7CB4F50059701F /* uncheckmark_filled.png in Resources */,
 				2CEE305F1BF24086009B229F /* camera.png in Resources */,
-				2CC5D4A31C85D93800193CD7 /* STMJSPicking.storyboard in Resources */,
+				2CC5D4A31C85D93800193CD7 /* STMWKWebView.storyboard in Resources */,
 				2C761BB91B00833F001DA33E /* Picture Filled-100.png in Resources */,
 				2CC5D1E41C85C70000193CD7 /* STMAuth.storyboard in Resources */,
 				2CC5D1C11C85C6E900193CD7 /* STMCustom7TVCell.xib in Resources */,
@@ -3206,7 +3210,6 @@
 				2CC5D3F21C85C79600193CD7 /* STMDebtsController.m in Sources */,
 				2CC5D36E1C85C73D00193CD7 /* STMStockBatchOperationAgent+CoreDataProperties.m in Sources */,
 				2CC5D33F1C85C73D00193CD7 /* STMPickingOrder.m in Sources */,
-				2CC5D4A71C85DA1300193CD7 /* STMJSPickingNC.m in Sources */,
 				2CC5D4501C85C7DD00193CD7 /* STMCustom5TVCell.m in Sources */,
 				2CC5D3EC1C85C79600193CD7 /* STMBarCodeController.m in Sources */,
 				2C57641B1AA5E1E500B9FD2C /* STMAddPopoverVC.m in Sources */,
@@ -3263,6 +3266,7 @@
 				2CC5D3121C85C73D00193CD7 /* STMBatteryStatus+CoreDataProperties.m in Sources */,
 				2CC194731BE4DAFE001F8E48 /* STMPhotoReportMapVC.m in Sources */,
 				2CC5D33E1C85C73D00193CD7 /* STMPicker+CoreDataProperties.m in Sources */,
+				2CC5D4B61C85DF7A00193CD7 /* STMWKWebViewVC.m in Sources */,
 				2CC5D47F1C85C7F300193CD7 /* STMBarButtonItem.m in Sources */,
 				2CC5D3B51C85C78100193CD7 /* STMSoundController.m in Sources */,
 				2CC5D3791C85C73D00193CD7 /* STMUncashingPlace.m in Sources */,
@@ -3306,6 +3310,7 @@
 				2CC5D3371C85C73D00193CD7 /* STMPartner.m in Sources */,
 				2CAFB2691C2ECB2100BBEDC1 /* STMArticlesSVC.m in Sources */,
 				2CC5D4111C85C7A700193CD7 /* STMPickingOrdersProcessController.m in Sources */,
+				2CC5D4B51C85DF7A00193CD7 /* STMWKWebViewNC.m in Sources */,
 				2CF126351B77520F0059701F /* STMShippingSettingsTVC.m in Sources */,
 				2CC5D4881C85C7F300193CD7 /* STMSpinnerView.m in Sources */,
 				2C646F6D1BCE69C00099F034 /* WebSocket.swift in Sources */,
@@ -3459,7 +3464,6 @@
 				2C5764211AA5E1E500B9FD2C /* STMOutletCashingVC.m in Sources */,
 				2C5763F01AA5E13600B9FD2C /* STMCampaignDetailsPVC.m in Sources */,
 				2C646F631BCE69C00099F034 /* SocketEventHandler.swift in Sources */,
-				2CC5D4AA1C85DA7100193CD7 /* STMJSPickingVC.m in Sources */,
 				2CC5D3271C85C73D00193CD7 /* STMEntity.m in Sources */,
 				2CC5D4511C85C7DD00193CD7 /* STMCustom6TVCell.m in Sources */,
 				2CEE30671BF4D33A009B229F /* STMPhotoReportAddPhotoTVC.m in Sources */,

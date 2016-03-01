@@ -1,5 +1,5 @@
 //
-//  STMJSPickingVC.h
+//  STMWKWebViewVC.h
 //  iSistemium
 //
 //  Created by Maxim Grigoriev on 01/03/16.
@@ -8,6 +8,6 @@
 
 #import <UIKit/UIKit.h>
 
-@interface STMJSPickingVC : UIViewController
+@interface STMWKWebViewVC : UIViewController
 
 @end

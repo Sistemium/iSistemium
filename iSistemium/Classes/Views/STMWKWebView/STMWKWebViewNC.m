@@ -1,18 +1,18 @@
 //
-//  STMJSPickingNC.m
+//  STMWKWebViewNC.m
 //  iSistemium
 //
 //  Created by Maxim Grigoriev on 01/03/16.
 //  Copyright © 2016 Sistemium UAB. All rights reserved.
 //
 
-#import "STMJSPickingNC.h"
+#import "STMWKWebViewNC.h"
 
-@interface STMJSPickingNC ()
+@interface STMWKWebViewNC ()
 
 @end
 
-@implementation STMJSPickingNC
+@implementation STMWKWebViewNC
 
 - (void)viewDidLoad {
     [super viewDidLoad];

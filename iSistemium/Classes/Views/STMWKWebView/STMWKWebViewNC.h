@@ -1,5 +1,5 @@
 //
-//  STMJSPickingNC.h
+//  STMWKWebViewNC.h
 //  iSistemium
 //
 //  Created by Maxim Grigoriev on 01/03/16.
@@ -8,6 +8,6 @@
 
 #import "STMActionPopoverNC.h"
 
-@interface STMJSPickingNC : STMActionPopoverNC
+@interface STMWKWebViewNC : STMActionPopoverNC
 
 @end
