@@ -43,10 +43,10 @@
     
     NSLog(@"------ didFinishNavigation %@", webView.URL);
     
-    [self.webView evaluateJavaScript:@"alert(\"TEST ALERT\");" completionHandler:^(id _Nullable result, NSError * _Nullable error) {
+    [webView evaluateJavaScript:@"document.getElementsByClassName('jumbotron')[0].innerText;" completionHandler:^(id _Nullable result, NSError * _Nullable error) {
         
-        NSLog(@"evaluateJavaScript with result %@", result);
-        if (error) NSLog(@"error %@", error.localizedDescription);
+        if (result) NSLog(@"evaluateJavaScript with result %@", result);
+        if (error) NSLog(@"evaluateJavaScript with error %@", error.localizedDescription);
         
     }];
     
