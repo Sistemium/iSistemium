@@ -2,11 +2,7 @@
 //  STMBarCodeScan.m
 //  iSistemium
 //
-<<<<<<< HEAD
 //  Created by Maxim Grigoriev on 22/02/16.
-=======
-//  Created by Maxim Grigoriev on 21/02/16.
->>>>>>> picking
 //  Copyright © 2016 Sistemium UAB. All rights reserved.
 //
 

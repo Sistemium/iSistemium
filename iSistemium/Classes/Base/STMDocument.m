@@ -239,12 +239,9 @@
     }
 //    ———————————————————————
     
-<<<<<<< HEAD
     NSString *filename = [@[prefix, documentID, dataModelName] componentsJoinedByString:@"_"];
     url = [documentDirectoryUrl URLByAppendingPathComponent:[NSString stringWithFormat:@"%@.%@", filename, @"sqlite"]];
 
-=======
->>>>>>> picking
     NSString *logMessage = [NSString stringWithFormat:@"prepare document with filename: %@ for uid: %@", url.lastPathComponent, uid];
     [[STMLogger sharedLogger] saveLogMessageWithText:logMessage type:@"info"];
 

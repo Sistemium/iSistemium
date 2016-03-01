@@ -2,11 +2,7 @@
 //  STMBarCodeScan+CoreDataProperties.h
 //  iSistemium
 //
-<<<<<<< HEAD
 //  Created by Maxim Grigoriev on 22/02/16.
-=======
-//  Created by Maxim Grigoriev on 21/02/16.
->>>>>>> picking
 //  Copyright © 2016 Sistemium UAB. All rights reserved.
 //
 //  Choose "Create NSManagedObject Subclass…" from the Core Data editor menu
@@ -19,7 +15,6 @@ NS_ASSUME_NONNULL_BEGIN
 
 @interface STMBarCodeScan (CoreDataProperties)
 
-<<<<<<< HEAD
 @property (nullable, nonatomic, retain) NSString *checksum;
 @property (nullable, nonatomic, retain) NSString *commentText;
 @property (nullable, nonatomic, retain) NSDate *deviceCts;
@@ -32,8 +27,6 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nullable, nonatomic, retain) NSDate *sts;
 @property (nullable, nonatomic, retain) NSData *xid;
 @property (nullable, nonatomic, retain) NSString *code;
-=======
->>>>>>> picking
 @property (nullable, nonatomic, retain) NSString *destinationEntity;
 @property (nullable, nonatomic, retain) NSData *destinationXid;
 
