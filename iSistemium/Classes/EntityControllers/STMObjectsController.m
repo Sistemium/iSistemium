@@ -346,7 +346,7 @@
             
         } else {
             
-            if (![object isKindOfClass:[STMShippingLocationPicture class]]) {
+            if (![object isKindOfClass:[STMPicture class]]) {
                 [object setValue:nil forKey:key];
             }
             
@@ -1228,9 +1228,74 @@
 
 + (void)totalNumberOfObjects {
 
+<<<<<<< HEAD
     NSArray *entityNames = [self localDataModelEntityNames];
     
     NSUInteger totalCount = 0;
+=======
+    NSArray *entityNames = @[NSStringFromClass([STMDatum class]),
+                             NSStringFromClass([STMArticle class]),
+                             NSStringFromClass([STMArticleBarCode class]),
+                             NSStringFromClass([STMArticleDoc class]),
+                             NSStringFromClass([STMArticleGroup class]),
+                             NSStringFromClass([STMArticlePicture class]),
+                             NSStringFromClass([STMArticleProductionInfo class]),
+                             NSStringFromClass([STMBarCodeType class]),
+                             NSStringFromClass([STMBarCodeScan class]),
+                             NSStringFromClass([STMBasketPosition class]),
+                             NSStringFromClass([STMBatteryStatus class]),
+                             NSStringFromClass([STMCampaign class]),
+                             NSStringFromClass([STMCampaignGroup class]),
+                             NSStringFromClass([STMCampaignPicture class]),
+                             NSStringFromClass([STMCashing class]),
+                             NSStringFromClass([STMClientData class]),
+                             NSStringFromClass([STMDebt class]),
+                             NSStringFromClass([STMDriver class]),
+                             NSStringFromClass([STMInventoryBatch class]),
+                             NSStringFromClass([STMInventoryBatchItem class]),
+                             NSStringFromClass([STMLocation class]),
+                             NSStringFromClass([STMLogMessage class]),
+                             NSStringFromClass([STMMessage class]),
+                             NSStringFromClass([STMMessagePicture class]),
+                             NSStringFromClass([STMOutlet class]),
+                             NSStringFromClass([STMPartner class]),
+                             NSStringFromClass([STMPhotoReport class]),
+                             NSStringFromClass([STMPicker class]),
+                             NSStringFromClass([STMPickingOrder class]),
+                             NSStringFromClass([STMPickingOrderPosition class]),
+                             NSStringFromClass([STMPickingOrderPositionPicked class]),
+                             NSStringFromClass([STMPrice class]),
+                             NSStringFromClass([STMPriceType class]),
+                             NSStringFromClass([STMProductionInfoType class]),
+                             NSStringFromClass([STMQualityClass class]),
+                             NSStringFromClass([STMRecordStatus class]),
+                             NSStringFromClass([STMSaleOrder class]),
+                             NSStringFromClass([STMSaleOrderPosition class]),
+                             NSStringFromClass([STMSalesman class]),
+                             NSStringFromClass([STMSetting class]),
+                             NSStringFromClass([STMShipment class]),
+                             NSStringFromClass([STMShipmentPosition class]),
+                             NSStringFromClass([STMShipmentRoute class]),
+                             NSStringFromClass([STMShipmentRoutePoint class]),
+                             NSStringFromClass([STMShippingLocation class]),
+                             NSStringFromClass([STMShippingLocationPicture class]),
+                             NSStringFromClass([STMStock class]),
+                             NSStringFromClass([STMStockBatch class]),
+                             NSStringFromClass([STMStockBatchBarCode class]),
+                             NSStringFromClass([STMStockBatchOperation class]),
+                             NSStringFromClass([STMSupplyOrder class]),
+                             NSStringFromClass([STMSupplyOrderArticleDoc class]),
+                             NSStringFromClass([STMTrack class]),
+                             NSStringFromClass([STMUncashing class]),
+                             NSStringFromClass([STMUncashingPicture class]),
+                             NSStringFromClass([STMUncashingPlace class]),
+                             NSStringFromClass([STMWorkflow class]),
+                             NSStringFromClass([STMClientEntity class]),
+                             NSStringFromClass([STMEntity class])];
+    
+    NSUInteger totalCount = [self numberOfObjectsForEntityName:NSStringFromClass([STMDatum class])];
+    NSUInteger counter = totalCount;
+>>>>>>> picking
     
     for (NSString *entityName in entityNames) {
         

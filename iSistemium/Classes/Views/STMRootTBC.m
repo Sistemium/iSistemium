@@ -335,7 +335,7 @@
 
 - (void)setupIPadTabs {
     
-    NSLog(@"device is iPad");
+    NSLog(@"device is iPad type");
     
     NSArray *stcTabs = [STMAuthController authController].stcTabs;
 
@@ -345,7 +345,7 @@
 
 - (void)setupIPhoneTabs {
     
-    NSLog(@"device is iPhone");
+    NSLog(@"device is iPhone type");
 
     NSArray *iPhoneStcTabs = [self iPhoneStcTabsForStcTabs:[STMAuthController authController].stcTabs];
     
@@ -397,9 +397,9 @@
         
 // temporary tab for coding
 //        [self registerTabWithStoryboardParameters:
-//                                                    @{@"name": @"STMArticleBarcodes",
-//                                                      @"title": @"TAB TITLE",
-//                                                      @"imageName": @"refresh_barcode.png"}
+//                                                    @{@"name": @"STMScannerInfo",
+//                                                      @"title": @"Scanner Info",
+//                                                      @"imageName": @"scanner_info.png"}
 //         
 //                                          atIndex:stcTabs.count];
 // end of temporary tab

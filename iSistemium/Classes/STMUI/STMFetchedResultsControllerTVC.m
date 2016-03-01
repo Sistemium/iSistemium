@@ -105,8 +105,16 @@
     
     [self performFetchWithCompletionHandler:^(BOOL success) {
         
+        if (success) {
+            [self successfulFetchCallback];
+        }
+        
     }];
 
+}
+
+- (void)successfulFetchCallback {
+    [self.tableView reloadData];
 }
 
 - (void)performFetchWithCompletionHandler:(void (^)(BOOL success))completionHandler {
@@ -122,7 +130,6 @@
         
     } else {
         
-        [self.tableView reloadData];
         completionHandler(YES);
         
     }

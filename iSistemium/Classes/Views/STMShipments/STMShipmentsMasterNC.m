@@ -15,8 +15,13 @@
 @implementation STMShipmentsMasterNC
 
 - (void)viewDidLoad {
+    
     [super viewDidLoad];
-    // Do any additional setup after loading the view.
+    
+    if ([self respondsToSelector:@selector(interactivePopGestureRecognizer)]) {
+        self.interactivePopGestureRecognizer.enabled = NO;
+    }
+    
 }
 
 - (void)didReceiveMemoryWarning {

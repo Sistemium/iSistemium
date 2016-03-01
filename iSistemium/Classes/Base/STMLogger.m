@@ -109,10 +109,11 @@
     NSError *error;
     
     NSArray *jsonArray = [STMObjectsController jsonForObjectsWithParameters:parameters error:&error];
-    NSDictionary *jsonDic = @{@"objects": jsonArray,
-                              @"requestParameters": parameters};
 
     if (!error) {
+
+        NSDictionary *jsonDic = @{@"objects": jsonArray,
+                                  @"requestParameters": parameters};
 
         NSString *JSONString = [STMFunctions jsonStringFromDictionary:jsonDic];
         [self saveLogMessageWithText:JSONString type:@"important"];

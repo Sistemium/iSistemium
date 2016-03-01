@@ -125,7 +125,10 @@
     [subpredicates addObject:outletPredicate];
     
     if ([self.searchBar isFirstResponder] && ![self.searchBar.text isEqualToString:@""]) {
-        [subpredicates addObject:[NSPredicate predicateWithFormat:@"name CONTAINS[cd] %@", self.searchBar.text]];
+        
+        NSPredicate *subpredicate = [super textSearchPredicate];
+        if (subpredicate) [subpredicates addObject:subpredicate];
+        
     }
     
     [subpredicates addObject:[STMPredicate predicateWithNoFantoms]];

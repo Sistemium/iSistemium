@@ -10,6 +10,7 @@
 
 #import "STMStockBatchCodesTVC.h"
 #import "STMObjectsController.h"
+#import "STMSoundController.h"
 
 #import "STMSupplyOrdersProcessController.h"
 
@@ -42,6 +43,14 @@
     
     [self saveData];
     self.parentTVC.repeatLastOperation = YES;
+    
+    if ([sender isKindOfClass:[NSString class]]) {
+        
+        NSString *code = (NSString *)sender;
+        [self.parentTVC processStockBatchBarcode:code];
+        
+    }
+    
     [self dismissViewControllerAnimated:YES completion:nil];
 
 }
@@ -56,9 +65,33 @@
 
 - (void)addStockBatchCode:(NSString *)code {
     
-    [self.codesTVC addStockBatchCode:code];
-    [self updateRepeatButtonTitle];
+    if ([[self.codesTVC.stockBatchCodes valueForKeyPath:@"code"] containsObject:code]) {
+        
+        [STMSoundController alertSay:NSLocalizedString(@"THIS STOCK BATCH ALREADY EXIST", nil)];
+        
+    } else {
+    
+        if (self.codesTVC.stockBatchCodes.count == MAX_CODES_PER_BATCH) {
+            
+            if (self.repeatButton.enabled) {
+                
+                [self repeatButtonPressed:code];
+                
+            } else {
+                
+                [STMSoundController alertSay:NSLocalizedString(@"WRONG VOLUME TO REPEAT", nil)];
+                
+            }
+            
+        } else {
+            
+            [self.codesTVC addStockBatchCode:code];
+            [self updateRepeatButtonTitle];
+            
+        }
 
+    }
+    
 }
 
 - (void)saveData {
@@ -70,6 +103,8 @@
         
     } else if (self.supplyOrderArticleDoc) {
     
+        self.supplyOrderArticleDoc.packageRel = @(self.volumePicker.packageRel);
+        
         [STMSupplyOrdersProcessController createOperationForSupplyOrderArticleDoc:self.supplyOrderArticleDoc
                                                                         withCodes:[self.codesTVC.stockBatchCodes valueForKeyPath:@"code"]
                                                                         andVolume:self.volumePicker.selectedVolume];
@@ -112,7 +147,7 @@
             expectedNumberOfBatchesLabelText = [expectedNumberOfBatchesLabelText stringByAppendingString:@" + "];
             
             NSString *remainderString = [STMFunctions volumeStringWithVolume:remainder
-                                                               andPackageRel:[self.supplyOrderArticleDoc operatingArticle].packageRel.integerValue];
+                                                               andPackageRel:self.volumePicker.packageRel];
 
             expectedNumberOfBatchesLabelText = [expectedNumberOfBatchesLabelText stringByAppendingString:remainderString];
             
@@ -123,14 +158,19 @@
     } else {
         
         NSString *remainingVolumeString = [STMFunctions volumeStringWithVolume:remainingVolume
-                                                        andPackageRel:[self.supplyOrderArticleDoc operatingArticle].packageRel.integerValue];
+                                                        andPackageRel:self.volumePicker.packageRel];
 
         self.expectedNumberOfBatchesLabel.text = remainingVolumeString;
         
     }
     
     [self updateRepeatButtonTitle];
-    
+
+}
+
+- (void)packageRelSelected {
+    [self volumeSelected];
+
 }
 
 
@@ -168,7 +208,7 @@
         NSInteger barcodesCount = self.codesTVC.stockBatchCodes.count;
         
         NSString *volumeString = [STMFunctions volumeStringWithVolume:self.volumePicker.selectedVolume
-                                                        andPackageRel:[self.supplyOrderArticleDoc operatingArticle].packageRel.integerValue];
+                                                        andPackageRel:self.volumePicker.packageRel];
         
         NSString *pluralType = [STMFunctions pluralTypeForCount:barcodesCount];
         NSString *pluralString = [pluralType stringByAppendingString:@"CODES"];
@@ -195,12 +235,27 @@
     
 }
 
+- (NSString *)articleLabelForArticleDoc:(STMSupplyOrderArticleDoc *)articleDoc {
+    
+    NSString *articleLabel = [articleDoc operatingArticle].name;
+    articleLabel = [articleLabel stringByAppendingString:@"\n"];
+    
+    NSString *packageRelString = [NSString stringWithFormat:@"%@: %@", NSLocalizedString(@"PACKAGE REL", nil), [articleDoc operatingPackageRel]];
+    articleLabel = [articleLabel stringByAppendingString:packageRelString];
+
+    return articleLabel;
+    
+}
+
+
 #pragma mark - view lifecycle
 
 - (void)customInit {
     
     self.volumePicker.owner = self;
-    
+    self.volumePicker.showPackageRel = YES;
+    self.volumePicker.packageRelIsLocked = (self.supplyOrderArticleDoc.sourceOperations.count > 0);
+
     if (self.supplyOperation && [self.supplyOperation.sourceAgent isKindOfClass:[STMSupplyOrderArticleDoc class]]) {
         
         NSMutableArray *toolbarButtons = [self.toolbar.items mutableCopy];
@@ -210,30 +265,30 @@
 
         self.supplyOrderArticleDoc = (STMSupplyOrderArticleDoc *)self.supplyOperation.sourceAgent;
         
-        self.articleLabel.text = (self.supplyOrderArticleDoc.article) ? self.supplyOrderArticleDoc.article.name : self.supplyOrderArticleDoc.articleDoc.article.name;
-        
-        self.volumePicker.packageRel = (self.supplyOrderArticleDoc.article) ? self.supplyOrderArticleDoc.article.packageRel.integerValue : self.supplyOrderArticleDoc.articleDoc.article.packageRel.integerValue;
+        self.articleLabel.text = [self articleLabelForArticleDoc:self.supplyOrderArticleDoc];
 
-        self.volumePicker.volume = [self.supplyOrderArticleDoc volumeRemainingToSupply] + self.supplyOperation.volume.integerValue;
+        self.volumePicker.maxVolume = [self.supplyOrderArticleDoc volumeRemainingToSupply] + self.supplyOperation.volume.integerValue;
+
+        self.volumePicker.packageRel = [self.supplyOrderArticleDoc operatingPackageRel].integerValue;
         
         self.volumePicker.selectedVolume = self.supplyOperation.volume.integerValue;
-
+        
     } else if (self.supplyOrderArticleDoc) {
         
-        self.articleLabel.text = (self.supplyOrderArticleDoc.article) ? self.supplyOrderArticleDoc.article.name : self.supplyOrderArticleDoc.articleDoc.article.name;
-        
-        self.volumePicker.packageRel = (self.supplyOrderArticleDoc.article) ? self.supplyOrderArticleDoc.article.packageRel.integerValue : self.supplyOrderArticleDoc.articleDoc.article.packageRel.integerValue;
+        self.articleLabel.text = [self articleLabelForArticleDoc:self.supplyOrderArticleDoc];
 
-        self.volumePicker.volume = [self.supplyOrderArticleDoc volumeRemainingToSupply];
+        self.volumePicker.maxVolume = [self.supplyOrderArticleDoc volumeRemainingToSupply];
+
+        self.volumePicker.packageRel = [self.supplyOrderArticleDoc operatingPackageRel].integerValue;
         
         self.volumePicker.selectedVolume = (self.supplyOrderArticleDoc.sourceOperations.count > 0) ? [self.supplyOrderArticleDoc lastSourceOperationVolume] : 0;
 
         [self updateRepeatButtonTitle];
 
     }
-
-    [self volumeSelected];
     
+    [self volumeSelected];
+
 }
 
 - (void)viewDidLoad {
