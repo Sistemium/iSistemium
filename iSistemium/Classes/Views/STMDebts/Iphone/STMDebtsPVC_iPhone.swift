@@ -280,12 +280,12 @@ class STMDebtsPVC_iPhone: STMDebtsDetailsPVC, UIPopoverPresentationControllerDel
         super.addObservers()
         NSNotificationCenter.defaultCenter().addObserver(
             self,
-            selector: "showCashingLabel",
+            selector: "updateCashingLabel",
             name: "debtAdded",
             object: STMCashingProcessController.sharedInstance())
         NSNotificationCenter.defaultCenter().addObserver(
             self,
-            selector: "showCashingLabel",
+            selector: "updateCashingLabel",
             name: "debtRemoved",
             object: STMCashingProcessController.sharedInstance())
     }
