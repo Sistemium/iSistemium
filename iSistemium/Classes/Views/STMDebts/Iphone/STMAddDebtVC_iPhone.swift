@@ -8,26 +8,46 @@
 
 import UIKit
 
-class STMAddDebtVC_iPhone: STMAddDebtVC {
+@available(iOS 8.0, *)
+class STMAddDebtVC_iPhone: STMAddDebtVC,UIPopoverPresentationControllerDelegate {
     
-    @IBAction override func cancelButtonPressed(sender:AnyObject){
-        super.cancelButtonPressed(sender)
+    func closeButtonPressed(){
+        super.cancelButtonPressed(nil)
         self.dismissViewControllerAnimated(true, completion: nil)
     }
     
-    @IBAction override func doneButtonPressed(sender:AnyObject) {
-        super.doneButtonPressed(sender)
+    func addButtonPressed() {
+        super.doneButtonPressed(nil)
         if debtNdoc ?? "" != "" && debtSum ?? 0 != 0 {
             self.dismissViewControllerAnimated(true, completion: nil)
         }
     }
-    
-    override func textFieldShouldBeginEditing(textField: UITextField!) -> Bool {
-        return true
-    }
-    
+        
     override func viewDidLoad() {
         super.viewDidLoad()
         self.title = NSLocalizedString("ADD DEBT", comment: "")
+        self.navigationItem.leftBarButtonItem = UIBarButtonItem(title: NSLocalizedString("CLOSE", comment: ""), style: .Plain, target: self, action: "closeButtonPressed")
+        self.navigationItem.rightBarButtonItem = UIBarButtonItem(title: NSLocalizedString("ADD", comment: ""), style: .Plain, target: self, action: "addButtonPressed")
+    }
+    
+    func adaptivePresentationStyleForPresentationController(PC: UIPresentationController) -> UIModalPresentationStyle {
+        return .None
+    }
+    
+    override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
+        switch(segue.identifier!){
+        case "showDatePicker":
+            let datePickerVC = segue.destinationViewController as! STMDatePickerVC
+            datePickerVC.preferredContentSize = CGSizeMake(450,250)
+            datePickerVC.popoverPresentationController?.delegate = self
+            datePickerVC.popoverPresentationController?.sourceRect = dateButton!.frame
+            datePickerVC.popoverPresentationController?.sourceRect.origin.x -= 220
+            datePickerVC.popoverPresentationController?.sourceRect.origin.y -= 70
+            datePickerVC.parentVC = self
+            datePickerVC.selectedDate = self.selectedDate
+            view.endEditing(true)
+        default:
+            break
+        }
     }
 }

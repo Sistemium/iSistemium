@@ -144,17 +144,10 @@ class STMDebtsPVC_iPhone: STMDebtsDetailsPVC, UIPopoverPresentationControllerDel
     }
     
     override func addDebtButtonPressed(sender:AnyObject){
-        let popoverContent = self.storyboard!.instantiateViewControllerWithIdentifier("addDebtVC") as! STMAddDebtVC_iPhone
-        popoverContent.parentVC = self
-        let nav = UINavigationController(rootViewController: popoverContent)
-        nav.modalPresentationStyle = .Popover
-        let popover = nav.popoverPresentationController
-        popoverContent.preferredContentSize = CGSizeMake(388,205)
-        popover?.delegate = self
-        popover?.sourceView = self.view
-        var frame = (self.addDebtButton.valueForKey("view") as! UIView).frame
-        frame.origin.y -= 60
-        popover?.sourceRect = frame
+        let content = self.storyboard!.instantiateViewControllerWithIdentifier("addDebtVC") as! STMAddDebtVC_iPhone
+        content.parentVC = self
+        let nav = UINavigationController(rootViewController: content)
+        nav.modalPresentationStyle = .FullScreen
         self.presentViewController(nav, animated: true, completion: nil)
     }
     
@@ -175,6 +168,7 @@ class STMDebtsPVC_iPhone: STMDebtsDetailsPVC, UIPopoverPresentationControllerDel
         popoverContent.parentVC = self
         popoverContent.selectedDate = STMCashingProcessController.sharedInstance().selectedDate
         let nav = UINavigationController(rootViewController: popoverContent)
+        nav.navigationBar.hidden = true
         nav.modalPresentationStyle = .Popover
         let popover = nav.popoverPresentationController
         popoverContent.preferredContentSize = CGSizeMake(388,205)

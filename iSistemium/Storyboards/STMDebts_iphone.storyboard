@@ -330,7 +330,7 @@
                             <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="IYi-mS-pgs">
                                 <rect key="frame" x="162" y="143" width="218" height="33"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="14"/>
-                                <textInputTraits key="textInputTraits"/>
+                                <textInputTraits key="textInputTraits" autocorrectionType="no"/>
                             </textField>
                             <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="249" verticalHuggingPriority="249" horizontalCompressionResistancePriority="751" verticalCompressionResistancePriority="751" text="Debt sum label" textAlignment="right" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="eil-cA-C39">
                                 <rect key="frame" x="0.0" y="101.5" width="154.5" height="33"/>
@@ -346,25 +346,6 @@
                                     </mask>
                                 </variation>
                             </label>
-                            <toolbar opaque="NO" clearsContextBeforeDrawing="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="k9Z-c2-fKs">
-                                <rect key="frame" x="0.0" y="212" width="388" height="44"/>
-                                <constraints>
-                                    <constraint firstAttribute="height" constant="44" id="T81-sX-68f"/>
-                                </constraints>
-                                <items>
-                                    <barButtonItem systemItem="cancel" id="qkF-Ql-qta">
-                                        <connections>
-                                            <action selector="cancelButtonPressed:" destination="nfA-u5-XWd" id="mjC-y3-Yzj"/>
-                                        </connections>
-                                    </barButtonItem>
-                                    <barButtonItem style="plain" systemItem="flexibleSpace" id="Cqv-uS-xyv"/>
-                                    <barButtonItem systemItem="done" id="Gfg-EX-frb">
-                                        <connections>
-                                            <action selector="doneButtonPressed:" destination="nfA-u5-XWd" id="GM6-jM-eHW"/>
-                                        </connections>
-                                    </barButtonItem>
-                                </items>
-                            </toolbar>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="nIV-rV-KJo">
                                 <rect key="frame" x="162" y="20" width="218" height="33"/>
                                 <constraints>
@@ -375,7 +356,9 @@
                                     <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
                                 </state>
                                 <connections>
-                                    <segue destination="UWs-PU-OVg" kind="show" identifier="showDatePicker" id="K0l-xP-1k0"/>
+                                    <segue destination="UWs-PU-OVg" kind="popoverPresentation" identifier="showDatePicker" popoverAnchorView="nIV-rV-KJo" id="lBG-8A-udo">
+                                        <popoverArrowDirection key="popoverArrowDirection" up="YES" down="YES" left="YES" right="YES"/>
+                                    </segue>
                                 </connections>
                             </button>
                         </subviews>
@@ -392,8 +375,6 @@
                             <constraint firstItem="KDF-TV-R3G" firstAttribute="centerY" secondItem="eil-cA-C39" secondAttribute="centerY" id="JiU-Rh-rdo"/>
                             <constraint firstItem="nIV-rV-KJo" firstAttribute="top" secondItem="t2S-zr-Wr2" secondAttribute="top" id="M6b-Mr-zbR"/>
                             <constraint firstItem="nIV-rV-KJo" firstAttribute="leading" secondItem="t2S-zr-Wr2" secondAttribute="trailing" constant="8" symbolic="YES" id="M7S-7x-vVa"/>
-                            <constraint firstItem="k9Z-c2-fKs" firstAttribute="bottom" secondItem="l1c-QD-xmT" secondAttribute="top" id="NFz-cv-jT7"/>
-                            <constraint firstAttribute="trailing" secondItem="k9Z-c2-fKs" secondAttribute="trailing" id="STo-wf-PGi"/>
                             <constraint firstItem="IYi-mS-pgs" firstAttribute="height" secondItem="t2S-zr-Wr2" secondAttribute="height" id="WIg-uC-pqq"/>
                             <constraint firstItem="wzR-Od-CqX" firstAttribute="top" secondItem="nIV-rV-KJo" secondAttribute="bottom" constant="8" symbolic="YES" id="WMI-Ty-HMl"/>
                             <constraint firstItem="wzR-Od-CqX" firstAttribute="leading" secondItem="KDF-TV-R3G" secondAttribute="leading" id="ZO6-th-VhE"/>
@@ -404,7 +385,6 @@
                             <constraint firstItem="t2S-zr-Wr2" firstAttribute="top" secondItem="Kb1-5I-3xy" secondAttribute="bottom" id="gHP-I9-ptC"/>
                             <constraint firstItem="Z6V-t9-x4U" firstAttribute="leading" secondItem="jx1-bw-bWJ" secondAttribute="leading" id="gcn-Lu-RUg"/>
                             <constraint firstItem="eil-cA-C39" firstAttribute="leading" secondItem="OrW-eN-Pfh" secondAttribute="leadingMargin" constant="-20" id="gtt-tf-uRC"/>
-                            <constraint firstItem="k9Z-c2-fKs" firstAttribute="leading" secondItem="OrW-eN-Pfh" secondAttribute="leading" id="heI-Jj-VqI"/>
                             <constraint firstItem="wzR-Od-CqX" firstAttribute="leading" secondItem="jx1-bw-bWJ" secondAttribute="trailing" constant="8" symbolic="YES" id="me9-3t-KUn"/>
                             <constraint firstItem="jx1-bw-bWJ" firstAttribute="height" secondItem="t2S-zr-Wr2" secondAttribute="height" id="mlJ-UK-CYc"/>
                             <constraint firstItem="t2S-zr-Wr2" firstAttribute="leading" secondItem="OrW-eN-Pfh" secondAttribute="leadingMargin" constant="-20" id="noW-4s-YA6"/>
@@ -419,12 +399,10 @@
                     <freeformSimulatedSizeMetrics key="simulatedDestinationMetrics"/>
                     <size key="freeformSize" width="388" height="256"/>
                     <connections>
-                        <outlet property="cancelButton" destination="qkF-Ql-qta" id="Ofm-eX-fgW"/>
                         <outlet property="commentLabel" destination="Z6V-t9-x4U" id="PUg-Yl-6hB"/>
                         <outlet property="commentTextField" destination="IYi-mS-pgs" id="hVf-K8-Yqy"/>
                         <outlet property="dateButton" destination="nIV-rV-KJo" id="9ZE-3U-Uqq"/>
                         <outlet property="dateLabel" destination="t2S-zr-Wr2" id="xhX-cx-PCC"/>
-                        <outlet property="doneButton" destination="Gfg-EX-frb" id="HCi-Kd-o5U"/>
                         <outlet property="ndocLabel" destination="jx1-bw-bWJ" id="Pqo-4c-i5b"/>
                         <outlet property="ndocTextField" destination="wzR-Od-CqX" id="ETW-1d-HLa"/>
                         <outlet property="sumLabel" destination="eil-cA-C39" id="jHi-47-ILw"/>
@@ -435,7 +413,7 @@
             </objects>
             <point key="canvasLocation" x="6708" y="566"/>
         </scene>
-        <!--Date PickerVC-->
+        <!--Select Date-->
         <scene sceneID="FT6-l9-jzI">
             <objects>
                 <viewController storyboardIdentifier="datePickerVC" id="UWs-PU-OVg" customClass="STMDatePickerVC" sceneMemberID="viewController">
@@ -444,11 +422,26 @@
                         <viewControllerLayoutGuide type="bottom" id="6cB-t7-jo4"/>
                     </layoutGuides>
                     <view key="view" contentMode="scaleToFill" id="Et5-ZH-KO0">
-                        <rect key="frame" x="0.0" y="0.0" width="320" height="216"/>
+                        <rect key="frame" x="0.0" y="0.0" width="380" height="320"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                         <subviews>
-                            <datePicker contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" datePickerMode="date" minuteInterval="1" translatesAutoresizingMaskIntoConstraints="NO" id="a5C-dQ-hbc">
-                                <rect key="frame" x="0.0" y="0.0" width="320" height="216"/>
+                            <toolbar opaque="NO" clearsContextBeforeDrawing="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="YAq-rA-pTe">
+                                <rect key="frame" x="0.0" y="276" width="380" height="44"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="44" id="BH7-D9-2IT"/>
+                                </constraints>
+                                <items>
+                                    <barButtonItem style="plain" systemItem="flexibleSpace" id="tcn-3m-NwI"/>
+                                    <barButtonItem title="Close" id="6WP-aH-asS">
+                                        <connections>
+                                            <action selector="close:" destination="UWs-PU-OVg" id="lrM-pV-R4i"/>
+                                        </connections>
+                                    </barButtonItem>
+                                    <barButtonItem style="plain" systemItem="flexibleSpace" id="pkR-yc-ZIb"/>
+                                </items>
+                            </toolbar>
+                            <datePicker contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" datePickerMode="date" minuteInterval="1" translatesAutoresizingMaskIntoConstraints="NO" id="a5C-dQ-hbc">
+                                <rect key="frame" x="0.0" y="44" width="380" height="232"/>
                                 <date key="date" timeIntervalSinceReferenceDate="430049474.30765301">
                                     <!--2014-08-18 10:11:14 +0000-->
                                 </date>
@@ -456,19 +449,40 @@
                                     <action selector="dateValueChanged:" destination="UWs-PU-OVg" eventType="valueChanged" id="jYj-JK-pOP"/>
                                 </connections>
                             </datePicker>
+                            <navigationBar contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="3Pa-e0-Klq">
+                                <rect key="frame" x="0.0" y="0.0" width="380" height="44"/>
+                                <items>
+                                    <navigationItem title="Select Date" id="mR6-Wq-0SY"/>
+                                </items>
+                            </navigationBar>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
+                        <constraints>
+                            <constraint firstItem="a5C-dQ-hbc" firstAttribute="leading" secondItem="3Pa-e0-Klq" secondAttribute="leading" id="0P5-LV-Pg4"/>
+                            <constraint firstItem="a5C-dQ-hbc" firstAttribute="centerY" secondItem="Et5-ZH-KO0" secondAttribute="centerY" id="33w-vf-flx"/>
+                            <constraint firstItem="a5C-dQ-hbc" firstAttribute="leading" secondItem="YAq-rA-pTe" secondAttribute="leading" id="43t-YV-Ztb"/>
+                            <constraint firstItem="a5C-dQ-hbc" firstAttribute="bottom" secondItem="YAq-rA-pTe" secondAttribute="top" id="KXp-xK-J15"/>
+                            <constraint firstItem="YAq-rA-pTe" firstAttribute="bottom" secondItem="6cB-t7-jo4" secondAttribute="top" id="VAa-rY-sBc"/>
+                            <constraint firstItem="a5C-dQ-hbc" firstAttribute="top" secondItem="3Pa-e0-Klq" secondAttribute="bottom" id="X4T-lP-zBg"/>
+                            <constraint firstItem="YAq-rA-pTe" firstAttribute="leading" secondItem="Et5-ZH-KO0" secondAttribute="leading" id="kTW-nF-qRl"/>
+                            <constraint firstItem="a5C-dQ-hbc" firstAttribute="trailing" secondItem="YAq-rA-pTe" secondAttribute="trailing" id="ss7-AJ-dMs"/>
+                            <constraint firstItem="a5C-dQ-hbc" firstAttribute="trailing" secondItem="3Pa-e0-Klq" secondAttribute="trailing" id="uwQ-QV-ZhT"/>
+                            <constraint firstItem="YAq-rA-pTe" firstAttribute="width" secondItem="Et5-ZH-KO0" secondAttribute="width" id="xh2-Oz-Xw2"/>
+                        </constraints>
                     </view>
                     <extendedEdge key="edgesForExtendedLayout"/>
+                    <navigationItem key="navigationItem" title="Select Date" id="wmi-zn-Yb2"/>
                     <freeformSimulatedSizeMetrics key="simulatedDestinationMetrics"/>
-                    <size key="freeformSize" width="320" height="216"/>
+                    <size key="freeformSize" width="380" height="320"/>
                     <connections>
+                        <outlet property="closeButton" destination="6WP-aH-asS" id="0s3-UF-ouF"/>
                         <outlet property="datePicker" destination="a5C-dQ-hbc" id="hoP-Mf-h26"/>
+                        <outlet property="navigationBar" destination="3Pa-e0-Klq" id="CWD-R4-ceG"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="Ciu-F6-5RR" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="6708" y="1026"/>
+            <point key="canvasLocation" x="6704" y="1062"/>
         </scene>
     </scenes>
 </document>
