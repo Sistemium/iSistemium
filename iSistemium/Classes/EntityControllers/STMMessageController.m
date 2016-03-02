@@ -382,7 +382,10 @@
     NSArray *messageArray = [self sharedInstance].messagesResultsController.fetchedObjects;
     NSArray *readMessageArray = [self sharedInstance].readMessagesResultsController.fetchedObjects;
     
-    return messageArray.count - readMessageArray.count;
+    NSInteger unreadMessageCount = messageArray.count - readMessageArray.count;
+    unreadMessageCount = (unreadMessageCount < 0) ? 0 : unreadMessageCount;
+    
+    return unreadMessageCount;
 
 }
 
