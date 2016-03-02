@@ -8,14 +8,34 @@
 
 import UIKit
 
-class STMOutletCashingVC_iPhone: STMOutletCashingVC {
-    override func viewDidLoad() {
-        super.viewDidLoad()
-        tableView!.rowHeight = UITableViewAutomaticDimension
-        tableView!.estimatedRowHeight = 100
-        tableView!.registerNib(UINib(nibName: "STMCustom6TVCell", bundle: nil), forCellReuseIdentifier: "STMCustom6TVCell")
+private extension String {
+    var first: String {
+        return String(characters.prefix(1))
     }
+    var last: String {
+        return String(characters.suffix(1))
+    }
+    var uppercaseFirst: String {
+        return first.uppercaseString + String(characters.dropFirst())
+    }
+}
 
+class STMOutletCashingVC_iPhone: STMOutletCashingVC {
+
+    // MARK: table view data
+    
+    override func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
+        let cell = tableView.dequeueReusableCellWithIdentifier("STMCustom6TVCell",forIndexPath:indexPath) as! STMCustom6TVCell
+        let cashing = self.resultsController.objectAtIndexPath(indexPath) as! STMCashing
+        
+        cell.titleLabel?.attributedText = self.textLabelForDebt(cashing, withFont:cell.titleLabel!.font)
+        cell.detailLabel?.attributedText = self.detailTextLabelForDebt(cashing, withFont:cell.detailLabel!.font)
+        cell.messageLabel?.attributedText = self.messageTextLabelForDebt(cashing, withFont:cell.detailLabel!.font)
+        cell.selectionStyle = .None
+        cell.titleLabel?.adjustsFontSizeToFitWidth = true
+        cell.detailLabel?.adjustsFontSizeToFitWidth = true
+        return cell
+    }
     
     func textLabelForDebt(cashing: STMCashing, withFont font: UIFont!) -> NSMutableAttributedString! {
         var backgroundColor :UIColor
@@ -113,17 +133,12 @@ class STMOutletCashingVC_iPhone: STMOutletCashingVC {
         return text
     }
     
-    override func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCellWithIdentifier("STMCustom6TVCell",forIndexPath:indexPath) as! STMCustom6TVCell
-        let cashing = self.resultsController.objectAtIndexPath(indexPath) as! STMCashing
+    // MARK: view lifecycle
     
-        cell.titleLabel?.attributedText = self.textLabelForDebt(cashing, withFont:cell.titleLabel!.font)
-        cell.detailLabel?.attributedText = self.detailTextLabelForDebt(cashing, withFont:cell.detailLabel!.font)
-        cell.messageLabel?.attributedText = self.messageTextLabelForDebt(cashing, withFont:cell.detailLabel!.font)
-        cell.selectionStyle = .None
-        cell.titleLabel?.adjustsFontSizeToFitWidth = true
-        cell.detailLabel?.adjustsFontSizeToFitWidth = true
-        return cell
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        tableView!.rowHeight = UITableViewAutomaticDimension
+        tableView!.estimatedRowHeight = 100
+        tableView!.registerNib(UINib(nibName: "STMCustom6TVCell", bundle: nil), forCellReuseIdentifier: "STMCustom6TVCell")
     }
-
 }

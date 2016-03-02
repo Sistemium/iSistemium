@@ -11,6 +11,8 @@ import UIKit
 @available(iOS 8.0, *)
 class STMAddDebtVC_iPhone: STMAddDebtVC,UIPopoverPresentationControllerDelegate {
     
+    // MARK: Selectors
+    
     func closeButtonPressed(){
         super.cancelButtonPressed(nil)
         self.dismissViewControllerAnimated(true, completion: nil)
@@ -22,17 +24,14 @@ class STMAddDebtVC_iPhone: STMAddDebtVC,UIPopoverPresentationControllerDelegate 
             self.dismissViewControllerAnimated(true, completion: nil)
         }
     }
-        
-    override func viewDidLoad() {
-        super.viewDidLoad()
-        self.title = NSLocalizedString("ADD DEBT", comment: "")
-        self.navigationItem.leftBarButtonItem = UIBarButtonItem(title: NSLocalizedString("CLOSE", comment: ""), style: .Plain, target: self, action: "closeButtonPressed")
-        self.navigationItem.rightBarButtonItem = UIBarButtonItem(title: NSLocalizedString("ADD", comment: ""), style: .Plain, target: self, action: "addButtonPressed")
-    }
+    
+    // MARK: UIPopoverPresentationControllerDelegate
     
     func adaptivePresentationStyleForPresentationController(PC: UIPresentationController) -> UIModalPresentationStyle {
         return .None
     }
+    
+    // MARK: Navigation
     
     override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
         switch(segue.identifier!){
@@ -50,4 +49,15 @@ class STMAddDebtVC_iPhone: STMAddDebtVC,UIPopoverPresentationControllerDelegate 
             break
         }
     }
+    
+    // MARK: view lifecycle
+    
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        self.title = NSLocalizedString("ADD DEBT", comment: "")
+        self.navigationItem.leftBarButtonItem = UIBarButtonItem(title: NSLocalizedString("CLOSE", comment: ""), style: .Plain, target: self, action: "closeButtonPressed")
+        self.navigationItem.rightBarButtonItem = UIBarButtonItem(title: NSLocalizedString("ADD", comment: ""), style: .Plain, target: self, action: "addButtonPressed")
+    }
+    
+    
 }

@@ -9,7 +9,7 @@
 import UIKit
 import MessageUI
 
-extension String {
+private extension String {
     var first: String {
         return String(characters.prefix(1))
     }
@@ -23,12 +23,7 @@ extension String {
 
 class STMOutletDebtsTVC_iPhone: STMOutletDebtsTVC {
     
-    override func viewDidLoad() {
-        super.viewDidLoad()
-        tableView.rowHeight = UITableViewAutomaticDimension
-        tableView.estimatedRowHeight = 100
-        tableView.registerNib(UINib(nibName: "STMThreeLinesAndCheckboxTVCell", bundle: nil), forCellReuseIdentifier: "debtDetailsCell")
-    }
+    // MARK: Override superclass
     
     override func showLongPressActionSheetFromView(view:UIView) {
         if view.isKindOfClass(UITableViewCell) {
@@ -46,6 +41,64 @@ class STMOutletDebtsTVC_iPhone: STMOutletDebtsTVC {
             actionSheet.tag = 111
             actionSheet.showFromRect(cell.frame, inView: self.tableView, animated: true)
         }
+    }
+    
+    // MARK: Table view data
+    
+    override func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
+        let cell = tableView.dequeueReusableCellWithIdentifier("debtDetailsCell",forIndexPath:indexPath) as! STMThreeLinesAndCheckboxTVCell
+        let debt = self.resultsController.objectAtIndexPath(indexPath)
+        cell.titleLabel?.attributedText = self.textLabelForDebt(debt as! STMDebt, withFont:cell.titleLabel!.font)
+        cell.detailLabel?.attributedText = self.detailTextLabelForDebt(debt as! STMDebt, withFont:cell.detailLabel!.font)
+        cell.messageLabel?.attributedText = self.messageTextLabelForDebt(debt as! STMDebt, withFont:cell.detailLabel!.font)
+        cell.selectionStyle = .None
+        self.addLongPressToCell(cell)
+        return cell
+    }
+    
+    override func tableView(tableView: UITableView, willDisplayCell cell: UITableViewCell, forRowAtIndexPath indexPath: NSIndexPath) {
+        let customCell = cell as! STMThreeLinesAndCheckboxTVCell
+        let debt = self.resultsController.objectAtIndexPath(indexPath)
+        customCell.contentView.viewWithTag(1)?.removeFromSuperview()
+        customCell.tintColor = STMConstants.ACTIVE_BLUE_COLOR
+        customCell.accessoryType = .None
+        customCell.titleLabel!.backgroundColor = UIColor.clearColor()
+        customCell.detailLabel!.backgroundColor = UIColor.clearColor()
+        customCell.checkboxView.viewWithTag(444)?.removeFromSuperview()
+        if STMCashingProcessController.sharedInstance().state == .Running {
+            var fillWidth: CGFloat = 0
+            if debt.xid != nil && STMCashingProcessController.sharedInstance().debtsDictionary.allKeys.contains({$0 as? NSObject == debt.xid}) {
+                let cashingSum = STMCashingProcessController.sharedInstance().debtsDictionary[debt.xid!!]![1]
+                fillWidth = CGFloat(cashingSum.decimalNumberByDividingBy(debt.calculatedSum).doubleValue)
+                customCell.accessoryType = .DetailButton
+                let checkLabel = STMLabel(frame: customCell.checkboxView.bounds)
+                checkLabel.adjustsFontSizeToFitWidth = true
+                checkLabel.text = "✓"
+                checkLabel.textColor = STMConstants.ACTIVE_BLUE_COLOR
+                checkLabel.textAlignment = .Left
+                checkLabel.tag = 444
+                customCell.checkboxView.addSubview(checkLabel)
+            } else {
+                customCell.accessoryType = .None
+            }
+            if (fillWidth != 0) {
+                fillWidth *= customCell.frame.size.width
+                if (fillWidth < 10) {
+                    fillWidth = 10
+                }
+                let rect = CGRectMake(0, 1, fillWidth, customCell.frame.size.height-2)
+                let view = UIView(frame:rect)
+                view.backgroundColor = STMConstants.STM_SUPERLIGHT_BLUE_COLOR
+                view.tag = 1
+                customCell.contentView.addSubview(view)
+                customCell.contentView.sendSubviewToBack(view)
+            }
+        }
+        
+    }
+    
+    override func tableView(tableView: UITableView, accessoryButtonTappedForRowWithIndexPath indexPath: NSIndexPath) {
+        performSegueWithIdentifier("showDebtDetails", sender: resultsController.objectAtIndexPath(indexPath) as! STMDebt)
     }
     
     override func textLabelForDebt(debt: STMDebt!, withFont font: UIFont!) -> NSMutableAttributedString! {
@@ -77,6 +130,7 @@ class STMOutletDebtsTVC_iPhone: STMOutletDebtsTVC {
         }
         return text
     }
+    
     
     override func detailTextLabelForDebt(debt: STMDebt!, withFont font: UIFont!) -> NSMutableAttributedString! {
         var backgroundColor :UIColor
@@ -177,62 +231,7 @@ class STMOutletDebtsTVC_iPhone: STMOutletDebtsTVC {
         return text
     }
     
-    override func tableView(tableView: UITableView, willDisplayCell cell: UITableViewCell, forRowAtIndexPath indexPath: NSIndexPath) {
-        let customCell = cell as! STMThreeLinesAndCheckboxTVCell
-        let debt = self.resultsController.objectAtIndexPath(indexPath)
-        customCell.contentView.viewWithTag(1)?.removeFromSuperview()
-        customCell.tintColor = STMConstants.ACTIVE_BLUE_COLOR
-        customCell.accessoryType = .None
-        customCell.titleLabel!.backgroundColor = UIColor.clearColor()
-        customCell.detailLabel!.backgroundColor = UIColor.clearColor()
-        customCell.checkboxView.viewWithTag(444)?.removeFromSuperview()
-        if STMCashingProcessController.sharedInstance().state == .Running {
-            var fillWidth: CGFloat = 0
-            if debt.xid != nil && STMCashingProcessController.sharedInstance().debtsDictionary.allKeys.contains({$0 as? NSObject == debt.xid}) {
-                let cashingSum = STMCashingProcessController.sharedInstance().debtsDictionary[debt.xid!!]![1]
-                fillWidth = CGFloat(cashingSum.decimalNumberByDividingBy(debt.calculatedSum).doubleValue)
-                customCell.accessoryType = .DetailButton
-                let checkLabel = STMLabel(frame: customCell.checkboxView.bounds)
-                checkLabel.adjustsFontSizeToFitWidth = true
-                checkLabel.text = "✓"
-                checkLabel.textColor = STMConstants.ACTIVE_BLUE_COLOR
-                checkLabel.textAlignment = .Left
-                checkLabel.tag = 444
-                customCell.checkboxView.addSubview(checkLabel)
-            } else {
-                customCell.accessoryType = .None
-            }
-            if (fillWidth != 0) {
-                fillWidth *= customCell.frame.size.width
-                if (fillWidth < 10) {
-                    fillWidth = 10
-                }
-                let rect = CGRectMake(0, 1, fillWidth, customCell.frame.size.height-2)
-                let view = UIView(frame:rect)
-                view.backgroundColor = STMConstants.STM_SUPERLIGHT_BLUE_COLOR
-                view.tag = 1
-                customCell.contentView.addSubview(view)
-                customCell.contentView.sendSubviewToBack(view)
-            }
-        }
-        
-    }
-    
-    
-    override func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCellWithIdentifier("debtDetailsCell",forIndexPath:indexPath) as! STMThreeLinesAndCheckboxTVCell
-        let debt = self.resultsController.objectAtIndexPath(indexPath)
-        cell.titleLabel?.attributedText = self.textLabelForDebt(debt as! STMDebt, withFont:cell.titleLabel!.font)
-        cell.detailLabel?.attributedText = self.detailTextLabelForDebt(debt as! STMDebt, withFont:cell.detailLabel!.font)
-        cell.messageLabel?.attributedText = self.messageTextLabelForDebt(debt as! STMDebt, withFont:cell.detailLabel!.font)
-        cell.selectionStyle = .None
-        self.addLongPressToCell(cell)      
-        return cell
-    }
-    
-    override func tableView(tableView: UITableView, accessoryButtonTappedForRowWithIndexPath indexPath: NSIndexPath) {
-        performSegueWithIdentifier("showDebtDetails", sender: resultsController.objectAtIndexPath(indexPath) as! STMDebt)
-    }
+    // MARK: Navigation
     
     override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
         super.prepareForSegue(segue, sender: sender)
@@ -241,5 +240,13 @@ class STMOutletDebtsTVC_iPhone: STMOutletDebtsTVC {
         }
     }
     
+    // MARK: View lifecycle
+    
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        tableView.rowHeight = UITableViewAutomaticDimension
+        tableView.estimatedRowHeight = 100
+        tableView.registerNib(UINib(nibName: "STMThreeLinesAndCheckboxTVCell", bundle: nil), forCellReuseIdentifier: "debtDetailsCell")
+    }
 }
 
