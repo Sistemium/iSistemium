@@ -42,6 +42,8 @@ class STMOutletsTVC_iPhone: STMOutletsTVC {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        tableView.rowHeight = UITableViewAutomaticDimension
+        tableView.estimatedRowHeight = 2.0
     }
     
 }
