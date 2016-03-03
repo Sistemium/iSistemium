@@ -15,6 +15,7 @@
     "STMSupplyOrders"       : "STMSupplyOrders_iphone",
     "STMUncashing"          : null,
     "STMWebView"            : "STMWebView",
+    "STMWKWebView"          : "STMWKWebView",
     "STMShippingLocations"  : "STMShippingLocations",
     "STMScannerInfo"        : "STMScannerInfo"
 }

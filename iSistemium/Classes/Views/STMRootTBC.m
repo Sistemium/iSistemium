@@ -396,12 +396,12 @@
         [self processTabsArray:stcTabs];
         
 // temporary tab for coding
-        [self registerTabWithStoryboardParameters:
-                                                    @{@"name": @"STMWKWebView",
-                                                      @"title": @"JSPicking",
-                                                      @"imageName": @"move_by_trolley.png"}
-         
-                                          atIndex:stcTabs.count];
+//        [self registerTabWithStoryboardParameters:
+//                                                    @{@"name": @"STMWKWebView",
+//                                                      @"title": @"JSPicking",
+//                                                      @"imageName": @"move_by_trolley.png"}
+//         
+//                                          atIndex:stcTabs.count];
 // end of temporary tab
 
     }

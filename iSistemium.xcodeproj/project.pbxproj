@@ -2668,7 +2668,6 @@
 				2CC5D1CE1C85C70000193CD7 /* STMCatalog.storyboard */,
 				2CC5D1CF1C85C70000193CD7 /* STMDebts.storyboard */,
 				2CC5D1D01C85C70000193CD7 /* STMInventory.storyboard */,
-				2CC5D4A21C85D93800193CD7 /* STMWKWebView.storyboard */,
 				2CC5D1D11C85C70000193CD7 /* STMLogs.storyboard */,
 				2CC5D1D21C85C70000193CD7 /* STMMessages.storyboard */,
 				2CC5D1D31C85C70000193CD7 /* STMMessageVC.storyboard */,
@@ -2685,6 +2684,7 @@
 				2CC5D1DE1C85C70000193CD7 /* STMSupplyOrders.storyboard */,
 				2CC5D1DF1C85C70000193CD7 /* STMUncashing.storyboard */,
 				2CC5D1E01C85C70000193CD7 /* STMWebView.storyboard */,
+				2CC5D4A21C85D93800193CD7 /* STMWKWebView.storyboard */,
 			);
 			path = Storyboards;
 			sourceTree = "<group>";
