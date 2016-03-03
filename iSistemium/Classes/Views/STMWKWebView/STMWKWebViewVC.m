@@ -11,6 +11,8 @@
 
 #import "STMSessionManager.h"
 #import "STMAuthController.h"
+#import "STMBarCodeScanner.h"
+#import "STMSoundController.h"
 
 #import "STMStoryboard.h"
 #import "STMFunctions.h"
@@ -22,11 +24,14 @@
 #define WK_MESSAGE_SCANNER_ON @"barCodeScannerOn"
 
 
-@interface STMWKWebViewVC () <WKNavigationDelegate, WKScriptMessageHandler>
+@interface STMWKWebViewVC () <WKNavigationDelegate, WKScriptMessageHandler, STMBarCodeScannerDelegate>
 
 @property (nonatomic, strong) WKWebView *webView;
 @property (nonatomic) BOOL isAuthorizing;
 @property (nonatomic, strong) STMSpinnerView *spinnerView;
+
+@property (nonatomic, strong) STMBarCodeScanner *iOSModeBarCodeScanner;
+@property (nonatomic, strong) NSString *receiveBarCodeJSFunction;
 
 
 @end
@@ -132,6 +137,29 @@
 }
 
 
+#pragma mark - webViewInit
+
+- (void)webViewInit {
+    
+    WKWebViewConfiguration *configuration = [[WKWebViewConfiguration alloc] init];
+    
+    WKUserContentController *contentController = [[WKUserContentController alloc] init];
+    [contentController addScriptMessageHandler:self name:WK_MESSAGE_POST];
+    [contentController addScriptMessageHandler:self name:WK_MESSAGE_GET];
+    [contentController addScriptMessageHandler:self name:WK_MESSAGE_SCANNER_ON];
+    
+    configuration.userContentController = contentController;
+    
+    self.webView = [[WKWebView alloc] initWithFrame:self.view.bounds configuration:configuration];
+    
+    [self.view addSubview:self.webView];
+    
+    self.webView.navigationDelegate = self;
+    [self loadWebView];
+    
+}
+
+
 #pragma mark - WKNavigationDelegate
 
 - (void)webView:(WKWebView *)webView decidePolicyForNavigationAction:(WKNavigationAction *)navigationAction decisionHandler:(void (^)(WKNavigationActionPolicy))decisionHandler {
@@ -217,32 +245,112 @@
         NSLog(@"GET");
 
     } else if ([message.name isEqualToString:WK_MESSAGE_SCANNER_ON]) {
-        
-        NSLog(@"GET");
+
+        [self startBarcodeScanning];
+        self.receiveBarCodeJSFunction = message.body;
         
     }
     
 }
 
 
-#pragma mark - webViewInit
+#pragma mark - barcode scanning
 
-- (void)webViewInit {
-    
-    WKWebViewConfiguration *configuration = [[WKWebViewConfiguration alloc] init];
-    WKUserContentController *contentController = [[WKUserContentController alloc] init];
-    [contentController addScriptMessageHandler:self name:WK_MESSAGE_POST];
-    [contentController addScriptMessageHandler:self name:WK_MESSAGE_GET];
-    [contentController addScriptMessageHandler:self name:WK_MESSAGE_SCANNER_ON];
+- (void)startBarcodeScanning {
+    [self startIOSModeScanner];
+}
 
-    configuration.userContentController = contentController;
+- (void)startIOSModeScanner {
     
-    self.webView = [[WKWebView alloc] initWithFrame:self.view.bounds configuration:configuration];
+    self.iOSModeBarCodeScanner = [[STMBarCodeScanner alloc] initWithMode:STMBarCodeScannerIOSMode];
+    self.iOSModeBarCodeScanner.delegate = self;
+    [self.iOSModeBarCodeScanner startScan];
     
-    [self.view addSubview:self.webView];
+    if ([self.iOSModeBarCodeScanner isDeviceConnected]) {
+        [self scannerIsConnected];
+    }
     
-    self.webView.navigationDelegate = self;
-    [self loadWebView];
+}
+
+- (void)stopBarcodeScanning {
+    [self stopIOSModeScanner];
+}
+
+- (void)stopIOSModeScanner {
+    
+    [self.iOSModeBarCodeScanner stopScan];
+    self.iOSModeBarCodeScanner = nil;
+    
+    [self scannerIsDisconnected];
+    
+}
+
+- (void)scannerIsConnected {
+
+}
+
+- (void)scannerIsDisconnected {
+    
+}
+
+
+#pragma mark - STMBarCodeScannerDelegate
+
+- (UIView *)viewForScanner:(STMBarCodeScanner *)scanner {
+    return self.view;
+}
+
+- (void)barCodeScanner:(STMBarCodeScanner *)scanner receiveBarCodeScan:(STMBarCodeScan *)barCodeScan withType:(STMBarCodeScannedType)type {
+    
+}
+
+- (void)barCodeScanner:(STMBarCodeScanner *)scanner receiveBarCode:(NSString *)barcode withType:(STMBarCodeScannedType)type {
+    
+    if (self.isInActiveTab) {
+        
+        NSMutableArray *arguments = @[].mutableCopy;
+
+        [arguments addObject:barcode];
+        
+        NSString *typeString = [STMBarCodeController barCodeTypeStringForType:type];
+        
+        if (typeString) [arguments addObject:typeString];
+        
+        NSString *jsFunction = [NSString stringWithFormat:@"%@(%@)", self.receiveBarCodeJSFunction, [arguments componentsJoinedByString:@","]];
+        
+        [self.webView evaluateJavaScript:jsFunction completionHandler:^(id _Nullable result, NSError * _Nullable error) {
+            
+        }];
+        
+    }
+    
+}
+
+- (void)barCodeScanner:(STMBarCodeScanner *)scanner receiveError:(NSError *)error {
+    
+}
+
+- (void)deviceArrivalForBarCodeScanner:(STMBarCodeScanner *)scanner {
+    
+    if (scanner == self.iOSModeBarCodeScanner) {
+        
+        [STMSoundController say:NSLocalizedString(@"SCANNER DEVICE ARRIVAL", nil)];
+        
+        [self scannerIsConnected];
+        
+    }
+    
+}
+
+- (void)deviceRemovalForBarCodeScanner:(STMBarCodeScanner *)scanner {
+    
+    if (scanner == self.iOSModeBarCodeScanner) {
+        
+        [STMSoundController say:NSLocalizedString(@"SCANNER DEVICE REMOVAL", nil)];
+        
+        [self scannerIsDisconnected];
+        
+    }
     
 }
 

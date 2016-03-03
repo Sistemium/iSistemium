@@ -167,6 +167,33 @@
     
 }
 
++ (NSString *)barCodeTypeStringForType:(STMBarCodeScannedType)type {
+    
+    NSString *typeString = nil;
+    
+    switch (type) {
+        case STMBarCodeTypeUnknown: {
+            typeString = @"Unknown";
+            break;
+        }
+        case STMBarCodeTypeArticle: {
+            typeString = @"Article";
+            break;
+        }
+        case STMBarCodeTypeExciseStamp: {
+            typeString = @"ExciseStamp";
+            break;
+        }
+        case STMBarCodeTypeStockBatch: {
+            typeString = @"StockBatch";
+            break;
+        }
+    }
+
+    return typeString;
+    
+}
+
 + (void)addBarcode:(NSString *)barcode toArticle:(STMArticle *)article {
     
     STMArticleBarCode *articleBarcode = (STMArticleBarCode *)[STMObjectsController newObjectForEntityName:NSStringFromClass([STMArticleBarCode class]) isFantom:NO];
