@@ -10,7 +10,7 @@
 
 @interface STMWKWebViewVC : UIViewController
 
-- (void)loadWebView;
+- (void)reloadWebView;
 
 
 @end

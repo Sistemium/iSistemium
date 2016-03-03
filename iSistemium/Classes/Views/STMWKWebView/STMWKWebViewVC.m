@@ -75,6 +75,13 @@
     
 }
 
+- (void)reloadWebView {
+    
+    [self.webView removeFromSuperview];
+    self.webView = nil;
+    [self webViewInit];
+
+}
 
 - (void)loadWebView {
     

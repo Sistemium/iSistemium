@@ -32,7 +32,7 @@
     if ([action isEqualToString:NSLocalizedString(@"RELOAD", nil)]) {
         
         if ([self.topViewController isKindOfClass:[STMWKWebViewVC class]]) {
-            [(STMWKWebViewVC *)self.topViewController loadWebView];
+            [(STMWKWebViewVC *)self.topViewController reloadWebView];
         }
         
     }
