@@ -482,5 +482,11 @@
     
 }
 
+- (void) viewDidAppear:(BOOL)animated {
+    if (self.iOSModeBarCodeScanner) {
+        self.iOSModeBarCodeScanner.delegate = self;
+    }
+}
+
 
 @end
