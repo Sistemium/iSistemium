@@ -170,7 +170,19 @@
 #pragma mark - WKScriptMessageHandler
 
 - (void)userContentController:(WKUserContentController *)userContentController didReceiveScriptMessage:(WKScriptMessage *)message {
+    
     NSLog(@"userContentController %@, message %@", userContentController, message);
+    
+    if ([message.name isEqualToString:@"post"]) {
+        
+        NSLog(@"POST");
+        
+    } else if ([message.name isEqualToString:@"get"]) {
+
+        NSLog(@"GET");
+
+    }
+    
 }
 
 
@@ -180,7 +192,9 @@
     
     WKWebViewConfiguration *configuration = [[WKWebViewConfiguration alloc] init];
     WKUserContentController *contentController = [[WKUserContentController alloc] init];
-    [contentController addScriptMessageHandler:self name:@""];
+    [contentController addScriptMessageHandler:self name:@"post"];
+    [contentController addScriptMessageHandler:self name:@"get"];
+
     configuration.userContentController = contentController;
     
     self.webView = [[WKWebView alloc] initWithFrame:self.view.bounds configuration:configuration];
