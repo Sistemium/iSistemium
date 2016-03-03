@@ -309,32 +309,32 @@
         if (!error) {
             
             [self callbackWithData:resultDictionary
-                        parameters:[STMFunctions jsonStringFromDictionary:parameters]];
+                        parameters:parameters];
             
         } else {
             
             [self callbackWithError:error.localizedDescription
-                         parameters:[STMFunctions jsonStringFromDictionary:parameters]];
+                         parameters:parameters];
             
         }
         
     } else {
         
         [self callbackWithError:@"message.body is not a NSDictionary class"
-                     parameters:[message.body description]];
+                     parameters:@{@"messageBody": [message.body description]}];
         
     }
 
 }
 
-- (void)callbackWithData:(NSDictionary *)data parameters:(NSString *)parameters {
+- (void)callbackWithData:(NSDictionary *)data parameters:(NSDictionary *)parameters {
     
     NSMutableArray *arguments = @[].mutableCopy;
     
     [arguments addObject:data];
     [arguments addObject:parameters];
     
-    NSString *jsFunction = [NSString stringWithFormat:@"%@(%@)", self.iSistemiumIOSCallbackJSFunction, [STMFunctions jsonStringFromArray:arguments]];
+    NSString *jsFunction = [NSString stringWithFormat:@"%@.apply(null,%@)", self.iSistemiumIOSCallbackJSFunction, [STMFunctions jsonStringFromArray:arguments]];
     
     [self.webView evaluateJavaScript:jsFunction completionHandler:^(id _Nullable result, NSError * _Nullable error) {
         
@@ -342,14 +342,14 @@
     
 }
 
-- (void)callbackWithError:(NSString *)errorDescription parameters:(NSString *)parameters {
+- (void)callbackWithError:(NSString *)errorDescription parameters:(NSDictionary *)parameters {
     
     NSMutableArray *arguments = @[].mutableCopy;
     
     [arguments addObject:errorDescription];
     [arguments addObject:parameters];
     
-    NSString *jsFunction = [NSString stringWithFormat:@"%@(%@)", self.iSistemiumIOSErrorCallbackJSFunction, [STMFunctions jsonStringFromArray:arguments]];
+    NSString *jsFunction = [NSString stringWithFormat:@"%@.apply(null.%@)", self.iSistemiumIOSErrorCallbackJSFunction, [STMFunctions jsonStringFromArray:arguments]];
     
     [self.webView evaluateJavaScript:jsFunction completionHandler:^(id _Nullable result, NSError * _Nullable error) {
         
@@ -420,7 +420,7 @@
         
         if (typeString) [arguments addObject:typeString];
         
-        NSString *jsFunction = [NSString stringWithFormat:@"%@(%@)", self.receiveBarCodeJSFunction, [STMFunctions jsonStringFromArray:arguments]];
+        NSString *jsFunction = [NSString stringWithFormat:@"%@.apply(null,%@)", self.receiveBarCodeJSFunction, [STMFunctions jsonStringFromArray:arguments]];
         
         [self.webView evaluateJavaScript:jsFunction completionHandler:^(id _Nullable result, NSError * _Nullable error) {
             
