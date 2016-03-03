@@ -1316,7 +1316,7 @@
     NSString *entityName = [NSString stringWithFormat:@"STM%@", parameters[@"entity"]];
     NSDictionary *options = parameters[@"options"];
     NSUInteger pageSize = [options[@"pageSize"] integerValue];
-    NSUInteger startPage = [options[@"startPage"] integerValue];
+    NSUInteger startPage = [options[@"startPage"] integerValue] - 1;
     
     NSError *fetchError;
     NSArray *objectsArray = [self objectsForEntityName:entityName
