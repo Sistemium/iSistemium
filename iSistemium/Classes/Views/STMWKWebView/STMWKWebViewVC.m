@@ -45,6 +45,11 @@
 
 @implementation STMWKWebViewVC
 
+- (BOOL)isInActiveTab {
+    return [self.tabBarController.selectedViewController isEqual:self.navigationController];
+}
+
+
 - (NSString *)iSistemiumIOSCallbackJSFunction {
     return @"iSistemiumIOSCallback";
 }
