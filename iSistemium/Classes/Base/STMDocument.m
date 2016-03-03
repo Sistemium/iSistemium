@@ -235,7 +235,12 @@
     NSURL *url = [documentDirectoryUrl URLByAppendingPathComponent:[NSString stringWithFormat:@"%@_%@.%@", prefix, documentID, @"sqlite"]];
     
     if ([[NSFileManager defaultManager] fileExistsAtPath:(NSString *)url.path]) {
+
+        NSString *logMessage = [NSString stringWithFormat:@"delete old document with filename: %@ for uid: %@", url.lastPathComponent, uid];
+        [[STMLogger sharedLogger] saveLogMessageWithText:logMessage type:@"info"];
+        
         [[NSFileManager defaultManager] removeItemAtURL:url error:nil];
+        
     }
 //    ———————————————————————
     
