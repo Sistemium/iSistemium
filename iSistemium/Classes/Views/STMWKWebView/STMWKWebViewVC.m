@@ -9,6 +9,7 @@
 #import "STMWKWebViewVC.h"
 #import <WebKit/WebKit.h>
 
+#import "STMStoryboard.h"
 #import "STMFunctions.h"
 
 
@@ -22,15 +23,31 @@
 
 @implementation STMWKWebViewVC
 
+- (NSString *)webViewUrlString {
+    
+    if ([self.storyboard isKindOfClass:[STMStoryboard class]]) {
+        
+        STMStoryboard *storyboard = (STMStoryboard *)self.storyboard;
+        NSString *url = storyboard.parameters[@"url"];
+        return url;
+        
+    } else {
+        
+        return @"https://sistemium.com";
+        
+    }
+    
+}
+
 - (void)loadWebView {
     
-    NSURL *url = [NSURL URLWithString:@"https://sistemium.com"];
+    NSURL *url = [NSURL URLWithString:[self webViewUrlString]];
     NSMutableURLRequest *request = [[NSMutableURLRequest alloc] initWithURL:url];
     
-//    request.cachePolicy = NSURLRequestReloadIgnoringLocalCacheData;
-
-//    NSLog(@"currentDiskUsage %d", [NSURLCache sharedURLCache].currentDiskUsage);
-//    NSLog(@"currentMemoryUsage %d", [NSURLCache sharedURLCache].currentMemoryUsage);
+    //    request.cachePolicy = NSURLRequestReloadIgnoringLocalCacheData;
+    
+    //    NSLog(@"currentDiskUsage %d", [NSURLCache sharedURLCache].currentDiskUsage);
+    //    NSLog(@"currentMemoryUsage %d", [NSURLCache sharedURLCache].currentMemoryUsage);
     
     [self.webView loadRequest:request];
     
