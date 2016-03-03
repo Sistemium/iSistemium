@@ -334,7 +334,7 @@
     [arguments addObject:data];
     [arguments addObject:parameters];
     
-    NSString *jsFunction = [NSString stringWithFormat:@"%@(%@)", self.iSistemiumIOSCallbackJSFunction, [arguments componentsJoinedByString:@","]];
+    NSString *jsFunction = [NSString stringWithFormat:@"%@(%@)", self.iSistemiumIOSCallbackJSFunction, [STMFunctions jsonStringFromArray:arguments]];
     
     [self.webView evaluateJavaScript:jsFunction completionHandler:^(id _Nullable result, NSError * _Nullable error) {
         
@@ -349,7 +349,7 @@
     [arguments addObject:errorDescription];
     [arguments addObject:parameters];
     
-    NSString *jsFunction = [NSString stringWithFormat:@"%@(%@)", self.iSistemiumIOSErrorCallbackJSFunction, [arguments componentsJoinedByString:@","]];
+    NSString *jsFunction = [NSString stringWithFormat:@"%@(%@)", self.iSistemiumIOSErrorCallbackJSFunction, [STMFunctions jsonStringFromArray:arguments]];
     
     [self.webView evaluateJavaScript:jsFunction completionHandler:^(id _Nullable result, NSError * _Nullable error) {
         
@@ -420,7 +420,7 @@
         
         if (typeString) [arguments addObject:typeString];
         
-        NSString *jsFunction = [NSString stringWithFormat:@"%@(%@)", self.receiveBarCodeJSFunction, [arguments componentsJoinedByString:@","]];
+        NSString *jsFunction = [NSString stringWithFormat:@"%@(%@)", self.receiveBarCodeJSFunction, [STMFunctions jsonStringFromArray:arguments]];
         
         [self.webView evaluateJavaScript:jsFunction completionHandler:^(id _Nullable result, NSError * _Nullable error) {
             

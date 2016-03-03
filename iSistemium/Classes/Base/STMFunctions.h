@@ -78,6 +78,7 @@
 
 // - JSON representation
 
++ (NSString *)jsonStringFromArray:(NSArray *)objectArray;
 + (NSString *)jsonStringFromDictionary:(NSDictionary *)objectDic;
 + (NSDictionary *)validJSONDictionaryFromDictionary:(NSDictionary *)dictionary;
 

@@ -757,6 +757,20 @@
 
 #pragma mark - JSON representation
 
++ (NSString *)jsonStringFromArray:(NSArray *)objectArray {
+    
+    if (![NSJSONSerialization isValidJSONObject:objectArray]) {
+
+        objectArray = [self validJSONArrayFromArray:objectArray];
+    }
+    
+    NSData *JSONData = [NSJSONSerialization dataWithJSONObject:objectArray options:0 error:nil];
+    NSString *JSONString = [[NSString alloc] initWithData:JSONData encoding:NSUTF8StringEncoding];
+
+    return JSONString;
+    
+}
+
 + (NSString *)jsonStringFromDictionary:(NSDictionary *)objectDic {
 
     if (![NSJSONSerialization isValidJSONObject:objectDic]) {
