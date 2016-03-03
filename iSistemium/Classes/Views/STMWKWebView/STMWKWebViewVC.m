@@ -17,6 +17,11 @@
 #import "STMUI.h"
 
 
+#define WK_MESSAGE_POST @"post"
+#define WK_MESSAGE_GET @"get"
+#define WK_MESSAGE_SCANNER_ON @"barCodeScannerOn"
+
+
 @interface STMWKWebViewVC () <WKNavigationDelegate, WKScriptMessageHandler>
 
 @property (nonatomic, strong) WKWebView *webView;
@@ -61,7 +66,7 @@
     
 }
 
-- (NSString *)webViewSessionCheckJS {
+- (NSString *)webViewAuthCheckJS {
     
     if ([self.storyboard isKindOfClass:[STMStoryboard class]]) {
         
@@ -146,7 +151,15 @@
     
     NSLog(@"------ didFinishNavigation %@", webView.URL);
     
-    [self.webView evaluateJavaScript:[self webViewSessionCheckJS] completionHandler:^(id result, NSError *error) {
+    NSString *authCheck = [self webViewAuthCheckJS];
+    
+    (authCheck) ? [self authCheckWithJS:authCheck] : [self.spinnerView removeFromSuperview];
+    
+}
+
+- (void)authCheckWithJS:(NSString *)authCheck {
+    
+    [self.webView evaluateJavaScript:authCheck completionHandler:^(id result, NSError *error) {
         
         NSString *resultString = nil;
         
@@ -183,7 +196,7 @@
         }
         
     }];
-    
+
 }
 
 
@@ -195,14 +208,18 @@
     NSLog(@"message.name %@", message.name);
     NSLog(@"message.body %@", message.body);
     
-    if ([message.name isEqualToString:@"post"]) {
+    if ([message.name isEqualToString:WK_MESSAGE_POST]) {
         
         NSLog(@"POST");
         
-    } else if ([message.name isEqualToString:@"get"]) {
+    } else if ([message.name isEqualToString:WK_MESSAGE_GET]) {
 
         NSLog(@"GET");
 
+    } else if ([message.name isEqualToString:WK_MESSAGE_SCANNER_ON]) {
+        
+        NSLog(@"GET");
+        
     }
     
 }
@@ -214,8 +231,9 @@
     
     WKWebViewConfiguration *configuration = [[WKWebViewConfiguration alloc] init];
     WKUserContentController *contentController = [[WKUserContentController alloc] init];
-    [contentController addScriptMessageHandler:self name:@"post"];
-    [contentController addScriptMessageHandler:self name:@"get"];
+    [contentController addScriptMessageHandler:self name:WK_MESSAGE_POST];
+    [contentController addScriptMessageHandler:self name:WK_MESSAGE_GET];
+    [contentController addScriptMessageHandler:self name:WK_MESSAGE_SCANNER_ON];
 
     configuration.userContentController = contentController;
     
