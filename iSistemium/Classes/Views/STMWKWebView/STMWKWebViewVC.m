@@ -274,38 +274,49 @@
         [self startBarcodeScanning];
         self.receiveBarCodeJSFunction = message.body;
         
-    } else if ([message.name isEqualToString:WK_MESSAGE_FIND_ALL]) {
+    } else if ([@[WK_MESSAGE_FIND_ALL, WK_MESSAGE_FIND] containsObject:message.name]) {
         
-        
-    } else if ([message.name isEqualToString:WK_MESSAGE_FIND]) {
-        
+        [self handleKindOfFindMessage:message];
         
     }
     
 }
 
-- (void)handleFindAllMessage:(WKScriptMessage *)message {
+- (void)handleKindOfFindMessage:(WKScriptMessage *)message {
     
     if ([message.body isKindOfClass:[NSDictionary class]]) {
         
         NSDictionary *parameters = message.body;
         
         NSError *error;
-        NSString *objectsString = [STMObjectsController findAllObjectsWithParameters:parameters error:&error];
+        NSString *resultString = @"";
+        
+        if ([message.name isEqualToString:WK_MESSAGE_FIND]) {
+            
+            resultString = [STMObjectsController findObjectWithParameters:parameters error:&error];
+            
+        } else if ([message.name isEqualToString:WK_MESSAGE_FIND_ALL]) {
+            
+            resultString = [STMObjectsController findAllObjectsWithParameters:parameters error:&error];
+            
+        }
         
         if (!error) {
             
-            [self callbackWithData:objectsString parameters:[STMFunctions jsonStringFromDictionary:parameters]];
+            [self callbackWithData:resultString
+                        parameters:[STMFunctions jsonStringFromDictionary:parameters]];
             
         } else {
             
-            [self callbackWithError:error.localizedDescription parameters:[STMFunctions jsonStringFromDictionary:parameters]];
+            [self callbackWithError:error.localizedDescription
+                         parameters:[STMFunctions jsonStringFromDictionary:parameters]];
             
         }
         
     } else {
         
-        [self callbackWithError:@"message.body is not a NSDictionary class" parameters:[message.body description]];
+        [self callbackWithError:@"message.body is not a NSDictionary class"
+                     parameters:[message.body description]];
         
     }
 

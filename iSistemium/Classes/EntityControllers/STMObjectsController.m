@@ -1245,6 +1245,57 @@
 
 }
 
++ (NSString *)findObjectWithParameters:(NSDictionary *)parameters error:(NSError **)error {
+    
+    NSString *entityName = [NSString stringWithFormat:@"STM%@", parameters[@"entity"]];
+
+    NSString *errorMessage = nil;
+    
+    if ([[self localDataModelEntityNames] containsObject:entityName]) {
+
+        NSString *xidString = parameters[@"id"];
+        
+        NSData *xid = [STMFunctions xidDataFromXidString:xidString];
+        
+        if (xid) {
+            
+            STMFetchRequest *request = [STMFetchRequest fetchRequestWithEntityName:entityName];
+            request.predicate = [NSPredicate predicateWithFormat:@"xid == %@", xid];
+            
+            NSError *fetchError;
+            NSArray *result = [[self document].managedObjectContext executeFetchRequest:request error:&fetchError];
+            
+            if (!fetchError) {
+                
+                NSString *JSONString = [STMFunctions jsonStringFromDictionary:[self dictionaryForObjects:result]];
+                return JSONString;
+                
+            } else {
+                errorMessage = fetchError.localizedDescription;
+            }
+            
+        } else {
+            errorMessage = @"empty xid";
+        }
+        
+    } else {
+        errorMessage = [entityName stringByAppendingString:@"%@: not found in data model"];
+    }
+    
+    if (errorMessage) {
+        
+        NSString *bundleId = [NSBundle mainBundle].bundleIdentifier;
+        
+        if (bundleId && error) *error = [NSError errorWithDomain:(NSString * _Nonnull)bundleId
+                                                            code:1
+                                                        userInfo:@{NSLocalizedDescriptionKey: errorMessage}];
+
+    }
+    
+    return @"";
+    
+}
+
 + (NSString *)findAllObjectsWithParameters:(NSDictionary *)parameters error:(NSError **)error {
     
     NSString *entityName = [NSString stringWithFormat:@"STM%@", parameters[@"entity"]];
@@ -1277,7 +1328,7 @@
         
     }
     
-    return nil;
+    return @"";
     
 }
 
