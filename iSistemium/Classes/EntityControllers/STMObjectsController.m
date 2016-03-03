@@ -1245,7 +1245,7 @@
 
 }
 
-+ (NSDictionary *)findObjectWithParameters:(NSDictionary *)parameters error:(NSError **)error {
++ (NSArray *)findObjectWithParameters:(NSDictionary *)parameters error:(NSError **)error {
     
     NSString *entityName = [NSString stringWithFormat:@"STM%@", parameters[@"entity"]];
 
@@ -1259,18 +1259,34 @@
         
         if (xid) {
             
-            STMFetchRequest *request = [STMFetchRequest fetchRequestWithEntityName:entityName];
-            request.predicate = [NSPredicate predicateWithFormat:@"xid == %@", xid];
+            STMDatum *object = [self sharedController].objectsCache[xid];
             
-            NSError *fetchError;
-            NSArray *result = [[self document].managedObjectContext executeFetchRequest:request error:&fetchError];
-            
-            if (!fetchError) {
+            if (object) {
                 
-                return [self dictionaryForObjects:result];
-                
+                if ([object.entity.name isEqualToString:entityName]) {
+                    
+                    return [self arrayForObjects:@[object]];
+                    
+                } else {
+                    errorMessage = [NSString stringWithFormat:@"object with xid %@ have entity name %@, not %@", xidString, object.entity.name, entityName];
+                }
+
             } else {
-                errorMessage = fetchError.localizedDescription;
+                
+                STMFetchRequest *request = [STMFetchRequest fetchRequestWithEntityName:entityName];
+                request.predicate = [NSPredicate predicateWithFormat:@"xid == %@", xid];
+                
+                NSError *fetchError;
+                NSArray *result = [[self document].managedObjectContext executeFetchRequest:request error:&fetchError];
+                
+                if (!fetchError) {
+                    
+                    return [self arrayForObjects:result];
+                    
+                } else {
+                    errorMessage = fetchError.localizedDescription;
+                }
+                
             }
             
         } else {
@@ -1291,11 +1307,11 @@
 
     }
     
-    return @{};
+    return @[];
     
 }
 
-+ (NSDictionary *)findAllObjectsWithParameters:(NSDictionary *)parameters error:(NSError **)error {
++ (NSArray *)findAllObjectsWithParameters:(NSDictionary *)parameters error:(NSError **)error {
     
     NSString *entityName = [NSString stringWithFormat:@"STM%@", parameters[@"entity"]];
     NSDictionary *options = parameters[@"options"];
@@ -1322,15 +1338,15 @@
 
     } else {
         
-        return [self dictionaryForObjects:objectsArray];
+        return [self arrayForObjects:objectsArray];
         
     }
     
-    return @{};
+    return @[];
     
 }
 
-+ (NSDictionary *)dictionaryForObjects:(NSArray <STMDatum *> *)objects {
++ (NSArray *)arrayForObjects:(NSArray <STMDatum *> *)objects {
 
     NSMutableArray *dataArray = @[].mutableCopy;
     
@@ -1371,7 +1387,7 @@
         
     }
     
-    return @{@"data": dataArray};
+    return dataArray;
     
 }
 

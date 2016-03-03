@@ -58,8 +58,8 @@
            inManagedObjectContext:(NSManagedObjectContext *)context
                             error:(NSError **)error;
 
-+ (NSDictionary *)findObjectWithParameters:(NSDictionary *)parameters error:(NSError **)error;
-+ (NSDictionary *)findAllObjectsWithParameters:(NSDictionary *)parameters error:(NSError **)error;
++ (NSArray *)findObjectWithParameters:(NSDictionary *)parameters error:(NSError **)error;
++ (NSArray *)findAllObjectsWithParameters:(NSDictionary *)parameters error:(NSError **)error;
 
 
 @end

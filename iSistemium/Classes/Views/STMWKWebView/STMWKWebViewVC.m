@@ -294,21 +294,21 @@
         NSDictionary *parameters = message.body;
         
         NSError *error;
-        NSDictionary *resultDictionary = @{};
+        NSArray *result = @[];
         
         if ([message.name isEqualToString:WK_MESSAGE_FIND]) {
             
-            resultDictionary = [STMObjectsController findObjectWithParameters:parameters error:&error];
+            result = [STMObjectsController findObjectWithParameters:parameters error:&error];
             
         } else if ([message.name isEqualToString:WK_MESSAGE_FIND_ALL]) {
             
-            resultDictionary = [STMObjectsController findAllObjectsWithParameters:parameters error:&error];
+            result = [STMObjectsController findAllObjectsWithParameters:parameters error:&error];
             
         }
         
         if (!error) {
             
-            [self callbackWithData:resultDictionary
+            [self callbackWithData:result
                         parameters:parameters];
             
         } else {
@@ -327,7 +327,7 @@
 
 }
 
-- (void)callbackWithData:(NSDictionary *)data parameters:(NSDictionary *)parameters {
+- (void)callbackWithData:(NSArray *)data parameters:(NSDictionary *)parameters {
     
     NSMutableArray *arguments = @[].mutableCopy;
     
