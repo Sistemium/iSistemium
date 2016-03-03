@@ -294,21 +294,21 @@
         NSDictionary *parameters = message.body;
         
         NSError *error;
-        NSString *resultString = @"";
+        NSDictionary *resultDictionary = @{};
         
         if ([message.name isEqualToString:WK_MESSAGE_FIND]) {
             
-            resultString = [STMObjectsController findObjectWithParameters:parameters error:&error];
+            resultDictionary = [STMObjectsController findObjectWithParameters:parameters error:&error];
             
         } else if ([message.name isEqualToString:WK_MESSAGE_FIND_ALL]) {
             
-            resultString = [STMObjectsController findAllObjectsWithParameters:parameters error:&error];
+            resultDictionary = [STMObjectsController findAllObjectsWithParameters:parameters error:&error];
             
         }
         
         if (!error) {
             
-            [self callbackWithData:resultString
+            [self callbackWithData:resultDictionary
                         parameters:[STMFunctions jsonStringFromDictionary:parameters]];
             
         } else {
@@ -327,7 +327,7 @@
 
 }
 
-- (void)callbackWithData:(NSString *)data parameters:(NSString *)parameters {
+- (void)callbackWithData:(NSDictionary *)data parameters:(NSString *)parameters {
     
     NSMutableArray *arguments = @[].mutableCopy;
     
@@ -462,7 +462,16 @@
 #pragma mark - view lifecycle
 
 - (void)customInit {
+    
     [self webViewInit];
+    
+    NSDictionary *test = @{@"entity": @"Article",
+                           @"options": @{@"requestId": @"some request id string",
+                                         @"pageSize": @(10),
+                                         @"startPage": @(3)}};
+    
+    [STMObjectsController findAllObjectsWithParameters:test error:nil];
+    
 }
 
 - (void)viewDidLoad {

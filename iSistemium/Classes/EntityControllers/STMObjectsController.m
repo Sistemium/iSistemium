@@ -1245,7 +1245,7 @@
 
 }
 
-+ (NSString *)findObjectWithParameters:(NSDictionary *)parameters error:(NSError **)error {
++ (NSDictionary *)findObjectWithParameters:(NSDictionary *)parameters error:(NSError **)error {
     
     NSString *entityName = [NSString stringWithFormat:@"STM%@", parameters[@"entity"]];
 
@@ -1267,8 +1267,7 @@
             
             if (!fetchError) {
                 
-                NSString *JSONString = [STMFunctions jsonStringFromDictionary:[self dictionaryForObjects:result]];
-                return JSONString;
+                return [self dictionaryForObjects:result];
                 
             } else {
                 errorMessage = fetchError.localizedDescription;
@@ -1292,11 +1291,11 @@
 
     }
     
-    return @"";
+    return @{};
     
 }
 
-+ (NSString *)findAllObjectsWithParameters:(NSDictionary *)parameters error:(NSError **)error {
++ (NSDictionary *)findAllObjectsWithParameters:(NSDictionary *)parameters error:(NSError **)error {
     
     NSString *entityName = [NSString stringWithFormat:@"STM%@", parameters[@"entity"]];
     NSDictionary *options = parameters[@"options"];
@@ -1323,12 +1322,11 @@
 
     } else {
         
-        NSString *JSONString = [STMFunctions jsonStringFromDictionary:[self dictionaryForObjects:objectsArray]];
-        return JSONString;
+        return [self dictionaryForObjects:objectsArray];
         
     }
     
-    return @"";
+    return @{};
     
 }
 
