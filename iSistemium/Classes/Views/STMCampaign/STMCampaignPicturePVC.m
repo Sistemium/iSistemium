@@ -51,7 +51,11 @@
 
 - (void)refreshTitle {
     
-    self.title = [(STMCampaignPicture *)self.picturesArray[self.currentIndex] name];
+    if (self.currentIndex < self.picturesArray.count) {
+        self.title = [(STMCampaignPicture *)self.picturesArray[self.currentIndex] name];
+    } else {
+        self.title = @"";
+    }
     
 }
 
