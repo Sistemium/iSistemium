@@ -122,6 +122,19 @@
 
 #pragma mark - WKNavigationDelegate
 
+- (void)webView:(WKWebView *)webView decidePolicyForNavigationAction:(WKNavigationAction *)navigationAction decisionHandler:(void (^)(WKNavigationActionPolicy))decisionHandler {
+    
+    NSLog(@"---- webView decidePolicyForNavigationAction");
+    
+    NSLog(@"scheme %@", navigationAction.request.URL.scheme);
+    NSLog(@"request %@", navigationAction.request)
+    NSLog(@"HTTPMethod %@", navigationAction.request.HTTPMethod)
+    NSLog(@"HTTPBody %@", navigationAction.request.HTTPBody)
+    
+    decisionHandler(WKNavigationActionPolicyAllow);
+    
+}
+
 - (void)webView:(WKWebView *)webView didFinishNavigation:(WKNavigation *)navigation {
     
     NSLog(@"------ didFinishNavigation %@", webView.URL);
@@ -171,7 +184,9 @@
 
 - (void)userContentController:(WKUserContentController *)userContentController didReceiveScriptMessage:(WKScriptMessage *)message {
     
-    NSLog(@"userContentController %@, message %@", userContentController, message);
+    NSLog(@"---- userContentController %@, message %@", userContentController, message);
+    NSLog(@"message.name %@", message.name);
+    NSLog(@"message.body %@", message.body);
     
     if ([message.name isEqualToString:@"post"]) {
         
