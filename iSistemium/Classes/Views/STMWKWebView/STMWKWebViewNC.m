@@ -8,15 +8,53 @@
 
 #import "STMWKWebViewNC.h"
 
+#import "STMWKWebViewVC.h"
+
+
 @interface STMWKWebViewNC ()
 
 @end
 
 @implementation STMWKWebViewNC
 
+#pragma mark - STMTabBarItemControllable protocol
+
+- (BOOL)shouldShowOwnActions {
+    return YES;
+}
+
+- (void)selectActionAtIndex:(NSUInteger)index {
+    
+    [super selectActionAtIndex:index];
+    
+    NSString *action = self.actions[index];
+    
+    if ([action isEqualToString:NSLocalizedString(@"RELOAD", nil)]) {
+        
+        if ([self.topViewController isKindOfClass:[STMWKWebViewVC class]]) {
+            [(STMWKWebViewVC *)self.topViewController loadWebView];
+        }
+        
+    }
+    
+}
+
+
+#pragma mark - view lifecycle
+
+- (void)customInit {
+    
+    self.actions = @[NSLocalizedString(@"RELOAD", nil)];
+    
+    self.navigationBarHidden = YES;
+
+}
+
 - (void)viewDidLoad {
+    
     [super viewDidLoad];
-    // Do any additional setup after loading the view.
+    [self customInit];
+    
 }
 
 - (void)didReceiveMemoryWarning {
@@ -24,14 +62,5 @@
     // Dispose of any resources that can be recreated.
 }
 
-/*
-#pragma mark - Navigation
-
-// In a storyboard-based application, you will often want to do a little preparation before navigation
-- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
-    // Get the new view controller using [segue destinationViewController].
-    // Pass the selected object to the new view controller.
-}
-*/
 
 @end
