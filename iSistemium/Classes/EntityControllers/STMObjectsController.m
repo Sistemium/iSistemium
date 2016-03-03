@@ -1245,6 +1245,87 @@
 
 }
 
++ (NSString *)findAllObjectsWithParameters:(NSDictionary *)parameters error:(NSError **)error {
+    
+    NSString *entityName = [NSString stringWithFormat:@"STM%@", parameters[@"entity"]];
+    NSDictionary *options = parameters[@"options"];
+    NSUInteger pageSize = [options[@"pageSize"] integerValue];
+    NSUInteger startPage = [options[@"startPage"] integerValue];
+    
+    NSError *fetchError;
+    NSArray *objectsArray = [self objectsForEntityName:entityName
+                                               orderBy:@"id"
+                                             ascending:YES
+                                            fetchLimit:pageSize
+                                           fetchOffset:(pageSize * startPage)
+                                           withFantoms:NO
+                                inManagedObjectContext:[self document].managedObjectContext
+                                                 error:&fetchError];
+    
+    if (fetchError) {
+        
+        NSString *bundleId = [NSBundle mainBundle].bundleIdentifier;
+        
+        if (bundleId && error) *error = [NSError errorWithDomain:(NSString * _Nonnull)bundleId
+                                                            code:1
+                                                        userInfo:@{NSLocalizedDescriptionKey: fetchError.localizedDescription}];
+
+    } else {
+        
+        NSString *JSONString = [STMFunctions jsonStringFromDictionary:[self dictionaryForObjects:objectsArray]];
+        return JSONString;
+        
+    }
+    
+    return nil;
+    
+}
+
++ (NSDictionary *)dictionaryForObjects:(NSArray <STMDatum *> *)objects {
+
+    NSMutableArray *dataArray = @[].mutableCopy;
+    
+    for (STMDatum *object in objects) {
+        
+        NSMutableDictionary *propertiesDictionary = @{}.mutableCopy;
+        
+        if (object.xid) propertiesDictionary[@"id"] = [STMFunctions UUIDStringFromUUIDData:object.xid];
+        if (object.deviceTs) propertiesDictionary[@"ts"] = [[STMFunctions dateFormatter] stringFromDate:(NSDate *)object.deviceTs];
+        
+        NSSet *ownKeys = [self ownObjectKeysForEntityName:object.entity.name];
+        
+        [propertiesDictionary addEntriesFromDictionary:[object propertiesForKeys:ownKeys.allObjects]];
+        
+        for (NSString *key in object.entity.relationshipsByName.allKeys) {
+            
+            NSRelationshipDescription *relationshipDescription = [object.entity.relationshipsByName valueForKey:key];
+            
+            if (![relationshipDescription isToMany]) {
+                
+                NSManagedObject *relationshipObject = [object valueForKey:key];
+                
+                if (relationshipObject) {
+                    
+                    NSData *xidData = [relationshipObject valueForKey:@"xid"];
+                    
+                    if (xidData.length != 0) {
+                        propertiesDictionary[key] = [STMFunctions UUIDStringFromUUIDData:xidData];
+                    }
+                    
+                }
+                
+            }
+            
+        }
+
+        [dataArray addObject:propertiesDictionary];
+        
+    }
+    
+    return @{@"data": dataArray};
+    
+}
+
 + (NSArray *)objectsForEntityName:(NSString *)entityName {
 
     return [self objectsForEntityName:entityName
@@ -1258,29 +1339,51 @@
 }
 
 + (NSArray *)objectsForEntityName:(NSString *)entityName orderBy:(NSString *)orderBy ascending:(BOOL)ascending fetchLimit:(NSUInteger)fetchLimit withFantoms:(BOOL)withFantoms inManagedObjectContext:(NSManagedObjectContext *)context error:(NSError **)error {
+
+    return [self objectsForEntityName:entityName
+                              orderBy:orderBy
+                            ascending:ascending
+                           fetchLimit:fetchLimit
+                          fetchOffset:0
+                          withFantoms:withFantoms
+               inManagedObjectContext:context
+                                error:error];
+
+}
+
++ (NSArray *)objectsForEntityName:(NSString *)entityName orderBy:(NSString *)orderBy ascending:(BOOL)ascending fetchLimit:(NSUInteger)fetchLimit fetchOffset:(NSUInteger)fetchOffset withFantoms:(BOOL)withFantoms inManagedObjectContext:(NSManagedObjectContext *)context error:(NSError **)error {
     
     NSString *errorMessage = nil;
     
     context = (context) ? context : [self document].managedObjectContext;
+
+    [[self document] saveDocument:^(BOOL success) {
+        
+    }];
     
     if ([[self localDataModelEntityNames] containsObject:entityName]) {
         
         STMEntityDescription *entity = [STMEntityDescription entityForName:entityName inManagedObjectContext:context];
         
         if ([entity.propertiesByName.allKeys containsObject:orderBy]) {
-
+            
             NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:entityName];
             request.sortDescriptors = @[[NSSortDescriptor sortDescriptorWithKey:orderBy ascending:ascending selector:@selector(compare:)]];
             request.fetchLimit = fetchLimit;
+            request.fetchOffset = fetchOffset;
             
             if (!withFantoms) {
                 request.predicate = [STMPredicate predicateWithNoFantoms];
             }
             
-            NSError *error;
-            NSArray *result = [[self document].managedObjectContext executeFetchRequest:request error:&error];
+            NSError *fetchError;
+            NSArray *result = [[self document].managedObjectContext executeFetchRequest:request error:&fetchError];
             
-            return result;
+            if (!fetchError) {
+                return result;
+            } else {
+                errorMessage = fetchError.localizedDescription;
+            }
             
         } else {
             
@@ -1291,7 +1394,7 @@
     } else {
         
         errorMessage = [NSString stringWithFormat:@"%@: not found in data model", entityName];
-
+        
     }
     
     if (errorMessage) {
@@ -1301,7 +1404,7 @@
         if (bundleId && error) *error = [NSError errorWithDomain:(NSString * _Nonnull)bundleId
                                                             code:1
                                                         userInfo:@{NSLocalizedDescriptionKey: errorMessage}];
-
+        
     }
     
     return nil;

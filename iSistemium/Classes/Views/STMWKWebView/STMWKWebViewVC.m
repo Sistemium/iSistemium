@@ -13,6 +13,7 @@
 #import "STMAuthController.h"
 #import "STMBarCodeScanner.h"
 #import "STMSoundController.h"
+#import "STMObjectsController.h"
 
 #import "STMStoryboard.h"
 #import "STMFunctions.h"
@@ -22,6 +23,8 @@
 #define WK_MESSAGE_POST @"post"
 #define WK_MESSAGE_GET @"get"
 #define WK_MESSAGE_SCANNER_ON @"barCodeScannerOn"
+#define WK_MESSAGE_FIND_ALL @"findAll"
+#define WK_MESSAGE_FIND @"find"
 
 
 @interface STMWKWebViewVC () <WKNavigationDelegate, WKScriptMessageHandler, STMBarCodeScannerDelegate>
@@ -31,13 +34,24 @@
 @property (nonatomic, strong) STMSpinnerView *spinnerView;
 
 @property (nonatomic, strong) STMBarCodeScanner *iOSModeBarCodeScanner;
+
 @property (nonatomic, strong) NSString *receiveBarCodeJSFunction;
+@property (nonatomic, strong) NSString *iSistemiumIOSCallbackJSFunction;
+@property (nonatomic, strong) NSString *iSistemiumIOSErrorCallbackJSFunction;
 
 
 @end
 
 
 @implementation STMWKWebViewVC
+
+- (NSString *)iSistemiumIOSCallbackJSFunction {
+    return @"iSistemiumIOSCallback";
+}
+
+- (NSString *)iSistemiumIOSErrorCallbackJSFunction {
+    return @"iSistemiumIOSErrorCallback";
+}
 
 - (STMSpinnerView *)spinnerView {
     
@@ -136,6 +150,16 @@
     
 }
 
+- (NSArray *)scriptMessageNames {
+    
+    return @[WK_MESSAGE_POST,
+             WK_MESSAGE_GET,
+             WK_MESSAGE_SCANNER_ON,
+             WK_MESSAGE_FIND_ALL,
+             WK_MESSAGE_FIND];
+    
+}
+
 
 #pragma mark - webViewInit
 
@@ -144,9 +168,10 @@
     WKWebViewConfiguration *configuration = [[WKWebViewConfiguration alloc] init];
     
     WKUserContentController *contentController = [[WKUserContentController alloc] init];
-    [contentController addScriptMessageHandler:self name:WK_MESSAGE_POST];
-    [contentController addScriptMessageHandler:self name:WK_MESSAGE_GET];
-    [contentController addScriptMessageHandler:self name:WK_MESSAGE_SCANNER_ON];
+    
+    for (NSString *messageName in [self scriptMessageNames]) {
+        [contentController addScriptMessageHandler:self name:messageName];
+    }
     
     configuration.userContentController = contentController;
     
@@ -249,8 +274,71 @@
         [self startBarcodeScanning];
         self.receiveBarCodeJSFunction = message.body;
         
+    } else if ([message.name isEqualToString:WK_MESSAGE_FIND_ALL]) {
+        
+        
+    } else if ([message.name isEqualToString:WK_MESSAGE_FIND]) {
+        
+        
     }
     
+}
+
+- (void)handleFindAllMessage:(WKScriptMessage *)message {
+    
+    if ([message.body isKindOfClass:[NSDictionary class]]) {
+        
+        NSDictionary *parameters = message.body;
+        
+        NSError *error;
+        NSString *objectsString = [STMObjectsController findAllObjectsWithParameters:parameters error:&error];
+        
+        if (!error) {
+            
+            [self callbackWithData:objectsString parameters:[STMFunctions jsonStringFromDictionary:parameters]];
+            
+        } else {
+            
+            [self callbackWithError:error.localizedDescription parameters:[STMFunctions jsonStringFromDictionary:parameters]];
+            
+        }
+        
+    } else {
+        
+        [self callbackWithError:@"message.body is not a NSDictionary class" parameters:[message.body description]];
+        
+    }
+
+}
+
+- (void)callbackWithData:(NSString *)data parameters:(NSString *)parameters {
+    
+    NSMutableArray *arguments = @[].mutableCopy;
+    
+    [arguments addObject:data];
+    [arguments addObject:parameters];
+    
+    NSString *jsFunction = [NSString stringWithFormat:@"%@(%@)", self.iSistemiumIOSCallbackJSFunction, [arguments componentsJoinedByString:@","]];
+    
+    [self.webView evaluateJavaScript:jsFunction completionHandler:^(id _Nullable result, NSError * _Nullable error) {
+        
+    }];
+    
+}
+
+- (void)callbackWithError:(NSString *)errorDescription parameters:(NSString *)parameters {
+    
+    NSMutableArray *arguments = @[].mutableCopy;
+    
+    [arguments addObject:errorDescription];
+    [arguments addObject:parameters];
+    
+    NSString *jsFunction = [NSString stringWithFormat:@"%@(%@)", self.iSistemiumIOSErrorCallbackJSFunction, [arguments componentsJoinedByString:@","]];
+    
+    [self.webView evaluateJavaScript:jsFunction completionHandler:^(id _Nullable result, NSError * _Nullable error) {
+        
+    }];
+
 }
 
 
