@@ -380,7 +380,7 @@
 + (NSUInteger)unreadMessagesCountInContext:(NSManagedObjectContext *)context {
     
     NSArray *messageArray = [self sharedInstance].messagesResultsController.fetchedObjects;
-    NSArray *readMessageArray = [self sharedInstance].readMessagesResultsController.fetchedObjects;
+    NSArray *readMessageArray = [[self sharedInstance].readMessagesResultsController.fetchedObjects valueForKeyPath:@"@distinctUnionOfObjects.objectXid"];
     
     NSInteger unreadMessageCount = messageArray.count - readMessageArray.count;
     unreadMessageCount = (unreadMessageCount < 0) ? 0 : unreadMessageCount;
