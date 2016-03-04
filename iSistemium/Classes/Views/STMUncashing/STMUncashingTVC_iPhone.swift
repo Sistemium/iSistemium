@@ -39,6 +39,14 @@ class STMUncashingTVC_iPhone: STMUncashingMasterTVC {
         switch segue.identifier!{
         case "showUncashing":
             (segue.destinationViewController as! STMUncashingDetailsTVC).uncashing = sender as? STMUncashing
+            let dateFormatter = NSDateFormatter()
+            dateFormatter.dateStyle = .LongStyle
+            dateFormatter.timeStyle = .ShortStyle
+            if sender != nil{
+                (segue.destinationViewController as! STMUncashingDetailsTVC).title = NSLocalizedString("HAND OVER", comment: "").dropLast
+            }else{
+                (segue.destinationViewController as! STMUncashingDetailsTVC).title = NSLocalizedString("ON HAND", comment: "").dropLast
+            }
         default:
             break
         }

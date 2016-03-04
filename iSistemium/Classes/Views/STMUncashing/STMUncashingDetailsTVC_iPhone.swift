@@ -8,18 +8,6 @@
 
 import UIKit
 
-private extension String {
-    var first: String {
-        return String(characters.prefix(1))
-    }
-    var last: String {
-        return String(characters.suffix(1))
-    }
-    var uppercaseFirst: String {
-        return first.uppercaseString + String(characters.dropFirst())
-    }
-}
-
 @available(iOS 8.0, *)
 class STMUncashingDetailsTVC_iPhone: STMUncashingDetailsTVC, UIPopoverPresentationControllerDelegate {
     
@@ -36,6 +24,14 @@ class STMUncashingDetailsTVC_iPhone: STMUncashingDetailsTVC, UIPopoverPresentati
         let frame = (self.infoLabel!.valueForKey("view") as! UIView).frame
         popover!.sourceRect = frame
         self.presentViewController(nav, animated: true, completion: nil)
+    }
+    
+    override func showAddButton() {
+        self.navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .Add, target: self, action: "addButtonPressed")
+    }
+    
+    override func hideAddButton() {
+        self.navigationItem.rightBarButtonItem = nil
     }
     
     // MARK: UIPopoverPresentationControllerDelegate

@@ -20,5 +20,7 @@
 
 - (void)dismissAddCashingPopover;
 - (void)showUncashingInfoPopover;
+- (void)showAddButton;
+- (void)hideAddButton;
 
 @end
