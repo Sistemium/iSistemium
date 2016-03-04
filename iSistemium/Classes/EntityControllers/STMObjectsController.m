@@ -1421,10 +1421,14 @@
     NSString *errorMessage = nil;
     
     context = (context) ? context : [self document].managedObjectContext;
-
-    [[self document] saveDocument:^(BOOL success) {
+    
+    if (context.hasChanges && fetchOffset > 0) {
         
-    }];
+        [[self document] saveDocument:^(BOOL success) {
+            
+        }];
+
+    }
     
     if ([[self localDataModelEntityNames] containsObject:entityName]) {
         
