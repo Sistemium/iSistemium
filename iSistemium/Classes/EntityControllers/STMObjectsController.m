@@ -1245,6 +1245,9 @@
 
 }
 
+
+#pragma mark - find objects for WKWebView
+
 + (NSArray *)findObjectWithParameters:(NSDictionary *)parameters error:(NSError **)error {
     
     NSString *entityName = [NSString stringWithFormat:@"STM%@", parameters[@"entity"]];
@@ -1263,14 +1266,14 @@
             
             if (object) {
                 
-                if ([object.entity.name isEqualToString:entityName]) {
-                    
-                    return [self arrayForObjects:@[object]];
-                    
-                } else {
+                if (object.isFantom) {
+                    errorMessage = [NSString stringWithFormat:@"object with xid %@ is fantom", xidString];
+                } else if (![object.entity.name isEqualToString:entityName]) {
                     errorMessage = [NSString stringWithFormat:@"object with xid %@ have entity name %@, not %@", xidString, object.entity.name, entityName];
+                } else {
+                    return [self arrayForObjects:@[object]];
                 }
-
+                
             } else {
                 
                 STMFetchRequest *request = [STMFetchRequest fetchRequestWithEntityName:entityName];
