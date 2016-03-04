@@ -12,6 +12,14 @@ class STMUncashingTVC_iPhone: STMUncashingMasterTVC {
     
     private var cancelButton:STMBarButtonItem?
     
+    // MARK: Superclass override
+    
+    override func uncashingProcessStart(){
+        self.navigationItem.setLeftBarButtonItem(cancelButton, animated: true)
+    }
+    
+    // MARK: Table view data
+    
     override func tableView(tableView: UITableView, willSelectRowAtIndexPath indexPath: NSIndexPath) -> NSIndexPath? {
         if (indexPath.section == 0) {
             performSegueWithIdentifier("showUncashing", sender: nil)
@@ -25,6 +33,8 @@ class STMUncashingTVC_iPhone: STMUncashingMasterTVC {
         return indexPath
     }
     
+    // MARK: Navigation
+    
     override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
         switch segue.identifier!{
         case "showUncashing":
@@ -34,20 +44,7 @@ class STMUncashingTVC_iPhone: STMUncashingMasterTVC {
         }
     }
     
-    override func uncashingProcessStart(){
-//        self.navigationItem.setRightBarButtonItem(doneButton, animated: true)
-//        self.navigationItem.titleView = dateButton
-        self.navigationItem.setLeftBarButtonItem(cancelButton, animated: true)
-//        selectedDate = NSDate()
-//        let flexibleSpace = UIBarButtonItem(barButtonSystemItem: UIBarButtonSystemItem.FlexibleSpace, target: nil, action: nil)
-//        self.setToolbarItems([flexibleSpace,UIBarButtonItem(customView: summLabel),flexibleSpace],animated: false)
-//        showCashingSumLabel()
-    }
-    
-    override func viewWillAppear(animated: Bool) {
-        super.viewWillAppear(animated)
-        self.navigationController!.toolbarHidden = true
-    }
+    // MARK: View lifecycle
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -55,4 +52,8 @@ class STMUncashingTVC_iPhone: STMUncashingMasterTVC {
         cancelButton!.tintColor = .redColor()
     }
     
+    override func viewWillAppear(animated: Bool) {
+        super.viewWillAppear(animated)
+        self.navigationController!.toolbarHidden = true
+    }
 }
