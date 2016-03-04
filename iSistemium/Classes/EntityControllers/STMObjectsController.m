@@ -1266,7 +1266,7 @@
             
             if (object) {
                 
-                if (object.isFantom) {
+                if (object.isFantom.boolValue) {
                     errorMessage = [NSString stringWithFormat:@"object with xid %@ is fantom", xidString];
                 } else if (![object.entity.name isEqualToString:entityName]) {
                     errorMessage = [NSString stringWithFormat:@"object with xid %@ have entity name %@, not %@", xidString, object.entity.name, entityName];
