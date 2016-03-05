@@ -79,7 +79,7 @@ func predicateForScriptMessage(entityName: String, filter: [String: AnyObject]?,
         let filterKeys: [String] = checkKeysForEntity(entityName, keys: filter!.keys)
         
         for key in filterKeys {
-            
+
             guard var value: AnyObject = filter![key] else {
                 print("have no value for key \(key)")
                 break
@@ -88,7 +88,7 @@ func predicateForScriptMessage(entityName: String, filter: [String: AnyObject]?,
             if value is NSNumber { value = value.stringValue }
             
             guard value is String else {
-                print("value \(value) for key \(key) is not compatible")
+                print("value \(value) for key \(key) is not supported")
                 break
             }
 
@@ -97,17 +97,7 @@ func predicateForScriptMessage(entityName: String, filter: [String: AnyObject]?,
                 break
             }
             
-            switch className {
-                
-                case NSStringFromClass(NSNumber): value = NSNumberFormatter().numberFromString(value as! String)!
-                
-                case NSStringFromClass(NSDate): value = STMDateFormatter().dateFromString(value as! String)!
-                
-                case NSStringFromClass(NSData): value = STMFunctions.dataFromString(value as! String)
-
-                default: break
-                
-            }
+            value = normalizeValue(value, className: className)
             
             let subpredicateString: String = "\(key) == %@"
             
@@ -125,32 +115,52 @@ func predicateForScriptMessage(entityName: String, filter: [String: AnyObject]?,
         
         for key in filterKeys {
             
-            if let arguments: Dictionary = whereFilter![key] as? [String: AnyObject] {
+            guard let className: String = entityAttributes[key]?.attributeValueClassName else {
+                print("have no class type for key \(key)")
+                break
+            }
             
-                let comparisonOperators: [String] = ["==", "!=", ">=", "<=", ">", "<"]
+            guard let arguments: Dictionary = whereFilter![key] as? [String: AnyObject] else {
+                print("arguments is not a dictionary")
+                break
+            }
+            
+            let comparisonOperators: [String] = ["==", "!=", ">=", "<=", ">", "<"]
+            
+            for compOp in arguments.keys {
                 
-                for compOp in arguments.keys {
-                
-                    if comparisonOperators.contains(compOp) {
-                        
-                        
-                        
-                    } else {
-                        print("comparison operator should be '==', '!=', '>=', '<=', '>' or '<', not '\(compOp)'")
-                    }
+                guard comparisonOperators.contains(compOp) else {
+                    print("comparison operator should be '==', '!=', '>=', '<=', '>' or '<', not '\(compOp)'")
+                    break
+                }
 
+                guard var value: AnyObject = arguments[compOp] else {
+                    print("have no value for comparison operator '\(compOp)'")
+                    break
                 }
                 
-            } else {
-                print("arguments is not a dictionary")
+                if value is NSNumber { value = value.stringValue }
+                
+                guard value is String else {
+                    print("value \(value) for comparison operator '\(compOp)' is not supported")
+                    break
+                }
+                
+                value = normalizeValue(value, className: className)
+                
+                let subpredicateString: String = "\(key) \(compOp) %@"
+                
+                let subpredicate: NSPredicate = NSPredicate(format: subpredicateString, argumentArray: [value])
+                
+                subpredicates.append(subpredicate)
+
             }
             
         }
 
     }
     
-    
-    return STMPredicate.predicateWithNoFantoms()
+    return NSCompoundPredicate(andPredicateWithSubpredicates: subpredicates)
     
 }
 
@@ -181,24 +191,7 @@ func checkKeysForEntity(entityName: String, keys: LazyMapCollection<[String: Any
 
 }
 
-func normalizeValue(key: String, valueArray: [String: AnyObject], entityAttributes: [String : NSAttributeDescription]) {
-    
-    guard var value: AnyObject = valueArray[key] else {
-        print("have no value for key \(key)")
-        return
-    }
-    
-    if value is NSNumber { value = value.stringValue }
-    
-    guard value is String else {
-        print("value \(value) for key \(key) is not compatible")
-        return
-    }
-    
-    guard let className: String = entityAttributes[key]?.attributeValueClassName else {
-        print("have no class type for key \(key)")
-        return
-    }
+func normalizeValue(var value: AnyObject, className: String) -> AnyObject {
     
     switch className {
         
@@ -208,10 +201,12 @@ func normalizeValue(key: String, valueArray: [String: AnyObject], entityAttribut
             
         case NSStringFromClass(NSData)      :   value = STMFunctions.dataFromString(value as! String)
         
-    default: break
+        default: break
         
     }
 
+    return value
+    
 }
 
 func currentContext() -> NSManagedObjectContext {
