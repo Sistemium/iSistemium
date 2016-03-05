@@ -46,7 +46,7 @@
 + (NSManagedObject *)objectForXid:(NSData *)xidData;
 + (NSManagedObject *)objectForXid:(NSData *)xidData entityName:(NSString *)entityName;
 
-+ (NSArray *)localDataModelEntityNames;
++ (NSArray <NSString *> *)localDataModelEntityNames;
 
 + (NSArray *)objectsForEntityName:(NSString *)entityName;
 

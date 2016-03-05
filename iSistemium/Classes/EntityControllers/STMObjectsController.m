@@ -971,7 +971,7 @@
 
 }
 
-+ (NSArray *)localDataModelEntityNames {
++ (NSArray <NSString *> *)localDataModelEntityNames {
     return [self sharedController].localDataModelEntityNames;
 }
 

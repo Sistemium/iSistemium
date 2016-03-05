@@ -16,11 +16,13 @@
 
 @interface STMFunctions : NSObject
 
+NS_ASSUME_NONNULL_BEGIN
+
 + (BOOL)isCorrectPhoneNumber:(NSString *)phoneNumberString;
 + (BOOL)isCorrectSMSCode:(NSString *)SMSCode;
 
 + (NSData *)dataFromString:(NSString *)string;
-+ (NSData *)xidDataFromXidString:(NSString *)xidString;
++ (nullable NSData *)xidDataFromXidString:(nullable NSString  *)xidString;
 + (NSString *)UUIDStringFromUUIDData:(NSData *)UUIDData;
 + (NSString *)hexStringFromData:(NSData *)data;
 
@@ -93,6 +95,8 @@
 + (NSString *)appStateString;
 
 + (uint64_t)freeDiskspace;
+
+NS_ASSUME_NONNULL_END
 
 
 @end
