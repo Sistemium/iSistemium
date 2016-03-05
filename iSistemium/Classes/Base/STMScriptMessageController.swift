@@ -181,6 +181,39 @@ func checkKeysForEntity(entityName: String, keys: LazyMapCollection<[String: Any
 
 }
 
+func normalizeValue(key: String, valueArray: [String: AnyObject], entityAttributes: [String : NSAttributeDescription]) {
+    
+    guard var value: AnyObject = valueArray[key] else {
+        print("have no value for key \(key)")
+        return
+    }
+    
+    if value is NSNumber { value = value.stringValue }
+    
+    guard value is String else {
+        print("value \(value) for key \(key) is not compatible")
+        return
+    }
+    
+    guard let className: String = entityAttributes[key]?.attributeValueClassName else {
+        print("have no class type for key \(key)")
+        return
+    }
+    
+    switch className {
+        
+        case NSStringFromClass(NSNumber)    :   value = NSNumberFormatter().numberFromString(value as! String)!
+            
+        case NSStringFromClass(NSDate)      :   value = STMDateFormatter().dateFromString(value as! String)!
+            
+        case NSStringFromClass(NSData)      :   value = STMFunctions.dataFromString(value as! String)
+        
+    default: break
+        
+    }
+
+}
+
 func currentContext() -> NSManagedObjectContext {
     
     return STMSessionManager.sharedManager().currentSession.document.managedObjectContext
