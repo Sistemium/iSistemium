@@ -289,7 +289,10 @@
             
             UIViewController *vc = [storyboard instantiateInitialViewController];
             vc.title = title;
-            vc.tabBarItem.image = [STMFunctions resizeImage:[UIImage imageNamed:imageName] toSize:CGSizeMake(30, 30)];
+            
+            UIImage *image = [UIImage imageNamed:imageName];
+            
+            if (image) vc.tabBarItem.image = [STMFunctions resizeImage:image toSize:CGSizeMake(30, 30)];
             
             if (!self.allTabsVCs[@(index)]) {
             

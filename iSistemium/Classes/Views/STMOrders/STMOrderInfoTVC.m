@@ -549,7 +549,7 @@
 
         case 1:
             cell.titleLabel.text = NSLocalizedString(@"DISPATCH DATE", nil);
-            cell.detailLabel.text = [STMFunctions dayWithDayOfWeekFromDate:self.saleOrder.date];
+            if (self.saleOrder.date) cell.detailLabel.text = [STMFunctions dayWithDayOfWeekFromDate:(NSDate *)self.saleOrder.date];
             break;
 
         case 2:

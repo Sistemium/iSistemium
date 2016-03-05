@@ -492,7 +492,7 @@
     NSData *weakData = data;
     STMPicture *weakPicture = picture;
     
-    NSString *xid = [STMFunctions UUIDStringFromUUIDData:picture.xid];
+    NSString *xid = (picture.xid) ? [STMFunctions UUIDStringFromUUIDData:(NSData *)picture.xid] : nil;
     NSString *fileName = [xid stringByAppendingString:@".jpg"];
 
 //    NSString *fileName = nil;

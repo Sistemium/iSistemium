@@ -229,7 +229,7 @@ class STMShippingLocationTVC:STMVariableCellsHeightTVC,UIImagePickerControllerDe
     
     private var blankPicture:UIView {
     
-    let image = STMFunctions.resizeImage(UIImage(named:"Picture-100"), toSize:THUMB_SIZE).imageWithRenderingMode(.AlwaysTemplate)
+    let image = STMFunctions.resizeImage(UIImage(named:"Picture-100")!, toSize:THUMB_SIZE).imageWithRenderingMode(.AlwaysTemplate)
     let imageView = UIImageView(image: image)
     imageView.tintColor = UIColor.lightGrayColor()
     
@@ -251,7 +251,7 @@ class STMShippingLocationTVC:STMVariableCellsHeightTVC,UIImagePickerControllerDe
     
     private var addPhotoButton : UIView {
     
-    let imageView = UIImageView(image: STMFunctions.resizeImage(UIImage(named: "plus"), toSize:THUMB_SIZE))
+    let imageView = UIImageView(image: STMFunctions.resizeImage(UIImage(named: "plus")!, toSize:THUMB_SIZE))
     
     let tap = UITapGestureRecognizer(target: self, action: "addPhotoButtonPressed:")
     imageView.gestureRecognizers = [tap]

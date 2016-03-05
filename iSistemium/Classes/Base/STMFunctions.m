@@ -36,7 +36,7 @@
 
 @implementation STMFunctions
 
-+ (NSString *)displayDateInfo:(NSString *)dateInfo {
++ (NSString *)displayDateInfo:(nullable NSString *)dateInfo {
     
     NSString *separator = @"-";
     NSArray *infoParts = [dateInfo componentsSeparatedByString:separator];
@@ -437,11 +437,11 @@
 
 #pragma mark - images
 
-+ (UIImage *)resizeImage:(UIImage *)image toSize:(CGSize)size {
++ (UIImage *)resizeImage:(nullable UIImage *)image toSize:(CGSize)size {
     return [self resizeImage:image toSize:size allowRetina:YES];
 }
 
-+ (UIImage *)resizeImage:(UIImage *)image toSize:(CGSize)size allowRetina:(BOOL)retina {
++ (UIImage *)resizeImage:(nullable UIImage *)image toSize:(CGSize)size allowRetina:(BOOL)retina {
     
     if (image.size.height > 0 && image.size.width > 0) {
         
@@ -472,7 +472,7 @@
         
     } else {
         
-        return nil;
+        return [[UIImage alloc] init];
         
     }
     
@@ -659,8 +659,8 @@
     
 }
 
-+ (NSString *)absolutePathForPath:(NSString *)path {
-    return [[self documentsDirectory] stringByAppendingPathComponent:path];
++ (NSString *)absolutePathForPath:(nullable NSString *)path {
+    return (path) ? [[self documentsDirectory] stringByAppendingPathComponent:(NSString *)path] : [self documentsDirectory];
 }
 
 + (UIColor *)colorForColorString:(NSString *)colorSting {
@@ -710,7 +710,7 @@
     
 }
 
-+ (NSString *)shortCompanyName:(NSString *)companyName {
++ (nullable NSString *)shortCompanyName:(nullable NSString *)companyName {
     
 //    NSString *searchString = @"Общество с ограниченной ответственностью";
 //    
@@ -796,7 +796,7 @@
         
         if ([dictionary[key] isKindOfClass:[NSDictionary class]]) {
             
-            validDictionary[keyString] = [self validJSONDictionaryFromDictionary:dictionary[key]];
+            validDictionary[keyString] = [self validJSONDictionaryFromDictionary:(NSDictionary *)dictionary[key]];
             
         } else if ([dictionary[key] isKindOfClass:[NSArray class]]) {
             

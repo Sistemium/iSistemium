@@ -1357,7 +1357,7 @@
         
         NSMutableDictionary *propertiesDictionary = @{}.mutableCopy;
         
-        if (object.xid) propertiesDictionary[@"id"] = [STMFunctions UUIDStringFromUUIDData:object.xid];
+        if (object.xid) propertiesDictionary[@"id"] = [STMFunctions UUIDStringFromUUIDData:(NSData *)object.xid];
         if (object.deviceTs) propertiesDictionary[@"ts"] = [[STMFunctions dateFormatter] stringFromDate:(NSDate *)object.deviceTs];
         
         NSSet *ownKeys = [self ownObjectKeysForEntityName:object.entity.name];

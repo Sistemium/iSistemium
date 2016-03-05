@@ -28,14 +28,14 @@ NS_ASSUME_NONNULL_BEGIN
 
 + (NSString *)pluralTypeForCount:(NSUInteger)count;
 
-+ (UIImage *)resizeImage:(UIImage *)image toSize:(CGSize)size;
-+ (UIImage *)resizeImage:(UIImage *)image toSize:(CGSize)size allowRetina:(BOOL)retina;
++ (UIImage *)resizeImage:(nullable UIImage *)image toSize:(CGSize)size;
++ (UIImage *)resizeImage:(nullable UIImage *)image toSize:(CGSize)size allowRetina:(BOOL)retina;
 + (UIImage *)colorImage:(UIImage *)origImage withColor:(UIColor *)color;
 + (UIImage *)drawText:(NSString *)text withFont:(UIFont *)font color:(UIColor *)color inImage:(UIImage *)image atCenter:(BOOL)atCenter;
 
 + (NSNumber *)daysFromTodayToDate:(NSDate *)date;
 
-+ (NSString *)displayDateInfo:(NSString *)dateInfo;
++ (NSString *)displayDateInfo:(nullable NSString *)dateInfo;
 
 + (STMDateFormatter *)dateFormatter;
 + (NSDateFormatter *)dateNumbersFormatter;
@@ -72,7 +72,7 @@ NS_ASSUME_NONNULL_BEGIN
 + (NSString *)currentAppVersion;
 
 + (NSString *)documentsDirectory;
-+ (NSString *)absolutePathForPath:(NSString *)path;
++ (NSString *)absolutePathForPath:(nullable NSString *)path;
 
 + (UIColor *)colorForColorString:(NSString *)colorSting;
 
@@ -90,7 +90,7 @@ NS_ASSUME_NONNULL_BEGIN
 + (void)nilifyViewForVC:(UIViewController *)vc;
 + (void)logMemoryStat;
 
-+ (NSString *)shortCompanyName:(NSString *)companyName;
++ (nullable NSString *)shortCompanyName:(nullable NSString *)companyName;
 
 + (NSString *)appStateString;
 

@@ -354,7 +354,7 @@
     switch (indexPath.row) {
         case 0:
 
-            cell.titleLabel.text = [STMFunctions dayWithDayOfWeekFromDate:self.route.date];
+            if (self.route.date) cell.titleLabel.text = [STMFunctions dayWithDayOfWeekFromDate:(NSDate *)self.route.date];
             cell.detailLabel.attributedText = [self detailTextForLabel:cell.detailLabel];
         break;
             

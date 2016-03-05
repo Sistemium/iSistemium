@@ -195,7 +195,7 @@
             
             [text appendAttributedString:[[NSAttributedString alloc] initWithString:dueDateHeader attributes:attributes]];
             
-            NSNumber *numberOfDays = [STMFunctions daysFromTodayToDate:debt.dateE];
+            NSNumber *numberOfDays = (debt.dateE) ? [STMFunctions daysFromTodayToDate:(NSDate *)debt.dateE] : nil;
 
             NSString *dueDate = nil;
             

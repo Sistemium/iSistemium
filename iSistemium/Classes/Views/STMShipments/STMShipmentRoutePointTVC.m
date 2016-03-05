@@ -555,7 +555,7 @@
 
 - (CGFloat)heightForRoutePointCell {
     
-    CGFloat diff = [self heightDiffForText:[STMFunctions shortCompanyName:self.point.name]];
+    CGFloat diff = [self heightDiffForText:[STMFunctions shortCompanyName:(NSString *)self.point.name]];
     
     CGFloat height = [self estimatedHeightForRow] + diff;
     
@@ -754,8 +754,12 @@
 
 - (void)fillCell:(UITableViewCell *)cell withRoute:(STMShipmentRoute *)route {
     
-    cell.textLabel.text = [STMFunctions dayWithDayOfWeekFromDate:route.date];
-    cell.detailTextLabel.text = @"";
+    if (route.date) {
+        
+        cell.textLabel.text = [STMFunctions dayWithDayOfWeekFromDate:(NSDate *)route.date];
+        cell.detailTextLabel.text = @"";
+
+    }
 
 }
 
@@ -770,7 +774,7 @@
 
 - (void)fillCell:(UITableViewCell *)cell withRoutePoint:(STMShipmentRoutePoint *)point {
 
-    cell.textLabel.text = [STMFunctions shortCompanyName:point.name];
+    cell.textLabel.text = [STMFunctions shortCompanyName:(NSString *)point.name];
     cell.textLabel.numberOfLines = 0;
     
     cell.detailTextLabel.text = [point shortInfo];

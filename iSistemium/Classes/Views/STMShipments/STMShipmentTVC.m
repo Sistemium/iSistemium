@@ -420,8 +420,12 @@
 
 - (void)fillCell:(UITableViewCell <STMTDCell> *)cell withRoute:(STMShipmentRoute *)route {
     
-    cell.titleLabel.text = [STMFunctions dayWithDayOfWeekFromDate:route.date];
-    cell.detailLabel.text = @"";
+    if (route.date) {
+        
+        cell.titleLabel.text = [STMFunctions dayWithDayOfWeekFromDate:(NSDate *)route.date];
+        cell.detailLabel.text = @"";
+
+    }
     
 }
 
