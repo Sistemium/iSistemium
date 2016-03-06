@@ -22,6 +22,9 @@
 
 #import "STMNS.h"
 
+#import "iSistemium-Swift.h"
+
+
 #define FLUSH_LIMIT 17
 
 
@@ -1247,6 +1250,14 @@
 
 
 #pragma mark - find objects for WKWebView
+
++ (NSArray *)arrayOfObjectRequestedByScriptMessage:(WKScriptMessage *)scriptMessage error:(NSError **)error {
+    
+    NSPredicate *predicate = [STMScriptMessageController processScriptMessage:scriptMessage error:error];
+    
+    return nil;
+    
+}
 
 + (NSArray *)findObjectWithParameters:(NSDictionary *)parameters error:(NSError **)error {
     
