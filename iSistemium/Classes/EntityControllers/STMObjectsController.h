@@ -43,7 +43,6 @@
 
 + (void)dataLoadingFinished;
 
-//+ (NSManagedObject *)newObjectForEntityName:(NSString *)entityName;
 + (NSManagedObject *)newObjectForEntityName:(NSString *)entityName isFantom:(BOOL)isFantom;
 
 + (NSManagedObject *)objectForXid:(NSData *)xidData;
@@ -62,6 +61,8 @@
                             error:(NSError **)error;
 
 + (NSArray *)arrayOfObjectsRequestedByScriptMessage:(WKScriptMessage *)scriptMessage error:(NSError **)error;
++ (NSArray *)arrayForJSWithObjects:(NSArray <STMDatum *> *)objects;
++ (NSDictionary *)dictionaryForJSWithObject:(STMDatum *)object;
 
 
 @end

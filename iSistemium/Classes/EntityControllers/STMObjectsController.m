@@ -1310,7 +1310,7 @@
         
     } else {
         
-        return [self arrayForObjects:objectsArray];
+        return [self arrayForJSWithObjects:objectsArray];
         
     }
 
@@ -1354,7 +1354,7 @@
                     
                 } else {
                     
-                    return [self arrayForObjects:@[object]];
+                    return [self arrayForJSWithObjects:@[object]];
                     
                 }
                 
@@ -1383,43 +1383,13 @@
 
 }
 
-+ (NSArray *)arrayForObjects:(NSArray <STMDatum *> *)objects {
++ (NSArray *)arrayForJSWithObjects:(NSArray <STMDatum *> *)objects {
 
     NSMutableArray *dataArray = @[].mutableCopy;
     
     for (STMDatum *object in objects) {
         
-        NSMutableDictionary *propertiesDictionary = @{}.mutableCopy;
-        
-        if (object.xid) propertiesDictionary[@"id"] = [STMFunctions UUIDStringFromUUIDData:(NSData *)object.xid];
-        if (object.deviceTs) propertiesDictionary[@"ts"] = [[STMFunctions dateFormatter] stringFromDate:(NSDate *)object.deviceTs];
-        
-        NSSet *ownKeys = [self ownObjectKeysForEntityName:object.entity.name];
-        
-        [propertiesDictionary addEntriesFromDictionary:[object propertiesForKeys:ownKeys.allObjects]];
-        
-        for (NSString *key in object.entity.relationshipsByName.allKeys) {
-            
-            NSRelationshipDescription *relationshipDescription = [object.entity.relationshipsByName valueForKey:key];
-            
-            if (![relationshipDescription isToMany]) {
-                
-                NSManagedObject *relationshipObject = [object valueForKey:key];
-                
-                if (relationshipObject) {
-                    
-                    NSData *xidData = [relationshipObject valueForKey:@"xid"];
-                    
-                    if (xidData.length != 0) {
-                        propertiesDictionary[key] = [STMFunctions UUIDStringFromUUIDData:xidData];
-                    }
-                    
-                }
-                
-            }
-            
-        }
-
+        NSDictionary *propertiesDictionary = [self dictionaryForJSWithObject:object];
         [dataArray addObject:propertiesDictionary];
         
     }
@@ -1427,6 +1397,46 @@
     return dataArray;
     
 }
+
++ (NSDictionary *)dictionaryForJSWithObject:(STMDatum *)object {
+    
+    NSMutableDictionary *propertiesDictionary = @{}.mutableCopy;
+    
+    if (object.xid) propertiesDictionary[@"id"] = [STMFunctions UUIDStringFromUUIDData:(NSData *)object.xid];
+    if (object.deviceTs) propertiesDictionary[@"ts"] = [[STMFunctions dateFormatter] stringFromDate:(NSDate *)object.deviceTs];
+    
+    NSSet *ownKeys = [self ownObjectKeysForEntityName:object.entity.name];
+    
+    [propertiesDictionary addEntriesFromDictionary:[object propertiesForKeys:ownKeys.allObjects]];
+    
+    for (NSString *key in object.entity.relationshipsByName.allKeys) {
+        
+        NSRelationshipDescription *relationshipDescription = [object.entity.relationshipsByName valueForKey:key];
+        
+        if (![relationshipDescription isToMany]) {
+            
+            NSManagedObject *relationshipObject = [object valueForKey:key];
+            
+            if (relationshipObject) {
+                
+                NSData *xidData = [relationshipObject valueForKey:@"xid"];
+                
+                if (xidData.length != 0) {
+                    propertiesDictionary[key] = [STMFunctions UUIDStringFromUUIDData:xidData];
+                }
+                
+            }
+            
+        }
+        
+    }
+
+    return propertiesDictionary;
+    
+}
+
+
+#pragma mark - fetching objects
 
 + (NSArray *)objectsForEntityName:(NSString *)entityName {
 
