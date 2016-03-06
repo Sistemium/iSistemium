@@ -189,12 +189,12 @@
 
 - (void)webView:(WKWebView *)webView decidePolicyForNavigationAction:(WKNavigationAction *)navigationAction decisionHandler:(void (^)(WKNavigationActionPolicy))decisionHandler {
     
-    NSLog(@"---- webView decidePolicyForNavigationAction");
-    
-    NSLog(@"scheme %@", navigationAction.request.URL.scheme);
-    NSLog(@"request %@", navigationAction.request)
-    NSLog(@"HTTPMethod %@", navigationAction.request.HTTPMethod)
-    NSLog(@"HTTPBody %@", navigationAction.request.HTTPBody)
+//    NSLog(@"---- webView decidePolicyForNavigationAction");
+//    
+//    NSLog(@"scheme %@", navigationAction.request.URL.scheme);
+//    NSLog(@"request %@", navigationAction.request)
+//    NSLog(@"HTTPMethod %@", navigationAction.request.HTTPMethod)
+//    NSLog(@"HTTPBody %@", navigationAction.request.HTTPBody)
     
     decisionHandler(WKNavigationActionPolicyAllow);
     
@@ -257,9 +257,10 @@
 
 - (void)userContentController:(WKUserContentController *)userContentController didReceiveScriptMessage:(WKScriptMessage *)message {
     
-    NSLog(@"---- userContentController %@, message %@", userContentController, message);
-    NSLog(@"message.name %@", message.name);
-    NSLog(@"message.body %@", message.body);
+//    NSLog(@"---- userContentController %@, message %@", userContentController, message);
+//    NSLog(@"message.name %@", message.name);
+//    NSLog(@"message.body %@", message.body);
+    NSLog(@"%@ %@", message.name, message.body);
     
     if ([message.name isEqualToString:WK_MESSAGE_POST]) {
         
@@ -315,6 +316,13 @@
 
 - (void)callbackWithData:(NSArray *)data parameters:(NSDictionary *)parameters {
     
+#ifdef DEBUG
+    
+    NSString *requestId = parameters[@"options"][@"requestId"];
+    NSLog(@"requestId %@ callbackWithData: %@ objects", requestId, @(data.count));
+    
+#endif
+
     NSMutableArray *arguments = @[].mutableCopy;
     
     [arguments addObject:data];
@@ -330,6 +338,13 @@
 
 - (void)callbackWithError:(NSString *)errorDescription parameters:(NSDictionary *)parameters {
     
+#ifdef DEBUG
+
+    NSString *requestId = parameters[@"options"][@"requestId"];
+    NSLog(@"requestId %@ callbackWithError: %@", requestId, errorDescription);
+    
+#endif
+
     NSMutableArray *arguments = @[].mutableCopy;
     
     [arguments addObject:errorDescription];

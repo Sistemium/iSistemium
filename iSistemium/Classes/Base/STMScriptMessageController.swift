@@ -92,12 +92,9 @@ class STMScriptMessageController: NSObject {
         
         let entityDescription: STMEntityDescription = STMEntityDescription.entityForName(entityName, inManagedObjectContext: currentContext())
         
-        // filter only by attributes
-        // filter by relationships is not ready yet
-        
-        //    let properties: [String : NSPropertyDescription] = entityDescription.propertiesByName
+        let properties: [String : NSPropertyDescription] = entityDescription.propertiesByName
         let attributes: [String : NSAttributeDescription] = entityDescription.attributesByName
-        //    let relationships: [String : NSRelationshipDescription] = entityDescription.relationshipsByName
+        let relationships: [String : NSRelationshipDescription] = entityDescription.relationshipsByName
 
         var subpredicates: [NSPredicate] = []
         
@@ -108,16 +105,19 @@ class STMScriptMessageController: NSObject {
             if key == "id" { localKey = "xid" }
             if key == "ts" { localKey = "deviceTs" }
             
-            guard attributes.keys.contains(localKey) else {
-                print("\(entityName) have not attribute \(localKey)")
+            guard properties.keys.contains(localKey) else {
+                print("\(entityName) have not property \(localKey)")
                 continue
             }
             
-            guard let className: String = attributes[localKey]!.attributeValueClassName else {
-                print("\(entityName) have no class type for key \(localKey)")
+            let isAttribute: Bool = attributes.keys.contains(localKey);
+            let isRelationship: Bool = relationships.keys.contains(localKey);
+            
+            guard isAttribute == true || isRelationship == true else {
+                print("unknown kind of property '\(localKey)'")
                 continue
             }
-            
+
             var arguments: [String: AnyObject] = filterDictionary[key]!
 
             let comparisonOperators: [String] = ["==", "!=", ">=", "<=", ">", "<"]
@@ -128,18 +128,53 @@ class STMScriptMessageController: NSObject {
                     print("comparison operator should be '==', '!=', '>=', '<=', '>' or '<', not '\(compOp)'")
                     continue
                 }
-
-                guard var value: AnyObject = arguments[compOp] else {
-                    print("have no value for comparison operator '\(compOp)'")
-                    continue
-                }
-
-                value = normalizeValue(value, className: className)
                 
-                let subpredicateString: String = "\(localKey) \(compOp) %@"
+//                guard var value: AnyObject? = arguments[compOp] else {
+//                    print("have no value for comparison operator '\(compOp)'")
+//                    continue
+//                }
 
-                let subpredicate: NSPredicate = NSPredicate(format: subpredicateString, argumentArray: [value])
+                var value: AnyObject? = arguments[compOp]
+                
+                if isAttribute {
+                    
+                    guard let className: String = attributes[localKey]!.attributeValueClassName else {
+                        print("\(entityName) have no class type for key \(localKey)")
+                        continue
+                    }
+                    
+                    value = normalizeValue(value, className: className)
 
+                } else if isRelationship {
+                    
+                    guard ((relationships[localKey]?.toMany) == false) else {
+                        print("relationship \(localKey) is toMany")
+                        continue
+                    }
+                    
+                    guard let className: String = relationships[localKey]!.destinationEntity?.name else {
+                        print("\(entityName) have no class type for key \(localKey)")
+                        continue
+                    }
+
+                    value = relationshipObjectForValue(value, className: className)
+                    
+                }
+                
+                var subpredicate: NSPredicate
+                
+                if value != nil {
+                
+                    let subpredicateString: String = "\(localKey) \(compOp) %@"
+                    subpredicate = NSPredicate(format: subpredicateString, argumentArray: [value!])
+
+                } else {
+                    
+                    let subpredicateString: String = "\(localKey) \(compOp) nil"
+                    subpredicate = NSPredicate(format: subpredicateString, argumentArray: nil)
+
+                }
+                
                 subpredicates.append(subpredicate)
 
             }
@@ -150,9 +185,13 @@ class STMScriptMessageController: NSObject {
         
     }
 
-    class func normalizeValue(var value: AnyObject, className: String) -> AnyObject {
+    class func normalizeValue(var value: AnyObject?, className: String) -> AnyObject? {
         
-        if value is NSNumber { value = value.stringValue }
+        guard value != nil else {
+            return nil
+        }
+        
+        if value is NSNumber { value = value!.stringValue }
         
         switch className {
             
@@ -166,6 +205,19 @@ class STMScriptMessageController: NSObject {
             
         }
         
+    }
+    
+    class func relationshipObjectForValue(var value: AnyObject?, className: String) -> AnyObject? {
+
+        guard value is String else {
+            print("relationship value is not a String, can not get xid")
+            return nil
+        }
+        
+        value = STMObjectsController.objectForXid(STMFunctions.dataFromString(value as! String), entityName: className)
+        
+        return value
+
     }
 
     class func currentContext() -> NSManagedObjectContext {
