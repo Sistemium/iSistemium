@@ -19,6 +19,8 @@
 #import "STMFunctions.h"
 #import "STMUI.h"
 
+#import "iSistemium-Swift.h"
+
 
 #define WK_MESSAGE_POST @"post"
 #define WK_MESSAGE_GET @"get"
@@ -296,6 +298,8 @@
         NSError *error;
         NSArray *result = @[];
         
+        [STMScriptMessageController processScriptMessage:message error:&error];
+
         if ([message.name isEqualToString:WK_MESSAGE_FIND]) {
             
             result = [STMObjectsController findObjectWithParameters:parameters error:&error];

@@ -12,205 +12,160 @@ import WebKit
 let k_WK_SCRIPT_MESSAGE_FIND = "find"
 let k_WK_SCRIPT_MESSAGE_FIND_ALL = "findAll"
 
+
+class STMScriptMessageController: NSObject {
+    
 @available(iOS 8.0, *)
 
-func processScriptMessage(scriptMessage: WKScriptMessage) -> NSPredicate? {
-
-    var predicate: NSPredicate? = nil
+    class func processScriptMessage(scriptMessage: WKScriptMessage, error: NSErrorPointer) -> NSPredicate? {
     
-    let name: String = scriptMessage.name
-    
-    if let body: Dictionary = scriptMessage.body as? [String: AnyObject] {
-        
-        print([name, body])
-        
-        if let entityName: String = body["entity"] as? String {
-        
-            if STMObjectsController.localDataModelEntityNames().contains(entityName) {
-                
-//                let options: Dictionary? = body["options"] as? Dictionary<String, AnyObject>
-
-                switch name {
-                    
-                    case k_WK_SCRIPT_MESSAGE_FIND:
-                        if let xid: NSData? = STMFunctions.xidDataFromXidString(body["id"] as? String) {
-                            
-                            predicate = predicateForScriptMessage(entityName, filter: ["xid": xid!], whereFilter: nil)
-                            
-                        } else {
-                            print("where is no xid in \(k_WK_SCRIPT_MESSAGE_FIND) script message")
-                        }
-                    
-                    case k_WK_SCRIPT_MESSAGE_FIND_ALL:
-                        let filter: Dictionary? = body["filter"] as? [String: AnyObject]
-                        let whereFilter: Dictionary? = body["where"] as? [String: AnyObject]
-
-                        predicate = predicateForScriptMessage(entityName, filter: filter, whereFilter: whereFilter)
-                    
-                    default: break
-                    
-                }
-                
-            } else {
-                print("local data model have no entity with name \(entityName)")
-            }
-
-        } else {
-            print("message body have no entity name")
-        }
-        
-    } else {
+    guard let body: Dictionary = scriptMessage.body as? [String: AnyObject] else {
         print("message body is not a Dictionary")
+        return nil
     }
     
-    return predicate
+    guard var entityName: String = body["entity"] as? String else {
+        print("message body have no entity name")
+        return nil
+    }
+    
+    entityName = "STM" + entityName
+    
+    guard STMObjectsController.localDataModelEntityNames().contains(entityName) else {
+        print("local data model have no entity with name \(entityName)")
+        return nil
+    }
+    
+    let name: String = scriptMessage.name
+
+    print([name, body])
+
+    switch name {
+        
+        case k_WK_SCRIPT_MESSAGE_FIND:
+            
+            guard let xid: NSData? = STMFunctions.xidDataFromXidString(body["id"] as? String) else {
+                print("where is no xid in \(k_WK_SCRIPT_MESSAGE_FIND) script message")
+                return nil
+            }
+            
+            return predicateForScriptMessage(entityName, filter: ["xid": xid!], whereFilter: nil)
+        
+        case k_WK_SCRIPT_MESSAGE_FIND_ALL:
+            
+            guard let filter: [String: AnyObject]? = body["filter"] as? [String: AnyObject] else {
+                print("filter section malformed")
+                return nil
+            }
+            
+            guard let whereFilter: [String: [String: AnyObject]]? = body["where"] as? [String: [String: AnyObject]] else {
+                print("whereFilter section malformed")
+                return nil
+            }
+            
+            return predicateForScriptMessage(entityName, filter: filter, whereFilter: whereFilter)
+            
+        default: break
+        
+    }
+    
+    return nil
     
 }
 
-func predicateForScriptMessage(entityName: String, filter: [String: AnyObject]?, whereFilter: [String: AnyObject]?) -> NSPredicate {
+class func predicateForScriptMessage(entityName: String, filter: [String: AnyObject]?, whereFilter: [String: [String: AnyObject]]?) -> NSPredicate {
     
-    let entityDescription: STMEntityDescription = STMEntityDescription.entityForName(entityName, inManagedObjectContext: currentContext())
-    let entityAttributes: [String : NSAttributeDescription] = entityDescription.attributesByName
-
-    var subpredicates: [NSPredicate] = []
-
+    var filterDictionary: [String: [String: AnyObject]] = (whereFilter != nil) ? whereFilter! : [String: [String: AnyObject]]();
+    
     if (filter != nil) {
-        
-        let filterKeys: [String] = checkKeysForEntity(entityName, keys: filter!.keys)
-        
-        for key in filterKeys {
-
-            guard var value: AnyObject = filter![key] else {
-                print("have no value for key \(key)")
-                break
-            }
-
-            if value is NSNumber { value = value.stringValue }
-            
-            guard value is String else {
-                print("value \(value) for key \(key) is not supported")
-                break
-            }
-
-            guard let className: String = entityAttributes[key]?.attributeValueClassName else {
-                print("have no class type for key \(key)")
-                break
-            }
-            
-            value = normalizeValue(value, className: className)
-            
-            let subpredicateString: String = "\(key) == %@"
-            
-            let subpredicate: NSPredicate = NSPredicate(format: subpredicateString, argumentArray: [value])
-            
-            subpredicates.append(subpredicate)
-            
+        for key in filter!.keys {
+            filterDictionary[key] = ["==": filter![key]!]
         }
-        
     }
     
-    if (whereFilter != nil) {
-        
-        let filterKeys: [String] = checkKeysForEntity(entityName, keys: whereFilter!.keys)
-        
-        for key in filterKeys {
-            
-            guard let className: String = entityAttributes[key]?.attributeValueClassName else {
-                print("have no class type for key \(key)")
-                break
-            }
-            
-            guard let arguments: Dictionary = whereFilter![key] as? [String: AnyObject] else {
-                print("arguments is not a dictionary")
-                break
-            }
-            
-            let comparisonOperators: [String] = ["==", "!=", ">=", "<=", ">", "<"]
-            
-            for compOp in arguments.keys {
-                
-                guard comparisonOperators.contains(compOp) else {
-                    print("comparison operator should be '==', '!=', '>=', '<=', '>' or '<', not '\(compOp)'")
-                    break
-                }
-
-                guard var value: AnyObject = arguments[compOp] else {
-                    print("have no value for comparison operator '\(compOp)'")
-                    break
-                }
-                
-                if value is NSNumber { value = value.stringValue }
-                
-                guard value is String else {
-                    print("value \(value) for comparison operator '\(compOp)' is not supported")
-                    break
-                }
-                
-                value = normalizeValue(value, className: className)
-                
-                let subpredicateString: String = "\(key) \(compOp) %@"
-                
-                let subpredicate: NSPredicate = NSPredicate(format: subpredicateString, argumentArray: [value])
-                
-                subpredicates.append(subpredicate)
-
-            }
-            
-        }
-
-    }
+    let subpredicates: [NSPredicate] = subpredicatesForFilterDictionaryWithEntityName(entityName, filterDictionary: filterDictionary)
     
     return NSCompoundPredicate(andPredicateWithSubpredicates: subpredicates)
     
 }
 
-func checkKeysForEntity(entityName: String, keys: LazyMapCollection<[String: AnyObject], String>) -> [String] {
+class func subpredicatesForFilterDictionaryWithEntityName(entityName: String, var filterDictionary: [String: [String: AnyObject]]) -> [NSPredicate] {
     
     let entityDescription: STMEntityDescription = STMEntityDescription.entityForName(entityName, inManagedObjectContext: currentContext())
     
-// filter only by attributes
-// filter by relationships is not ready yet
-
-//    let properties: [String : NSPropertyDescription] = entityDescription.propertiesByName
+    // filter only by attributes
+    // filter by relationships is not ready yet
+    
+    //    let properties: [String : NSPropertyDescription] = entityDescription.propertiesByName
     let attributes: [String : NSAttributeDescription] = entityDescription.attributesByName
-//    let relationships: [String : NSRelationshipDescription] = entityDescription.relationshipsByName
+    //    let relationships: [String : NSRelationshipDescription] = entityDescription.relationshipsByName
 
-    var resultKeys: [String] = []
-
-    for key in keys {
+    var subpredicates: [NSPredicate] = []
+    
+    for key in filterDictionary.keys {
         
-        if attributes.keys.contains(key) {
-            resultKeys.append(key)
-        } else {
+        guard attributes.keys.contains(key) else {
             print("\(entityName) have not attribute \(key)")
+            break
         }
         
+        guard let className: String = attributes[key]!.attributeValueClassName else {
+            print("\(entityName) have no class type for key \(key)")
+            break
+        }
+        
+        var arguments: [String: AnyObject] = filterDictionary[key]!
+
+        let comparisonOperators: [String] = ["==", "!=", ">=", "<=", ">", "<"]
+
+        for compOp in arguments.keys {
+
+            guard comparisonOperators.contains(compOp) else {
+                print("comparison operator should be '==', '!=', '>=', '<=', '>' or '<', not '\(compOp)'")
+                break
+            }
+
+            guard var value: AnyObject = arguments[compOp] else {
+                print("have no value for comparison operator '\(compOp)'")
+                break
+            }
+
+            value = normalizeValue(value as! String, className: className)
+            
+            let subpredicateString: String = "\(key) \(compOp) %@"
+
+            let subpredicate: NSPredicate = NSPredicate(format: subpredicateString, argumentArray: [value])
+
+            subpredicates.append(subpredicate)
+
+        }
+
     }
     
-    return resultKeys
-
+    return subpredicates
+    
 }
 
-func normalizeValue(var value: AnyObject, className: String) -> AnyObject {
+class func normalizeValue(value: String, className: String) -> AnyObject {
     
     switch className {
         
-        case NSStringFromClass(NSNumber)    :   value = NSNumberFormatter().numberFromString(value as! String)!
+        case NSStringFromClass(NSNumber)    :   return NSNumberFormatter().numberFromString(value)!
             
-        case NSStringFromClass(NSDate)      :   value = STMDateFormatter().dateFromString(value as! String)!
+        case NSStringFromClass(NSDate)      :   return STMDateFormatter().dateFromString(value)!
             
-        case NSStringFromClass(NSData)      :   value = STMFunctions.dataFromString(value as! String)
-        
-        default: break
+        case NSStringFromClass(NSData)      :   return STMFunctions.dataFromString(value)
+            
+        default                             :   return value
         
     }
-
-    return value
     
 }
 
-func currentContext() -> NSManagedObjectContext {
+class func currentContext() -> NSManagedObjectContext {
     
     return STMSessionManager.sharedManager().currentSession.document.managedObjectContext
+    
+}
     
 }
