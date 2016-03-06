@@ -7,6 +7,7 @@
 //
 
 #import "STMObjectsController.h"
+
 #import "STMAuthController.h"
 #import "STMFunctions.h"
 #import "STMSyncer.h"
@@ -1251,54 +1252,110 @@
 
 #pragma mark - find objects for WKWebView
 
-+ (NSArray *)arrayOfObjectRequestedByScriptMessage:(WKScriptMessage *)scriptMessage error:(NSError **)error {
++ (NSArray *)arrayOfObjectsRequestedByScriptMessage:(WKScriptMessage *)scriptMessage error:(NSError **)error {
     
-    NSPredicate *predicate = [STMScriptMessageController processScriptMessage:scriptMessage error:error];
+    NSError *localError = nil;
+    NSArray *result = nil;
+
+    if (![scriptMessage.body isKindOfClass:[NSDictionary class]]) {
+        
+        [self addMessage:@"message.body is not a NSDictionary class" toError:error];
+        return nil;
+        
+    }
+
+    NSDictionary *parameters = scriptMessage.body;
+
+    if ([scriptMessage.name isEqualToString:WK_MESSAGE_FIND]) {
+        result = [self findObjectInCacheWithParameters:parameters error:&localError];
+    }
+
+    if (localError) {
+        
+        [self addMessage:localError.localizedDescription toError:error];
+        return nil;
+        
+    }
     
-    return nil;
+    if (result) return result;
     
+    NSPredicate *predicate = [STMScriptMessageController predicateForScriptMessage:scriptMessage error:&localError];
+    
+    if (localError) {
+        
+        [self addMessage:localError.localizedDescription toError:error];
+        return nil;
+        
+    }
+
+    NSString *entityName = [NSString stringWithFormat:@"STM%@", parameters[@"entity"]];
+    NSDictionary *options = parameters[@"options"];
+    NSUInteger pageSize = [options[@"pageSize"] integerValue];
+    NSUInteger startPage = [options[@"startPage"] integerValue] - 1;
+    
+    NSArray *objectsArray = [self objectsForEntityName:entityName
+                                               orderBy:@"id"
+                                             ascending:YES
+                                            fetchLimit:pageSize
+                                           fetchOffset:(pageSize * startPage)
+                                           withFantoms:NO
+                                             predicate:predicate
+                                inManagedObjectContext:[self document].managedObjectContext
+                                                 error:&localError];
+    
+    if (localError) {
+        
+        [self addMessage:localError.localizedDescription toError:error];
+        return nil;
+        
+    } else {
+        
+        return [self arrayForObjects:objectsArray];
+        
+    }
+
 }
 
-+ (NSArray *)findObjectWithParameters:(NSDictionary *)parameters error:(NSError **)error {
++ (void)addMessage:(NSString *)errorMessage toError:(NSError **)error{
     
-    NSString *entityName = [NSString stringWithFormat:@"STM%@", parameters[@"entity"]];
+    NSString *bundleId = [NSBundle mainBundle].bundleIdentifier;
+    
+    if (bundleId && error) *error = [NSError errorWithDomain:(NSString * _Nonnull)bundleId
+                                                        code:1
+                                                    userInfo:@{NSLocalizedDescriptionKey: errorMessage}];
 
+}
+
++ (NSArray *)findObjectInCacheWithParameters:(NSDictionary *)parameters error:(NSError **)error {
+    
     NSString *errorMessage = nil;
+
+    NSString *entityName = [NSString stringWithFormat:@"STM%@", parameters[@"entity"]];
     
     if ([[self localDataModelEntityNames] containsObject:entityName]) {
-
+        
         NSString *xidString = parameters[@"id"];
         
-        NSData *xid = [STMFunctions xidDataFromXidString:xidString];
-        
-        if (xid) {
+        if (xidString) {
+            
+            NSData *xid = [STMFunctions xidDataFromXidString:xidString];
             
             STMDatum *object = [self sharedController].objectsCache[xid];
             
             if (object) {
                 
                 if (object.isFantom.boolValue) {
+                    
                     errorMessage = [NSString stringWithFormat:@"object with xid %@ is fantom", xidString];
+                    
                 } else if (![object.entity.name isEqualToString:entityName]) {
+                    
                     errorMessage = [NSString stringWithFormat:@"object with xid %@ have entity name %@, not %@", xidString, object.entity.name, entityName];
+                    
                 } else {
+                    
                     return [self arrayForObjects:@[object]];
-                }
-                
-            } else {
-                
-                STMFetchRequest *request = [STMFetchRequest fetchRequestWithEntityName:entityName];
-                request.predicate = [NSPredicate predicateWithFormat:@"xid == %@", xid];
-                
-                NSError *fetchError;
-                NSArray *result = [[self document].managedObjectContext executeFetchRequest:request error:&fetchError];
-                
-                if (!fetchError) {
                     
-                    return [self arrayForObjects:result];
-                    
-                } else {
-                    errorMessage = fetchError.localizedDescription;
                 }
                 
             }
@@ -1310,6 +1367,7 @@
     } else {
         errorMessage = [entityName stringByAppendingString:@"%@: not found in data model"];
     }
+
     
     if (errorMessage) {
         
@@ -1318,46 +1376,11 @@
         if (bundleId && error) *error = [NSError errorWithDomain:(NSString * _Nonnull)bundleId
                                                             code:1
                                                         userInfo:@{NSLocalizedDescriptionKey: errorMessage}];
-
-    }
-    
-    return @[];
-    
-}
-
-+ (NSArray *)findAllObjectsWithParameters:(NSDictionary *)parameters error:(NSError **)error {
-    
-    NSString *entityName = [NSString stringWithFormat:@"STM%@", parameters[@"entity"]];
-    NSDictionary *options = parameters[@"options"];
-    NSUInteger pageSize = [options[@"pageSize"] integerValue];
-    NSUInteger startPage = [options[@"startPage"] integerValue] - 1;
-    
-    NSError *fetchError;
-    NSArray *objectsArray = [self objectsForEntityName:entityName
-                                               orderBy:@"id"
-                                             ascending:YES
-                                            fetchLimit:pageSize
-                                           fetchOffset:(pageSize * startPage)
-                                           withFantoms:NO
-                                inManagedObjectContext:[self document].managedObjectContext
-                                                 error:&fetchError];
-    
-    if (fetchError) {
-        
-        NSString *bundleId = [NSBundle mainBundle].bundleIdentifier;
-        
-        if (bundleId && error) *error = [NSError errorWithDomain:(NSString * _Nonnull)bundleId
-                                                            code:1
-                                                        userInfo:@{NSLocalizedDescriptionKey: fetchError.localizedDescription}];
-
-    } else {
-        
-        return [self arrayForObjects:objectsArray];
         
     }
     
-    return @[];
-    
+    return nil;
+
 }
 
 + (NSArray *)arrayForObjects:(NSArray <STMDatum *> *)objects {
@@ -1432,6 +1455,20 @@
 
 + (NSArray *)objectsForEntityName:(NSString *)entityName orderBy:(NSString *)orderBy ascending:(BOOL)ascending fetchLimit:(NSUInteger)fetchLimit fetchOffset:(NSUInteger)fetchOffset withFantoms:(BOOL)withFantoms inManagedObjectContext:(NSManagedObjectContext *)context error:(NSError **)error {
     
+    return [self objectsForEntityName:entityName
+                              orderBy:orderBy
+                            ascending:ascending
+                           fetchLimit:fetchLimit
+                          fetchOffset:fetchOffset
+                          withFantoms:withFantoms
+                            predicate:nil
+               inManagedObjectContext:context
+                                error:error];
+
+}
+
++ (NSArray *)objectsForEntityName:(NSString *)entityName orderBy:(NSString *)orderBy ascending:(BOOL)ascending fetchLimit:(NSUInteger)fetchLimit fetchOffset:(NSUInteger)fetchOffset withFantoms:(BOOL)withFantoms predicate:(NSPredicate *)predicate inManagedObjectContext:(NSManagedObjectContext *)context error:(NSError **)error {
+    
     NSString *errorMessage = nil;
     
     context = (context) ? context : [self document].managedObjectContext;
@@ -1441,7 +1478,7 @@
         [[self document] saveDocument:^(BOOL success) {
             
         }];
-
+        
     }
     
     if ([[self localDataModelEntityNames] containsObject:entityName]) {
@@ -1455,9 +1492,7 @@
             request.fetchLimit = fetchLimit;
             request.fetchOffset = fetchOffset;
             
-            if (!withFantoms) {
-                request.predicate = [STMPredicate predicateWithNoFantoms];
-            }
+            request.predicate = (withFantoms) ? predicate : [STMPredicate predicateWithNoFantomsFromPredicate:predicate];
             
             NSError *fetchError;
             NSArray *result = [[self document].managedObjectContext executeFetchRequest:request error:&fetchError];

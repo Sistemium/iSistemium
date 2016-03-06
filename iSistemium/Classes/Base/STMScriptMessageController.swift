@@ -17,7 +17,7 @@ class STMScriptMessageController: NSObject {
     
     @available(iOS 8.0, *)
 
-    class func processScriptMessage(scriptMessage: WKScriptMessage, error: NSErrorPointer) -> NSPredicate? {
+    class func predicateForScriptMessage(scriptMessage: WKScriptMessage, error: NSErrorPointer) -> NSPredicate? {
     
         guard let body: Dictionary = scriptMessage.body as? [String: AnyObject] else {
             errorWithMessage(error, errorMessage: "message body is not a Dictionary")
@@ -47,7 +47,7 @@ class STMScriptMessageController: NSObject {
                     return nil
                 }
                 
-                return predicateForScriptMessage(entityName, filter: ["xid": xid!], whereFilter: nil, error: error)
+                return predicateForFilters(entityName, filter: ["xid": xid!], whereFilter: nil, error: error)
             
             case k_WK_SCRIPT_MESSAGE_FIND_ALL:
                 
@@ -61,7 +61,7 @@ class STMScriptMessageController: NSObject {
                     break
                 }
                 
-                return predicateForScriptMessage(entityName, filter: filter, whereFilter: whereFilter, error: error)
+                return predicateForFilters(entityName, filter: filter, whereFilter: whereFilter, error: error)
                 
             default: break
             
@@ -72,7 +72,7 @@ class STMScriptMessageController: NSObject {
         
     }
 
-    class func predicateForScriptMessage(entityName: String, filter: [String: AnyObject]?, whereFilter: [String: [String: AnyObject]]?, error: NSErrorPointer) -> NSPredicate {
+    class func predicateForFilters(entityName: String, filter: [String: AnyObject]?, whereFilter: [String: [String: AnyObject]]?, error: NSErrorPointer) -> NSPredicate {
         
         var filterDictionary: [String: [String: AnyObject]] = (whereFilter != nil) ? whereFilter! : [String: [String: AnyObject]]();
         
@@ -103,14 +103,19 @@ class STMScriptMessageController: NSObject {
         
         for key in filterDictionary.keys {
             
-            guard attributes.keys.contains(key) else {
-                print("\(entityName) have not attribute \(key)")
-                break
+            var localKey: String = key;
+            
+            if key == "id" { localKey = "xid" }
+            if key == "ts" { localKey = "deviceTs" }
+            
+            guard attributes.keys.contains(localKey) else {
+                print("\(entityName) have not attribute \(localKey)")
+                continue
             }
             
-            guard let className: String = attributes[key]!.attributeValueClassName else {
-                print("\(entityName) have no class type for key \(key)")
-                break
+            guard let className: String = attributes[localKey]!.attributeValueClassName else {
+                print("\(entityName) have no class type for key \(localKey)")
+                continue
             }
             
             var arguments: [String: AnyObject] = filterDictionary[key]!
@@ -121,17 +126,17 @@ class STMScriptMessageController: NSObject {
 
                 guard comparisonOperators.contains(compOp) else {
                     print("comparison operator should be '==', '!=', '>=', '<=', '>' or '<', not '\(compOp)'")
-                    break
+                    continue
                 }
 
                 guard var value: AnyObject = arguments[compOp] else {
                     print("have no value for comparison operator '\(compOp)'")
-                    break
+                    continue
                 }
 
-                value = normalizeValue(value as! String, className: className)
+                value = normalizeValue(value, className: className)
                 
-                let subpredicateString: String = "\(key) \(compOp) %@"
+                let subpredicateString: String = "\(localKey) \(compOp) %@"
 
                 let subpredicate: NSPredicate = NSPredicate(format: subpredicateString, argumentArray: [value])
 
@@ -145,15 +150,17 @@ class STMScriptMessageController: NSObject {
         
     }
 
-    class func normalizeValue(value: String, className: String) -> AnyObject {
+    class func normalizeValue(var value: AnyObject, className: String) -> AnyObject {
+        
+        if value is NSNumber { value = value.stringValue }
         
         switch className {
             
-            case NSStringFromClass(NSNumber)    :   return NSNumberFormatter().numberFromString(value)!
+            case NSStringFromClass(NSNumber)    :   return NSNumberFormatter().numberFromString(value as! String)!
                 
-            case NSStringFromClass(NSDate)      :   return STMDateFormatter().dateFromString(value)!
+            case NSStringFromClass(NSDate)      :   return STMDateFormatter().dateFromString(value as! String)!
                 
-            case NSStringFromClass(NSData)      :   return STMFunctions.dataFromString(value)
+            case NSStringFromClass(NSData)      :   return STMFunctions.dataFromString(value as! String)
                 
             default                             :   return value
             

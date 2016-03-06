@@ -22,13 +22,6 @@
 #import "iSistemium-Swift.h"
 
 
-#define WK_MESSAGE_POST @"post"
-#define WK_MESSAGE_GET @"get"
-#define WK_MESSAGE_SCANNER_ON @"barCodeScannerOn"
-#define WK_MESSAGE_FIND_ALL @"findAll"
-#define WK_MESSAGE_FIND @"find"
-
-
 @interface STMWKWebViewVC () <WKNavigationDelegate, WKScriptMessageHandler, STMBarCodeScannerDelegate>
 
 @property (nonatomic, strong) WKWebView *webView;
@@ -295,21 +288,10 @@
         
         NSDictionary *parameters = message.body;
         
-        NSError *error;
-        NSArray *result = @[];
-        
-        [STMScriptMessageController processScriptMessage:message error:&error];
+        NSError *error = nil;
 
-        if ([message.name isEqualToString:WK_MESSAGE_FIND]) {
-            
-            result = [STMObjectsController findObjectWithParameters:parameters error:&error];
-            
-        } else if ([message.name isEqualToString:WK_MESSAGE_FIND_ALL]) {
-            
-            result = [STMObjectsController findAllObjectsWithParameters:parameters error:&error];
-            
-        }
-        
+        NSArray *result = [STMObjectsController arrayOfObjectsRequestedByScriptMessage:message error:&error];
+
         if (!error) {
             
             [self callbackWithData:result
@@ -466,16 +448,7 @@
 #pragma mark - view lifecycle
 
 - (void)customInit {
-    
     [self webViewInit];
-    
-    NSDictionary *test = @{@"entity": @"Article",
-                           @"options": @{@"requestId": @"some request id string",
-                                         @"pageSize": @(10),
-                                         @"startPage": @(3)}};
-    
-    [STMObjectsController findAllObjectsWithParameters:test error:nil];
-    
 }
 
 - (void)viewDidLoad {

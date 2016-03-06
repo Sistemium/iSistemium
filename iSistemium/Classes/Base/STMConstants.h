@@ -54,5 +54,11 @@
 #define RINGING_LOCAL_NOTIFICATION @"ringingLocalNotification"
 #define MAX_CODES_PER_BATCH 1
 
+#define WK_MESSAGE_POST @"post"
+#define WK_MESSAGE_GET @"get"
+#define WK_MESSAGE_SCANNER_ON @"barCodeScannerOn"
+#define WK_MESSAGE_FIND_ALL @"findAll"
+#define WK_MESSAGE_FIND @"find"
+
 
 #endif

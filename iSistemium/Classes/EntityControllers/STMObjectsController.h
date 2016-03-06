@@ -7,9 +7,12 @@
 //
 
 #import "STMController.h"
+
 #import <CoreData/CoreData.h>
-#import "STMRecordStatus.h"
 #import <Crashlytics/Crashlytics.h>
+#import <WebKit/WebKit.h>
+
+#import "STMRecordStatus.h"
 
 
 @interface STMObjectsController : STMController
@@ -58,8 +61,7 @@
            inManagedObjectContext:(NSManagedObjectContext *)context
                             error:(NSError **)error;
 
-+ (NSArray *)findObjectWithParameters:(NSDictionary *)parameters error:(NSError **)error;
-+ (NSArray *)findAllObjectsWithParameters:(NSDictionary *)parameters error:(NSError **)error;
++ (NSArray *)arrayOfObjectsRequestedByScriptMessage:(WKScriptMessage *)scriptMessage error:(NSError **)error;
 
 
 @end
