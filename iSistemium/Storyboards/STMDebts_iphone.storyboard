@@ -281,11 +281,11 @@
                         <viewControllerLayoutGuide type="bottom" id="l1c-QD-xmT"/>
                     </layoutGuides>
                     <view key="view" contentMode="scaleToFill" id="OrW-eN-Pfh">
-                        <rect key="frame" x="0.0" y="0.0" width="388" height="256"/>
+                        <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                         <subviews>
                             <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="249" verticalHuggingPriority="249" horizontalCompressionResistancePriority="751" verticalCompressionResistancePriority="751" text="Debt number label" textAlignment="right" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="jx1-bw-bWJ">
-                                <rect key="frame" x="0.0" y="60.5" width="154.5" height="33"/>
+                                <rect key="frame" x="0.0" y="61" width="154.5" height="33"/>
                                 <constraints>
                                     <constraint firstAttribute="height" constant="21" id="Hd8-dG-jHM"/>
                                 </constraints>
@@ -299,12 +299,12 @@
                                 </variation>
                             </label>
                             <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="wzR-Od-CqX">
-                                <rect key="frame" x="162" y="61" width="218" height="33"/>
+                                <rect key="frame" x="162" y="61" width="430" height="33"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="14"/>
                                 <textInputTraits key="textInputTraits"/>
                             </textField>
                             <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="KDF-TV-R3G">
-                                <rect key="frame" x="162" y="102" width="218" height="33"/>
+                                <rect key="frame" x="162" y="102" width="430" height="33"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="14"/>
                                 <textInputTraits key="textInputTraits"/>
                             </textField>
@@ -314,7 +314,7 @@
                                 <nil key="highlightedColor"/>
                             </label>
                             <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="249" verticalHuggingPriority="249" horizontalCompressionResistancePriority="751" verticalCompressionResistancePriority="751" text="Debt comment label" textAlignment="right" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Z6V-t9-x4U">
-                                <rect key="frame" x="0.0" y="142.5" width="154.5" height="33"/>
+                                <rect key="frame" x="0.0" y="143" width="154.5" height="33"/>
                                 <constraints>
                                     <constraint firstAttribute="height" constant="21" id="6sa-4X-pHJ"/>
                                 </constraints>
@@ -328,12 +328,12 @@
                                 </variation>
                             </label>
                             <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="IYi-mS-pgs">
-                                <rect key="frame" x="162" y="143" width="218" height="33"/>
+                                <rect key="frame" x="162" y="143" width="430" height="33"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="14"/>
                                 <textInputTraits key="textInputTraits" autocorrectionType="no"/>
                             </textField>
                             <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="249" verticalHuggingPriority="249" horizontalCompressionResistancePriority="751" verticalCompressionResistancePriority="751" text="Debt sum label" textAlignment="right" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="eil-cA-C39">
-                                <rect key="frame" x="0.0" y="101.5" width="154.5" height="33"/>
+                                <rect key="frame" x="0.0" y="102" width="154.5" height="33"/>
                                 <constraints>
                                     <constraint firstAttribute="height" constant="21" id="kBY-aH-2pw"/>
                                 </constraints>
@@ -396,8 +396,6 @@
                             <constraint firstItem="jx1-bw-bWJ" firstAttribute="centerY" secondItem="wzR-Od-CqX" secondAttribute="centerY" id="z69-rf-QMN"/>
                         </constraints>
                     </view>
-                    <freeformSimulatedSizeMetrics key="simulatedDestinationMetrics"/>
-                    <size key="freeformSize" width="388" height="256"/>
                     <connections>
                         <outlet property="commentLabel" destination="Z6V-t9-x4U" id="PUg-Yl-6hB"/>
                         <outlet property="commentTextField" destination="IYi-mS-pgs" id="hVf-K8-Yqy"/>
@@ -411,7 +409,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="7B8-Tx-QSK" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="6708" y="566"/>
+            <point key="canvasLocation" x="6704" y="534"/>
         </scene>
         <!--Select Date-->
         <scene sceneID="FT6-l9-jzI">
@@ -482,7 +480,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="Ciu-F6-5RR" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="6704" y="1062"/>
+            <point key="canvasLocation" x="6704" y="1160"/>
         </scene>
     </scenes>
 </document>

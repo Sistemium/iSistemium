@@ -23,3 +23,4 @@
 #import "STMCashingProcessController.h"
 #import "STMDatePickerVC.h"
 #import "STMUncashingInfoVC.h"
+#import "STMAddEtceteraVC.h"

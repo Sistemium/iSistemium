@@ -151,9 +151,6 @@
 - (IBAction)cancelButtonPressed:(id)sender {
     
     [self.view endEditing:YES];
-    if (![self.parentVC isKindOfClass: STMDebtsPVC_iPhone.class]){
-        [self.parentVC dismissAddDebt];
-    }
     
 }
 

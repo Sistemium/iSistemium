@@ -245,7 +245,7 @@ class STMDebtsPVC_iPhone: STMDebtsDetailsPVC, UIPopoverPresentationControllerDel
     func setCashingSum(){
         var cashingSum: UITextField?
         let alertController = UIAlertController(title: NSLocalizedString("CASHING SUMM", comment: ""), message: nil, preferredStyle: .Alert)
-        let done = UIAlertAction(title: NSLocalizedString("DONE", comment: ""), style: .Default, handler: { (action) -> Void in
+        let done = UIAlertAction(title: NSLocalizedString("DONE", comment: ""), style: .Default){ (action) -> Void in
             let numberFormatter = STMFunctions.decimalMaxTwoMinTwoDigitFormatter
             let number = numberFormatter().numberFromString(alertController.textFields![0].text!)
             if number != nil{
@@ -255,7 +255,7 @@ class STMDebtsPVC_iPhone: STMDebtsDetailsPVC, UIPopoverPresentationControllerDel
                 STMCashingProcessController.sharedInstance().cashingSummLimit = nil
             }
             self.updateCashingLabel()
-        })
+        }
         let cancel = UIAlertAction(title: NSLocalizedString("CANCEL", comment: ""), style: .Cancel, handler: nil)
         alertController.addAction(done)
         alertController.addAction(cancel)

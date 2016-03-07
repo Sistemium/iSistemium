@@ -1,15 +1,15 @@
 //
-//  STMAddDebtVC_iphone.swift
+//  STMAddEtceteraVC_iPhone.swift
 //  iSistemium
 //
-//  Created by Edgar Jan Vuicik on 01/02/16.
+//  Created by Edgar Jan Vuicik on 07/03/16.
 //  Copyright © 2016 Sistemium UAB. All rights reserved.
 //
 
 import UIKit
 
 @available(iOS 8.0, *)
-class STMAddDebtVC_iPhone: STMAddDebtVC,UIPopoverPresentationControllerDelegate {
+class STMAddEtceteraVC_iPhone: STMAddEtceteraVC,UIPopoverPresentationControllerDelegate {
     
     // MARK: Selectors
     
@@ -20,7 +20,7 @@ class STMAddDebtVC_iPhone: STMAddDebtVC,UIPopoverPresentationControllerDelegate 
     
     func addButtonPressed() {
         super.doneButtonPressed(nil)
-        if debtNdoc ?? "" != "" && debtSum ?? 0 != 0 {
+        if super.textFieldFillingIsCorrect(){
             self.dismissViewControllerAnimated(true, completion: nil)
         }
     }
@@ -54,7 +54,13 @@ class STMAddDebtVC_iPhone: STMAddDebtVC,UIPopoverPresentationControllerDelegate 
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        self.title = NSLocalizedString("ADD DEBT", comment: "")
+        switch (cashingType){
+        case .Deduction:
+            self.title = NSLocalizedString("DEDUCTION", comment: "")
+        case .Etcetera:
+            self.title = NSLocalizedString("ETC", comment: "")
+            break
+        }
         self.navigationItem.leftBarButtonItem = UIBarButtonItem(title: NSLocalizedString("CLOSE", comment: ""), style: .Plain, target: self, action: "closeButtonPressed")
         self.navigationItem.rightBarButtonItem = UIBarButtonItem(title: NSLocalizedString("ADD", comment: ""), style: .Plain, target: self, action: "addButtonPressed")
     }

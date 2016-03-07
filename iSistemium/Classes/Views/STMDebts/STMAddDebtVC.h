@@ -19,7 +19,6 @@
 @property (nonatomic, strong) NSString *commentText;
 @property (weak, nonatomic) IBOutlet UIButton *dateButton;
 
-- (IBAction)cancelButtonPressed:(id)sender;
 - (IBAction)doneButtonPressed:(id)sender;
 - (BOOL)textFieldShouldBeginEditing:(UITextField *)textField;
 

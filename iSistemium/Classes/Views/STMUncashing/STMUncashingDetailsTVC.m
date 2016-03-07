@@ -19,15 +19,13 @@
 #import "STMUncashingProcessController.h"
 #import "STMAddEtceteraVC.h"
 
-@interface STMUncashingDetailsTVC () <UIPopoverControllerDelegate, UIActionSheetDelegate>
+@interface STMUncashingDetailsTVC () 
 
 @property (nonatomic, weak) STMUncashingSVC *splitVC;
 @property (nonatomic, strong) UIPopoverController *uncashingInfoPopover;
 @property (nonatomic, strong) UIPopoverController *addCashingPopover;
 @property (nonatomic, strong) UIBarButtonItem *addButton;
-
 @property (nonatomic) STMCashingType addCashingType;
-
 
 @end
 
@@ -212,7 +210,7 @@
 - (void)showUncashingInfoPopover {
     
     self.uncashingInfoPopover = nil;
-    [self.uncashingInfoPopover presentPopoverFromBarButtonItem:self.infoLabel permittedArrowDirections:UIPopoverArrowDirectionAny animated:YES];
+    [self.uncashingInfoPopover presentPopoverFromBarButtonItem:(id _Nonnull) self.infoLabel permittedArrowDirections:UIPopoverArrowDirectionAny animated:YES];
     
 }
 

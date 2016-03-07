@@ -40,10 +40,10 @@ class STMUncashingTVC_iPhone: STMUncashingMasterTVC {
         case "showUncashing":
             (segue.destinationViewController as! STMUncashingDetailsTVC).uncashing = sender as? STMUncashing
             let dateFormatter = NSDateFormatter()
-            dateFormatter.dateStyle = .LongStyle
+            dateFormatter.dateStyle = .ShortStyle
             dateFormatter.timeStyle = .ShortStyle
             if sender != nil{
-                (segue.destinationViewController as! STMUncashingDetailsTVC).title = NSLocalizedString("HAND OVER", comment: "").dropLast
+                (segue.destinationViewController as! STMUncashingDetailsTVC).title = NSLocalizedString("HAND OVER", comment: "").dropLast + " (" + dateFormatter.stringFromDate((sender as! STMUncashing).date) + ")"
             }else{
                 (segue.destinationViewController as! STMUncashingDetailsTVC).title = NSLocalizedString("ON HAND", comment: "").dropLast
             }

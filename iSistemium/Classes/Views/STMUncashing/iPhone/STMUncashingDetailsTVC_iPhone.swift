@@ -63,17 +63,17 @@ class STMUncashingDetailsTVC_iPhone: STMUncashingDetailsTVC, UIPopoverPresentati
         let numberFormatter = STMFunctions.currencyFormatter
         let cashingSumString = numberFormatter().stringFromNumber(cashing.summ)
         let debt = cashing.debt
+        if cashingSumString != nil{
+            backgroundColor = UIColor.clearColor()
+            textColor = UIColor.blackColor()
+            attributes = [
+                NSFontAttributeName: font,
+                NSBackgroundColorAttributeName: backgroundColor,
+                NSForegroundColorAttributeName: textColor
+            ]
+            text.appendAttributedString(NSAttributedString(string: cashingSumString! + " ", attributes: attributes as? [String : AnyObject]))
+        }
         if (debt != nil){
-            if cashingSumString != nil{
-                backgroundColor = UIColor.clearColor()
-                textColor = UIColor.blackColor()
-                attributes = [
-                    NSFontAttributeName: font,
-                    NSBackgroundColorAttributeName: backgroundColor,
-                    NSForegroundColorAttributeName: textColor
-                ]
-                text.appendAttributedString(NSAttributedString(string: cashingSumString! + " ", attributes: attributes as? [String : AnyObject]))
-            }
             if debt.ndoc != nil{
                 backgroundColor = UIColor.clearColor()
                 textColor = UIColor.blackColor()
@@ -87,7 +87,7 @@ class STMUncashingDetailsTVC_iPhone: STMUncashingDetailsTVC, UIPopoverPresentati
         }
         else{
             if (cashing.ndoc != nil) {
-                text.appendAttributedString(NSAttributedString(string: cashing.ndoc,attributes: nil))
+                text.appendAttributedString(NSAttributedString(string:NSLocalizedString("FOR", comment: "") + " " + cashing.ndoc,attributes: nil))
             } else {
                 text.appendAttributedString(NSAttributedString(string: NSLocalizedString("NO DATA", comment: ""),attributes: nil))
             }
@@ -136,48 +136,73 @@ class STMUncashingDetailsTVC_iPhone: STMUncashingDetailsTVC, UIPopoverPresentati
         var attributes: NSDictionary
         let text = NSMutableAttributedString()
         let debt = cashing.debt
-        if debt != nil{
-            if cashing.date != nil {
-                let dateFormatter = STMFunctions.dateMediumNoTimeFormatter
-                let cashingDate = dateFormatter().stringFromDate(cashing.date)
-                backgroundColor = UIColor.clearColor()
-                textColor = UIColor.blackColor()
-                attributes = [
-                    NSFontAttributeName: font,
-                    NSBackgroundColorAttributeName: backgroundColor,
-                    NSForegroundColorAttributeName: textColor
-                ]
-                let commentString = NSString(format:"%@ ", cashingDate)
-                text.appendAttributedString(NSAttributedString(string: commentString as String, attributes:attributes as? [String : AnyObject]))
-            }
-            if cashing.commentText != nil {
-                backgroundColor = UIColor.clearColor()
-                textColor = UIColor.blackColor()
-                attributes = [
-                    NSFontAttributeName: font,
-                    NSBackgroundColorAttributeName: backgroundColor,
-                    NSForegroundColorAttributeName: textColor
-                ]
-                let commentString = NSString(format:"(%@) ", cashing.commentText)
-                text.appendAttributedString(NSAttributedString(string: commentString as String, attributes:attributes as? [String : AnyObject]))
-            }
-            if debt.responsibility != nil {
-                backgroundColor = UIColor.grayColor()
-                textColor = UIColor.whiteColor()
-                attributes = [
-                    NSFontAttributeName: font,
-                    NSBackgroundColorAttributeName: backgroundColor,
-                    NSForegroundColorAttributeName: textColor
-                ]
-                let responsibilityString = NSString(format: "%@", debt.responsibility)
-                text.appendAttributedString(NSAttributedString(string:responsibilityString as String, attributes:attributes as? [String : AnyObject]))
-                text.appendAttributedString(NSAttributedString(string: " "))
-            }
+        if cashing.date != nil {
+            let dateFormatter = STMFunctions.dateMediumNoTimeFormatter
+            let cashingDate = dateFormatter().stringFromDate(cashing.date)
+            backgroundColor = UIColor.clearColor()
+            textColor = UIColor.blackColor()
+            attributes = [
+                NSFontAttributeName: font,
+                NSBackgroundColorAttributeName: backgroundColor,
+                NSForegroundColorAttributeName: textColor
+            ]
+            let commentString = NSString(format:"%@ ", cashingDate)
+            text.appendAttributedString(NSAttributedString(string: commentString as String, attributes:attributes as? [String : AnyObject]))
+        }
+        if cashing.commentText != nil {
+            backgroundColor = UIColor.clearColor()
+            textColor = UIColor.blackColor()
+            attributes = [
+                NSFontAttributeName: font,
+                NSBackgroundColorAttributeName: backgroundColor,
+                NSForegroundColorAttributeName: textColor
+            ]
+            let commentString = NSString(format:"(%@) ", cashing.commentText)
+            text.appendAttributedString(NSAttributedString(string: commentString as String, attributes:attributes as? [String : AnyObject]))
+        }
+        if debt?.responsibility != nil {
+            backgroundColor = UIColor.grayColor()
+            textColor = UIColor.whiteColor()
+            attributes = [
+                NSFontAttributeName: font,
+                NSBackgroundColorAttributeName: backgroundColor,
+                NSForegroundColorAttributeName: textColor
+            ]
+            let responsibilityString = NSString(format: "%@", debt.responsibility)
+            text.appendAttributedString(NSAttributedString(string:responsibilityString as String, attributes:attributes as? [String : AnyObject]))
+            text.appendAttributedString(NSAttributedString(string: " "))
         }
         return text
     }
     
-    // MARK: view lifecycle
+    // MARK: Selectors
+    
+    func addButtonPressed() {
+        let alert = UIAlertController(title: NSLocalizedString("ADD SUM", comment: ""), message: nil, preferredStyle: .ActionSheet)
+        let etc = UIAlertAction(title: NSLocalizedString("ETC", comment: ""), style: .Default){
+            (action) -> Void in
+            let content = self.storyboard!.instantiateViewControllerWithIdentifier("addEtceteraVC") as! STMAddEtceteraVC
+            content.cashingType = .Etcetera
+            let nav = UINavigationController(rootViewController: content)
+            nav.modalPresentationStyle = .FullScreen
+            self.presentViewController(nav, animated: true, completion: nil)
+        }
+        let deduction = UIAlertAction(title: NSLocalizedString("DEDUCTION", comment: ""), style: .Default){
+            (action) -> Void in
+            let content = self.storyboard!.instantiateViewControllerWithIdentifier("addEtceteraVC") as! STMAddEtceteraVC
+            content.cashingType = .Deduction
+            let nav = UINavigationController(rootViewController: content)
+            nav.modalPresentationStyle = .FullScreen
+            self.presentViewController(nav, animated: true, completion: nil)
+        }
+        let cancel = UIAlertAction(title: NSLocalizedString("CANCEL", comment: ""), style: .Cancel, handler: nil)
+        alert.addAction(etc)
+        alert.addAction(deduction)
+        alert.addAction(cancel)
+        presentViewController(alert, animated: true, completion: nil)
+    }
+    
+    // MARK: View lifecycle
     
     override func viewDidLoad() {
         super.viewDidLoad()
