@@ -14,16 +14,16 @@ class STMUncashingDetailsTVC_iPhone: STMUncashingDetailsTVC, UIPopoverPresentati
     // MARK: Superclass override
     
     override func showUncashingInfoPopover(){
-        let popoverContent = self.storyboard!.instantiateViewControllerWithIdentifier("uncashingInfoPopover") as! STMUncashingInfoVC
-        let nav = UINavigationController(rootViewController: popoverContent)
-        nav.modalPresentationStyle = .Popover
-        let popover = nav.popoverPresentationController
-        popoverContent.preferredContentSize = CGSizeMake(388,205)
+        let content = self.storyboard!.instantiateViewControllerWithIdentifier("uncashingInfoPopover") as! STMUncashingInfoVC
+        content.uncashing = self.uncashing
+        content.modalPresentationStyle = .Popover
+        let popover = content.popoverPresentationController
+        content.preferredContentSize = CGSizeMake(388,205)
         popover!.delegate = self
-        popover!.sourceView = self.view
+        popover!.sourceView = self.navigationController?.toolbar
         let frame = (self.infoLabel!.valueForKey("view") as! UIView).frame
         popover!.sourceRect = frame
-        self.presentViewController(nav, animated: true, completion: nil)
+        self.presentViewController(content, animated: true, completion: nil)
     }
     
     override func showAddButton() {
@@ -88,8 +88,6 @@ class STMUncashingDetailsTVC_iPhone: STMUncashingDetailsTVC, UIPopoverPresentati
         else{
             if (cashing.ndoc != nil) {
                 text.appendAttributedString(NSAttributedString(string:NSLocalizedString("FOR", comment: "") + " " + cashing.ndoc,attributes: nil))
-            } else {
-                text.appendAttributedString(NSAttributedString(string: NSLocalizedString("NO DATA", comment: ""),attributes: nil))
             }
         }
         return text
@@ -103,8 +101,8 @@ class STMUncashingDetailsTVC_iPhone: STMUncashingDetailsTVC, UIPopoverPresentati
         let numberFormatter = STMFunctions.currencyFormatter
         let debt = cashing.debt
         if debt != nil{
-            let debtSumOriginString = numberFormatter().stringFromNumber(debt.summOrigin)
-            if debtSumOriginString != nil {
+            if debt.summOrigin != nil {
+                let debtSumOriginString = numberFormatter().stringFromNumber(debt.summOrigin)
                 backgroundColor = UIColor.clearColor()
                 textColor = UIColor.blackColor()
                 attributes = [
@@ -206,9 +204,13 @@ class STMUncashingDetailsTVC_iPhone: STMUncashingDetailsTVC, UIPopoverPresentati
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        self.navigationController?.setToolbarHidden(false, animated: true)
         tableView!.rowHeight = UITableViewAutomaticDimension
         tableView!.estimatedRowHeight = 100
         tableView!.registerNib(UINib(nibName: "STMCustom6TVCell", bundle: nil), forCellReuseIdentifier: "STMCustom6TVCell")
+    }
+    
+    override func viewWillAppear(animated: Bool) {
+        super.viewWillAppear(animated)
+        self.navigationController!.setToolbarHidden(false, animated: true)
     }
 }

@@ -62,6 +62,6 @@ class STMUncashingTVC_iPhone: STMUncashingMasterTVC {
     
     override func viewWillAppear(animated: Bool) {
         super.viewWillAppear(animated)
-        self.navigationController!.toolbarHidden = true
+        self.navigationController!.setToolbarHidden(true, animated: true)
     }
 }

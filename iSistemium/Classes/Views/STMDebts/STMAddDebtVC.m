@@ -151,6 +151,7 @@
 - (IBAction)cancelButtonPressed:(id)sender {
     
     [self.view endEditing:YES];
+    [self.parentVC dismissAddDebt];
     
 }
 
