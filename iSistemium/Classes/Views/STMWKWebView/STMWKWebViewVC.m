@@ -24,6 +24,7 @@
 
 @interface STMWKWebViewVC () <WKNavigationDelegate, WKScriptMessageHandler, STMBarCodeScannerDelegate>
 
+@property (weak, nonatomic) IBOutlet UIView *localView;
 @property (nonatomic, strong) WKWebView *webView;
 @property (nonatomic) BOOL isAuthorizing;
 @property (nonatomic, strong) STMSpinnerView *spinnerView;
@@ -177,7 +178,7 @@
     
     self.webView = [[WKWebView alloc] initWithFrame:self.view.bounds configuration:configuration];
     
-    [self.view addSubview:self.webView];
+    [self.localView addSubview:self.webView];
     
     self.webView.navigationDelegate = self;
     [self loadWebView];

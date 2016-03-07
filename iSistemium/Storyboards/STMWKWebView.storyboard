@@ -3,6 +3,7 @@
     <dependencies>
         <deployment identifier="iOS"/>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="9530"/>
+        <capability name="Constraints to layout margins" minToolsVersion="6.0"/>
     </dependencies>
     <scenes>
         <!--Web ViewVC-->
@@ -16,9 +17,25 @@
                     <view key="view" contentMode="scaleToFill" id="e9v-bK-fcj">
                         <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="5c8-H2-7iX">
+                                <rect key="frame" x="0.0" y="20" width="600" height="580"/>
+                                <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                            </view>
+                        </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                        <constraints>
+                            <constraint firstItem="5c8-H2-7iX" firstAttribute="leading" secondItem="e9v-bK-fcj" secondAttribute="leadingMargin" constant="-20" id="HjJ-qi-UJP"/>
+                            <constraint firstItem="f21-YT-cHG" firstAttribute="top" secondItem="5c8-H2-7iX" secondAttribute="bottom" id="OxR-2u-ay9"/>
+                            <constraint firstAttribute="trailingMargin" secondItem="5c8-H2-7iX" secondAttribute="trailing" constant="-20" id="UPp-6n-Tt3"/>
+                            <constraint firstItem="5c8-H2-7iX" firstAttribute="top" secondItem="uGv-wd-zff" secondAttribute="bottom" id="c9U-2H-F8b"/>
+                        </constraints>
                     </view>
+                    <extendedEdge key="edgesForExtendedLayout"/>
                     <navigationItem key="navigationItem" id="UPa-bl-CDf"/>
+                    <connections>
+                        <outlet property="localView" destination="5c8-H2-7iX" id="0Oi-2h-hCM"/>
+                    </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="LBg-hm-vgk" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
@@ -27,7 +44,7 @@
         <!--Web ViewNC-->
         <scene sceneID="2Su-og-a03">
             <objects>
-                <navigationController automaticallyAdjustsScrollViewInsets="NO" id="FUb-x0-0Vm" customClass="STMWKWebViewNC" sceneMemberID="viewController">
+                <navigationController automaticallyAdjustsScrollViewInsets="NO" navigationBarHidden="YES" id="FUb-x0-0Vm" customClass="STMWKWebViewNC" sceneMemberID="viewController">
                     <toolbarItems/>
                     <navigationBar key="navigationBar" contentMode="scaleToFill" id="SFV-4p-gtG">
                         <rect key="frame" x="0.0" y="0.0" width="320" height="44"/>
