@@ -118,7 +118,7 @@ class STMScriptMessageController: NSObject {
                 continue
             }
 
-            var arguments: [String: AnyObject] = filterDictionary[key]!
+            let arguments: [String: AnyObject] = filterDictionary[key]!
 
             let comparisonOperators: [String] = ["==", "!=", ">=", "<=", ">", "<"]
 
@@ -135,6 +135,17 @@ class STMScriptMessageController: NSObject {
 //                }
 
                 var value: AnyObject? = arguments[compOp]
+                
+                if key.lowercaseString.hasSuffix("uuid") || key.lowercaseString.hasSuffix("xid") || isRelationship {
+
+                    guard value is String else {
+                        print("value is not a String, but it should be to get xid or uuid value")
+                        continue
+                    }
+                    
+                    value = value?.stringByReplacingOccurrencesOfString("-", withString: "")
+                    
+                }
                 
                 if isAttribute {
                     
