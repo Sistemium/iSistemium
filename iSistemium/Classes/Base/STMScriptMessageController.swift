@@ -9,9 +9,6 @@
 import Foundation
 import WebKit
 
-let k_WK_SCRIPT_MESSAGE_FIND = "find"
-let k_WK_SCRIPT_MESSAGE_FIND_ALL = "findAll"
-
 
 class STMScriptMessageController: NSObject {
     
@@ -40,16 +37,16 @@ class STMScriptMessageController: NSObject {
 
         switch name {
             
-            case k_WK_SCRIPT_MESSAGE_FIND:
+            case Constants.ScriptMessageNames.WK_SCRIPT_MESSAGE_FIND:
                 
                 guard let xid: NSData? = STMFunctions.xidDataFromXidString(body["id"] as? String) else {
-                    errorWithMessage(error, errorMessage: "where is no xid in \(k_WK_SCRIPT_MESSAGE_FIND) script message")
+                    errorWithMessage(error, errorMessage: "where is no xid in \(Constants.ScriptMessageNames.WK_SCRIPT_MESSAGE_FIND) script message")
                     return nil
                 }
                 
                 return predicateForFilters(entityName, filter: ["xid": xid!], whereFilter: nil, error: error)
             
-            case k_WK_SCRIPT_MESSAGE_FIND_ALL:
+            case Constants.ScriptMessageNames.WK_SCRIPT_MESSAGE_FIND_ALL:
                 
                 guard let filter: [String: AnyObject]? = body["filter"] as? [String: AnyObject] else {
                     print("filter section malformed")

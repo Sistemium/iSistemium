@@ -503,6 +503,7 @@
 		2CE3F5451C146DF100D8B4F3 /* STMInventoryInfoSelectTVC.m in Sources */ = {isa = PBXBuildFile; fileRef = 2CE3F5441C146DF100D8B4F3 /* STMInventoryInfoSelectTVC.m */; };
 		2CE6343F1C8820E3007CF578 /* 3colors-colorless.png in Resources */ = {isa = PBXBuildFile; fileRef = 2CE6343E1C8820E3007CF578 /* 3colors-colorless.png */; };
 		2CE634651C8AB5C7007CF578 /* STMScriptMessageController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2CE634641C8AB5C7007CF578 /* STMScriptMessageController.swift */; };
+		2CE634671C8D96FD007CF578 /* STMSwiftConstants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2CE634661C8D96FD007CF578 /* STMSwiftConstants.swift */; };
 		2CE8B515195475F400C84A6D /* STMRootTBC.m in Sources */ = {isa = PBXBuildFile; fileRef = 2CE8B514195475F400C84A6D /* STMRootTBC.m */; };
 		2CEAC15E1B3BF78200AD068E /* truck_filled.png in Resources */ = {isa = PBXBuildFile; fileRef = 2CEAC15D1B3BF78200AD068E /* truck_filled.png */; };
 		2CEAC1621B3BF9AA00AD068E /* STMDriverTVC.m in Sources */ = {isa = PBXBuildFile; fileRef = 2CEAC1611B3BF9AA00AD068E /* STMDriverTVC.m */; };
@@ -534,7 +535,6 @@
 		2CF858E91C1AE0D0004D7BD1 /* STMSupplyOrdersTVC.m in Sources */ = {isa = PBXBuildFile; fileRef = 2CF858E81C1AE0D0004D7BD1 /* STMSupplyOrdersTVC.m */; };
 		2CF858EF1C1AE11F004D7BD1 /* STMSupplyOrderArticleDocsTVC.m in Sources */ = {isa = PBXBuildFile; fileRef = 2CF858EE1C1AE11F004D7BD1 /* STMSupplyOrderArticleDocsTVC.m */; };
 		2CF858F11C1AE239004D7BD1 /* truck_checked.png in Resources */ = {isa = PBXBuildFile; fileRef = 2CF858F01C1AE239004D7BD1 /* truck_checked.png */; };
-		6D814A9E1C490362001B56A3 /* SwiftConstants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6D814A9D1C490362001B56A3 /* SwiftConstants.swift */; };
 		6D814AA01C4938E5001B56A3 /* STMNewSplitViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6D814A9F1C4938E5001B56A3 /* STMNewSplitViewController.swift */; };
 		6DE2B48B1C3E7F4F001F1DE1 /* STMShippingLocationTVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6DE2B48A1C3E7F4F001F1DE1 /* STMShippingLocationTVC.swift */; };
 		6DF12A301C3ABA8E00E94C3E /* STMShippingLocationsTVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6DF12A2F1C3ABA8E00E94C3E /* STMShippingLocationsTVC.swift */; };
@@ -1416,6 +1416,7 @@
 		2CE3F5441C146DF100D8B4F3 /* STMInventoryInfoSelectTVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = STMInventoryInfoSelectTVC.m; sourceTree = "<group>"; };
 		2CE6343E1C8820E3007CF578 /* 3colors-colorless.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "3colors-colorless.png"; sourceTree = "<group>"; };
 		2CE634641C8AB5C7007CF578 /* STMScriptMessageController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = STMScriptMessageController.swift; sourceTree = "<group>"; };
+		2CE634661C8D96FD007CF578 /* STMSwiftConstants.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = STMSwiftConstants.swift; sourceTree = "<group>"; };
 		2CE8B513195475F400C84A6D /* STMRootTBC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = STMRootTBC.h; sourceTree = "<group>"; };
 		2CE8B514195475F400C84A6D /* STMRootTBC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = STMRootTBC.m; sourceTree = "<group>"; };
 		2CEAC15D1B3BF78200AD068E /* truck_filled.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = truck_filled.png; sourceTree = "<group>"; };
@@ -1462,7 +1463,6 @@
 		2CF858ED1C1AE11F004D7BD1 /* STMSupplyOrderArticleDocsTVC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = STMSupplyOrderArticleDocsTVC.h; sourceTree = "<group>"; };
 		2CF858EE1C1AE11F004D7BD1 /* STMSupplyOrderArticleDocsTVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = STMSupplyOrderArticleDocsTVC.m; sourceTree = "<group>"; };
 		2CF858F01C1AE239004D7BD1 /* truck_checked.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = truck_checked.png; sourceTree = "<group>"; };
-		6D814A9D1C490362001B56A3 /* SwiftConstants.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SwiftConstants.swift; sourceTree = "<group>"; };
 		6D814A9F1C4938E5001B56A3 /* STMNewSplitViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = STMNewSplitViewController.swift; sourceTree = "<group>"; };
 		6DE2B48A1C3E7F4F001F1DE1 /* STMShippingLocationTVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = STMShippingLocationTVC.swift; sourceTree = "<group>"; };
 		6DF12A2F1C3ABA8E00E94C3E /* STMShippingLocationsTVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = STMShippingLocationsTVC.swift; sourceTree = "<group>"; };
@@ -1550,6 +1550,7 @@
 				2CC5D3A31C85C78100193CD7 /* STMTracker.h */,
 				2CC5D3A41C85C78100193CD7 /* STMTracker.m */,
 				2CE634641C8AB5C7007CF578 /* STMScriptMessageController.swift */,
+				2CE634661C8D96FD007CF578 /* STMSwiftConstants.swift */,
 			);
 			path = Base;
 			sourceTree = "<group>";
@@ -2787,7 +2788,6 @@
 			children = (
 				6DF12A2F1C3ABA8E00E94C3E /* STMShippingLocationsTVC.swift */,
 				6DE2B48A1C3E7F4F001F1DE1 /* STMShippingLocationTVC.swift */,
-				6D814A9D1C490362001B56A3 /* SwiftConstants.swift */,
 				6D814A9F1C4938E5001B56A3 /* STMNewSplitViewController.swift */,
 			);
 			path = STMShippingLocations;
@@ -3277,6 +3277,7 @@
 				2CC5D47F1C85C7F300193CD7 /* STMBarButtonItem.m in Sources */,
 				2CC5D3B51C85C78100193CD7 /* STMSoundController.m in Sources */,
 				2CC5D3791C85C73D00193CD7 /* STMUncashingPlace.m in Sources */,
+				2CE634671C8D96FD007CF578 /* STMSwiftConstants.swift in Sources */,
 				2CC5D42C1C85C7C700193CD7 /* STMPredicate.m in Sources */,
 				2C5764241AA5E1E500B9FD2C /* STMSelectPartnerTVC.m in Sources */,
 				2C3CED6F1C1C501E00291AAD /* STMSupplyOrderOperationsTVC.m in Sources */,
@@ -3332,7 +3333,6 @@
 				2CC5D48D1C85C7F300193CD7 /* STMVolumePicker.m in Sources */,
 				2CC5D34D1C85C73D00193CD7 /* STMQualityClass.m in Sources */,
 				2CC5D3511C85C73D00193CD7 /* STMSaleOrder.m in Sources */,
-				6D814A9E1C490362001B56A3 /* SwiftConstants.swift in Sources */,
 				2CC5D3AE1C85C78100193CD7 /* STMScanApiHelper.m in Sources */,
 				2CC5D3681C85C73D00193CD7 /* STMStockBatch+CoreDataProperties.m in Sources */,
 				2CC5D4851C85C7F300193CD7 /* STMLabel.m in Sources */,
