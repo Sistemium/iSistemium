@@ -108,15 +108,19 @@
 
 //    [self loadWebView];
     
-//    __block NSString *jsString = [NSString stringWithFormat:@"location.assign('%@')", [self webViewUrlString]];
+    NSString *wvUrl = [self webViewUrlString];
     
-    __block NSString *jsString = @"location.reload(true)";
+//    __block NSString *jsString = [NSString stringWithFormat:@"location.assign('%@')", wvUrl];
+    
+//    __block NSString *jsString = @"location.reload(true)";
+    
+    __block NSString *jsString = [NSString stringWithFormat:@"'%@'.startsWith(location.origin) ? location.reload (true) : location.replace ('%@')", wvUrl, wvUrl];
     
     [self.webView evaluateJavaScript:jsString completionHandler:^(id _Nullable result, NSError * _Nullable error) {
 
         if (error) {
             
-            NSLog(@"evaluate %@ with error: %@", jsString, error.localizedDescription);
+            NSLog(@"evaluate \"%@\" with error: %@", jsString, error.localizedDescription);
             NSLog(@"trying to reload webView with loadRequest method");
             
             [self loadWebView];
