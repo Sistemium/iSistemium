@@ -106,7 +106,24 @@
 //    self.webView = nil;
 //    [self webViewInit];
 
-    [self loadWebView];
+//    [self loadWebView];
+    
+//    __block NSString *jsString = [NSString stringWithFormat:@"location.assign('%@')", [self webViewUrlString]];
+    
+    __block NSString *jsString = @"location.reload(true)";
+    
+    [self.webView evaluateJavaScript:jsString completionHandler:^(id _Nullable result, NSError * _Nullable error) {
+
+        if (error) {
+            
+            NSLog(@"evaluate %@ with error: %@", jsString, error.localizedDescription);
+            NSLog(@"trying to reload webView with loadRequest method");
+            
+            [self loadWebView];
+
+        }
+        
+    }];
     
 }
 
@@ -192,35 +209,35 @@
 #pragma mark - WKNavigationDelegate
 
 - (void)webView:(WKWebView *)webView didCommitNavigation:(WKNavigation *)navigation {
-    NSLogMethodName;
+//    NSLogMethodName;
 }
 
 - (void)webView:(WKWebView *)webView didFailNavigation:(WKNavigation *)navigation withError:(NSError *)error {
-    NSLogMethodName;
+//    NSLogMethodName;
 }
 
 - (void)webView:(WKWebView *)webView didFailProvisionalNavigation:(WKNavigation *)navigation withError:(NSError *)error {
-    NSLogMethodName;
+//    NSLogMethodName;
 }
 
 - (void)webView:(WKWebView *)webView didReceiveAuthenticationChallenge:(NSURLAuthenticationChallenge *)challenge completionHandler:(void (^)(NSURLSessionAuthChallengeDisposition disposition, NSURLCredential *credential))completionHandler {
     
-    NSLogMethodName;
+//    NSLogMethodName;
     completionHandler(NSURLSessionAuthChallengeUseCredential, nil);
     
 }
 
 - (void)webView:(WKWebView *)webView didReceiveServerRedirectForProvisionalNavigation:(WKNavigation *)navigation {
-    NSLogMethodName;
+//    NSLogMethodName;
 }
 
 - (void)webView:(WKWebView *)webView didStartProvisionalNavigation:(WKNavigation *)navigation {
-    NSLogMethodName;
+//    NSLogMethodName;
 }
 
 - (void)webView:(WKWebView *)webView decidePolicyForNavigationResponse:(WKNavigationResponse *)navigationResponse decisionHandler:(void (^)(WKNavigationResponsePolicy))decisionHandler {
     
-    NSLogMethodName;
+//    NSLogMethodName;
     decisionHandler(WKNavigationResponsePolicyAllow);
     
 }
@@ -298,7 +315,7 @@
 //    NSLog(@"---- userContentController %@, message %@", userContentController, message);
 //    NSLog(@"message.name %@", message.name);
 //    NSLog(@"message.body %@", message.body);
-//    NSLog(@"%@ %@", message.name, message.body);
+    NSLog(@"%@ %@", message.name, message.body);
     
     if ([message.name isEqualToString:WK_MESSAGE_POST]) {
         
@@ -416,7 +433,7 @@
 #ifdef DEBUG
     
     NSString *requestId = parameters[@"options"][@"requestId"];
-//    NSLog(@"requestId %@ callbackWithData: %@ objects", requestId, @(data.count));
+    NSLog(@"requestId %@ callbackWithData: %@ objects", requestId, @(data.count));
     
 #endif
 
@@ -438,7 +455,7 @@
 #ifdef DEBUG
 
     NSString *requestId = parameters[@"options"][@"requestId"];
-//    NSLog(@"requestId %@ callbackWithError: %@", requestId, errorDescription);
+    NSLog(@"requestId %@ callbackWithError: %@", requestId, errorDescription);
     
 #endif
 
