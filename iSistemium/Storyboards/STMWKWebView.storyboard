@@ -31,7 +31,7 @@
                             <constraint firstItem="5c8-H2-7iX" firstAttribute="top" secondItem="uGv-wd-zff" secondAttribute="bottom" id="c9U-2H-F8b"/>
                         </constraints>
                     </view>
-                    <extendedEdge key="edgesForExtendedLayout"/>
+                    <extendedEdge key="edgesForExtendedLayout" bottom="YES"/>
                     <navigationItem key="navigationItem" id="UPa-bl-CDf"/>
                     <connections>
                         <outlet property="localView" destination="5c8-H2-7iX" id="0Oi-2h-hCM"/>
