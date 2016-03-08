@@ -1,37 +1,26 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="9532" systemVersion="15D21" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" initialViewController="FUb-x0-0Vm">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="9532" systemVersion="15D21" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" initialViewController="FUb-x0-0Vm">
     <dependencies>
         <deployment identifier="iOS"/>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="9530"/>
-        <capability name="Constraints to layout margins" minToolsVersion="6.0"/>
     </dependencies>
     <scenes>
         <!--Web ViewVC-->
         <scene sceneID="BOQ-c5-GBV">
             <objects>
                 <viewController id="Lcc-Ei-4iF" customClass="STMWKWebViewVC" sceneMemberID="viewController">
-                    <layoutGuides>
-                        <viewControllerLayoutGuide type="top" id="uGv-wd-zff"/>
-                        <viewControllerLayoutGuide type="bottom" id="f21-YT-cHG"/>
-                    </layoutGuides>
                     <view key="view" contentMode="scaleToFill" id="e9v-bK-fcj">
-                        <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
+                        <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="5c8-H2-7iX">
-                                <rect key="frame" x="0.0" y="20" width="600" height="580"/>
+                            <view contentMode="scaleToFill" id="5c8-H2-7iX">
+                                <rect key="frame" x="0.0" y="20" width="320" height="548"/>
+                                <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                             </view>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
-                        <constraints>
-                            <constraint firstItem="5c8-H2-7iX" firstAttribute="leading" secondItem="e9v-bK-fcj" secondAttribute="leadingMargin" constant="-20" id="HjJ-qi-UJP"/>
-                            <constraint firstItem="f21-YT-cHG" firstAttribute="top" secondItem="5c8-H2-7iX" secondAttribute="bottom" id="OxR-2u-ay9"/>
-                            <constraint firstAttribute="trailingMargin" secondItem="5c8-H2-7iX" secondAttribute="trailing" constant="-20" id="UPp-6n-Tt3"/>
-                            <constraint firstItem="5c8-H2-7iX" firstAttribute="top" secondItem="uGv-wd-zff" secondAttribute="bottom" id="c9U-2H-F8b"/>
-                        </constraints>
                     </view>
-                    <extendedEdge key="edgesForExtendedLayout" bottom="YES"/>
                     <navigationItem key="navigationItem" id="UPa-bl-CDf"/>
                     <connections>
                         <outlet property="localView" destination="5c8-H2-7iX" id="0Oi-2h-hCM"/>
@@ -39,7 +28,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="LBg-hm-vgk" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="1423" y="392"/>
+            <point key="canvasLocation" x="758" y="371"/>
         </scene>
         <!--Web ViewNC-->
         <scene sceneID="2Su-og-a03">
@@ -57,7 +46,7 @@
                 </navigationController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="XTV-dX-QK9" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="611" y="392"/>
+            <point key="canvasLocation" x="325.86666666666667" y="371.09333333333331"/>
         </scene>
     </scenes>
 </document>

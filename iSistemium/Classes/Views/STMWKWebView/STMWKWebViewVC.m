@@ -102,10 +102,12 @@
 
 - (void)reloadWebView {
     
-    [self.webView removeFromSuperview];
-    self.webView = nil;
-    [self webViewInit];
+//    [self.webView removeFromSuperview];
+//    self.webView = nil;
+//    [self webViewInit];
 
+    [self loadWebView];
+    
 }
 
 - (void)loadWebView {
@@ -177,7 +179,7 @@
     
     configuration.userContentController = contentController;
     
-    self.webView = [[WKWebView alloc] initWithFrame:self.view.bounds configuration:configuration];
+    self.webView = [[WKWebView alloc] initWithFrame:self.localView.bounds configuration:configuration];
     
     [self.localView addSubview:self.webView];
     
@@ -188,6 +190,40 @@
 
 
 #pragma mark - WKNavigationDelegate
+
+- (void)webView:(WKWebView *)webView didCommitNavigation:(WKNavigation *)navigation {
+    NSLogMethodName;
+}
+
+- (void)webView:(WKWebView *)webView didFailNavigation:(WKNavigation *)navigation withError:(NSError *)error {
+    NSLogMethodName;
+}
+
+- (void)webView:(WKWebView *)webView didFailProvisionalNavigation:(WKNavigation *)navigation withError:(NSError *)error {
+    NSLogMethodName;
+}
+
+- (void)webView:(WKWebView *)webView didReceiveAuthenticationChallenge:(NSURLAuthenticationChallenge *)challenge completionHandler:(void (^)(NSURLSessionAuthChallengeDisposition disposition, NSURLCredential *credential))completionHandler {
+    
+    NSLogMethodName;
+    completionHandler(NSURLSessionAuthChallengeUseCredential, nil);
+    
+}
+
+- (void)webView:(WKWebView *)webView didReceiveServerRedirectForProvisionalNavigation:(WKNavigation *)navigation {
+    NSLogMethodName;
+}
+
+- (void)webView:(WKWebView *)webView didStartProvisionalNavigation:(WKNavigation *)navigation {
+    NSLogMethodName;
+}
+
+- (void)webView:(WKWebView *)webView decidePolicyForNavigationResponse:(WKNavigationResponse *)navigationResponse decisionHandler:(void (^)(WKNavigationResponsePolicy))decisionHandler {
+    
+    NSLogMethodName;
+    decisionHandler(WKNavigationResponsePolicyAllow);
+    
+}
 
 - (void)webView:(WKWebView *)webView decidePolicyForNavigationAction:(WKNavigationAction *)navigationAction decisionHandler:(void (^)(WKNavigationActionPolicy))decisionHandler {
     
@@ -262,7 +298,7 @@
 //    NSLog(@"---- userContentController %@, message %@", userContentController, message);
 //    NSLog(@"message.name %@", message.name);
 //    NSLog(@"message.body %@", message.body);
-    NSLog(@"%@ %@", message.name, message.body);
+//    NSLog(@"%@ %@", message.name, message.body);
     
     if ([message.name isEqualToString:WK_MESSAGE_POST]) {
         
@@ -380,7 +416,7 @@
 #ifdef DEBUG
     
     NSString *requestId = parameters[@"options"][@"requestId"];
-    NSLog(@"requestId %@ callbackWithData: %@ objects", requestId, @(data.count));
+//    NSLog(@"requestId %@ callbackWithData: %@ objects", requestId, @(data.count));
     
 #endif
 
@@ -402,7 +438,7 @@
 #ifdef DEBUG
 
     NSString *requestId = parameters[@"options"][@"requestId"];
-    NSLog(@"requestId %@ callbackWithError: %@", requestId, errorDescription);
+//    NSLog(@"requestId %@ callbackWithError: %@", requestId, errorDescription);
     
 #endif
 
