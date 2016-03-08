@@ -271,6 +271,14 @@
 
         NSLog(@"GET");
 
+    } else if ([message.name isEqualToString:WK_MESSAGE_UPDATE]) {
+        
+        NSLog(@"update");
+        
+    } else if ([message.name isEqualToString:WK_MESSAGE_VOICE]) {
+        
+        [self handleVoiceMessage:message];
+        
     } else if ([message.name isEqualToString:WK_MESSAGE_SCANNER_ON]) {
 
         [self startBarcodeScanning];
@@ -279,6 +287,54 @@
     } else if ([@[WK_MESSAGE_FIND_ALL, WK_MESSAGE_FIND] containsObject:message.name]) {
         
         [self handleKindOfFindMessage:message];
+        
+    }
+    
+}
+
+- (void)handleVoiceMessage:(WKScriptMessage *)message {
+    
+    if ([message.body isKindOfClass:[NSDictionary class]]) {
+        
+        NSDictionary *parameters = message.body;
+
+        NSString *messageSound = parameters[@"sound"];
+        NSString *messageText = parameters[@"text"];
+        
+        if (messageSound) {
+            
+            if ([messageSound isEqualToString:@"alert"]) {
+                
+                (messageText) ? [STMSoundController alertSay:messageText] : [STMSoundController playAlert];
+                
+            } else if ([messageSound isEqualToString:@"ok"]) {
+                
+                (messageText) ? [STMSoundController okSay:messageText] : [STMSoundController playOk];
+                
+            } else {
+                
+                [self callbackWithError:@"unknown sound parameter"
+                             parameters:@{@"messageBody": [message.body description]}];
+                
+                (messageText) ? [STMSoundController say:messageText] : nil;
+                
+            }
+
+        } else if (messageText) {
+            
+            [STMSoundController say:messageText];
+
+        } else {
+            
+            [self callbackWithError:@"message.body have no text ot sound to play"
+                         parameters:@{@"messageBody": [message.body description]}];
+
+        }
+
+    } else {
+        
+        [self callbackWithError:@"message.body is not a NSDictionary class"
+                     parameters:@{@"messageBody": [message.body description]}];
         
     }
     
