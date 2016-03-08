@@ -60,7 +60,7 @@
 #define WK_MESSAGE_FIND_ALL @"findAll"
 #define WK_MESSAGE_FIND @"find"
 #define WK_MESSAGE_UPDATE @"update"
-#define WK_MESSAGE_VOICE @"voice"
+#define WK_MESSAGE_SOUND @"sound"
 
 
 #endif

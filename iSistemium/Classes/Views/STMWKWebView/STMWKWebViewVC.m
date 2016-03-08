@@ -275,9 +275,9 @@
         
         NSLog(@"update");
         
-    } else if ([message.name isEqualToString:WK_MESSAGE_VOICE]) {
+    } else if ([message.name isEqualToString:WK_MESSAGE_SOUND]) {
         
-        [self handleVoiceMessage:message];
+        [self handleSoundMessage:message];
         
     } else if ([message.name isEqualToString:WK_MESSAGE_SCANNER_ON]) {
 
@@ -292,7 +292,7 @@
     
 }
 
-- (void)handleVoiceMessage:(WKScriptMessage *)message {
+- (void)handleSoundMessage:(WKScriptMessage *)message {
     
     if ([message.body isKindOfClass:[NSDictionary class]]) {
         
