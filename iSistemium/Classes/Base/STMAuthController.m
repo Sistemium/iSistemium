@@ -853,7 +853,23 @@
         case STMAuthRequestRoles: {
             
             self.iSisDB = responseJSON[@"roles"][@"iSisDB"];
-            self.stcTabs = responseJSON[@"roles"][@"stcTabs"];
+            
+            id stcTabs = responseJSON[@"roles"][@"stcTabs"];
+            
+            if ([stcTabs isKindOfClass:[NSArray class]]) {
+                
+                self.stcTabs = stcTabs;
+                
+            } else if ([stcTabs isKindOfClass:[NSDictionary class]]) {
+                
+                self.stcTabs = @[stcTabs];
+                
+            } else {
+                
+                [[STMLogger sharedLogger] saveLogMessageWithText:@"recieved stcTabs is not an array or dictionary" type:@"error"];
+                
+            }
+            
             self.controllerState = STMAuthSuccess;
             
             break;
