@@ -301,29 +301,32 @@
 
         NSString *messageSound = parameters[@"sound"];
         NSString *messageText = parameters[@"text"];
+
+        float rate = (parameters[@"rate"]) ? [parameters[@"rate"] floatValue] : 0.5;
+        float pitch = (parameters[@"pitch"]) ? [parameters[@"pitch"] floatValue] : 1;
         
         if (messageSound) {
             
             if ([messageSound isEqualToString:@"alert"]) {
                 
-                (messageText) ? [STMSoundController alertSay:messageText] : [STMSoundController playAlert];
+                (messageText) ? [STMSoundController alertSay:messageText withRate:rate pitch:pitch] : [STMSoundController playAlert];
                 
             } else if ([messageSound isEqualToString:@"ok"]) {
                 
-                (messageText) ? [STMSoundController okSay:messageText] : [STMSoundController playOk];
+                (messageText) ? [STMSoundController okSay:messageText withRate:rate pitch:pitch] : [STMSoundController playOk];
                 
             } else {
                 
                 [self callbackWithError:@"unknown sound parameter"
                              parameters:@{@"messageBody": [message.body description]}];
                 
-                (messageText) ? [STMSoundController say:messageText] : nil;
+                (messageText) ? [STMSoundController sayText:messageText withRate:rate pitch:pitch] : nil;
                 
             }
 
         } else if (messageText) {
             
-            [STMSoundController say:messageText];
+            [STMSoundController sayText:messageText withRate:rate pitch:pitch];
 
         } else {
             
