@@ -157,7 +157,8 @@
              WK_MESSAGE_GET,
              WK_MESSAGE_SCANNER_ON,
              WK_MESSAGE_FIND_ALL,
-             WK_MESSAGE_FIND];
+             WK_MESSAGE_FIND,
+             WK_MESSAGE_SOUND];
     
 }
 
