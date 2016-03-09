@@ -60,6 +60,7 @@
            inManagedObjectContext:(NSManagedObjectContext *)context
                             error:(NSError **)error;
 
++ (NSArray *)updateObjectsFromScriptMessage:(WKScriptMessage *)scriptMessage error:(NSError **)error;
 + (NSArray *)arrayOfObjectsRequestedByScriptMessage:(WKScriptMessage *)scriptMessage error:(NSError **)error;
 + (NSArray *)arrayForJSWithObjects:(NSArray <STMDatum *> *)objects;
 + (NSDictionary *)dictionaryForJSWithObject:(STMDatum *)object;

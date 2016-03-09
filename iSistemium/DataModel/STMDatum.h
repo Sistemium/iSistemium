@@ -16,6 +16,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 - (NSString *)currentChecksum;
 - (NSDictionary *)propertiesForKeys:(NSArray *)keys;
+- (NSDictionary *)relationshipXidsForKeys:(NSArray *)keys;
 
 
 @end

@@ -59,7 +59,7 @@
 #define WK_MESSAGE_SCANNER_ON @"barCodeScannerOn"
 #define WK_MESSAGE_FIND_ALL @"findAll"
 #define WK_MESSAGE_FIND @"find"
-#define WK_MESSAGE_UPDATE @"update"
+#define WK_MESSAGE_UPDATE_ALL @"updateAll"
 #define WK_MESSAGE_SOUND @"sound"
 
 

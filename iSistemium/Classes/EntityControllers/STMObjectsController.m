@@ -911,9 +911,9 @@
         STMEntityDescription *coreEntity = [STMEntityDescription entityForName:NSStringFromClass([STMDatum class])
                                                         inManagedObjectContext:[self document].managedObjectContext];
         
-        NSSet *coreRelationshipNames = [NSSet setWithArray:[[coreEntity relationshipsByName] allKeys]];
+        NSSet *coreRelationshipNames = [NSSet setWithArray:coreEntity.relationshipsByName.allKeys];
         
-        NSMutableSet *objectRelationshipNames = [NSMutableSet setWithArray:[[objectEntity relationshipsByName] allKeys]];
+        NSMutableSet *objectRelationshipNames = [NSMutableSet setWithArray:objectEntity.relationshipsByName.allKeys];
         
         [objectRelationshipNames minusSet:coreRelationshipNames];
         
@@ -921,8 +921,8 @@
         
         for (NSString *relationshipName in objectRelationshipNames) {
             
-            NSRelationshipDescription *relationship = [objectEntity relationshipsByName][relationshipName];
-            objectRelationships[relationshipName] = [relationship destinationEntity].name;
+            NSRelationshipDescription *relationship = objectEntity.relationshipsByName[relationshipName];
+            objectRelationships[relationshipName] = relationship.destinationEntity.name;
             
         }
     
@@ -1250,6 +1250,151 @@
 }
 
 
+#pragma mark - update objects from WKWebView
+
++ (NSArray *)updateObjectsFromScriptMessage:(WKScriptMessage *)scriptMessage error:(NSError **)error {
+    
+    NSError *localError = nil;
+    NSMutableArray *result = @[].mutableCopy;
+    
+    if (![scriptMessage.body isKindOfClass:[NSDictionary class]]) {
+        
+        [self addMessage:@"message.body is not a NSDictionary class" toError:error];
+        return nil;
+        
+    }
+    
+    NSDictionary *parameters = scriptMessage.body;
+    
+    NSString *entityName = [NSString stringWithFormat:@"STM%@", parameters[@"entity"]];
+    
+    if (![[self localDataModelEntityNames] containsObject:entityName]) {
+        
+        [self addMessage:[entityName stringByAppendingString:@": not found in data model"] toError:error];
+        return nil;
+
+    }
+
+    if (![parameters[@"data"] isKindOfClass:[NSArray <NSDictionary *> class]]) {
+        
+        [self addMessage:@"message.body.data is not a NSArray[NSDictionary]  class" toError:error];
+        return nil;
+        
+    }
+
+    NSArray *data = parameters[@"data"];
+    
+    for (NSDictionary *objectData in data) {
+        [result addObject:[self updateObjectWithData:objectData entityName:entityName]];
+    }
+    
+    return result;
+    
+}
+
++ (NSDictionary *)updateObjectWithData:(NSDictionary *)objectData entityName:(NSString *)entityName {
+    
+    NSString *xidString = objectData[@"id"];
+    NSData *xidData = [STMFunctions xidDataFromXidString:xidString];
+
+    STMDatum *object = (STMDatum *)[self objectForXid:xidData entityName:entityName];
+    
+    if (!object) object = (STMDatum *)[self newObjectForEntityName:entityName andXid:xidData isFantom:NO];
+
+    [self processingKeysForUpdatingObject:object withObjectData:objectData];
+
+    return nil;
+    
+}
+
++ (void)processingKeysForUpdatingObject:(STMDatum *)object withObjectData:(NSDictionary *)objectData {
+    
+    NSSet *ownKeys = [self ownObjectKeysForEntityName:object.entity.name];
+    
+    for (NSString *key in ownKeys) {
+        
+        id value = objectData[key];
+        
+        if (value) {
+            
+            if ([self normalizeValue:value forKey:key updatingObject:object]) {
+                [object setValue:value forKey:key];
+            } else {
+                continue;
+            }
+            
+        }
+        
+    }
+
+}
+
++ (BOOL)normalizeValue:(id)value forKey:(NSString *)key updatingObject:(STMDatum *)object {
+    
+    NSString *valueClassName = object.entity.attributesByName[key].attributeValueClassName;
+    NSAttributeType attributeType = object.entity.attributesByName[key].attributeType;
+    
+    if ([valueClassName isEqualToString:NSStringFromClass([NSDate class])]) {
+        
+        if (![value isKindOfClass:[NSString class]]) return NO;
+        
+        value = [[[STMDateFormatter alloc] init] dateFromString:value];
+        
+    } else if ([valueClassName isEqualToString:NSStringFromClass([NSData class])]) {
+        
+        if (![value isKindOfClass:[NSString class]]) return NO;
+        
+        if ([key.lowercaseString hasSuffix:@"uuid"] || [key.lowercaseString hasSuffix:@"xid"]) {
+            value = [STMFunctions xidDataFromXidString:value];
+        } else {
+            value = [STMFunctions dataFromString:value];
+        }
+        
+    } else if ([valueClassName isEqualToString:NSStringFromClass([NSNumber class])]) {
+        
+        if ([value isKindOfClass:[NSString class]]) {
+            
+            NSString *stringValue = (NSString *)value;
+            
+            switch (attributeType) {
+                case NSInteger16AttributeType:
+                case NSInteger32AttributeType:
+                case NSInteger64AttributeType: {
+                    value = @(stringValue.integerValue);
+                    break;
+                }
+                case NSDecimalAttributeType: {
+                    value = [NSDecimalNumber decimalNumberWithString:stringValue];
+                    break;
+                }
+                case NSDoubleAttributeType: {
+                    value = @(stringValue.doubleValue);
+                    break;
+                }
+                case NSFloatAttributeType: {
+                    value = @(stringValue.floatValue);
+                    break;
+                }
+                case NSBooleanAttributeType: {
+                    value = @(stringValue.boolValue);
+                    break;
+                }
+                default: {
+                    return NO;
+                }
+            }
+            
+        } else if (![value isKindOfClass:[NSNumber class]]) {
+            return NO;
+        }
+        
+    }
+
+    return YES;
+    
+}
+
+
 #pragma mark - find objects for WKWebView
 
 + (NSArray *)arrayOfObjectsRequestedByScriptMessage:(WKScriptMessage *)scriptMessage error:(NSError **)error {
@@ -1365,7 +1510,7 @@
         }
         
     } else {
-        errorMessage = [entityName stringByAppendingString:@"%@: not found in data model"];
+        errorMessage = [entityName stringByAppendingString:@": not found in data model"];
     }
 
     
@@ -1405,32 +1550,12 @@
     if (object.xid) propertiesDictionary[@"id"] = [STMFunctions UUIDStringFromUUIDData:(NSData *)object.xid];
     if (object.deviceTs) propertiesDictionary[@"ts"] = [[STMFunctions dateFormatter] stringFromDate:(NSDate *)object.deviceTs];
     
-    NSSet *ownKeys = [self ownObjectKeysForEntityName:object.entity.name];
+    NSArray *ownKeys = [self ownObjectKeysForEntityName:object.entity.name].allObjects;
+    NSArray *ownRelationships = [self ownObjectRelationshipsForEntityName:object.entity.name].allKeys;
     
-    [propertiesDictionary addEntriesFromDictionary:[object propertiesForKeys:ownKeys.allObjects]];
+    [propertiesDictionary addEntriesFromDictionary:[object propertiesForKeys:ownKeys]];
+    [propertiesDictionary addEntriesFromDictionary:[object relationshipXidsForKeys:ownRelationships]];
     
-    for (NSString *key in object.entity.relationshipsByName.allKeys) {
-        
-        NSRelationshipDescription *relationshipDescription = [object.entity.relationshipsByName valueForKey:key];
-        
-        if (![relationshipDescription isToMany]) {
-            
-            NSManagedObject *relationshipObject = [object valueForKey:key];
-            
-            if (relationshipObject) {
-                
-                NSData *xidData = [relationshipObject valueForKey:@"xid"];
-                
-                if (xidData.length != 0) {
-                    propertiesDictionary[key] = [STMFunctions UUIDStringFromUUIDData:xidData];
-                }
-                
-            }
-            
-        }
-        
-    }
-
     return propertiesDictionary;
     
 }
