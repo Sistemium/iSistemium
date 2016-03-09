@@ -21,6 +21,7 @@
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                     </view>
+                    <extendedEdge key="edgesForExtendedLayout" bottom="YES"/>
                     <navigationItem key="navigationItem" id="UPa-bl-CDf"/>
                     <connections>
                         <outlet property="localView" destination="5c8-H2-7iX" id="0Oi-2h-hCM"/>
