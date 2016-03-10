@@ -1300,6 +1300,10 @@
     
     if (errorMessage) [self error:error withMessage:errorMessage];
     
+    [[self document] saveDocument:^(BOOL success) {
+        
+    }];
+    
     return result;
     
 }
