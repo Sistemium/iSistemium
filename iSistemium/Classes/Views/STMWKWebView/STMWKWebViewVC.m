@@ -345,17 +345,9 @@
         
         NSError *error = nil;
         NSArray *result = [STMObjectsController updateObjectsFromScriptMessage:message error:&error];
-        
-        if (!error) {
-            
-            // send updated objects to webView
-            
-        } else {
-            
-            [self callbackWithError:error.localizedDescription
-                         parameters:parameters];
-            
-        }
+
+        if (result.count > 0) [self callbackWithData:result parameters:parameters];
+        if (error) [self callbackWithError:error.localizedDescription parameters:parameters];
         
     } else {
         

@@ -372,19 +372,21 @@
 
 + (id)typeConversionForValue:(id)value key:(NSString *)key entityAttributes:(NSDictionary *)entityAttributes {
     
-    if ([[entityAttributes[key] attributeValueClassName] isEqualToString:NSStringFromClass([NSDecimalNumber class])]) {
+    NSString *valueClassName = [entityAttributes[key] attributeValueClassName];
+    
+    if ([valueClassName isEqualToString:NSStringFromClass([NSDecimalNumber class])]) {
         
         value = [NSDecimalNumber decimalNumberWithString:value];
         
-    } else if ([[entityAttributes[key] attributeValueClassName] isEqualToString:NSStringFromClass([NSDate class])]) {
+    } else if ([valueClassName isEqualToString:NSStringFromClass([NSDate class])]) {
         
         value = [[STMFunctions dateFormatter] dateFromString:value];
         
-    } else if ([[entityAttributes[key] attributeValueClassName] isEqualToString:NSStringFromClass([NSNumber class])]) {
+    } else if ([valueClassName isEqualToString:NSStringFromClass([NSNumber class])]) {
         
         value = @([value intValue]);
         
-    } else if ([[entityAttributes[key] attributeValueClassName] isEqualToString:NSStringFromClass([NSData class])]) {
+    } else if ([valueClassName isEqualToString:NSStringFromClass([NSData class])]) {
         
         value = [STMFunctions dataFromString:[value stringByReplacingOccurrencesOfString:@"-" withString:@""]];
         
@@ -1313,7 +1315,7 @@
 
     [self processingKeysForUpdatingObject:object withObjectData:objectData error:error];
 
-    return nil;
+    return [self dictionaryForJSWithObject:object];
     
 }
 
@@ -1321,7 +1323,9 @@
     
     NSString *errorMessage = nil;
     
-    NSSet *ownKeys = [self ownObjectKeysForEntityName:object.entity.name];
+    NSString *entityName = object.entity.name;
+    
+    NSSet *ownKeys = [self ownObjectKeysForEntityName:entityName];
     
     for (NSString *key in ownKeys) {
         
@@ -1335,7 +1339,7 @@
                 
             } else {
                 
-                NSString *message = [NSString stringWithFormat:@"%@ object %@ can't update value %@ for key %@\n", object.entity.name, object.xid, value, key];
+                NSString *message = [NSString stringWithFormat:@"%@ object %@ can't update value %@ for key %@\n", entityName, object.xid, value, key];
                 
                 errorMessage = (errorMessage) ? [errorMessage stringByAppendingString:message] : message;
                 
@@ -1343,6 +1347,72 @@
                 
             }
             
+        }
+        
+    }
+    
+    NSArray *ownRelationships = [self singleRelationshipsForEntityName:entityName].allKeys;
+    
+    for (NSString *key in ownRelationships) {
+        
+        id value = objectData[key];
+
+        if (value) {
+            
+            if ([value isKindOfClass:[NSString class]]) {
+                
+                NSString *xidString = (NSString *)value;
+                
+                NSManagedObject *destinationObject = [self objectForEntityName:entityName andXidString:xidString];
+                
+                if (![[object valueForKey:key] isEqual:destinationObject]) {
+                    
+                    BOOL waitingForSync = [self isWaitingToSyncForObject:destinationObject];
+                    
+                    [object setValue:destinationObject forKey:key];
+                    
+                    if (!waitingForSync) {
+                        
+                        [destinationObject addObserver:[self sharedController]
+                                            forKeyPath:@"deviceTs"
+                                               options:(NSKeyValueObservingOptionNew|NSKeyValueObservingOptionOld)
+                                               context:nil];
+                        
+                    }
+                    
+                }
+                
+            } else {
+                
+                NSString *message = [NSString stringWithFormat:@"%@ object %@ relationship value %@ is not a String for key %@, can't get xid\n", entityName, object.xid, value, key];
+                
+                errorMessage = (errorMessage) ? [errorMessage stringByAppendingString:message] : message;
+                
+                continue;
+
+            }
+            
+        } else {
+            
+            NSManagedObject *destinationObject = [object valueForKey:key];
+            
+            if (destinationObject) {
+                
+                BOOL waitingForSync = [self isWaitingToSyncForObject:destinationObject];
+                
+                [object setValue:nil forKey:key];
+                
+                if (!waitingForSync) {
+                    
+                    [destinationObject addObserver:[self sharedController]
+                                        forKeyPath:@"deviceTs"
+                                           options:(NSKeyValueObservingOptionNew|NSKeyValueObservingOptionOld)
+                                           context:nil];
+                    
+                }
+                
+            }
+
         }
         
     }
@@ -1550,7 +1620,7 @@
     if (object.deviceTs) propertiesDictionary[@"ts"] = [[STMFunctions dateFormatter] stringFromDate:(NSDate *)object.deviceTs];
     
     NSArray *ownKeys = [self ownObjectKeysForEntityName:object.entity.name].allObjects;
-    NSArray *ownRelationships = [self ownObjectRelationshipsForEntityName:object.entity.name].allKeys;
+    NSArray *ownRelationships = [self singleRelationshipsForEntityName:object.entity.name].allKeys;
     
     [propertiesDictionary addEntriesFromDictionary:[object propertiesForKeys:ownKeys]];
     [propertiesDictionary addEntriesFromDictionary:[object relationshipXidsForKeys:ownRelationships]];
