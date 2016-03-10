@@ -1504,16 +1504,17 @@
     NSDictionary *parameters = scriptMessage.body;
 
     if ([scriptMessage.name isEqualToString:WK_MESSAGE_FIND]) {
+        
         result = [self findObjectInCacheWithParameters:parameters error:error];
+
+        if (*error) return nil;
+        if (result) return result;
+
     }
-
-    if (error) return nil;
-
-    if (result) return result;
     
     NSPredicate *predicate = [STMScriptMessageController predicateForScriptMessage:scriptMessage error:error];
     
-    if (error) return nil;
+    if (*error) return nil;
 
     NSString *entityName = [NSString stringWithFormat:@"STM%@", parameters[@"entity"]];
     NSDictionary *options = parameters[@"options"];
@@ -1530,7 +1531,7 @@
                                 inManagedObjectContext:[self document].managedObjectContext
                                                  error:error];
     
-    if (error) {
+    if (*error) {
         return nil;
     } else {
         return [self arrayForJSWithObjects:objectsArray];
@@ -1592,7 +1593,6 @@
 
     if (errorMessage) [self error:error withMessage:errorMessage];
 
-    
     return nil;
 
 }
