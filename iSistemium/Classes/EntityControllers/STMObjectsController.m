@@ -1331,7 +1331,7 @@
         
         id value = objectData[key];
         
-        if (value) {
+        if (value && ![value isKindOfClass:[NSNull class]]) {
             
             if ([self normalizeValue:value forKey:key updatingObject:object]) {
                 
@@ -1347,6 +1347,8 @@
                 
             }
             
+        } else {
+            [object setValue:nil forKey:key];
         }
         
     }
