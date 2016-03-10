@@ -1436,7 +1436,7 @@
         
         if (![value isKindOfClass:[NSString class]]) return NO;
         
-        value = [[[STMDateFormatter alloc] init] dateFromString:value];
+        value = [[STMFunctions dateFormatter] dateFromString:value];
         
     } else if ([valueClassName isEqualToString:NSStringFromClass([NSData class])]) {
         
