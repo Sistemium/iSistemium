@@ -1254,12 +1254,11 @@
 
 + (NSArray *)updateObjectsFromScriptMessage:(WKScriptMessage *)scriptMessage error:(NSError **)error {
     
-    NSError *localError = nil;
     NSMutableArray *result = @[].mutableCopy;
     
     if (![scriptMessage.body isKindOfClass:[NSDictionary class]]) {
         
-        [self addMessage:@"message.body is not a NSDictionary class" toError:error];
+        [self error:error withMessage:@"message.body is not a NSDictionary class"];
         return nil;
         
     }
@@ -1270,29 +1269,40 @@
     
     if (![[self localDataModelEntityNames] containsObject:entityName]) {
         
-        [self addMessage:[entityName stringByAppendingString:@": not found in data model"] toError:error];
+        [self error:error withMessage:[entityName stringByAppendingString:@": not found in data model"]];
         return nil;
 
     }
 
     if (![parameters[@"data"] isKindOfClass:[NSArray <NSDictionary *> class]]) {
         
-        [self addMessage:@"message.body.data is not a NSArray[NSDictionary]  class" toError:error];
+        [self error:error withMessage:@"message.body.data is not a NSArray[NSDictionary] class"];
         return nil;
         
     }
 
     NSArray *data = parameters[@"data"];
     
+    NSString *errorMessage = nil;
+
     for (NSDictionary *objectData in data) {
-        [result addObject:[self updateObjectWithData:objectData entityName:entityName]];
+        
+        NSError *localError = nil;
+        [result addObject:[self updateObjectWithData:objectData entityName:entityName error:&localError]];
+        
+        if (localError) {
+            errorMessage = (errorMessage) ? [errorMessage stringByAppendingString:localError.localizedDescription] : localError.localizedDescription;
+        }
+        
     }
+    
+    if (errorMessage) [self error:error withMessage:errorMessage];
     
     return result;
     
 }
 
-+ (NSDictionary *)updateObjectWithData:(NSDictionary *)objectData entityName:(NSString *)entityName {
++ (NSDictionary *)updateObjectWithData:(NSDictionary *)objectData entityName:(NSString *)entityName error:(NSError **)error {
     
     NSString *xidString = objectData[@"id"];
     NSData *xidData = [STMFunctions xidDataFromXidString:xidString];
@@ -1301,13 +1311,15 @@
     
     if (!object) object = (STMDatum *)[self newObjectForEntityName:entityName andXid:xidData isFantom:NO];
 
-    [self processingKeysForUpdatingObject:object withObjectData:objectData];
+    [self processingKeysForUpdatingObject:object withObjectData:objectData error:error];
 
     return nil;
     
 }
 
-+ (void)processingKeysForUpdatingObject:(STMDatum *)object withObjectData:(NSDictionary *)objectData {
++ (void)processingKeysForUpdatingObject:(STMDatum *)object withObjectData:(NSDictionary *)objectData error:(NSError **)error {
+    
+    NSString *errorMessage = nil;
     
     NSSet *ownKeys = [self ownObjectKeysForEntityName:object.entity.name];
     
@@ -1318,15 +1330,25 @@
         if (value) {
             
             if ([self normalizeValue:value forKey:key updatingObject:object]) {
+                
                 [object setValue:value forKey:key];
+                
             } else {
+                
+                NSString *message = [NSString stringWithFormat:@"%@ object %@ can't update value %@ for key %@\n", object.entity.name, object.xid, value, key];
+                
+                errorMessage = (errorMessage) ? [errorMessage stringByAppendingString:message] : message;
+                
                 continue;
+                
             }
             
         }
         
     }
 
+    if (errorMessage) [self error:error withMessage:errorMessage];
+    
 }
 
 + (BOOL)normalizeValue:(id)value forKey:(NSString *)key updatingObject:(STMDatum *)object {
@@ -1399,12 +1421,12 @@
 
 + (NSArray *)arrayOfObjectsRequestedByScriptMessage:(WKScriptMessage *)scriptMessage error:(NSError **)error {
     
-    NSError *localError = nil;
+//    NSError *localError = nil;
     NSArray *result = nil;
 
     if (![scriptMessage.body isKindOfClass:[NSDictionary class]]) {
         
-        [self addMessage:@"message.body is not a NSDictionary class" toError:error];
+        [self error:error withMessage:@"message.body is not a NSDictionary class"];
         return nil;
         
     }
@@ -1412,26 +1434,16 @@
     NSDictionary *parameters = scriptMessage.body;
 
     if ([scriptMessage.name isEqualToString:WK_MESSAGE_FIND]) {
-        result = [self findObjectInCacheWithParameters:parameters error:&localError];
+        result = [self findObjectInCacheWithParameters:parameters error:error];
     }
 
-    if (localError) {
-        
-        [self addMessage:localError.localizedDescription toError:error];
-        return nil;
-        
-    }
-    
+    if (error) return nil;
+
     if (result) return result;
     
-    NSPredicate *predicate = [STMScriptMessageController predicateForScriptMessage:scriptMessage error:&localError];
+    NSPredicate *predicate = [STMScriptMessageController predicateForScriptMessage:scriptMessage error:error];
     
-    if (localError) {
-        
-        [self addMessage:localError.localizedDescription toError:error];
-        return nil;
-        
-    }
+    if (error) return nil;
 
     NSString *entityName = [NSString stringWithFormat:@"STM%@", parameters[@"entity"]];
     NSDictionary *options = parameters[@"options"];
@@ -1446,22 +1458,17 @@
                                            withFantoms:NO
                                              predicate:predicate
                                 inManagedObjectContext:[self document].managedObjectContext
-                                                 error:&localError];
+                                                 error:error];
     
-    if (localError) {
-        
-        [self addMessage:localError.localizedDescription toError:error];
+    if (error) {
         return nil;
-        
     } else {
-        
         return [self arrayForJSWithObjects:objectsArray];
-        
     }
 
 }
 
-+ (void)addMessage:(NSString *)errorMessage toError:(NSError **)error{
++ (void)error:(NSError **)error withMessage:(NSString *)errorMessage {
     
     NSString *bundleId = [NSBundle mainBundle].bundleIdentifier;
     
@@ -1513,16 +1520,8 @@
         errorMessage = [entityName stringByAppendingString:@": not found in data model"];
     }
 
-    
-    if (errorMessage) {
-        
-        NSString *bundleId = [NSBundle mainBundle].bundleIdentifier;
-        
-        if (bundleId && error) *error = [NSError errorWithDomain:(NSString * _Nonnull)bundleId
-                                                            code:1
-                                                        userInfo:@{NSLocalizedDescriptionKey: errorMessage}];
-        
-    }
+    if (errorMessage) [self error:error withMessage:errorMessage];
+
     
     return nil;
 
@@ -1650,15 +1649,7 @@
         
     }
     
-    if (errorMessage) {
-        
-        NSString *bundleId = [NSBundle mainBundle].bundleIdentifier;
-        
-        if (bundleId && error) *error = [NSError errorWithDomain:(NSString * _Nonnull)bundleId
-                                                            code:1
-                                                        userInfo:@{NSLocalizedDescriptionKey: errorMessage}];
-        
-    }
+    if (errorMessage) [self error:error withMessage:errorMessage];
     
     return nil;
 
@@ -1756,15 +1747,7 @@
         
     }
 
-    if (errorMessage) {
-        
-        NSString *bundleId = [NSBundle mainBundle].bundleIdentifier;
-        
-        if (bundleId && error) *error = [NSError errorWithDomain:(NSString * _Nonnull)bundleId
-                                                            code:0
-                                                        userInfo:@{NSLocalizedDescriptionKey: errorMessage}];
-        
-    }
+    if (errorMessage) [self error:error withMessage:errorMessage];
     
     return nil;
     
