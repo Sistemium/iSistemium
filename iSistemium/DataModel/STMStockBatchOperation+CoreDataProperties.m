@@ -13,7 +13,6 @@
 
 @implementation STMStockBatchOperation (CoreDataProperties)
 
-@dynamic checksum;
 @dynamic commentText;
 @dynamic destinationEntity;
 @dynamic destinationXid;

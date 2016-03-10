@@ -13,7 +13,6 @@
 
 @implementation STMBasketPosition (CoreDataProperties)
 
-@dynamic checksum;
 @dynamic commentText;
 @dynamic deviceCts;
 @dynamic deviceTs;

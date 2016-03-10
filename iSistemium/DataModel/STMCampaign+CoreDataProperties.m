@@ -13,7 +13,6 @@
 
 @implementation STMCampaign (CoreDataProperties)
 
-@dynamic checksum;
 @dynamic commentText;
 @dynamic deviceCts;
 @dynamic deviceTs;

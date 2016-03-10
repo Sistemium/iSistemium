@@ -13,7 +13,6 @@
 
 @implementation STMArticleDoc (CoreDataProperties)
 
-@dynamic checksum;
 @dynamic commentText;
 @dynamic dateImport;
 @dynamic dateProduction;

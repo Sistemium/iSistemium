@@ -13,7 +13,6 @@
 
 @implementation STMPicker (CoreDataProperties)
 
-@dynamic checksum;
 @dynamic commentText;
 @dynamic deviceCts;
 @dynamic deviceTs;

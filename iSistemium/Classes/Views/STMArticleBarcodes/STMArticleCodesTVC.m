@@ -18,7 +18,7 @@
 @interface STMArticleCodesTVC () <UIAlertViewDelegate>
 
 @property (nonatomic, strong) NSArray *tableData;
-@property (nonatomic, strong) STMBarCode *barcodeToRemove;
+@property (nonatomic, strong) STMArticleBarCode *barcodeToRemove;
 
 @property (nonatomic, weak) STMArticlesSVC *splitVC;
 @property (nonatomic, weak) STMArticlesNC *articlesNC;
@@ -154,7 +154,7 @@
                 break;
                 
             case 1: {
-                STMBarCode *barcode = self.tableData[indexPath.row];
+                STMArticleBarCode *barcode = self.tableData[indexPath.row];
                 cell.textLabel.text = barcode.code;
             }
                 break;
@@ -165,7 +165,7 @@
         
     } else {
     
-        STMBarCode *barcode = self.tableData[indexPath.row];
+        STMArticleBarCode *barcode = self.tableData[indexPath.row];
         cell.textLabel.text = barcode.code;
 
     }

@@ -2,7 +2,7 @@
 //  STMDatum+CoreDataProperties.h
 //  iSistemium
 //
-//  Created by Maxim Grigoriev on 08/02/16.
+//  Created by Maxim Grigoriev on 10/03/16.
 //  Copyright © 2016 Sistemium UAB. All rights reserved.
 //
 //  Choose "Create NSManagedObject Subclass…" from the Core Data editor menu
@@ -15,7 +15,6 @@ NS_ASSUME_NONNULL_BEGIN
 
 @interface STMDatum (CoreDataProperties)
 
-@property (nullable, nonatomic, retain) NSString *checksum;
 @property (nullable, nonatomic, retain) NSDate *deviceCts;
 @property (nullable, nonatomic, retain) NSDate *deviceTs;
 @property (nullable, nonatomic, retain) NSNumber *id;
@@ -24,8 +23,6 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nullable, nonatomic, retain) NSDate *sqts;
 @property (nullable, nonatomic, retain) NSDate *sts;
 @property (nullable, nonatomic, retain) NSData *xid;
-@property (nullable, nonatomic, retain) NSString *commentText;
-@property (nullable, nonatomic, retain) NSString *source;
 
 @end
 

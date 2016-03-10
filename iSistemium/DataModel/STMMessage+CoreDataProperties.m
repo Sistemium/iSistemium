@@ -14,7 +14,6 @@
 @implementation STMMessage (CoreDataProperties)
 
 @dynamic body;
-@dynamic checksum;
 @dynamic commentText;
 @dynamic cts;
 @dynamic deviceCts;

@@ -14,7 +14,6 @@
 @implementation STMShippingLocation (CoreDataProperties)
 
 @dynamic address;
-@dynamic checksum;
 @dynamic commentText;
 @dynamic deviceCts;
 @dynamic deviceTs;

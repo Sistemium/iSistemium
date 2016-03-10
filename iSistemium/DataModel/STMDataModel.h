@@ -16,7 +16,6 @@
 #import "STMArticlePicture.h"
 #import "STMArticleProductionInfo.h"
 
-#import "STMBarCode.h"
 #import "STMBarCodeType.h"
 #import "STMBarCodeScan.h"
 #import "STMBasketPosition.h"

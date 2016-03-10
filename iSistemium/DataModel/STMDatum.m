@@ -221,8 +221,7 @@
 
 - (NSArray *)excludeProperties {
     
-    return @[@"checksum",
-             @"lts",
+    return @[@"lts",
              @"sts",
              @"sqts",
              @"deviceTs",

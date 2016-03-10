@@ -975,10 +975,6 @@
         
         NSArray *fetchedObjects = [self.resultsControllers valueForKeyPath:@"@distinctUnionOfArrays.fetchedObjects"];
         
-//        NSPredicate *predicate = [NSPredicate predicateWithFormat:@"checksum != currentChecksum"];
-        
-//        fetchedObjects = [fetchedObjects filteredArrayUsingPredicate:predicate];
-        
         return fetchedObjects;
         
     } else {

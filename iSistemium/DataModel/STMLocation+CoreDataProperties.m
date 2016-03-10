@@ -14,7 +14,6 @@
 @implementation STMLocation (CoreDataProperties)
 
 @dynamic altitude;
-@dynamic checksum;
 @dynamic commentText;
 @dynamic course;
 @dynamic deviceCts;

@@ -18,7 +18,6 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nullable, nonatomic, retain) NSString *appVersion;
 @property (nullable, nonatomic, retain) NSString *buildType;
 @property (nullable, nonatomic, retain) NSString *bundleVersion;
-@property (nullable, nonatomic, retain) NSString *checksum;
 @property (nullable, nonatomic, retain) NSString *commentText;
 @property (nullable, nonatomic, retain) NSDate *deviceCts;
 @property (nullable, nonatomic, retain) NSString *deviceName;

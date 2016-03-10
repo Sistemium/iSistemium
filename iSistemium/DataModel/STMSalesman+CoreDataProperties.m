@@ -13,7 +13,6 @@
 
 @implementation STMSalesman (CoreDataProperties)
 
-@dynamic checksum;
 @dynamic commentText;
 @dynamic deviceCts;
 @dynamic deviceTs;

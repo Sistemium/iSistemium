@@ -13,7 +13,6 @@
 
 @implementation STMRecordStatus (CoreDataProperties)
 
-@dynamic checksum;
 @dynamic commentText;
 @dynamic deviceCts;
 @dynamic deviceTs;

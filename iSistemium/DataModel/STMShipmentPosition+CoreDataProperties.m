@@ -15,7 +15,6 @@
 
 @dynamic badVolume;
 @dynamic brokenVolume;
-@dynamic checksum;
 @dynamic commentText;
 @dynamic deviceCts;
 @dynamic deviceTs;

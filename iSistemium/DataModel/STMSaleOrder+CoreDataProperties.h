@@ -15,7 +15,6 @@ NS_ASSUME_NONNULL_BEGIN
 
 @interface STMSaleOrder (CoreDataProperties)
 
-@property (nullable, nonatomic, retain) NSString *checksum;
 @property (nullable, nonatomic, retain) NSString *commentText;
 @property (nullable, nonatomic, retain) NSDate *date;
 @property (nullable, nonatomic, retain) NSDate *deviceCts;

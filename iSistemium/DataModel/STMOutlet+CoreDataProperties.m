@@ -14,7 +14,6 @@
 @implementation STMOutlet (CoreDataProperties)
 
 @dynamic address;
-@dynamic checksum;
 @dynamic commentText;
 @dynamic deviceCts;
 @dynamic deviceTs;

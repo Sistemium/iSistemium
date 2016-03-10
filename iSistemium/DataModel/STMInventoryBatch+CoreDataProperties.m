@@ -13,7 +13,6 @@
 
 @implementation STMInventoryBatch (CoreDataProperties)
 
-@dynamic checksum;
 @dynamic code;
 @dynamic commentText;
 @dynamic deviceCts;

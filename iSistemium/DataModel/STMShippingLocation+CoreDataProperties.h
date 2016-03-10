@@ -16,7 +16,6 @@ NS_ASSUME_NONNULL_BEGIN
 @interface STMShippingLocation (CoreDataProperties)
 
 @property (nullable, nonatomic, retain) NSString *address;
-@property (nullable, nonatomic, retain) NSString *checksum;
 @property (nullable, nonatomic, retain) NSString *commentText;
 @property (nullable, nonatomic, retain) NSDate *deviceCts;
 @property (nullable, nonatomic, retain) NSDate *deviceTs;

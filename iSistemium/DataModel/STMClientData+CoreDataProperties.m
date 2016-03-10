@@ -16,7 +16,6 @@
 @dynamic appVersion;
 @dynamic buildType;
 @dynamic bundleVersion;
-@dynamic checksum;
 @dynamic commentText;
 @dynamic deviceCts;
 @dynamic deviceName;

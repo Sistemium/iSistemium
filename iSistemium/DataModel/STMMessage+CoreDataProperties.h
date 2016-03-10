@@ -16,7 +16,6 @@ NS_ASSUME_NONNULL_BEGIN
 @interface STMMessage (CoreDataProperties)
 
 @property (nullable, nonatomic, retain) NSString *body;
-@property (nullable, nonatomic, retain) NSString *checksum;
 @property (nullable, nonatomic, retain) NSString *commentText;
 @property (nullable, nonatomic, retain) NSDate *cts;
 @property (nullable, nonatomic, retain) NSDate *deviceCts;

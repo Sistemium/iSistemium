@@ -13,7 +13,6 @@
 
 @implementation STMSupplyOrder (CoreDataProperties)
 
-@dynamic checksum;
 @dynamic commentText;
 @dynamic date;
 @dynamic deviceCts;

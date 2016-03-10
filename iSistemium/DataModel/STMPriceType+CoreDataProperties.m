@@ -13,7 +13,6 @@
 
 @implementation STMPriceType (CoreDataProperties)
 
-@dynamic checksum;
 @dynamic commentText;
 @dynamic deviceCts;
 @dynamic deviceTs;

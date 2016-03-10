@@ -13,7 +13,6 @@
 
 @implementation STMArticleGroup (CoreDataProperties)
 
-@dynamic checksum;
 @dynamic commentText;
 @dynamic deviceCts;
 @dynamic deviceTs;

@@ -14,7 +14,6 @@
 @implementation STMArticle (CoreDataProperties)
 
 @dynamic barcode;
-@dynamic checksum;
 @dynamic code;
 @dynamic commentText;
 @dynamic deviceCts;

@@ -13,7 +13,6 @@
 
 @implementation STMQualityClass (CoreDataProperties)
 
-@dynamic checksum;
 @dynamic commentText;
 @dynamic deviceCts;
 @dynamic deviceTs;

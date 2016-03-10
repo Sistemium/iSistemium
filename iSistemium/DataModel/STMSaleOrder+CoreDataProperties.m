@@ -13,7 +13,6 @@
 
 @implementation STMSaleOrder (CoreDataProperties)
 
-@dynamic checksum;
 @dynamic commentText;
 @dynamic date;
 @dynamic deviceCts;

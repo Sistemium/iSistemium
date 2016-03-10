@@ -14,7 +14,6 @@
 @implementation STMDebt (CoreDataProperties)
 
 @dynamic calculatedSum;
-@dynamic checksum;
 @dynamic commentText;
 @dynamic date;
 @dynamic dateE;

@@ -13,7 +13,6 @@
 
 @implementation STMProductionInfoType (CoreDataProperties)
 
-@dynamic checksum;
 @dynamic commentText;
 @dynamic datatype;
 @dynamic deviceCts;

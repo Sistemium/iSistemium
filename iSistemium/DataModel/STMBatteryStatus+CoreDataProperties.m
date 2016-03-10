@@ -15,7 +15,6 @@
 
 @dynamic batteryLevel;
 @dynamic batteryState;
-@dynamic checksum;
 @dynamic commentText;
 @dynamic deviceCts;
 @dynamic deviceTs;

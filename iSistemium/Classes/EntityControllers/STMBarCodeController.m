@@ -95,7 +95,7 @@
 
 + (NSArray *)barcodesArrayForBarcodeClass:(Class)barcodeClass barcodeValue:(NSString *)barcodeValue {
     
-    if ([barcodeClass isSubclassOfClass:[STMBarCode class]]) {
+    if ([barcodeClass isSubclassOfClass:[STMArticleBarCode class]] || [barcodeClass isSubclassOfClass:[STMStockBatchBarCode class]]) {
         
         STMFetchRequest *request = [STMFetchRequest fetchRequestWithEntityName:NSStringFromClass(barcodeClass)];
         request.sortDescriptors = @[[NSSortDescriptor sortDescriptorWithKey:@"code" ascending:YES selector:@selector(caseInsensitiveCompare:)]];
