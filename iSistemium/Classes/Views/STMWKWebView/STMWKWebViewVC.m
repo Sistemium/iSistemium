@@ -481,7 +481,7 @@
     [arguments addObject:errorDescription];
     [arguments addObject:parameters];
     
-    NSString *jsFunction = [NSString stringWithFormat:@"%@.apply(null.%@)", self.iSistemiumIOSErrorCallbackJSFunction, [STMFunctions jsonStringFromArray:arguments]];
+    NSString *jsFunction = [NSString stringWithFormat:@"%@.apply(null,%@)", self.iSistemiumIOSErrorCallbackJSFunction, [STMFunctions jsonStringFromArray:arguments]];
     
     [self.webView evaluateJavaScript:jsFunction completionHandler:^(id _Nullable result, NSError * _Nullable error) {
         
