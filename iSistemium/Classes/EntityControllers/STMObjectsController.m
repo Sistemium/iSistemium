@@ -1432,23 +1432,7 @@
     NSString *valueClassName = object.entity.attributesByName[key].attributeValueClassName;
     NSAttributeType attributeType = object.entity.attributesByName[key].attributeType;
     
-    if ([valueClassName isEqualToString:NSStringFromClass([NSDate class])]) {
-        
-        if (![value isKindOfClass:[NSString class]]) return NO;
-        
-        value = [[STMFunctions dateFormatter] dateFromString:value];
-        
-    } else if ([valueClassName isEqualToString:NSStringFromClass([NSData class])]) {
-        
-        if (![value isKindOfClass:[NSString class]]) return NO;
-        
-        if ([key.lowercaseString hasSuffix:@"uuid"] || [key.lowercaseString hasSuffix:@"xid"]) {
-            value = [STMFunctions xidDataFromXidString:value];
-        } else {
-            value = [STMFunctions dataFromString:value];
-        }
-        
-    } else if ([valueClassName isEqualToString:NSStringFromClass([NSNumber class])]) {
+    if ([valueClassName isEqualToString:NSStringFromClass([NSNumber class])]) {
         
         if ([value isKindOfClass:[NSString class]]) {
             
@@ -1486,8 +1470,26 @@
             return NO;
         }
         
-    }
+    } else {
+        
+        if (![value isKindOfClass:[NSString class]]) return NO;
 
+        if ([valueClassName isEqualToString:NSStringFromClass([NSDate class])]) {
+            
+            value = [[STMFunctions dateFormatter] dateFromString:value];
+            
+        } else if ([valueClassName isEqualToString:NSStringFromClass([NSData class])]) {
+            
+            if ([key.lowercaseString hasSuffix:@"uuid"] || [key.lowercaseString hasSuffix:@"xid"]) {
+                value = [STMFunctions xidDataFromXidString:value];
+            } else {
+                value = [STMFunctions dataFromString:value];
+            }
+            
+        }
+
+    }
+    
     return YES;
     
 }
