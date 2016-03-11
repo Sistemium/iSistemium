@@ -1350,7 +1350,7 @@
 
 + (void)processingKeysForUpdatingObject:(STMDatum *)object withObjectData:(NSDictionary *)objectData error:(NSError **)error {
     
-    [self normalizeObjectData:objectData forObject:object error:error];
+    objectData = [self normalizeObjectData:objectData forObject:object error:error];
     
     if (*error) return;
     
@@ -1424,7 +1424,7 @@
     
 }
 
-+ (void)normalizeObjectData:(NSDictionary *)objectData forObject:(STMDatum *)object error:(NSError **)error {
++ (NSDictionary *)normalizeObjectData:(NSDictionary *)objectData forObject:(STMDatum *)object error:(NSError **)error {
     
     NSString *errorMessage = nil;
     
@@ -1440,7 +1440,9 @@
         
         if (value && ![value isKindOfClass:[NSNull class]]) {
             
-            if ([self normalizeValue:value forKey:key updatingObject:object]) {
+            value = [self normalizeValue:value forKey:key updatingObject:object];
+            
+            if (value) {
                 
                 resultDic[key] =  value;
                 
@@ -1491,14 +1493,19 @@
     }
     
     if (errorMessage) {
+        
         [self error:error withMessage:errorMessage];
+        return nil;
+        
     } else {
-        objectData = resultDic;
+        
+        return resultDic;
+        
     }
 
 }
 
-+ (BOOL)normalizeValue:(id)value forKey:(NSString *)key updatingObject:(STMDatum *)object {
++ (id)normalizeValue:(id)value forKey:(NSString *)key updatingObject:(STMDatum *)object {
     
     NSString *valueClassName = object.entity.attributesByName[key].attributeValueClassName;
     NSAttributeType attributeType = object.entity.attributesByName[key].attributeType;
@@ -1533,12 +1540,12 @@
                     break;
                 }
                 default: {
-                    return NO;
+                    return nil;
                 }
             }
             
         } else if (![value isKindOfClass:[NSNumber class]]) {
-            return NO;
+            return nil;
         }
         
     } else if ([valueClassName isEqualToString:NSStringFromClass([NSString class])]) {
@@ -1546,16 +1553,16 @@
         if (![value isKindOfClass:[NSString class]]) {
 
             if ([value respondsToSelector:@selector(stringValue)]) {
-                value = [value stringValue];
+                value = (NSString *)[value stringValue];
             } else {
-                return NO;
+                return nil;
             }
 
         }
         
     } else {
         
-        if (![value isKindOfClass:[NSString class]]) return NO;
+        if (![value isKindOfClass:[NSString class]]) return nil;
         
         if ([valueClassName isEqualToString:NSStringFromClass([NSDate class])]) {
             
@@ -1573,7 +1580,7 @@
 
     }
     
-    return YES;
+    return value;
     
 }
 
