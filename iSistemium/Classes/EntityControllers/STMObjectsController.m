@@ -1542,11 +1542,15 @@
         }
         
     } else if ([valueClassName isEqualToString:NSStringFromClass([NSString class])]) {
-        
-        if ([value respondsToSelector:@selector(stringValue)]) {
-            value = [value stringValue];
-        } else {
-            return NO;
+
+        if (![value isKindOfClass:[NSString class]]) {
+
+            if ([value respondsToSelector:@selector(stringValue)]) {
+                value = [value stringValue];
+            } else {
+                return NO;
+            }
+
         }
         
     } else {
