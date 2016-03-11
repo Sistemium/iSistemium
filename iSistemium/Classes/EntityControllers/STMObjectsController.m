@@ -1508,9 +1508,10 @@
 + (id)normalizeValue:(id)value forKey:(NSString *)key updatingObject:(STMDatum *)object {
     
     NSString *valueClassName = object.entity.attributesByName[key].attributeValueClassName;
+    Class valueClass = NSClassFromString(valueClassName);
     NSAttributeType attributeType = object.entity.attributesByName[key].attributeType;
     
-    if ([valueClassName isEqualToString:NSStringFromClass([NSNumber class])]) {
+    if ([valueClass isSubclassOfClass:[NSNumber class]]) {
         
         if ([value isKindOfClass:[NSString class]]) {
             
@@ -1548,7 +1549,7 @@
             return nil;
         }
         
-    } else if ([valueClassName isEqualToString:NSStringFromClass([NSString class])]) {
+    } else if ([valueClass isSubclassOfClass:[NSString class]]) {
 
         if (![value isKindOfClass:[NSString class]]) {
 
@@ -1564,11 +1565,11 @@
         
         if (![value isKindOfClass:[NSString class]]) return nil;
         
-        if ([valueClassName isEqualToString:NSStringFromClass([NSDate class])]) {
+        if ([valueClass isSubclassOfClass:[NSDate class]]) {
             
             value = [[STMFunctions dateFormatter] dateFromString:value];
             
-        } else if ([valueClassName isEqualToString:NSStringFromClass([NSData class])]) {
+        } else if ([valueClass isSubclassOfClass:[NSData class]]) {
             
             if ([key.lowercaseString hasSuffix:@"uuid"] || [key.lowercaseString hasSuffix:@"xid"]) {
                 value = [STMFunctions xidDataFromXidString:value];
