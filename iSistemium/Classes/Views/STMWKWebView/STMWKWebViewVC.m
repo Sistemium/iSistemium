@@ -155,6 +155,7 @@
              WK_MESSAGE_FIND_ALL,
              WK_MESSAGE_FIND,
              WK_MESSAGE_SOUND,
+             WK_MESSAGE_UPDATE,
              WK_MESSAGE_UPDATE_ALL];
     
 }
@@ -314,9 +315,9 @@
 
         NSLog(@"GET");
 
-    } else if ([message.name isEqualToString:WK_MESSAGE_UPDATE_ALL]) {
+    } else if ([@[WK_MESSAGE_UPDATE, WK_MESSAGE_UPDATE_ALL] containsObject:message.name]) {
         
-        [self handleUpdateAllMessage:message];
+        [self handleKindOfUpdateMessage:message];
         
     } else if ([message.name isEqualToString:WK_MESSAGE_SOUND]) {
         
@@ -327,7 +328,7 @@
         [self startBarcodeScanning];
         self.receiveBarCodeJSFunction = message.body;
         
-    } else if ([@[WK_MESSAGE_FIND_ALL, WK_MESSAGE_FIND] containsObject:message.name]) {
+    } else if ([@[WK_MESSAGE_FIND, WK_MESSAGE_FIND_ALL] containsObject:message.name]) {
         
         [self handleKindOfFindMessage:message];
         
@@ -335,7 +336,7 @@
     
 }
 
-- (void)handleUpdateAllMessage:(WKScriptMessage *)message {
+- (void)handleKindOfUpdateMessage:(WKScriptMessage *)message {
     
     if ([message.body isKindOfClass:[NSDictionary class]]) {
         

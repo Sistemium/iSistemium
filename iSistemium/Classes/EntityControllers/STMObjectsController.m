@@ -1276,29 +1276,49 @@
 
     }
 
-    if (![parameters[@"data"] isKindOfClass:[NSArray <NSDictionary *> class]]) {
+    if ([scriptMessage.name isEqualToString:WK_MESSAGE_UPDATE]) {
         
-        [self error:error withMessage:@"message.body.data is not a NSArray[NSDictionary] class"];
-        return nil;
-        
-    }
+        if (![parameters[@"data"] isKindOfClass:[NSDictionary class]]) {
+            
+            [self error:error withMessage:[NSString stringWithFormat:@"message.body.data for %@ message is not a NSDictionary class", scriptMessage.name]];
+            return nil;
+            
+        } else {
+            
+            [result addObject:[self updateObjectWithData:parameters[@"data"] entityName:entityName error:error]];
+            if (*error) return nil;
 
-    NSArray *data = parameters[@"data"];
-    
-    NSString *errorMessage = nil;
+        }
 
-    for (NSDictionary *objectData in data) {
+    } else if ([scriptMessage.name isEqualToString:WK_MESSAGE_UPDATE_ALL]) {
         
-        NSError *localError = nil;
-        [result addObject:[self updateObjectWithData:objectData entityName:entityName error:&localError]];
-        
-        if (localError) {
-            errorMessage = (errorMessage) ? [errorMessage stringByAppendingString:localError.localizedDescription] : localError.localizedDescription;
+        if (![parameters[@"data"] isKindOfClass:[NSArray <NSDictionary *> class]]) {
+            
+            [self error:error withMessage:[NSString stringWithFormat:@"message.body.data for %@ message is not a NSArray[NSDictionary] class", scriptMessage.name]];
+            return nil;
+            
+        } else {
+            
+            NSArray *data = parameters[@"data"];
+            
+            NSString *errorMessage = nil;
+            
+            for (NSDictionary *objectData in data) {
+                
+                NSError *localError = nil;
+                [result addObject:[self updateObjectWithData:objectData entityName:entityName error:&localError]];
+                
+                if (localError) {
+                    errorMessage = (errorMessage) ? [errorMessage stringByAppendingString:localError.localizedDescription] : localError.localizedDescription;
+                }
+                
+            }
+            
+            if (errorMessage) [self error:error withMessage:errorMessage];
+            
         }
         
     }
-    
-    if (errorMessage) [self error:error withMessage:errorMessage];
     
     [[self document] saveDocument:^(BOOL success) {
         
