@@ -147,19 +147,6 @@
     
 }
 
-- (NSArray *)scriptMessageNames {
-    
-    return @[WK_MESSAGE_POST,
-             WK_MESSAGE_GET,
-             WK_MESSAGE_SCANNER_ON,
-             WK_MESSAGE_FIND_ALL,
-             WK_MESSAGE_FIND,
-             WK_MESSAGE_SOUND,
-             WK_MESSAGE_UPDATE,
-             WK_MESSAGE_UPDATE_ALL];
-    
-}
-
 
 #pragma mark - webViewInit
 
@@ -169,7 +156,7 @@
     
     WKUserContentController *contentController = [[WKUserContentController alloc] init];
     
-    for (NSString *messageName in [self scriptMessageNames]) {
+    for (NSString *messageName in WK_SCRIPT_MESSAGE_NAMES) {
         [contentController addScriptMessageHandler:self name:messageName];
     }
     
@@ -291,21 +278,24 @@
 
 - (void)userContentController:(WKUserContentController *)userContentController didReceiveScriptMessage:(WKScriptMessage *)message {
     
-#ifdef DEBUG
-    
     if ([message.body isKindOfClass:[NSDictionary class]]) {
-        
+
+#ifdef DEBUG
         NSString *requestId = message.body[@"options"][@"requestId"];
         NSLog(@"%@ requestId: %@", message.name, requestId);
+#endif
 
     } else {
 
+#ifdef DEBUG
         NSLog(@"%@ %@", message.name, message.body);
-
-    }
-    
 #endif
 
+        [self callbackWithError:@"message.body is not a NSDictionary class"
+                     parameters:@{@"messageBody": [message.body description]}];
+        return;
+        
+    }
     
     if ([message.name isEqualToString:WK_MESSAGE_POST]) {
         
@@ -332,113 +322,102 @@
         
         [self handleKindOfFindMessage:message];
         
+    } else if ([message.name isEqualToString:WK_MESSAGE_DESTROY]) {
+        
+        [self handleDestroyMessage:message];
+        
     }
+    
+}
+
+- (void)handleDestroyMessage:(WKScriptMessage *)message {
+    
+    NSDictionary *parameters = message.body;
+    
+    NSLog(@"%@", parameters);
+    
+    NSError *error = nil;
+    NSArray *result = [STMObjectsController updateObjectsFromScriptMessage:message error:&error];
+    
+    if (result.count > 0) [self callbackWithData:result parameters:parameters];
+    if (error) [self callbackWithError:error.localizedDescription parameters:parameters];
     
 }
 
 - (void)handleKindOfUpdateMessage:(WKScriptMessage *)message {
     
-    if ([message.body isKindOfClass:[NSDictionary class]]) {
-        
-        NSDictionary *parameters = message.body;
+    NSDictionary *parameters = message.body;
 
-        NSLog(@"%@", parameters);
-        
-        NSError *error = nil;
-        NSArray *result = [STMObjectsController updateObjectsFromScriptMessage:message error:&error];
+    NSError *error = nil;
+    NSArray *result = [STMObjectsController updateObjectsFromScriptMessage:message error:&error];
 
-        if (result.count > 0) [self callbackWithData:result parameters:parameters];
-        if (error) [self callbackWithError:error.localizedDescription parameters:parameters];
+    if (result.count > 0) [self callbackWithData:result parameters:parameters];
+    if (error) [self callbackWithError:error.localizedDescription parameters:parameters];
         
-    } else {
-        
-        [self callbackWithError:@"message.body is not a NSDictionary class"
-                     parameters:@{@"messageBody": [message.body description]}];
-
-    }
-    
 }
 
 - (void)handleSoundMessage:(WKScriptMessage *)message {
     
-    if ([message.body isKindOfClass:[NSDictionary class]]) {
+    NSDictionary *parameters = message.body;
+
+    NSString *messageSound = parameters[@"sound"];
+    NSString *messageText = parameters[@"text"];
+
+    float rate = (parameters[@"rate"]) ? [parameters[@"rate"] floatValue] : 0.5;
+    float pitch = (parameters[@"pitch"]) ? [parameters[@"pitch"] floatValue] : 1;
+    
+    if (messageSound) {
         
-        NSDictionary *parameters = message.body;
-
-        NSString *messageSound = parameters[@"sound"];
-        NSString *messageText = parameters[@"text"];
-
-        float rate = (parameters[@"rate"]) ? [parameters[@"rate"] floatValue] : 0.5;
-        float pitch = (parameters[@"pitch"]) ? [parameters[@"pitch"] floatValue] : 1;
-        
-        if (messageSound) {
+        if ([messageSound isEqualToString:@"alert"]) {
             
-            if ([messageSound isEqualToString:@"alert"]) {
-                
-                (messageText) ? [STMSoundController alertSay:messageText withRate:rate pitch:pitch] : [STMSoundController playAlert];
-                
-            } else if ([messageSound isEqualToString:@"ok"]) {
-                
-                (messageText) ? [STMSoundController okSay:messageText withRate:rate pitch:pitch] : [STMSoundController playOk];
-                
-            } else {
-                
-                [self callbackWithError:@"unknown sound parameter"
-                             parameters:parameters];
-                
-                (messageText) ? [STMSoundController sayText:messageText withRate:rate pitch:pitch] : nil;
-                
-            }
-
-        } else if (messageText) {
+            (messageText) ? [STMSoundController alertSay:messageText withRate:rate pitch:pitch] : [STMSoundController playAlert];
             
-            [STMSoundController sayText:messageText withRate:rate pitch:pitch];
-
+        } else if ([messageSound isEqualToString:@"ok"]) {
+            
+            (messageText) ? [STMSoundController okSay:messageText withRate:rate pitch:pitch] : [STMSoundController playOk];
+            
         } else {
             
-            [self callbackWithError:@"message.body have no text ot sound to play"
+            [self callbackWithError:@"unknown sound parameter"
                          parameters:parameters];
-
+            
+            (messageText) ? [STMSoundController sayText:messageText withRate:rate pitch:pitch] : nil;
+            
         }
+
+    } else if (messageText) {
+        
+        [STMSoundController sayText:messageText withRate:rate pitch:pitch];
 
     } else {
         
-        [self callbackWithError:@"message.body is not a NSDictionary class"
-                     parameters:@{@"messageBody": [message.body description]}];
-        
+        [self callbackWithError:@"message.body have no text ot sound to play"
+                     parameters:parameters];
+
     }
     
 }
 
 - (void)handleKindOfFindMessage:(WKScriptMessage *)message {
     
-    if ([message.body isKindOfClass:[NSDictionary class]]) {
-        
-        NSDictionary *parameters = message.body;
-        
-        NSError *error = nil;
+    NSDictionary *parameters = message.body;
+    
+    NSError *error = nil;
 
-        NSArray *result = [STMObjectsController arrayOfObjectsRequestedByScriptMessage:message error:&error];
+    NSArray *result = [STMObjectsController arrayOfObjectsRequestedByScriptMessage:message error:&error];
 
-        if (!error) {
-            
-            [self callbackWithData:result
-                        parameters:parameters];
-            
-        } else {
-            
-            [self callbackWithError:error.localizedDescription
-                         parameters:parameters];
-            
-        }
+    if (!error) {
+        
+        [self callbackWithData:result
+                    parameters:parameters];
         
     } else {
         
-        [self callbackWithError:@"message.body is not a NSDictionary class"
-                     parameters:@{@"messageBody": [message.body description]}];
+        [self callbackWithError:error.localizedDescription
+                     parameters:parameters];
         
     }
-
+        
 }
 
 - (void)callbackWithData:(NSArray *)data parameters:(NSDictionary *)parameters {
