@@ -1285,8 +1285,10 @@
             
         } else {
             
-            [result addObject:[self updateObjectWithData:parameters[@"data"] entityName:entityName error:error]];
+            NSDictionary *updatedData = [self updateObjectWithData:parameters[@"data"] entityName:entityName error:error];
             if (*error) return nil;
+            
+            [result addObject:updatedData];
 
         }
 
@@ -1306,10 +1308,13 @@
             for (NSDictionary *objectData in data) {
                 
                 NSError *localError = nil;
-                [result addObject:[self updateObjectWithData:objectData entityName:entityName error:&localError]];
+                
+                NSDictionary *updatedData = [self updateObjectWithData:objectData entityName:entityName error:&localError];
                 
                 if (localError) {
                     errorMessage = (errorMessage) ? [errorMessage stringByAppendingString:localError.localizedDescription] : localError.localizedDescription;
+                } else {
+                    [result addObject:updatedData];
                 }
                 
             }
@@ -1339,13 +1344,15 @@
 
     [self processingKeysForUpdatingObject:object withObjectData:objectData error:error];
 
-    return [self dictionaryForJSWithObject:object];
+    return (*error) ? nil : [self dictionaryForJSWithObject:object];
     
 }
 
 + (void)processingKeysForUpdatingObject:(STMDatum *)object withObjectData:(NSDictionary *)objectData error:(NSError **)error {
     
-    NSString *errorMessage = nil;
+    [self normalizeObjectData:objectData forObject:object error:error];
+    
+    if (*error) return;
     
     NSString *entityName = object.entity.name;
     
@@ -1356,21 +1363,7 @@
         id value = objectData[key];
         
         if (value && ![value isKindOfClass:[NSNull class]]) {
-            
-            if ([self normalizeValue:value forKey:key updatingObject:object]) {
-                
-                [object setValue:value forKey:key];
-                
-            } else {
-                
-                NSString *message = [NSString stringWithFormat:@"%@ object %@ can't update value %@ for key %@\n", entityName, object.xid, value, key];
-                
-                errorMessage = (errorMessage) ? [errorMessage stringByAppendingString:message] : message;
-                
-                continue;
-                
-            }
-            
+            [object setValue:value forKey:key];
         } else {
             [object setValue:nil forKey:key];
         }
@@ -1381,41 +1374,27 @@
     
     for (NSString *key in ownRelationships) {
         
-        id value = objectData[key];
+        NSString *xidString = objectData[key];
 
-        if (value) {
+        if (xidString) {
             
-            if ([value isKindOfClass:[NSString class]]) {
+            NSManagedObject *destinationObject = [self objectForEntityName:entityName andXidString:xidString];
+            
+            if (![[object valueForKey:key] isEqual:destinationObject]) {
                 
-                NSString *xidString = (NSString *)value;
+                BOOL waitingForSync = [self isWaitingToSyncForObject:destinationObject];
                 
-                NSManagedObject *destinationObject = [self objectForEntityName:entityName andXidString:xidString];
+                [object setValue:destinationObject forKey:key];
                 
-                if (![[object valueForKey:key] isEqual:destinationObject]) {
+                if (!waitingForSync) {
                     
-                    BOOL waitingForSync = [self isWaitingToSyncForObject:destinationObject];
-                    
-                    [object setValue:destinationObject forKey:key];
-                    
-                    if (!waitingForSync) {
-                        
-                        [destinationObject addObserver:[self sharedController]
-                                            forKeyPath:@"deviceTs"
-                                               options:(NSKeyValueObservingOptionNew|NSKeyValueObservingOptionOld)
-                                               context:nil];
-                        
-                    }
+                    [destinationObject addObserver:[self sharedController]
+                                        forKeyPath:@"deviceTs"
+                                           options:(NSKeyValueObservingOptionNew|NSKeyValueObservingOptionOld)
+                                           context:nil];
                     
                 }
                 
-            } else {
-                
-                NSString *message = [NSString stringWithFormat:@"%@ object %@ relationship value %@ is not a String for key %@, can't get xid\n", entityName, object.xid, value, key];
-                
-                errorMessage = (errorMessage) ? [errorMessage stringByAppendingString:message] : message;
-                
-                continue;
-
             }
             
         } else {
@@ -1442,9 +1421,81 @@
         }
         
     }
-
-    if (errorMessage) [self error:error withMessage:errorMessage];
     
+}
+
++ (void)normalizeObjectData:(NSDictionary *)objectData forObject:(STMDatum *)object error:(NSError **)error {
+    
+    NSString *errorMessage = nil;
+    
+    NSMutableDictionary *resultDic = @{}.mutableCopy;
+    
+    NSString *entityName = object.entity.name;
+    
+    NSSet *ownKeys = [self ownObjectKeysForEntityName:entityName];
+    
+    for (NSString *key in ownKeys) {
+        
+        id value = objectData[key];
+        
+        if (value && ![value isKindOfClass:[NSNull class]]) {
+            
+            if ([self normalizeValue:value forKey:key updatingObject:object]) {
+                
+                resultDic[key] =  value;
+                
+            } else {
+                
+                NSString *message = [NSString stringWithFormat:@"%@ object %@ can't update value %@ for key %@\n", entityName, object.xid, value, key];
+                
+                errorMessage = (errorMessage) ? [errorMessage stringByAppendingString:message] : message;
+                
+                continue;
+                
+            }
+            
+        }
+        
+    }
+    
+    NSArray *ownRelationships = [self singleRelationshipsForEntityName:entityName].allKeys;
+    
+    for (NSString *key in ownRelationships) {
+        
+        id value = objectData[key];
+        
+        if (value) {
+            
+            if ([value isKindOfClass:[NSString class]]) {
+                
+                NSString *xidString = (NSString *)value;
+                
+                NSManagedObject *destinationObject = [self objectForEntityName:entityName andXidString:xidString];
+                
+                if (![[object valueForKey:key] isEqual:destinationObject]) {
+                    resultDic[key] = value;
+                }
+                
+            } else {
+                
+                NSString *message = [NSString stringWithFormat:@"%@ object %@ relationship value %@ is not a String for key %@, can't get xid\n", entityName, object.xid, value, key];
+                
+                errorMessage = (errorMessage) ? [errorMessage stringByAppendingString:message] : message;
+                
+                continue;
+                
+            }
+            
+        }
+        
+    }
+    
+    if (errorMessage) {
+        [self error:error withMessage:errorMessage];
+    } else {
+        objectData = resultDic;
+    }
+
 }
 
 + (BOOL)normalizeValue:(id)value forKey:(NSString *)key updatingObject:(STMDatum *)object {
@@ -1490,10 +1541,18 @@
             return NO;
         }
         
+    } else if ([valueClassName isEqualToString:NSStringFromClass([NSString class])]) {
+        
+        if ([value respondsToSelector:@selector(stringValue)]) {
+            value = [value stringValue];
+        } else {
+            return NO;
+        }
+        
     } else {
         
         if (![value isKindOfClass:[NSString class]]) return NO;
-
+        
         if ([valueClassName isEqualToString:NSStringFromClass([NSDate class])]) {
             
             value = [[STMFunctions dateFormatter] dateFromString:value];
