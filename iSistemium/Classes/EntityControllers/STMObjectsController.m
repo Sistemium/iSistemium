@@ -1050,7 +1050,6 @@
         
     }
 
-    
     NSDate *startFlushing = [NSDate date];
     
     NSArray *entitiesWithLifeTime = [STMEntityController entitiesWithLifeTime];
@@ -1249,6 +1248,96 @@
     NSLog(@"fantoms count %d", [self numberOfFantoms]);
     NSLog(@"total count %d", totalCount);
 
+}
+
+
+#pragma mark - destroy objects from WKWebView
+
++ (NSArray *)destroyObjectFromScriptMessage:(WKScriptMessage *)scriptMessage error:(NSError **)error {
+
+    NSString *errorMessage = nil;
+    
+    if (![scriptMessage.body isKindOfClass:[NSDictionary class]]) {
+        
+        [self error:error withMessage:@"message.body is not a NSDictionary class"];
+        return nil;
+        
+    }
+    
+    NSDictionary *parameters = scriptMessage.body;
+
+    NSString *entityName = [NSString stringWithFormat:@"STM%@", parameters[@"entity"]];
+    
+    if (![[self localDataModelEntityNames] containsObject:entityName]) {
+        
+        [self error:error withMessage:[entityName stringByAppendingString:@": not found in data model"]];
+        return nil;
+        
+    }
+    
+    NSString *xidString = parameters[@"id"];
+    
+    if (!xidString) {
+        
+        [self error:error withMessage:@"empty xid"];
+        return nil;
+
+    }
+            
+    NSData *xid = [STMFunctions xidDataFromXidString:xidString];
+    
+    STMDatum *object = [self sharedController].objectsCache[xid];
+    
+    if (object) {
+        
+        if (![object.entity.name isEqualToString:entityName]) {
+            
+            errorMessage = [NSString stringWithFormat:@"object with xid %@ have entity name %@, not %@", xidString, object.entity.name, entityName];
+            [self error:error withMessage:errorMessage];
+            return nil;
+            
+        } else {
+            
+            STMRecordStatus *recordStatus = [self createRecordStatusAndRemoveObject:object];
+            return [self arrayForJSWithObjects:@[recordStatus]];
+            
+        }
+        
+    }
+
+    NSPredicate *predicate = [NSPredicate predicateWithFormat:@"entity.name == %@ && xid == %@", entityName, xid];
+    
+    NSArray *objectsArray = [self objectsForEntityName:entityName
+                                               orderBy:@"id"
+                                             ascending:YES
+                                            fetchLimit:0
+                                           fetchOffset:0
+                                           withFantoms:NO
+                                             predicate:predicate
+                                inManagedObjectContext:[self document].managedObjectContext
+                                                 error:error];
+    
+    if (objectsArray.count == 0) {
+        
+        errorMessage = [NSString stringWithFormat:@"no object for destroy with xid %@ and entity name %@", xidString, entityName];
+        [self error:error withMessage:errorMessage];
+        return nil;
+
+    }
+    
+    if (objectsArray.count > 1) {
+        
+        errorMessage = [NSString stringWithFormat:@"more than 1 object for destroy with xid %@ and entity name %@", xidString, entityName];
+        [self error:error withMessage:errorMessage];
+        return nil;
+        
+    }
+
+    object = objectsArray.firstObject;
+    
+    STMRecordStatus *recordStatus = [self createRecordStatusAndRemoveObject:object];
+    return [self arrayForJSWithObjects:@[recordStatus]];
+    
 }
 
 
@@ -1590,7 +1679,6 @@
 
 + (NSArray *)arrayOfObjectsRequestedByScriptMessage:(WKScriptMessage *)scriptMessage error:(NSError **)error {
     
-//    NSError *localError = nil;
     NSArray *result = nil;
 
     if (![scriptMessage.body isKindOfClass:[NSDictionary class]]) {

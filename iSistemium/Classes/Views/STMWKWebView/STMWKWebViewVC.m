@@ -337,10 +337,13 @@
     NSLog(@"%@", parameters);
     
     NSError *error = nil;
-    NSArray *result = [STMObjectsController updateObjectsFromScriptMessage:message error:&error];
+    NSArray *result = [STMObjectsController destroyObjectFromScriptMessage:message error:&error];
     
-    if (result.count > 0) [self callbackWithData:result parameters:parameters];
-    if (error) [self callbackWithError:error.localizedDescription parameters:parameters];
+    if (error) {
+        [self callbackWithError:error.localizedDescription parameters:parameters];
+    } else {
+        [self callbackWithData:result parameters:parameters];
+    }
     
 }
 
