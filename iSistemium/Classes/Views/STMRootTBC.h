@@ -17,6 +17,9 @@
 - (NSArray *)siblingsForViewController:(UIViewController *)vc;
 - (void)replaceVC:(UIViewController *)currentVC withVC:(UIViewController *)vc;
 
+- (void)showTabBar;
+- (void)hideTabBar;
+
 - (void)showTabWithName:(NSString *)tabName;
 - (void)showTabAtIndex:(NSUInteger)index;
 - (void)newAppVersionAvailable:(NSNotification *)notification;

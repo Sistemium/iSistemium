@@ -15,7 +15,9 @@
 #import "STMSoundController.h"
 #import "STMObjectsController.h"
 
+#import "STMRootTBC.h"
 #import "STMStoryboard.h"
+
 #import "STMFunctions.h"
 #import "STMUI.h"
 
@@ -326,16 +328,42 @@
         
         [self handleDestroyMessage:message];
         
+    } else if ([message.name isEqualToString:WK_MESSAGE_TABBAR]) {
+        
+        [self handleTabbarMessage:message];
+        
     }
     
 }
 
-- (void)handleDestroyMessage:(WKScriptMessage *)message {
+- (void)handleTabbarMessage:(WKScriptMessage *)message {
     
     NSDictionary *parameters = message.body;
     
     NSLog(@"%@", parameters);
     
+    NSString *action = parameters[@"action"];
+    
+    if ([action isEqualToString:@"show"]) {
+        
+        [[STMRootTBC sharedRootVC] showTabBar];
+        [self callbackWithData:@[@"tabbar show success"] parameters:parameters];
+
+    } else if ([action isEqualToString:@"hide"]) {
+        
+        [[STMRootTBC sharedRootVC] hideTabBar];
+        [self callbackWithData:@[@"tabbar hide success"] parameters:parameters];
+
+    } else {
+        [self callbackWithError:@"unknown action for tabbar message" parameters:parameters];
+    }
+
+}
+
+- (void)handleDestroyMessage:(WKScriptMessage *)message {
+    
+    NSDictionary *parameters = message.body;
+
     NSError *error = nil;
     NSArray *result = [STMObjectsController destroyObjectFromScriptMessage:message error:&error];
     
@@ -443,6 +471,8 @@
         
     }];
     
+    [[STMRootTBC sharedRootVC] showTabBar];
+
 }
 
 - (void)callbackWithError:(NSString *)errorDescription parameters:(NSDictionary *)parameters {
@@ -608,10 +638,18 @@
     
 }
 
-- (void) viewDidAppear:(BOOL)animated {
+- (void)viewDidAppear:(BOOL)animated {
+    
+    [super viewDidAppear:animated];
+    
     if (self.iOSModeBarCodeScanner) {
         self.iOSModeBarCodeScanner.delegate = self;
     }
+
+}
+
+- (void)viewDidDisappear:(BOOL)animated {
+    [super viewDidDisappear:animated];
 }
 
 

@@ -680,6 +680,52 @@
 }
 
 
+#pragma mark - show/hide tabbar
+
+- (void)hideTabBar {
+    
+    [UIView beginAnimations:nil context:NULL];
+    [UIView setAnimationDuration:0.5];
+    
+    CGFloat viewHeight = CGRectGetHeight(self.view.frame);
+    
+    for (UIView *view in self.view.subviews) {
+        
+        if([view isKindOfClass:[UITabBar class]]) {
+            [view setFrame:CGRectMake(view.frame.origin.x, viewHeight, view.frame.size.width, view.frame.size.height)];
+        } else {
+            [view setFrame:CGRectMake(view.frame.origin.x, view.frame.origin.y, view.frame.size.width, viewHeight)];
+        }
+        
+    }
+    
+    [UIView commitAnimations];
+    
+}
+
+- (void)showTabBar {
+    
+    [UIView beginAnimations:nil context:NULL];
+    [UIView setAnimationDuration:0.5];
+    
+    CGFloat viewHeight = CGRectGetHeight(self.view.frame);
+    CGFloat tabbarHeight = CGRectGetHeight(self.tabBar.frame);
+
+    for (UIView *view in self.view.subviews) {
+
+        if([view isKindOfClass:[UITabBar class]]) {
+            [view setFrame:CGRectMake(view.frame.origin.x, viewHeight - tabbarHeight, view.frame.size.width, view.frame.size.height)];
+        } else {
+            [view setFrame:CGRectMake(view.frame.origin.x, view.frame.origin.y, view.frame.size.width, viewHeight - tabbarHeight)];
+        }
+        
+    }
+    
+    [UIView commitAnimations];
+    
+}
+
+
 #pragma mark - UITabBarControllerDelegate
 
 - (BOOL)tabBarController:(UITabBarController *)tabBarController shouldSelectViewController:(UIViewController *)viewController {
