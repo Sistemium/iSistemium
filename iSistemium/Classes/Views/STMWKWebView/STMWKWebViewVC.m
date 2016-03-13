@@ -280,23 +280,27 @@
 
 - (void)userContentController:(WKUserContentController *)userContentController didReceiveScriptMessage:(WKScriptMessage *)message {
     
-    if ([message.body isKindOfClass:[NSDictionary class]]) {
-
-#ifdef DEBUG
-        NSString *requestId = message.body[@"options"][@"requestId"];
-        NSLog(@"%@ requestId: %@", message.name, requestId);
-#endif
-
-    } else {
-
-#ifdef DEBUG
-        NSLog(@"%@ %@", message.name, message.body);
-#endif
-
-        [self callbackWithError:@"message.body is not a NSDictionary class"
-                     parameters:@{@"messageBody": [message.body description]}];
-        return;
+    if ([message.name isEqualToString:WK_MESSAGE_SCANNER_ON]) {
         
+        NSLog(@"%@ %@", message.name, message.body);
+        
+    } else {
+    
+        if ([message.body isKindOfClass:[NSDictionary class]]) {
+            
+            NSString *requestId = message.body[@"options"][@"requestId"];
+            NSLog(@"%@ requestId: %@", message.name, requestId);
+            
+        } else {
+            
+            NSLog(@"%@ %@", message.name, message.body);
+            
+            [self callbackWithError:@"message.body is not a NSDictionary class"
+                         parameters:@{@"messageBody": [message.body description]}];
+            return;
+            
+        }
+
     }
     
     if ([message.name isEqualToString:WK_MESSAGE_POST]) {
@@ -345,13 +349,28 @@
     NSString *action = parameters[@"action"];
     
     if ([action isEqualToString:@"show"]) {
-        
-        [[STMRootTBC sharedRootVC] showTabBar];
-        [self callbackWithData:@[@"tabbar show success"] parameters:parameters];
 
+        [[STMRootTBC sharedRootVC] showTabBar];
+
+        CGFloat tabbarHeight = CGRectGetHeight(self.tabBarController.tabBar.frame);
+        UIEdgeInsets insets = self.webView.scrollView.contentInset;
+        self.webView.scrollView.contentInset = UIEdgeInsetsMake(insets.top, insets.left, tabbarHeight, insets.right);
+
+        UIEdgeInsets scrollIndicatorInsets = self.webView.scrollView.scrollIndicatorInsets;
+        self.webView.scrollView.scrollIndicatorInsets = UIEdgeInsetsMake(scrollIndicatorInsets.top, scrollIndicatorInsets.left, tabbarHeight, scrollIndicatorInsets.right);
+
+        [self callbackWithData:@[@"tabbar show success"] parameters:parameters];
+        
     } else if ([action isEqualToString:@"hide"]) {
         
         [[STMRootTBC sharedRootVC] hideTabBar];
+        
+        UIEdgeInsets insets = self.webView.scrollView.contentInset;
+        self.webView.scrollView.contentInset = UIEdgeInsetsMake(insets.top, insets.left, 0, insets.right);
+
+        UIEdgeInsets scrollIndicatorInsets = self.webView.scrollView.scrollIndicatorInsets;
+        self.webView.scrollView.scrollIndicatorInsets = UIEdgeInsetsMake(scrollIndicatorInsets.top, scrollIndicatorInsets.left, 0, scrollIndicatorInsets.right);
+        
         [self callbackWithData:@[@"tabbar hide success"] parameters:parameters];
 
     } else {
@@ -643,7 +662,7 @@
     if (self.iOSModeBarCodeScanner) {
         self.iOSModeBarCodeScanner.delegate = self;
     }
-
+    
 }
 
 - (void)viewDidDisappear:(BOOL)animated {
