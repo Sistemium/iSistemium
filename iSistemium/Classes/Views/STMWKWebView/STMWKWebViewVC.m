@@ -471,8 +471,6 @@
         
     }];
     
-    [[STMRootTBC sharedRootVC] showTabBar];
-
 }
 
 - (void)callbackWithError:(NSString *)errorDescription parameters:(NSDictionary *)parameters {
