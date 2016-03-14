@@ -607,7 +607,7 @@
 
 
 
-#pragma mark ScanApiHelperDelegate
+#pragma mark - ScanApiHelperDelegate
 
 - (void)onDeviceArrival:(SKTRESULT)result device:(DeviceInfo *)deviceInfo {
     
