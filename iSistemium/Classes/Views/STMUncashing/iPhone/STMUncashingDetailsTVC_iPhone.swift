@@ -13,6 +13,14 @@ class STMUncashingDetailsTVC_iPhone: STMUncashingDetailsTVC, UIPopoverPresentati
     
     // MARK: Superclass override
     
+    override var uncashing:STMUncashing?{
+        didSet{
+            if uncashing == nil{
+                toolbar = .total
+            }
+        }
+    }
+    
     override func showUncashingInfoPopover(){
         let content = self.storyboard!.instantiateViewControllerWithIdentifier("uncashingInfoPopover") as! STMUncashingInfoVC
         content.uncashing = self.uncashing
@@ -27,14 +35,84 @@ class STMUncashingDetailsTVC_iPhone: STMUncashingDetailsTVC, UIPopoverPresentati
     }
     
     override func showAddButton() {
-        self.navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .Add, target: self, action: "addButtonPressed")
+        self.navigationItem.setRightBarButtonItem(UIBarButtonItem(barButtonSystemItem: .Add, target: self, action: "addButtonPressed"), animated: true)
     }
     
     override func hideAddButton() {
         self.navigationItem.rightBarButtonItem = nil
     }
     
-    // MARK: UIPopoverPresentationControllerDelegate
+    override func uncashingProcessStart() {
+        self.tableView.setEditing(true, animated: true)
+        self.tableView.allowsSelectionDuringEditing = true
+        self.tableView.allowsMultipleSelectionDuringEditing = true
+        for cashing in self.resultsController.fetchedObjects! {
+            let indexPath = self.resultsController.indexPathForObject(cashing)
+            if indexPath != nil {
+                self.tableView(self.tableView, willSelectRowAtIndexPath:indexPath!)
+                self.tableView.selectRowAtIndexPath(indexPath, animated: true, scrollPosition: .None)
+            }
+        }
+        self.navigationItem.setLeftBarButtonItem(UIBarButtonItem(barButtonSystemItem: .Cancel, target: self, action: "cancelButtonPressed"), animated: true)
+        self.navigationItem.setRightBarButtonItem(UIBarButtonItem(title: NSLocalizedString("CONFIRM", comment: ""), style: .Plain, target: self, action: ""), animated: true)
+        self.navigationItem.titleView = UIView()
+        toolbar = .sum
+    }
+    
+    // MARK: Toolbar
+    private enum Toolbar{
+        case total
+        case sum
+        
+        mutating func reset(){
+            switch self{
+            case .total:
+                self = .total
+            case .sum:
+                self = .sum
+            }
+        }
+    }
+    
+    private var toolbar:Toolbar? {
+        didSet{
+            if toolbar != nil{
+                switch toolbar!{
+                case .total:
+                    setInfoLabelTitle()
+                    let bracket1 = UIBarButtonItem(title: " (", style: .Plain, target: nil, action: nil)
+                    let bracket2 = UIBarButtonItem(title: ")", style: .Plain, target: nil, action: nil)
+                    bracket1.enabled = false
+                    bracket2.enabled = false
+                    let attributes = [NSForegroundColorAttributeName:UIColor.blackColor()]
+                    bracket1.setTitleTextAttributes(attributes, forState:.Disabled)
+                    bracket2.setTitleTextAttributes(attributes, forState:.Disabled)
+                    bracket1.setTitleTextAttributes(attributes, forState:.Normal)
+                    bracket2.setTitleTextAttributes(attributes, forState:.Normal)
+                    let fixedSpace = UIBarButtonItem(barButtonSystemItem: .FixedSpace, target: nil, action: nil)
+                    let flexibleSpace = UIBarButtonItem(barButtonSystemItem: .FlexibleSpace, target: nil, action: nil)
+                    fixedSpace.width = -9
+                    self.view.layoutIfNeeded()
+                    setToolbarItems([flexibleSpace,self.infoLabel!,bracket1,fixedSpace,self.uncashingProcessButton,fixedSpace,bracket2], animated: true)
+                case .sum:
+                    let numberFormatter = STMFunctions.decimalMaxTwoMinTwoDigitFormatter()
+                    let flexibleSpace = UIBarButtonItem(barButtonSystemItem: .FlexibleSpace, target: nil, action: nil)
+                    var cashingSum = NSDecimalNumber.zero()
+                    for cashing in self.resultsController.fetchedObjects! {
+                        cashingSum = cashingSum.decimalNumberByAdding(cashing.summ)
+                    }
+                    var uncashingSum = NSDecimalNumber.zero()
+                    for cashing in STMUncashingProcessController.sharedInstance().cashingDictionary.allValues {
+                        uncashingSum = uncashingSum.decimalNumberByAdding(cashing.summ)
+                    }
+                    infoLabel?.title = NSLocalizedString("SUM", comment: "") + numberFormatter.stringFromNumber(uncashingSum)! + " " + NSLocalizedString("FROM", comment: "") + " " + numberFormatter.stringFromNumber(cashingSum)!
+                    setToolbarItems([flexibleSpace,self.infoLabel!,flexibleSpace], animated: true)
+                }
+            }
+        }
+    }
+    
+    //MARK: UIPopoverPresentationControllerDelegate
     
     func adaptivePresentationStyleForPresentationController(PC: UIPresentationController) -> UIModalPresentationStyle {
         return .None
@@ -44,6 +122,7 @@ class STMUncashingDetailsTVC_iPhone: STMUncashingDetailsTVC, UIPopoverPresentati
     
     override func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCellWithIdentifier("STMCustom6TVCell",forIndexPath:indexPath) as! STMCustom6TVCell
+        cell.editingAccessoryType = .Checkmark
         let cashing = self.resultsController.objectAtIndexPath(indexPath) as! STMCashing
         
         cell.titleLabel?.attributedText = self.textLabelForDebt(cashing, withFont:cell.titleLabel!.font)
@@ -52,6 +131,17 @@ class STMUncashingDetailsTVC_iPhone: STMUncashingDetailsTVC, UIPopoverPresentati
         cell.selectionStyle = .None
         cell.titleLabel?.adjustsFontSizeToFitWidth = true
         cell.detailLabel?.adjustsFontSizeToFitWidth = true
+        
+        if STMUncashingProcessController.sharedInstance().hasCashingWithXid(cashing.xid){
+            
+            cell.tintColor = STMSwiftConstants.ACTIVE_BLUE_COLOR
+            
+        } else {
+            
+            cell.tintColor = STMSwiftConstants.STM_LIGHT_LIGHT_GREY_COLOR
+            
+        }
+        
         return cell
     }
     
@@ -63,9 +153,13 @@ class STMUncashingDetailsTVC_iPhone: STMUncashingDetailsTVC, UIPopoverPresentati
         let numberFormatter = STMFunctions.currencyFormatter
         let cashingSumString = numberFormatter().stringFromNumber(cashing.summ)
         let debt = cashing.debt
+        if uncashing != nil{
+            textColor = UIColor.darkGrayColor()
+        }else{
+            textColor = UIColor.blackColor()
+        }
         if cashingSumString != nil{
             backgroundColor = UIColor.clearColor()
-            textColor = UIColor.blackColor()
             attributes = [
                 NSFontAttributeName: font,
                 NSBackgroundColorAttributeName: backgroundColor,
@@ -76,7 +170,6 @@ class STMUncashingDetailsTVC_iPhone: STMUncashingDetailsTVC, UIPopoverPresentati
         if (debt != nil){
             if debt.ndoc != nil{
                 backgroundColor = UIColor.clearColor()
-                textColor = UIColor.blackColor()
                 attributes = [
                     NSFontAttributeName: font,
                     NSBackgroundColorAttributeName: backgroundColor,
@@ -100,11 +193,15 @@ class STMUncashingDetailsTVC_iPhone: STMUncashingDetailsTVC, UIPopoverPresentati
         let text = NSMutableAttributedString()
         let numberFormatter = STMFunctions.currencyFormatter
         let debt = cashing.debt
+        if uncashing != nil{
+            textColor = UIColor.darkGrayColor()
+        }else{
+            textColor = UIColor.blackColor()
+        }
         if debt != nil{
             if debt.summOrigin != nil {
                 let debtSumOriginString = numberFormatter().stringFromNumber(debt.summOrigin)
                 backgroundColor = UIColor.clearColor()
-                textColor = UIColor.blackColor()
                 attributes = [
                     NSFontAttributeName: font,
                     NSBackgroundColorAttributeName: backgroundColor,
@@ -116,7 +213,6 @@ class STMUncashingDetailsTVC_iPhone: STMUncashingDetailsTVC, UIPopoverPresentati
                 let dateFormatter = STMFunctions.dateMediumNoTimeFormatter
                 let debtDate = dateFormatter().stringFromDate(debt.date)
                 backgroundColor = UIColor.clearColor()
-                textColor = UIColor.blackColor()
                 attributes = [
                     NSFontAttributeName: font,
                     NSBackgroundColorAttributeName: backgroundColor,
@@ -134,11 +230,15 @@ class STMUncashingDetailsTVC_iPhone: STMUncashingDetailsTVC, UIPopoverPresentati
         var attributes: NSDictionary
         let text = NSMutableAttributedString()
         let debt = cashing.debt
+        if uncashing != nil{
+            textColor = UIColor.darkGrayColor()
+        }else{
+            textColor = UIColor.blackColor()
+        }
         if cashing.date != nil {
             let dateFormatter = STMFunctions.dateMediumNoTimeFormatter
             let cashingDate = dateFormatter().stringFromDate(cashing.date)
             backgroundColor = UIColor.clearColor()
-            textColor = UIColor.blackColor()
             attributes = [
                 NSFontAttributeName: font,
                 NSBackgroundColorAttributeName: backgroundColor,
@@ -149,7 +249,6 @@ class STMUncashingDetailsTVC_iPhone: STMUncashingDetailsTVC, UIPopoverPresentati
         }
         if cashing.commentText != nil {
             backgroundColor = UIColor.clearColor()
-            textColor = UIColor.blackColor()
             attributes = [
                 NSFontAttributeName: font,
                 NSBackgroundColorAttributeName: backgroundColor,
@@ -200,7 +299,24 @@ class STMUncashingDetailsTVC_iPhone: STMUncashingDetailsTVC, UIPopoverPresentati
         presentViewController(alert, animated: true, completion: nil)
     }
     
+    func cancelButtonPressed(){
+        STMUncashingProcessController.sharedInstance().cancelProcess()
+        self.navigationItem.setLeftBarButtonItem(nil, animated: true)
+        self.navigationItem.titleView = nil
+        toolbar = .total
+        showAddButton()
+    }
+    
+    func resetToolbar(){
+        toolbar?.reset()
+    }
+    
     // MARK: View lifecycle
+    
+    override func addObservers(){
+        super.addObservers()
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: "resetToolbar", name: "cashingDictionaryChanged", object: STMUncashingProcessController.sharedInstance())
+    }
     
     override func viewDidLoad() {
         super.viewDidLoad()

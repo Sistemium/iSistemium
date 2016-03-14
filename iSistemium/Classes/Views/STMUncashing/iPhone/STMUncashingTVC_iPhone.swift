@@ -10,12 +10,9 @@ import UIKit
 
 class STMUncashingTVC_iPhone: STMUncashingMasterTVC {
     
-    private var cancelButton:STMBarButtonItem?
-    
     // MARK: Superclass override
     
     override func uncashingProcessStart(){
-        self.navigationItem.setLeftBarButtonItem(cancelButton, animated: true)
     }
     
     // MARK: Table view data
@@ -53,12 +50,6 @@ class STMUncashingTVC_iPhone: STMUncashingMasterTVC {
     }
     
     // MARK: View lifecycle
-    
-    override func viewDidLoad() {
-        super.viewDidLoad()
-        cancelButton = STMBarButtonItem(title: NSLocalizedString("CANCEL", comment: ""), style: .Plain, target:STMCashingProcessController.sharedInstance(), action:"cancelCashingProcess")
-        cancelButton!.tintColor = .redColor()
-    }
     
     override func viewWillAppear(animated: Bool) {
         super.viewWillAppear(animated)

@@ -48,7 +48,7 @@ class STMOutletDebtsTVC_iPhone: STMOutletDebtsTVC {
         let customCell = cell as! STMThreeLinesAndCheckboxTVCell
         let debt = self.resultsController.objectAtIndexPath(indexPath)
         customCell.contentView.viewWithTag(1)?.removeFromSuperview()
-        customCell.tintColor = STMConstants.ACTIVE_BLUE_COLOR
+        customCell.tintColor = STMSwiftConstants.ACTIVE_BLUE_COLOR
         customCell.accessoryType = .None
         customCell.titleLabel!.backgroundColor = UIColor.clearColor()
         customCell.detailLabel!.backgroundColor = UIColor.clearColor()
@@ -62,7 +62,7 @@ class STMOutletDebtsTVC_iPhone: STMOutletDebtsTVC {
                 let checkLabel = STMLabel(frame: customCell.checkboxView.bounds)
                 checkLabel.adjustsFontSizeToFitWidth = true
                 checkLabel.text = "✓"
-                checkLabel.textColor = STMConstants.ACTIVE_BLUE_COLOR
+                checkLabel.textColor = STMSwiftConstants.ACTIVE_BLUE_COLOR
                 checkLabel.textAlignment = .Left
                 checkLabel.tag = 444
                 customCell.checkboxView.addSubview(checkLabel)
@@ -76,7 +76,7 @@ class STMOutletDebtsTVC_iPhone: STMOutletDebtsTVC {
                 }
                 let rect = CGRectMake(0, 1, fillWidth, customCell.frame.size.height-2)
                 let view = UIView(frame:rect)
-                view.backgroundColor = STMConstants.STM_SUPERLIGHT_BLUE_COLOR
+                view.backgroundColor = STMSwiftConstants.STM_SUPERLIGHT_BLUE_COLOR
                 view.tag = 1
                 customCell.contentView.addSubview(view)
                 customCell.contentView.sendSubviewToBack(view)

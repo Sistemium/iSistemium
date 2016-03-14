@@ -13,7 +13,7 @@ class STMShippingLocationTVC:STMVariableCellsHeightTVC,UIImagePickerControllerDe
     private var picturesView = UIView()
     
     var THUMB_SIZE:CGSize {
-        return CGSizeMake(STMConstants.CELL_IMAGES_SIZE, STMConstants.CELL_IMAGES_SIZE)
+        return CGSizeMake(STMSwiftConstants.CELL_IMAGES_SIZE, STMSwiftConstants.CELL_IMAGES_SIZE)
     }
 
     var shippingLocation: STMShippingLocation?{
@@ -132,13 +132,13 @@ class STMShippingLocationTVC:STMVariableCellsHeightTVC,UIImagePickerControllerDe
                     
                     let blankPicture = self.blankPicture
                     
-                    blankPicture.frame = CGRectMake(0, 0, STMConstants.CELL_IMAGES_SIZE, STMConstants.CELL_IMAGES_SIZE);
+                    blankPicture.frame = CGRectMake(0, 0, STMSwiftConstants.CELL_IMAGES_SIZE, STMSwiftConstants.CELL_IMAGES_SIZE);
                     
                     picturesView.addSubview(blankPicture)
                     
                 } else {
                     
-                    let showCount = (shippingLocation!.shippingLocationPictures.count > STMConstants.LIMIT_COUNT) ? STMConstants.LIMIT_COUNT : shippingLocation!.shippingLocationPictures.count;
+                    let showCount = (shippingLocation!.shippingLocationPictures.count > STMSwiftConstants.LIMIT_COUNT) ? STMSwiftConstants.LIMIT_COUNT : shippingLocation!.shippingLocationPictures.count;
                     
                     let sortDesriptor = NSSortDescriptor(key: "deviceTs", ascending: false, selector: "compare:")
                     let range = NSMakeRange(0, showCount)
@@ -150,9 +150,9 @@ class STMShippingLocationTVC:STMVariableCellsHeightTVC,UIImagePickerControllerDe
                         let pictureButton = self.pictureButtonWithPicture(picture as! STMPicture)
                         
                         let count = CGFloat(self.picturesView.subviews.count);
-                        let x = (count > 0) ? count * (STMConstants.CELL_IMAGES_SIZE + STMConstants.IMAGE_PADDING) : 0;
+                        let x = (count > 0) ? count * (STMSwiftConstants.CELL_IMAGES_SIZE + STMSwiftConstants.IMAGE_PADDING) : 0;
                         
-                        pictureButton.frame = CGRectMake(x, 0, STMConstants.CELL_IMAGES_SIZE, STMConstants.CELL_IMAGES_SIZE);
+                        pictureButton.frame = CGRectMake(x, 0, STMSwiftConstants.CELL_IMAGES_SIZE, STMSwiftConstants.CELL_IMAGES_SIZE);
                         
                         self.picturesView.addSubview(pictureButton)
                         
@@ -163,17 +163,17 @@ class STMShippingLocationTVC:STMVariableCellsHeightTVC,UIImagePickerControllerDe
                 
                 let addButton = self.addPhotoButton
                 
-                var x = CGFloat(self.picturesView.subviews.count) * (STMConstants.CELL_IMAGES_SIZE + STMConstants.IMAGE_PADDING);
+                var x = CGFloat(self.picturesView.subviews.count) * (STMSwiftConstants.CELL_IMAGES_SIZE + STMSwiftConstants.IMAGE_PADDING);
                 
-                addButton.frame = CGRectMake(x, 0, STMConstants.CELL_IMAGES_SIZE, STMConstants.CELL_IMAGES_SIZE);
+                addButton.frame = CGRectMake(x, 0, STMSwiftConstants.CELL_IMAGES_SIZE, STMSwiftConstants.CELL_IMAGES_SIZE);
                 
                 self.picturesView.addSubview(addButton)
                 
-                let picturesWidth = STMConstants.CELL_IMAGES_SIZE * CGFloat(self.picturesView.subviews.count) + STMConstants.IMAGE_PADDING * CGFloat(self.picturesView.subviews.count - 1)
+                let picturesWidth = STMSwiftConstants.CELL_IMAGES_SIZE * CGFloat(self.picturesView.subviews.count) + STMSwiftConstants.IMAGE_PADDING * CGFloat(self.picturesView.subviews.count - 1)
                 x = ceil((cell.contentView.frame.size.width - picturesWidth) / 2);
-                let y = ceil((cell.contentView.frame.size.height - STMConstants.CELL_IMAGES_SIZE) / 2);
+                let y = ceil((cell.contentView.frame.size.height - STMSwiftConstants.CELL_IMAGES_SIZE) / 2);
                 
-                self.picturesView.frame = CGRectMake(x, y, picturesWidth, STMConstants.CELL_IMAGES_SIZE);
+                self.picturesView.frame = CGRectMake(x, y, picturesWidth, STMSwiftConstants.CELL_IMAGES_SIZE);
                 
                 cell.contentView.addSubview(self.picturesView)
                 
@@ -200,7 +200,7 @@ class STMShippingLocationTVC:STMVariableCellsHeightTVC,UIImagePickerControllerDe
         case 1:
             switch (indexPath.row) {
             case 1:
-                return STMConstants.CELL_IMAGES_SIZE + STMConstants.IMAGE_PADDING * 2;
+                return STMSwiftConstants.CELL_IMAGES_SIZE + STMSwiftConstants.IMAGE_PADDING * 2;
             default:
                 break;
             }

@@ -22,5 +22,8 @@
 - (void)showUncashingInfoPopover;
 - (void)showAddButton;
 - (void)hideAddButton;
+- (void)setInfoLabelTitle;
+- (void)uncashingProcessStart;
+- (void)addObservers;
 
 @end

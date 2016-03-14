@@ -17,7 +17,7 @@ class STMDebtsPVC_iPhone: STMDebtsDetailsPVC, UIPopoverPresentationControllerDel
     
     private lazy var addDebt:UIBarButtonItem = UIBarButtonItem(barButtonSystemItem: .Add, target:self, action:"addDebtButtonPressed:")
     
-    let dateButton = UIButton(type: .System)
+    private let dateButton = UIButton(type: .System)
     
     private func removeSwipeGesture(){
         for view in self.view.subviews {
@@ -76,7 +76,7 @@ class STMDebtsPVC_iPhone: STMDebtsDetailsPVC, UIPopoverPresentationControllerDel
     
     // MARK: Toolbar
     
-    enum Toolbar{
+    private enum Toolbar{
         case Default
         case SetCashing
         case CashingSum
@@ -96,7 +96,7 @@ class STMDebtsPVC_iPhone: STMDebtsDetailsPVC, UIPopoverPresentationControllerDel
         }
     }
     
-    var toolbar:Toolbar = .Default{
+    private var toolbar:Toolbar = .Default{
         didSet{
             let flexibleSpace = UIBarButtonItem(barButtonSystemItem: .FlexibleSpace, target: nil, action: nil)
             let summLabel = UILabel()
@@ -148,17 +148,6 @@ class STMDebtsPVC_iPhone: STMDebtsDetailsPVC, UIPopoverPresentationControllerDel
             case .Default:
                 self.setToolbarItems([flexibleSpace,self.cashingButton,flexibleSpace], animated: true)
             }
-        }
-    }
-    
-    func updateCashingLabel() {
-        if STMCashingProcessController.sharedInstance().debtsArray.count == 0{
-            toolbar = .SetCashing
-        }else if STMCashingProcessController.sharedInstance().cashingSummLimit == nil{
-            toolbar = .CashingSum
-        }
-        else{
-            toolbar = .LimitedSum
         }
     }
     
@@ -272,6 +261,17 @@ class STMDebtsPVC_iPhone: STMDebtsDetailsPVC, UIPopoverPresentationControllerDel
             cashingSum?.clearButtonMode = .Always
         }
         presentViewController(alertController, animated: true, completion: nil)
+    }
+    
+    func updateCashingLabel() {
+        if STMCashingProcessController.sharedInstance().debtsArray.count == 0{
+            toolbar = .SetCashing
+        }else if STMCashingProcessController.sharedInstance().cashingSummLimit == nil{
+            toolbar = .CashingSum
+        }
+        else{
+            toolbar = .LimitedSum
+        }
     }
     
     // MARK: Observers
