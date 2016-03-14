@@ -10,6 +10,8 @@
 
 #import <AVFoundation/AVFoundation.h>
 
+#import "STMConstants.h"
+
 
 @interface STMSoundController()
 
@@ -58,6 +60,28 @@
 
 #pragma mark - class methods
 
++ (void)load {
+    
+    @autoreleasepool {
+        
+        [[NSNotificationCenter defaultCenter] addObserver:(id)[self class]
+                                                 selector:@selector(applicationDidBecomeActive)
+                                                     name:UIApplicationDidBecomeActiveNotification
+                                                   object:nil];
+        
+    }
+    
+}
+
++ (void)applicationDidBecomeActive {
+    
+    if ([self isRinging]) [self stopRinging];
+    
+}
+
+
+#pragma mark - playing sounds
+
 + (void)playAlert {
     
 //     List of Predefined sounds and it's IDs
@@ -99,6 +123,8 @@ static void completionCallback (SystemSoundID sysSound, void *data) {
 }
 
 
+#pragma mark - saying
+
 + (void)say:(NSString *)string {
     
     AVSpeechUtterance *utterance = [[AVSpeechUtterance alloc] initWithString:string];
@@ -121,6 +147,96 @@ static void completionCallback (SystemSoundID sysSound, void *data) {
     [self playOk];
     [self say:string];
 
+}
+
+
+#pragma mark - ringing
+
++ (BOOL)isRinging {
+
+    NSArray *notifications = [UIApplication sharedApplication].scheduledLocalNotifications.copy;
+    
+    for (UILocalNotification *ln in notifications) {
+        if ([ln.userInfo.allKeys containsObject:RINGING_LOCAL_NOTIFICATION]) return YES;
+    }
+    
+    return NO;
+
+}
+
++ (void)ringWithProperties:(NSDictionary *)ringProperties {
+    
+    if ([UIApplication sharedApplication].applicationState != UIApplicationStateBackground) {
+        
+        NSLog(@"ringing canceled: application is not in background");
+        return;
+        
+    }
+    if ([self isRinging]) {
+        
+        NSLog(@"ringing canceled: application is already ringing");
+        return;
+        
+    }
+    
+    if ([ringProperties isKindOfClass:[NSDictionary class]]) {
+        
+        NSInteger numberOfRepeats = [ringProperties[@"numberOfRepeats"] integerValue];
+        NSTimeInterval delay = [ringProperties[@"delay"] doubleValue];
+        
+        if (delay < 1) delay = 1;
+        
+        NSString *soundName = ringProperties[@"soundName"];
+        NSString *ringMessage = ringProperties[@"ringMessage"];
+
+        if (!soundName) soundName = UILocalNotificationDefaultSoundName;
+        if (!ringMessage) ringMessage = @"iSistemuim";
+        
+        [self ringingLocalNotificationWithMessage:ringMessage
+                                        soundName:soundName
+                                  numberOfRepeats:numberOfRepeats
+                                         andDelay:delay];
+        
+    }
+    
+}
+
++ (void)ringingLocalNotificationWithMessage:(NSString *)message soundName:(NSString *)soundName numberOfRepeats:(NSInteger)numberOfRepeats andDelay:(NSTimeInterval)delay {
+    
+    for (NSInteger i = 0; i < numberOfRepeats; ++i) {
+        
+        NSLog(@"i %d", i)
+        
+        UILocalNotification *ln = [[UILocalNotification alloc] init];
+        ln.soundName = soundName;
+        ln.alertBody = (i == 0) ? message : nil;
+        ln.userInfo = @{RINGING_LOCAL_NOTIFICATION:soundName};
+        
+        NSDate *fireDate = [NSDate dateWithTimeIntervalSinceNow:(delay * i)];
+        ln.fireDate = fireDate;
+        
+        NSLog(@"fireDate %@", fireDate);
+        
+        [[UIApplication sharedApplication] scheduleLocalNotification:ln];
+
+    }
+    
+}
+
++ (void)stopRinging {
+    
+    NSArray *notifications = [UIApplication sharedApplication].scheduledLocalNotifications.copy;
+    
+    for (UILocalNotification *ln in notifications) {
+        
+        if ([ln.userInfo.allKeys containsObject:RINGING_LOCAL_NOTIFICATION]) {
+            
+            [[UIApplication sharedApplication] cancelLocalNotification:ln];
+            
+        };
+        
+    }
+    
 }
 
 

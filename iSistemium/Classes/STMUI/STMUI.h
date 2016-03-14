@@ -9,6 +9,8 @@
 #ifndef iSistemium_STMUI_h
 #define iSistemium_STMUI_h
 
+#import "UIViewController+custom.h"
+
 #import "STMStoryboard.h"
 
 #import "STMBarButtonItem.h"

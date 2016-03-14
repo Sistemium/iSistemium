@@ -23,6 +23,8 @@ NS_ASSUME_NONNULL_BEGIN
 - (NSUInteger)bottleCount;
 - (NSString *)bottleCountString;
 
+- (BOOL)orderIsProcessed;
+
 
 @end
 

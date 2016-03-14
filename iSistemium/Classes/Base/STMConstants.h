@@ -38,6 +38,7 @@
 #define MAGIC_NUMBER_FOR_CELL_WIDTH 0 //16
 
 #define TOOLBAR_HEIGHT 44
+#define PICKERVIEW_ROW_HEIGHT 32
 
 #define GEOTRACKER_CONTROL_SHIPMENT_ROUTE @"ShipmentRoute"
 
@@ -49,6 +50,9 @@
 
 #define FREE_SPACE_PRECISION_MiB 200
 #define FREE_SPACE_THRESHOLD 500
+
+#define RINGING_LOCAL_NOTIFICATION @"ringingLocalNotification"
+#define MAX_CODES_PER_BATCH 1
 
 
 #endif

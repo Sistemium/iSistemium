@@ -16,6 +16,7 @@
 
 - (void)orderProcessingChanged;
 - (void)confirmArticle:(STMArticle *)article;
+- (void)processStockBatchBarcode:(NSString *)barcode;
 
 
 @end

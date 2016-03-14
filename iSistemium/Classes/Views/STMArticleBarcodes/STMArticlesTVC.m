@@ -110,18 +110,11 @@
 
 - (NSPredicate *)predicate {
     
-    if (self.searchBar.text && ![self.searchBar.text isEqualToString:@""]) {
+    NSPredicate *predicate = [super textSearchPredicate];
+    
+    if (predicate) {
         
-        NSString *trimmedSearchString = [self.searchBar.text stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceCharacterSet]];
-        NSArray *searchStringComponents = [trimmedSearchString componentsSeparatedByCharactersInSet:[NSCharacterSet whitespaceCharacterSet]];
-        
-        NSMutableArray *subpredicates = @[].mutableCopy;
-        
-        for (NSString *searchString in searchStringComponents) {
-            [subpredicates addObject:[NSPredicate predicateWithFormat:@"name CONTAINS[cd] %@", searchString]];
-        }
-        
-        return [NSCompoundPredicate andPredicateWithSubpredicates:subpredicates];
+        return predicate;
         
     } else if (self.scannedBarcode) {
         
@@ -149,20 +142,6 @@
 
     [super performFetch];
     [self updateToolbar];
-    
-}
-
-- (BOOL)isInActiveTab {
-    
-    if (IPHONE) {
-        return [self.tabBarController.selectedViewController isEqual:self.navigationController];
-    }
-    
-    if (IPAD) {
-        return [self.tabBarController.selectedViewController isEqual:self.splitViewController];
-    }
-    
-    return NO;
     
 }
 
@@ -394,9 +373,13 @@
     return self.view;
 }
 
+- (void)barCodeScanner:(STMBarCodeScanner *)scanner receiveBarCodeScan:(STMBarCodeScan *)barCodeScan withType:(STMBarCodeScannedType)type {
+    
+}
+
 - (void)barCodeScanner:(STMBarCodeScanner *)scanner receiveBarCode:(NSString *)barcode withType:(STMBarCodeScannedType)type {
     
-    if ([self isInActiveTab]) {
+    if (self.isInActiveTab) {
         
         NSLog(@"barCodeScanner receiveBarCode: %@ withType:%d", barcode, type);
         

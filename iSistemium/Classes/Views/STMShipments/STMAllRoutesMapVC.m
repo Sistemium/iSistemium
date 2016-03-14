@@ -845,10 +845,6 @@ typedef NS_ENUM(NSUInteger, STMMapReorderingMode) {
 }
 
 - (void)viewWillAppear:(BOOL)animated {
-    
-    if ([self.navigationController respondsToSelector:@selector(interactivePopGestureRecognizer)]) {
-        self.navigationController.interactivePopGestureRecognizer.enabled = NO;
-    }
 
     [super viewWillAppear:animated];
     [self setupNavBar];
@@ -874,10 +870,6 @@ typedef NS_ENUM(NSUInteger, STMMapReorderingMode) {
 
 - (void)viewWillDisappear:(BOOL)animated {
     
-    if ([self.navigationController respondsToSelector:@selector(interactivePopGestureRecognizer)]) {
-        self.navigationController.interactivePopGestureRecognizer.enabled = YES;
-    }
-
     if ([self isMovingFromParentViewController]) {
         [self flushMapView];
     }
