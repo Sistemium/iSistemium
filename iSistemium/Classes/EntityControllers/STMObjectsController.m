@@ -37,6 +37,8 @@
 @property (nonatomic, strong) NSMutableDictionary *entitiesSingleRelationships;
 @property (nonatomic, strong) NSMutableDictionary *objectsCache;
 @property (nonatomic, strong) NSArray *localDataModelEntityNames;
+@property (nonatomic, strong) NSArray *coreEntityKeys;
+@property (nonatomic, strong) NSArray *coreEntityRelationships;
 @property (nonatomic) BOOL isInFlushingProcess;
 
 
@@ -884,10 +886,7 @@
         STMEntityDescription *objectEntity = [STMEntityDescription entityForName:entityName
                                                           inManagedObjectContext:[self document].managedObjectContext];
         
-        STMEntityDescription *coreEntity = [STMEntityDescription entityForName:NSStringFromClass([STMDatum class])
-                                                        inManagedObjectContext:[self document].managedObjectContext];
-        
-        NSSet *coreKeys = [NSSet setWithArray:coreEntity.attributesByName.allKeys];
+        NSSet *coreKeys = [NSSet setWithArray:[self coreEntityKeys]];
 
         objectKeys = [NSMutableSet setWithArray:objectEntity.attributesByName.allKeys];
         [objectKeys minusSet:coreKeys];
@@ -910,10 +909,7 @@
         STMEntityDescription *objectEntity = [STMEntityDescription entityForName:entityName
                                                           inManagedObjectContext:[self document].managedObjectContext];
 
-        STMEntityDescription *coreEntity = [STMEntityDescription entityForName:NSStringFromClass([STMDatum class])
-                                                        inManagedObjectContext:[self document].managedObjectContext];
-        
-        NSSet *coreRelationshipNames = [NSSet setWithArray:coreEntity.relationshipsByName.allKeys];
+        NSSet *coreRelationshipNames = [NSSet setWithArray:[self coreEntityRelationships]];
         
         NSMutableSet *objectRelationshipNames = [NSMutableSet setWithArray:objectEntity.relationshipsByName.allKeys];
         
@@ -948,10 +944,7 @@
         STMEntityDescription *objectEntity = [STMEntityDescription entityForName:entityName
                                                           inManagedObjectContext:[self document].managedObjectContext];
         
-        STMEntityDescription *coreEntity = [STMEntityDescription entityForName:NSStringFromClass([STMDatum class])
-                                                        inManagedObjectContext:[self document].managedObjectContext];
-        
-        NSSet *coreRelationshipNames = [NSSet setWithArray:[[coreEntity relationshipsByName] allKeys]];
+        NSSet *coreRelationshipNames = [NSSet setWithArray:[self coreEntityRelationships]];
         
         NSMutableSet *objectRelationshipNames = [NSMutableSet setWithArray:[[objectEntity relationshipsByName] allKeys]];
         
@@ -993,6 +986,42 @@
         
     }
     return _localDataModelEntityNames;
+    
+}
+
++ (NSArray *)coreEntityKeys {
+    return [self sharedController].coreEntityKeys;
+}
+
+- (NSArray *)coreEntityKeys {
+    
+    if (!_coreEntityKeys) {
+        
+        STMEntityDescription *coreEntity = [STMEntityDescription entityForName:NSStringFromClass([STMDatum class])
+                                                        inManagedObjectContext:[STMObjectsController document].managedObjectContext];
+        
+        _coreEntityKeys = coreEntity.attributesByName.allKeys;
+        
+    }
+    return _coreEntityKeys;
+    
+}
+
++ (NSArray *)coreEntityRelationships {
+    return [self sharedController].coreEntityRelationships;
+}
+
+- (NSArray *)coreEntityRelationships {
+    
+    if (!_coreEntityRelationships) {
+        
+        STMEntityDescription *coreEntity = [STMEntityDescription entityForName:NSStringFromClass([STMDatum class])
+                                                        inManagedObjectContext:[STMObjectsController document].managedObjectContext];
+        
+        _coreEntityRelationships = coreEntity.relationshipsByName.allKeys;
+        
+    }
+    return _coreEntityRelationships;
     
 }
 

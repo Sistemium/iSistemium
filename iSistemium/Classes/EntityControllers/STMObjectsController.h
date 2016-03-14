@@ -31,6 +31,9 @@
 + (void)setRelationshipsFromArray:(NSArray *)array withCompletionHandler:(void (^)(BOOL success))completionHandler;
 + (void)setRelationshipFromDictionary:(NSDictionary *)dictionary withCompletionHandler:(void (^)(BOOL success))completionHandler;
 
++ (NSArray <NSString *> *)localDataModelEntityNames;
++ (NSArray *)coreEntityKeys;
++ (NSArray *)coreEntityRelationships;
 + (NSSet *)ownObjectKeysForEntityName:(NSString *)entityName;
 
 + (NSDictionary *)dictionaryForObject:(NSManagedObject *)object;
@@ -47,8 +50,6 @@
 
 + (NSManagedObject *)objectForXid:(NSData *)xidData;
 + (NSManagedObject *)objectForXid:(NSData *)xidData entityName:(NSString *)entityName;
-
-+ (NSArray <NSString *> *)localDataModelEntityNames;
 
 + (NSArray *)objectsForEntityName:(NSString *)entityName;
 
