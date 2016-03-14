@@ -502,6 +502,7 @@
         <relationship name="salesman" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="STMSalesman" inverseName="photoReports" inverseEntity="STMSalesman" syncable="YES"/>
     </entity>
     <entity name="STMPicker" representedClassName="STMPicker" syncable="YES">
+        <attribute name="code" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="commentText" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="deviceCts" optional="YES" attributeType="Date" indexed="YES" syncable="YES"/>
         <attribute name="deviceTs" optional="YES" attributeType="Date" syncable="YES"/>
@@ -510,6 +511,7 @@
         <attribute name="lts" optional="YES" attributeType="Date" syncable="YES"/>
         <attribute name="name" optional="YES" attributeType="String" indexed="YES" syncable="YES"/>
         <attribute name="ownerXid" optional="YES" attributeType="Binary" indexed="YES" syncable="YES"/>
+        <attribute name="password" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="source" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="sqts" optional="YES" attributeType="Date" syncable="YES"/>
         <attribute name="sts" optional="YES" attributeType="Date" syncable="YES"/>
@@ -1062,7 +1064,7 @@
         <element name="STMPartner" positionX="-270" positionY="-2340" width="128" height="253"/>
         <element name="STMPhoto" positionX="1015" positionY="5" width="128" height="58"/>
         <element name="STMPhotoReport" positionX="925" positionY="-187" width="128" height="88"/>
-        <element name="STMPicker" positionX="-207" positionY="-2610" width="128" height="238"/>
+        <element name="STMPicker" positionX="-110" positionY="-2610" width="128" height="268"/>
         <element name="STMPickingOrder" positionX="297" positionY="-2331" width="128" height="283"/>
         <element name="STMPickingOrderPosition" positionX="718" positionY="-2041" width="128" height="298"/>
         <element name="STMPickingOrderPositionPicked" positionX="1431" positionY="-1933" width="128" height="148"/>

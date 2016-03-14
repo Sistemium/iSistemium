@@ -2,7 +2,7 @@
 //  STMPicker+CoreDataProperties.h
 //  iSistemium
 //
-//  Created by Maxim Grigoriev on 08/02/16.
+//  Created by Maxim Grigoriev on 14/03/16.
 //  Copyright © 2016 Sistemium UAB. All rights reserved.
 //
 //  Choose "Create NSManagedObject Subclass…" from the Core Data editor menu
@@ -27,6 +27,8 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nullable, nonatomic, retain) NSDate *sqts;
 @property (nullable, nonatomic, retain) NSDate *sts;
 @property (nullable, nonatomic, retain) NSData *xid;
+@property (nullable, nonatomic, retain) NSString *code;
+@property (nullable, nonatomic, retain) NSString *password;
 @property (nullable, nonatomic, retain) NSSet<STMPickingOrder *> *pickingOrders;
 
 @end
