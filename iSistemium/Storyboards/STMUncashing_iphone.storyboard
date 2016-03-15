@@ -63,10 +63,10 @@
             </objects>
             <point key="canvasLocation" x="516" y="439"/>
         </scene>
-        <!--Uncashing InfoVC-->
+        <!--Uncashing InfoVC i Phone-->
         <scene sceneID="bs6-9u-VeS">
             <objects>
-                <viewController storyboardIdentifier="uncashingInfoPopover" id="gdG-rb-OYd" customClass="STMUncashingInfoVC" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="uncashingInfoPopover" id="gdG-rb-OYd" customClass="STMUncashingInfoVC_iPhone" customModule="iSistemium" customModuleProvider="target" sceneMemberID="viewController">
                     <layoutGuides>
                         <viewControllerLayoutGuide type="top" id="KGa-sO-LHx"/>
                         <viewControllerLayoutGuide type="bottom" id="keg-rz-vXC"/>
@@ -80,13 +80,13 @@
                                 <items>
                                     <barButtonItem systemItem="cancel" id="x6a-1h-lk6" customClass="STMBarButtonItemCancel">
                                         <connections>
-                                            <action selector="cancelButtonPressed:" destination="gdG-rb-OYd" id="9N5-vN-MYN"/>
+                                            <action selector="cancelButtonPressed" destination="gdG-rb-OYd" id="EPb-fn-CtE"/>
                                         </connections>
                                     </barButtonItem>
                                     <barButtonItem style="plain" systemItem="flexibleSpace" id="sM2-vy-Iv7"/>
                                     <barButtonItem title="Item" id="Nnw-iT-PvE" customClass="STMBarButtonItemDone">
                                         <connections>
-                                            <action selector="confirmButtonPressed:" destination="gdG-rb-OYd" id="Hlz-v9-Au6"/>
+                                            <action selector="confirmButtonPressed" destination="gdG-rb-OYd" id="6HJ-5K-ik1"/>
                                         </connections>
                                     </barButtonItem>
                                 </items>
@@ -163,7 +163,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="Hgx-XL-c5V" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="2359" y="-413"/>
+            <point key="canvasLocation" x="1386" y="1367"/>
         </scene>
         <!--Uncashing DetailsTVC i Phone-->
         <scene sceneID="UAK-gE-FPD">
@@ -270,7 +270,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="kRD-je-L8l" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="3350" y="-423"/>
+            <point key="canvasLocation" x="2110" y="1375"/>
         </scene>
         <!--Add EtceteraVC i Phone-->
         <scene sceneID="231-of-oV5">
@@ -448,6 +448,119 @@
                 <placeholder placeholderIdentifier="IBFirstResponder" id="Mp5-6w-Akj" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="3200" y="442"/>
+        </scene>
+        <!--Uncashing Hand OverVC i Phone-->
+        <scene sceneID="u1t-hX-W2b">
+            <objects>
+                <viewController storyboardIdentifier="uncashingHandOverVC" id="OVP-4G-hTT" customClass="STMUncashingHandOverVC_iPhone" customModule="iSistemium" customModuleProvider="target" sceneMemberID="viewController">
+                    <layoutGuides>
+                        <viewControllerLayoutGuide type="top" id="feJ-Fj-c0N"/>
+                        <viewControllerLayoutGuide type="bottom" id="cLY-i1-KP8"/>
+                    </layoutGuides>
+                    <view key="view" contentMode="scaleToFill" id="W7J-LN-PFc">
+                        <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
+                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                        <subviews>
+                            <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Uncashing label" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="vpJ-KX-Uet">
+                                <rect key="frame" x="20" y="94" width="488" height="20.5"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                            <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Uncashing sum" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="zcG-lq-LMg">
+                                <rect key="frame" x="20" y="122" width="488" height="29"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="24"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                            <segmentedControl opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="top" segmentControlStyle="plain" selectedSegmentIndex="0" translatesAutoresizingMaskIntoConstraints="NO" id="U6u-XA-JiN">
+                                <rect key="frame" x="20" y="180" width="560" height="29"/>
+                                <segments>
+                                    <segment title="First"/>
+                                    <segment title="Second"/>
+                                </segments>
+                                <connections>
+                                    <action selector="typeSelected:" destination="OVP-4G-hTT" eventType="valueChanged" id="6sq-D1-F3X"/>
+                                </connections>
+                            </segmentedControl>
+                            <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" showsHorizontalScrollIndicator="NO" text="Add comment" translatesAutoresizingMaskIntoConstraints="NO" id="Lw9-hx-lDb">
+                                <rect key="frame" x="20" y="249" width="560" height="52"/>
+                                <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="calibratedRGB"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="52" id="dO1-sr-k1Z"/>
+                                </constraints>
+                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                <textInputTraits key="textInputTraits" autocapitalizationType="sentences" enablesReturnKeyAutomatically="YES"/>
+                            </textView>
+                            <imageView contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="1WV-il-Hfh">
+                                <rect key="frame" x="516" y="88" width="64" height="64"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="64" id="RDW-Hs-3Dg"/>
+                                    <constraint firstAttribute="width" constant="64" id="sBB-GZ-xWr"/>
+                                </constraints>
+                            </imageView>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="fRr-z9-2oT">
+                                <rect key="frame" x="213" y="216" width="367" height="30"/>
+                                <state key="normal" title="Place button">
+                                    <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
+                                </state>
+                                <connections>
+                                    <action selector="uncashingPlaceButtonPressed:" destination="OVP-4G-hTT" eventType="touchUpInside" id="A4b-3a-LRS"/>
+                                </connections>
+                            </button>
+                            <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Место сдачи выручки:" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="TA4-sg-XEw">
+                                <rect key="frame" x="20" y="220" width="185" height="20.5"/>
+                                <constraints>
+                                    <constraint firstAttribute="width" constant="185" id="t5f-w4-pf7"/>
+                                </constraints>
+                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                            <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Date label" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="GX4-Cm-XQw">
+                                <rect key="frame" x="255.5" y="44" width="90" height="24"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="20"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                        </subviews>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
+                        <constraints>
+                            <constraint firstItem="vpJ-KX-Uet" firstAttribute="top" secondItem="GX4-Cm-XQw" secondAttribute="bottom" constant="26" id="0NT-hD-vgz"/>
+                            <constraint firstItem="GX4-Cm-XQw" firstAttribute="top" secondItem="feJ-Fj-c0N" secondAttribute="bottom" constant="24" id="0fM-7i-JTL"/>
+                            <constraint firstItem="TA4-sg-XEw" firstAttribute="top" secondItem="U6u-XA-JiN" secondAttribute="bottom" constant="12" id="6kU-Th-dH9"/>
+                            <constraint firstAttribute="centerX" secondItem="GX4-Cm-XQw" secondAttribute="centerX" constant="-0.5" id="6pg-z8-HwD"/>
+                            <constraint firstItem="1WV-il-Hfh" firstAttribute="leading" secondItem="zcG-lq-LMg" secondAttribute="trailing" constant="8" id="BXT-ZU-fjS"/>
+                            <constraint firstItem="1WV-il-Hfh" firstAttribute="leading" secondItem="vpJ-KX-Uet" secondAttribute="trailing" constant="8" id="Ef0-kM-SYU"/>
+                            <constraint firstAttribute="trailing" secondItem="1WV-il-Hfh" secondAttribute="trailing" constant="20" id="G2p-Pu-uKp"/>
+                            <constraint firstItem="Lw9-hx-lDb" firstAttribute="leading" secondItem="W7J-LN-PFc" secondAttribute="leading" constant="20" id="Iio-c6-bMf"/>
+                            <constraint firstAttribute="trailing" secondItem="Lw9-hx-lDb" secondAttribute="trailing" constant="20" id="RgL-TY-DjT"/>
+                            <constraint firstAttribute="trailing" secondItem="U6u-XA-JiN" secondAttribute="trailing" constant="20" id="Tuz-VT-ini"/>
+                            <constraint firstItem="U6u-XA-JiN" firstAttribute="leading" secondItem="W7J-LN-PFc" secondAttribute="leading" constant="20" id="Wnh-S9-zkK"/>
+                            <constraint firstItem="fRr-z9-2oT" firstAttribute="top" secondItem="U6u-XA-JiN" secondAttribute="bottom" constant="8" id="aFv-iU-KME"/>
+                            <constraint firstItem="zcG-lq-LMg" firstAttribute="top" secondItem="vpJ-KX-Uet" secondAttribute="bottom" constant="8" id="gL3-Bt-V44"/>
+                            <constraint firstItem="zcG-lq-LMg" firstAttribute="leading" secondItem="W7J-LN-PFc" secondAttribute="leading" constant="20" id="i45-ug-Xty"/>
+                            <constraint firstItem="U6u-XA-JiN" firstAttribute="top" secondItem="zcG-lq-LMg" secondAttribute="bottom" constant="29" id="j7I-9I-2od"/>
+                            <constraint firstItem="vpJ-KX-Uet" firstAttribute="leading" secondItem="W7J-LN-PFc" secondAttribute="leading" constant="20" id="kWE-wk-IDd"/>
+                            <constraint firstItem="TA4-sg-XEw" firstAttribute="leading" secondItem="W7J-LN-PFc" secondAttribute="leading" constant="20" id="oSm-WI-dmX"/>
+                            <constraint firstAttribute="centerX" secondItem="Lw9-hx-lDb" secondAttribute="centerX" id="pmq-eb-WOX"/>
+                            <constraint firstItem="fRr-z9-2oT" firstAttribute="leading" secondItem="TA4-sg-XEw" secondAttribute="trailing" constant="8" id="qMV-mQ-fBl"/>
+                            <constraint firstItem="1WV-il-Hfh" firstAttribute="top" secondItem="GX4-Cm-XQw" secondAttribute="bottom" constant="20" id="qzb-MV-bwh"/>
+                            <constraint firstAttribute="trailing" secondItem="fRr-z9-2oT" secondAttribute="trailing" constant="20" id="uRS-No-bJh"/>
+                            <constraint firstItem="Lw9-hx-lDb" firstAttribute="top" secondItem="TA4-sg-XEw" secondAttribute="bottom" constant="8" id="uyO-Gq-bMn"/>
+                        </constraints>
+                    </view>
+                    <navigationItem key="navigationItem" id="LOl-XM-1HL"/>
+                    <connections>
+                        <outlet property="commentTextView" destination="Lw9-hx-lDb" id="Ub9-cx-MOb"/>
+                        <outlet property="dateLabel" destination="GX4-Cm-XQw" id="mO0-Ti-riM"/>
+                        <outlet property="imageView" destination="1WV-il-Hfh" id="12S-ZC-iTt"/>
+                        <outlet property="typeSelector" destination="U6u-XA-JiN" id="Ul8-Ni-Dzr"/>
+                        <outlet property="uncashingLabel" destination="vpJ-KX-Uet" id="cn7-UB-zjG"/>
+                        <outlet property="uncashingPlaceButton" destination="fRr-z9-2oT" id="NDJ-P9-5Eh"/>
+                        <outlet property="uncashingPlaceLabel" destination="TA4-sg-XEw" id="IiG-nR-nl0"/>
+                        <outlet property="uncashingSumLabel" destination="zcG-lq-LMg" id="UJf-wI-MOC"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="kQY-3K-OqS" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="667" y="1367"/>
         </scene>
     </scenes>
 </document>

@@ -33,6 +33,16 @@ class STMOutletDebtsTVC_iPhone: STMOutletDebtsTVC {
     
     // MARK: Table view data
     
+    override func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        let rez = super.tableView(tableView, numberOfRowsInSection: section)
+        if rez == 0 {
+            self.parentVC?.cashingButton.enabled = false
+        }else{
+            self.parentVC?.cashingButton.enabled = true
+        }
+        return rez
+    }
+    
     override func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCellWithIdentifier("debtDetailsCell",forIndexPath:indexPath) as! STMThreeLinesAndCheckboxTVCell
         let debt = self.resultsController.objectAtIndexPath(indexPath)

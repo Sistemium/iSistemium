@@ -508,6 +508,8 @@
 		6D0B03311C7F2DFB009061B8 /* STMThreeLinesAndCheckboxTVCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 6D0B03301C7F2DFB009061B8 /* STMThreeLinesAndCheckboxTVCell.xib */; };
 		6D0B03331C7F3618009061B8 /* STMThreeLinesAndCheckboxTVCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6D0B03321C7F3618009061B8 /* STMThreeLinesAndCheckboxTVCell.swift */; };
 		6D4B40861C89C45D008988ED /* STMStringExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6D4B40851C89C45D008988ED /* STMStringExtension.swift */; };
+		6D5180311C9705BD00E5593A /* STMUncashingHandOverVC_iPhone.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6D5180301C9705BD00E5593A /* STMUncashingHandOverVC_iPhone.swift */; };
+		6D5180331C98304F00E5593A /* STMUncashingInfoVC_iPhone.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6D5180321C98304F00E5593A /* STMUncashingInfoVC_iPhone.swift */; };
 		6D720E641C5134CA008BC9F7 /* STMDebts_iphone.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 6D720E631C5134CA008BC9F7 /* STMDebts_iphone.storyboard */; };
 		6D720E681C5235AB008BC9F7 /* STMUncashing_iphone.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 6D720E671C5235AB008BC9F7 /* STMUncashing_iphone.storyboard */; };
 		6D814A9E1C490362001B56A3 /* STMSwiftConstants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6D814A9D1C490362001B56A3 /* STMSwiftConstants.swift */; };
@@ -1485,6 +1487,8 @@
 		6D0B03301C7F2DFB009061B8 /* STMThreeLinesAndCheckboxTVCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = STMThreeLinesAndCheckboxTVCell.xib; sourceTree = "<group>"; };
 		6D0B03321C7F3618009061B8 /* STMThreeLinesAndCheckboxTVCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = STMThreeLinesAndCheckboxTVCell.swift; sourceTree = "<group>"; };
 		6D4B40851C89C45D008988ED /* STMStringExtension.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = STMStringExtension.swift; sourceTree = "<group>"; };
+		6D5180301C9705BD00E5593A /* STMUncashingHandOverVC_iPhone.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = STMUncashingHandOverVC_iPhone.swift; sourceTree = "<group>"; };
+		6D5180321C98304F00E5593A /* STMUncashingInfoVC_iPhone.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = STMUncashingInfoVC_iPhone.swift; sourceTree = "<group>"; };
 		6D720E631C5134CA008BC9F7 /* STMDebts_iphone.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = STMDebts_iphone.storyboard; sourceTree = "<group>"; };
 		6D720E671C5235AB008BC9F7 /* STMUncashing_iphone.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = STMUncashing_iphone.storyboard; sourceTree = "<group>"; };
 		6D814A9C1C480898001B56A3 /* STMPicturesViewerDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = STMPicturesViewerDelegate.h; sourceTree = "<group>"; };
@@ -2779,6 +2783,8 @@
 				6DC103E31C60E56200D399B2 /* STMUncashingTVC_iPhone.swift */,
 				6DC6CB351C69FFB700732F04 /* STMUncashingDetailsTVC_iPhone.swift */,
 				6DF3091E1C8DA73500FE1A22 /* STMAddEtceteraVC_iPhone.swift */,
+				6D5180301C9705BD00E5593A /* STMUncashingHandOverVC_iPhone.swift */,
+				6D5180321C98304F00E5593A /* STMUncashingInfoVC_iPhone.swift */,
 			);
 			path = iPhone;
 			sourceTree = "<group>";
@@ -3196,6 +3202,7 @@
 				2C1C548C1C0072270095F1DD /* STMPickingOrderPositionsPickedTVC.m in Sources */,
 				2C6C906A1BFDFF5B008BD22C /* STMStockBatchOperation.m in Sources */,
 				6DC6CB361C69FFB700732F04 /* STMUncashingDetailsTVC_iPhone.swift in Sources */,
+				6D5180331C98304F00E5593A /* STMUncashingInfoVC_iPhone.swift in Sources */,
 				2CE8B515195475F400C84A6D /* STMRootTBC.m in Sources */,
 				2C6C90691BFDFF5B008BD22C /* STMStockBatchOperation+CoreDataProperties.m in Sources */,
 				2C5763F51AA5E13600B9FD2C /* STMCampaignPictureVC.m in Sources */,
@@ -3427,6 +3434,7 @@
 				6D4B40861C89C45D008988ED /* STMStringExtension.swift in Sources */,
 				2CEE30351BEBAD10009B229F /* STMSalesman.m in Sources */,
 				2C420FC81A4C29B4001C65B9 /* STMMessagesNC.m in Sources */,
+				6D5180311C9705BD00E5593A /* STMUncashingHandOverVC_iPhone.swift in Sources */,
 				2CE3F51C1C1073D000D8B4F3 /* STMInventoryBatch+CoreDataProperties.m in Sources */,
 				2CF126611B78ED870059701F /* STMCustom9TVCell.m in Sources */,
 				2CEE302D1BEBAD10009B229F /* STMPhotoReport.m in Sources */,

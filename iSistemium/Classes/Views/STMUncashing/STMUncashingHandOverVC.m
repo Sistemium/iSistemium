@@ -28,9 +28,6 @@
 @property (weak, nonatomic) IBOutlet UIButton *uncashingPlaceButton;
 @property (weak, nonatomic) IBOutlet UILabel *uncashingPlaceLabel;
 
-@property (nonatomic, strong) NSDecimalNumber *uncashingSum;
-@property (nonatomic, strong) NSString *uncashingType;
-@property (nonatomic, strong) NSString *commentText;
 @property (nonatomic, strong) NSString *initialCommentText;
 @property (nonatomic) BOOL viaBankOffice;
 @property (nonatomic) BOOL viaCashDesk;
@@ -38,12 +35,10 @@
 @property (nonatomic, strong) UIView *spinnerView;
 @property (nonatomic, strong) UIView *cameraOverlayView;
 
-@property (nonatomic, strong) UIImage *pictureImage;
 @property (nonatomic, strong) UIPopoverController *uncashingInfoPopover;
 @property (nonatomic) BOOL infoPopoverIsVisible;
 
 @property (nonatomic, strong) NSArray *uncashingPlaces;
-@property (nonatomic, strong) STMUncashingPlace *currentUncashingPlace;
 
 @property (nonatomic, strong) STMUncashingPlace *defaultUncashingPlace;
 

@@ -298,7 +298,6 @@ class STMDebtsPVC_iPhone: STMDebtsDetailsPVC, UIPopoverPresentationControllerDel
         removeSwipeGesture()
         doneButton = STMBarButtonItem(title: NSLocalizedString("DONE", comment: ""), style: .Done, target: self, action: "cashingButtonPressed")
         cancelButton = STMBarButtonItem(title: NSLocalizedString("CANCEL", comment: ""), style: .Plain, target:STMCashingProcessController.sharedInstance(), action:"cancelCashingProcess")
-        cancelButton!.tintColor = .redColor()
         dateButton.addTarget(self, action: "changeDate", forControlEvents: .TouchUpInside)
         
     }

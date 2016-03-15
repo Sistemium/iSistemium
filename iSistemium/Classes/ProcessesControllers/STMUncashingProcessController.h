@@ -45,5 +45,6 @@ typedef NS_ENUM(NSInteger, STMUncashingProcessState) {
 - (void)removeCashing:(STMCashing *)cashing;
 - (BOOL)hasCashingWithXid:(NSData *)xid;
 - (void)checkUncashing;
+- (BOOL)isCashingSelected;
 
 @end

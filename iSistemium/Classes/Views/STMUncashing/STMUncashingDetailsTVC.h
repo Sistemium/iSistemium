@@ -25,5 +25,6 @@
 - (void)setInfoLabelTitle;
 - (void)uncashingProcessStart;
 - (void)addObservers;
+- (void)uncashingProcessDone;
 
 @end
