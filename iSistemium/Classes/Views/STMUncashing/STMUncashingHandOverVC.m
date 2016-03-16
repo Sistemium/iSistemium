@@ -31,8 +31,6 @@
 @property (nonatomic, strong) NSString *initialCommentText;
 @property (nonatomic) BOOL viaBankOffice;
 @property (nonatomic) BOOL viaCashDesk;
-@property (nonatomic, strong) STMImagePickerController *imagePickerController;
-@property (nonatomic, strong) UIView *spinnerView;
 @property (nonatomic, strong) UIView *cameraOverlayView;
 
 @property (nonatomic, strong) UIPopoverController *uncashingInfoPopover;
@@ -43,7 +41,7 @@
 @property (nonatomic, strong) STMUncashingPlace *defaultUncashingPlace;
 
 @property (nonatomic, strong) NSMutableArray *availableSourceTypes;
-@property (nonatomic) UIImagePickerControllerSourceType selectedSourceType;
+
 
 @end
 
@@ -379,7 +377,7 @@
     
         [[NSOperationQueue mainQueue] addOperationWithBlock:^{
 
-            UIActionSheet *actionSheet = [[UIActionSheet alloc] initWithTitle:NSLocalizedString(@"SELECT UNCASHING PLACE", nil) delegate:self cancelButtonTitle:nil destructiveButtonTitle:nil otherButtonTitles:nil];
+            UIActionSheet *actionSheet = [[UIActionSheet alloc] initWithTitle:NSLocalizedString(@"SELECT UNCASHING PLACE", nil) delegate:self cancelButtonTitle:NSLocalizedString(@"CANCEL", nil) destructiveButtonTitle:nil otherButtonTitles:nil];
             
             for (STMUncashingPlace *place in self.uncashingPlaces) {
                 
@@ -548,6 +546,7 @@
 #pragma mark - UIActionSheetDelegate
 
 - (void)actionSheet:(UIActionSheet *)actionSheet clickedButtonAtIndex:(NSInteger)buttonIndex {
+    if (buttonIndex ==  0) buttonIndex = 1;
     
     if (actionSheet.tag == 1) {
 
@@ -559,7 +558,7 @@
             
         } else {
         
-            self.currentUncashingPlace = self.uncashingPlaces[buttonIndex];
+            self.currentUncashingPlace = self.uncashingPlaces[buttonIndex-1];
 
         }
         
@@ -832,6 +831,15 @@
         
     }
     
+    if (self.view.frame.origin.y >= 0)
+    {
+        [self setViewMovedUp:YES];
+    }
+    else if (self.view.frame.origin.y < 0)
+    {
+        [self setViewMovedUp:NO];
+    }
+    
 }
 
 - (void)textViewDidEndEditing:(UITextView *)textView {
@@ -855,6 +863,40 @@
         
     }
     
+    if (self.view.frame.origin.y >= 0)
+    {
+        [self setViewMovedUp:YES];
+    }
+    else if (self.view.frame.origin.y < 0)
+    {
+        [self setViewMovedUp:NO];
+    }
+    
+}
+
+-(void)setViewMovedUp:(BOOL)movedUp
+{
+    int kOFFSET_FOR_KEYBOARD = 300;
+    [UIView beginAnimations:nil context:NULL];
+    [UIView setAnimationDuration:0.3];
+    
+    CGRect rect = self.view.frame;
+    if (movedUp)
+    {
+        kOFFSET_FOR_KEYBOARD -= self.view.frame.size.height - (self.commentTextView.frame.origin.y + self.commentTextView.frame.size.height);
+        if (kOFFSET_FOR_KEYBOARD<0) kOFFSET_FOR_KEYBOARD=0;
+        rect.origin.y -= kOFFSET_FOR_KEYBOARD;
+        rect.size.height += kOFFSET_FOR_KEYBOARD;
+    }
+    else
+    {
+        kOFFSET_FOR_KEYBOARD = -rect.origin.y;
+        rect.origin.y += kOFFSET_FOR_KEYBOARD;
+        rect.size.height -= kOFFSET_FOR_KEYBOARD;
+    }
+    self.view.frame = rect;
+    
+    [UIView commitAnimations];
 }
 
 - (void)touchesBegan:(NSSet *)touches withEvent:(UIEvent *)event {

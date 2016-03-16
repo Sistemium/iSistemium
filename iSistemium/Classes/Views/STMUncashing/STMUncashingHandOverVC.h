@@ -18,6 +18,9 @@
 @property (nonatomic, strong) NSString *commentText;
 @property (nonatomic, strong) STMUncashingPlace *currentUncashingPlace;
 @property (nonatomic, strong) UIImage *pictureImage;
+@property (nonatomic) UIImagePickerControllerSourceType selectedSourceType;
+@property (nonatomic, strong) STMImagePickerController *imagePickerController;
+@property (nonatomic, strong) UIView *spinnerView;
 
 - (void)doneButtonPressed;
 - (void)dismissInfoPopover;
@@ -25,5 +28,6 @@
 - (void)deletePhoto;
 - (void)customInit;
 - (void)showInfoPopover;
+- (void)showImagePickerForSourceType:(UIImagePickerControllerSourceType)imageSourceType;
 
 @end
