@@ -481,7 +481,6 @@
 		2CC5D4981C85C90D00193CD7 /* bell-phone-ring.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = 2CC5D4971C85C90D00193CD7 /* bell-phone-ring.mp3 */; };
 		2CC5D49A1C85C94E00193CD7 /* scanner_info.png in Resources */ = {isa = PBXBuildFile; fileRef = 2CC5D4991C85C94E00193CD7 /* scanner_info.png */; };
 		2CC5D4A01C85C9D400193CD7 /* STMScannerInfoNC.m in Sources */ = {isa = PBXBuildFile; fileRef = 2CC5D49D1C85C9D400193CD7 /* STMScannerInfoNC.m */; };
-		2CC5D4A11C85C9D400193CD7 /* STMScannerInfoTVC.m in Sources */ = {isa = PBXBuildFile; fileRef = 2CC5D49F1C85C9D400193CD7 /* STMScannerInfoTVC.m */; };
 		2CC5D4A31C85D93800193CD7 /* STMWKWebView.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 2CC5D4A21C85D93800193CD7 /* STMWKWebView.storyboard */; };
 		2CC5D4B51C85DF7A00193CD7 /* STMWKWebViewNC.m in Sources */ = {isa = PBXBuildFile; fileRef = 2CC5D4B21C85DF7A00193CD7 /* STMWKWebViewNC.m */; };
 		2CC5D4B61C85DF7A00193CD7 /* STMWKWebViewVC.m in Sources */ = {isa = PBXBuildFile; fileRef = 2CC5D4B41C85DF7A00193CD7 /* STMWKWebViewVC.m */; };
@@ -1379,8 +1378,6 @@
 		2CC5D4991C85C94E00193CD7 /* scanner_info.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = scanner_info.png; sourceTree = "<group>"; };
 		2CC5D49C1C85C9D400193CD7 /* STMScannerInfoNC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = STMScannerInfoNC.h; sourceTree = "<group>"; };
 		2CC5D49D1C85C9D400193CD7 /* STMScannerInfoNC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = STMScannerInfoNC.m; sourceTree = "<group>"; };
-		2CC5D49E1C85C9D400193CD7 /* STMScannerInfoTVC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = STMScannerInfoTVC.h; sourceTree = "<group>"; };
-		2CC5D49F1C85C9D400193CD7 /* STMScannerInfoTVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = STMScannerInfoTVC.m; sourceTree = "<group>"; };
 		2CC5D4A21C85D93800193CD7 /* STMWKWebView.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = STMWKWebView.storyboard; sourceTree = "<group>"; };
 		2CC5D4B11C85DF7A00193CD7 /* STMWKWebViewNC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = STMWKWebViewNC.h; sourceTree = "<group>"; };
 		2CC5D4B21C85DF7A00193CD7 /* STMWKWebViewNC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = STMWKWebViewNC.m; sourceTree = "<group>"; };
@@ -2526,8 +2523,6 @@
 			children = (
 				2CC5D49C1C85C9D400193CD7 /* STMScannerInfoNC.h */,
 				2CC5D49D1C85C9D400193CD7 /* STMScannerInfoNC.m */,
-				2CC5D49E1C85C9D400193CD7 /* STMScannerInfoTVC.h */,
-				2CC5D49F1C85C9D400193CD7 /* STMScannerInfoTVC.m */,
 				2CE03EF61C9A9F3A0070CA84 /* STMScannerInfoVC.h */,
 				2CE03EF71C9A9F3A0070CA84 /* STMScannerInfoVC.m */,
 			);
@@ -3319,7 +3314,6 @@
 				2C646F6D1BCE69C00099F034 /* WebSocket.swift in Sources */,
 				2CC5D3621C85C73D00193CD7 /* STMShippingLocation+CoreDataProperties.m in Sources */,
 				2CC5D33B1C85C73D00193CD7 /* STMPhotoReport.m in Sources */,
-				2CC5D4A11C85C9D400193CD7 /* STMScannerInfoTVC.m in Sources */,
 				2C646F5F1BCE69C00099F034 /* SocketAckManager.swift in Sources */,
 				2CC5D3601C85C73D00193CD7 /* STMShipmentRoutePoint+CoreDataProperties.m in Sources */,
 				2C02F2C01A8A989000E0E890 /* STMAuthVC.m in Sources */,

@@ -34,7 +34,7 @@
                                 </connections>
                             </switch>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Beep status" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="hSM-9g-M3Q" customClass="STMLabel">
-                                <rect key="frame" x="20" y="150" width="503" height="21"/>
+                                <rect key="frame" x="20" y="150" width="503" height="20.5"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                 <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
                                 <nil key="highlightedColor"/>
@@ -46,13 +46,13 @@
                                 </connections>
                             </switch>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Rumble status" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="cuq-dr-wNd" customClass="STMLabel">
-                                <rect key="frame" x="20" y="189" width="503" height="21"/>
+                                <rect key="frame" x="20" y="189" width="503" height="20.5"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                 <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
                                 <nil key="highlightedColor"/>
                             </label>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Battery level" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="ytj-Sh-1iu" customClass="STMLabel">
-                                <rect key="frame" x="20" y="228" width="503" height="21"/>
+                                <rect key="frame" x="20" y="228" width="503" height="20.5"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                 <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
                                 <nil key="highlightedColor"/>
@@ -63,7 +63,7 @@
                                     <constraint firstAttribute="width" constant="51" id="CAW-J3-dmk"/>
                                     <constraint firstAttribute="height" constant="31" id="sZu-ON-ZYJ"/>
                                 </constraints>
-                                <fontDescription key="fontDescription" type="boldSystem" pointSize="17"/>
+                                <fontDescription key="fontDescription" type="boldSystem" pointSize="20"/>
                                 <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
                                 <nil key="highlightedColor"/>
                             </label>
@@ -75,17 +75,17 @@
                                 </connections>
                             </button>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Last scanned barcode" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="QHN-46-l95" customClass="STMLabel">
-                                <rect key="frame" x="20" y="267" width="560" height="21"/>
+                                <rect key="frame" x="20" y="289" width="560" height="20.5"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                 <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
                                 <nil key="highlightedColor"/>
                             </label>
-                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="%last scanned barcode%" textAlignment="right" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="skb-DS-Icj" customClass="STMLabel">
-                                <rect key="frame" x="20" y="296" width="560" height="44"/>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="%last scanned barcode%" textAlignment="right" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="skb-DS-Icj" customClass="STMLabel">
+                                <rect key="frame" x="20" y="317" width="560" height="50"/>
                                 <constraints>
-                                    <constraint firstAttribute="height" constant="44" id="8dv-UM-dUW"/>
+                                    <constraint firstAttribute="height" constant="50" id="8dv-UM-dUW"/>
                                 </constraints>
-                                <fontDescription key="fontDescription" type="boldSystem" pointSize="17"/>
+                                <fontDescription key="fontDescription" type="boldSystem" pointSize="20"/>
                                 <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
                                 <nil key="highlightedColor"/>
                             </label>
@@ -111,7 +111,7 @@
                             <constraint firstAttribute="leadingMargin" secondItem="QHN-46-l95" secondAttribute="leading" id="avB-hg-3e1"/>
                             <constraint firstItem="hSM-9g-M3Q" firstAttribute="centerY" secondItem="yUL-Za-85W" secondAttribute="centerY" id="c0p-9m-PwS"/>
                             <constraint firstAttribute="leadingMargin" secondItem="cuq-dr-wNd" secondAttribute="leading" id="dK6-r3-8YY"/>
-                            <constraint firstItem="QHN-46-l95" firstAttribute="top" secondItem="3ps-z0-z13" secondAttribute="bottom" constant="13" id="jFE-01-09n"/>
+                            <constraint firstItem="QHN-46-l95" firstAttribute="top" secondItem="3ps-z0-z13" secondAttribute="bottom" constant="35" id="jFE-01-09n"/>
                             <constraint firstItem="yUL-Za-85W" firstAttribute="leading" secondItem="hSM-9g-M3Q" secondAttribute="trailing" constant="8" id="kfW-RW-Glk"/>
                             <constraint firstAttribute="leadingMargin" secondItem="ytj-Sh-1iu" secondAttribute="leading" id="o1X-lK-ahK"/>
                             <constraint firstAttribute="trailingMargin" secondItem="skb-DS-Icj" secondAttribute="trailing" id="rRy-DI-zXb"/>
@@ -138,35 +138,6 @@
                 <placeholder placeholderIdentifier="IBFirstResponder" id="5S5-5k-Ibx" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="678" y="353"/>
-        </scene>
-        <!--Root View Controller-->
-        <scene sceneID="Y1i-Us-O1J">
-            <objects>
-                <tableViewController id="kD5-cr-hw5" customClass="STMScannerInfoTVC" sceneMemberID="viewController">
-                    <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="grouped" separatorStyle="default" rowHeight="44" sectionHeaderHeight="18" sectionFooterHeight="18" id="raj-zq-xs8">
-                        <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
-                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
-                        <color key="backgroundColor" red="0.93725490199999995" green="0.93725490199999995" blue="0.95686274510000002" alpha="1" colorSpace="calibratedRGB"/>
-                        <prototypes>
-                            <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" reuseIdentifier="scannerInfoCell" id="7qp-WA-GXx">
-                                <rect key="frame" x="0.0" y="49.5" width="600" height="44"/>
-                                <autoresizingMask key="autoresizingMask"/>
-                                <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="7qp-WA-GXx" id="GZZ-Gs-E1k">
-                                    <rect key="frame" x="0.0" y="0.0" width="600" height="43.5"/>
-                                    <autoresizingMask key="autoresizingMask"/>
-                                </tableViewCellContentView>
-                            </tableViewCell>
-                        </prototypes>
-                        <connections>
-                            <outlet property="dataSource" destination="kD5-cr-hw5" id="Pli-0j-apg"/>
-                            <outlet property="delegate" destination="kD5-cr-hw5" id="m4A-Hm-QcC"/>
-                        </connections>
-                    </tableView>
-                    <navigationItem key="navigationItem" title="Root View Controller" id="UHC-uA-8AD"/>
-                </tableViewController>
-                <placeholder placeholderIdentifier="IBFirstResponder" id="h5K-o8-L8a" userLabel="First Responder" sceneMemberID="firstResponder"/>
-            </objects>
-            <point key="canvasLocation" x="678" y="1133"/>
         </scene>
         <!--Scanner InfoNC-->
         <scene sceneID="biK-P9-57D">
