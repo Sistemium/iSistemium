@@ -136,7 +136,6 @@ class STMUncashingDetailsTVC_iPhone: STMUncashingDetailsTVC, UIPopoverPresentati
         cell.heightLimiter = 44
         cell.editingAccessoryType = .Checkmark
         let cashing = self.resultsController.objectAtIndexPath(indexPath) as! STMCashing
-        
         cell.titleLabel?.attributedText = self.textLabelForDebt(cashing, withFont:cell.titleLabel!.font)
         cell.detailLabel?.attributedText = self.detailTextLabelForDebt(cashing, withFont:cell.detailLabel!.font)
         cell.messageLabel?.attributedText = self.messageTextLabelForDebt(cashing, withFont:cell.detailLabel!.font)

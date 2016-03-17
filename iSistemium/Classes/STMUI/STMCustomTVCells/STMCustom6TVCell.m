@@ -10,12 +10,22 @@
 
 @implementation STMCustom6TVCell
 
-/*
-// Only override drawRect: if you perform custom drawing.
-// An empty implementation adversely affects performance during animation.
-- (void)drawRect:(CGRect)rect {
-    // Drawing code
+- (CGFloat)heightLimiter {
+    return [self constraintForIdentifier:@"heightLimiter"].constant;
 }
-*/
+- (void)setHeightLimiter:(CGFloat)newValue {
+    [self constraintForIdentifier:@"heightLimiter"].constant = newValue;
+}
+
+-(NSLayoutConstraint *)constraintForIdentifier:(NSString *)identifier {
+    for (UIView *view in self.contentView.subviews){
+        for (NSLayoutConstraint *constraint in view.constraints) {
+            if ([constraint.identifier isEqualToString:identifier]) {
+                return constraint;
+            }
+        }
+    }
+    return nil;
+}
 
 @end
