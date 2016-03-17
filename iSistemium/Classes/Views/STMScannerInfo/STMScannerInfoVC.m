@@ -100,7 +100,9 @@
     [self.view addSubview:self.spinner];
     
     self.requestsCounter = 3;
+    self.requestsCounter = 4;
     
+    [self.iOSModeBarCodeScanner getVersion];
     [self.iOSModeBarCodeScanner getBeepStatus];
     [self.iOSModeBarCodeScanner getRumbleStatus];
     [self.iOSModeBarCodeScanner getBatteryStatus];
@@ -189,6 +191,14 @@
 
     self.batteryLevel.text = [NSString stringWithFormat:@"%@%%", batteryLevel];
     self.batteryLevel.textColor = (batteryLevel.intValue <= 20) ? [UIColor redColor] : [UIColor blackColor];
+    
+    [self countdownRequestsCounter];
+    
+}
+
+- (void)receiveVersion:(NSString *)version {
+    
+    self.scannerStatusLabel.text = [NSString stringWithFormat:@"%@\n%@: %@", self.iOSModeBarCodeScanner.scannerName, NSLocalizedString(@"VERSION", nil), version];
     
     [self countdownRequestsCounter];
     

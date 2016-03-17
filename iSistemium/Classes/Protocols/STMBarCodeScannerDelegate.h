@@ -38,7 +38,7 @@
 - (void)receiveScannerBeepStatus:(BOOL)isBeepEnabled;
 - (void)receiveScannerRumbleStatus:(BOOL)isRumbleEnabled;
 - (void)receiveBatteryLevel:(NSNumber *)batteryLevel;
-- (void)receiveError;
+- (void)receiveVersion:(NSString *)version;
 
 
 @end
