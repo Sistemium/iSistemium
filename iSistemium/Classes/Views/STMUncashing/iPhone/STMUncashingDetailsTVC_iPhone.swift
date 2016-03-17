@@ -92,20 +92,9 @@ class STMUncashingDetailsTVC_iPhone: STMUncashingDetailsTVC, UIPopoverPresentati
                 switch toolbar!{
                 case .total:
                     setInfoLabelTitle()
-                    let bracket1 = UIBarButtonItem(title: "(", style: .Plain, target: nil, action: nil)
-                    let bracket2 = UIBarButtonItem(title: ")", style: .Plain, target: nil, action: nil)
-                    bracket1.enabled = false
-                    bracket2.enabled = false
-                    let attributes = [NSForegroundColorAttributeName:UIColor.blackColor()]
-                    bracket1.setTitleTextAttributes(attributes, forState:.Disabled)
-                    bracket2.setTitleTextAttributes(attributes, forState:.Disabled)
-                    bracket1.setTitleTextAttributes(attributes, forState:.Normal)
-                    bracket2.setTitleTextAttributes(attributes, forState:.Normal)
-                    let fixedSpace = UIBarButtonItem(barButtonSystemItem: .FixedSpace, target: nil, action: nil)
                     let flexibleSpace = UIBarButtonItem(barButtonSystemItem: .FlexibleSpace, target: nil, action: nil)
-                    fixedSpace.width = -9
                     self.view.layoutIfNeeded()
-                    setToolbarItems([flexibleSpace,self.infoLabel!,bracket1,fixedSpace,self.uncashingProcessButton,fixedSpace,bracket2], animated: true)
+                    setToolbarItems([self.infoLabel!,flexibleSpace,self.uncashingProcessButton], animated: true)
                 case .sum:
                     let numberFormatter = STMFunctions.decimalMaxTwoMinTwoDigitFormatter()
                     let flexibleSpace = UIBarButtonItem(barButtonSystemItem: .FlexibleSpace, target: nil, action: nil)
@@ -144,6 +133,7 @@ class STMUncashingDetailsTVC_iPhone: STMUncashingDetailsTVC, UIPopoverPresentati
     
     override func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCellWithIdentifier("STMCustom6TVCell",forIndexPath:indexPath) as! STMCustom6TVCell
+        cell.heightLimiter = 44
         cell.editingAccessoryType = .Checkmark
         let cashing = self.resultsController.objectAtIndexPath(indexPath) as! STMCashing
         
