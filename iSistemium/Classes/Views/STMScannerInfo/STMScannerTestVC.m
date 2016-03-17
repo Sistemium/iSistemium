@@ -10,10 +10,14 @@
 
 #import <ScanAPI/ScanApiHelper.h>
 
+#import "STMBarCodeScanner.h"
+#import "STMSoundController.h"
+
+
 #define SPINNER_VIEW_TAG 111
 
 
-@interface STMScannerTestVC () <ScanApiHelperDelegate>
+@interface STMScannerTestVC () <ScanApiHelperDelegate, STMBarCodeScannerDelegate>
 
 @property (weak, nonatomic) IBOutlet UILabel *deviceConnectionStatusLabel;
 @property (weak, nonatomic) IBOutlet UILabel *batteryNotificationsStatusLabel;
@@ -25,13 +29,18 @@
 @property (nonatomic, strong) NSTimer* scanApiConsumer;
 @property (nonatomic, strong) DeviceInfo *deviceInfo;
 
+@property (nonatomic, strong) STMBarCodeScanner *iOSModeBarCodeScanner;
+
 
 @end
 
 @implementation STMScannerTestVC
 
 - (IBAction)getBatteryLevelButtonPressed:(id)sender {
-    [self getBatteryStatusForDevice:self.deviceInfo];
+    
+//    [self getBatteryStatusForDevice:self.deviceInfo];
+    [self.iOSModeBarCodeScanner getBatteryStatus];
+    
 }
 
 - (UIView *)spinnerView {
@@ -59,24 +68,107 @@
 
 - (void)startScanner {
     
-    self.scanHelper = [[ScanApiHelper alloc] init];
-    [self.scanHelper setDelegate:self];
-    [self.scanHelper open];
+//    self.scanHelper = [[ScanApiHelper alloc] init];
+//    [self.scanHelper setDelegate:self];
+//    [self.scanHelper open];
+//    
+//    self.scanApiConsumer = [NSTimer scheduledTimerWithTimeInterval:.2
+//                                                            target:self
+//                                                          selector:@selector(onScanApiConsumerTimer:)
+//                                                          userInfo:nil
+//                                                           repeats:YES];
     
-    self.scanApiConsumer = [NSTimer scheduledTimerWithTimeInterval:.2
-                                                            target:self
-                                                          selector:@selector(onScanApiConsumerTimer:)
-                                                          userInfo:nil
-                                                           repeats:YES];
+    self.iOSModeBarCodeScanner = [[STMBarCodeScanner alloc] initWithMode:STMBarCodeScannerIOSMode];
+    self.iOSModeBarCodeScanner.delegate = self;
+    [self.iOSModeBarCodeScanner startScan];
+    
+    if ([self.iOSModeBarCodeScanner isDeviceConnected]) {
+        [self scannerIsConnected];
+    }
+
+}
+
+- (void)scannerIsConnected {
+    
+//    [self addBarcodeImage];
+    [self requestScannerData];
+    
+//    [self.tableView reloadData];
     
 }
 
--(void)onScanApiConsumerTimer:(NSTimer *)timer {
+- (void)requestScannerData {
+
+//    [self.iOSModeBarCodeScanner getBeepStatus];
+//    [self.iOSModeBarCodeScanner getRumbleStatus];
+
+    self.getBatteryLevelButton.enabled = NO;
+    [self.view addSubview:[self spinnerView]];
+    [self.iOSModeBarCodeScanner getBatteryStatus];
     
-    if (timer == self.scanApiConsumer){
-        [self.scanHelper doScanApiReceive];
+}
+
+//- (void)onScanApiConsumerTimer:(NSTimer *)timer {
+//    
+//    if (timer == self.scanApiConsumer){
+//        [self.scanHelper doScanApiReceive];
+//    }
+//    
+//}
+
+
+#pragma mark - STMBarCodeScannerDelegate
+
+- (UIView *)viewForScanner:(STMBarCodeScanner *)scanner {
+    return self.view;
+}
+
+- (void)barCodeScanner:(STMBarCodeScanner *)scanner receiveBarCodeScan:(STMBarCodeScan *)barCodeScan withType:(STMBarCodeScannedType)type {
+    
+}
+
+- (void)barCodeScanner:(STMBarCodeScanner *)scanner receiveBarCode:(NSString *)barcode withType:(STMBarCodeScannedType)type {
+    
+}
+
+- (void)barCodeScanner:(STMBarCodeScanner *)scanner receiveError:(NSError *)error {
+    
+}
+
+- (void)deviceArrivalForBarCodeScanner:(STMBarCodeScanner *)scanner {
+    
+    if (scanner == self.iOSModeBarCodeScanner) {
+        
+        [STMSoundController say:NSLocalizedString(@"SCANNER DEVICE ARRIVAL", nil)];
+        
+        [self scannerIsConnected];
+        
     }
     
+}
+
+- (void)deviceRemovalForBarCodeScanner:(STMBarCodeScanner *)scanner {
+    
+    if (scanner == self.iOSModeBarCodeScanner) {
+        
+        [STMSoundController say:NSLocalizedString(@"SCANNER DEVICE REMOVAL", nil)];
+        
+//        [self scannerIsDisconnected];
+        
+    }
+    
+}
+
+- (void)receiveBatteryLevel:(NSNumber *)batteryLevel {
+    
+    [self removeSpinner];
+
+    NSLog(@"batteryLevel: %@%%", batteryLevel);
+    
+    self.batteryLevelLabel.text = [NSString stringWithFormat:@"Battery level: %@%%", batteryLevel];
+    
+    self.getBatteryLevelButton.enabled = YES;
+
 }
 
 
@@ -234,6 +326,13 @@
     
 }
 
+- (void)onError:(SKTRESULT)result {
+    NSLog(@"error: %@", @(result));
+}
+
+- (void)onErrorRetrievingScanObject:(SKTRESULT)result {
+    NSLog(@"error: %@", @(result));
+}
 
 
 #pragma mark - view lifecycle

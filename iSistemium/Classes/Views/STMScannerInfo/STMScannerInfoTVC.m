@@ -197,6 +197,8 @@
 }
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
+
+    [self.iOSModeBarCodeScanner getBatteryStatus];
     
 }
 
