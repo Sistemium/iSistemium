@@ -260,6 +260,19 @@
 
 }
 
+- (void)viewDidAppear:(BOOL)animated {
+    
+    [super viewDidAppear:animated];
+    
+    if (self.iOSModeBarCodeScanner) {
+
+        self.iOSModeBarCodeScanner.delegate = self;
+        [self requestScannerData];
+
+    }
+    
+}
+
 - (void)didReceiveMemoryWarning {
     [super didReceiveMemoryWarning];
     // Dispose of any resources that can be recreated.
