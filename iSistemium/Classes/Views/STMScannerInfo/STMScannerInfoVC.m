@@ -13,7 +13,7 @@
 #import "STMSoundController.h"
 
 
-@interface STMScannerInfoVC () <STMBarCodeScannerDelegate>
+@interface STMScannerInfoVC () <STMBarCodeScannerDelegate, NSFetchedResultsControllerDelegate>
 
 @property (weak, nonatomic) IBOutlet STMLabel *scannerStatusLabel;
 @property (weak, nonatomic) IBOutlet STMLabel *beepStatusLabel;
@@ -31,6 +31,8 @@
 @property (nonatomic, strong) STMSpinnerView *spinner;
 @property (nonatomic) NSInteger requestsCounter;
 
+@property (nonatomic, strong) NSFetchedResultsController *resultsController;
+
 
 @end
 
@@ -46,10 +48,45 @@
     
 }
 
+- (NSFetchedResultsController *)resultsController {
+    
+    if (!_resultsController) {
+
+        NSManagedObjectContext *context = [[STMSessionManager sharedManager].currentSession document].managedObjectContext;
+
+        if (context) {
+            
+            STMFetchRequest *request = [STMFetchRequest fetchRequestWithEntityName:NSStringFromClass([STMBarCodeScan class])];
+            request.sortDescriptors = @[[NSSortDescriptor sortDescriptorWithKey:@"deviceCts" ascending:YES selector:@selector(compare:)]];
+            request.predicate = [STMPredicate predicateWithNoFantoms];
+            
+            _resultsController = [[NSFetchedResultsController alloc] initWithFetchRequest:request
+                                                                     managedObjectContext:context
+                                                                       sectionNameKeyPath:nil
+                                                                                cacheName:nil];
+            _resultsController.delegate = self;
+            
+            [_resultsController performFetch:nil];
+
+        }
+        
+    }
+    return _resultsController;
+    
+}
+
 - (IBAction)beepStatusSwitchChanged:(id)sender {
+    
+    [self.iOSModeBarCodeScanner setBeepStatus:self.beepStatusSwitch.on
+                              andRumbleStatus:self.rumbleStatusSwitch.on];
+
 }
 
 - (IBAction)rumbleStatusSwitchChanged:(id)sender {
+
+    [self.iOSModeBarCodeScanner setBeepStatus:self.beepStatusSwitch.on
+                              andRumbleStatus:self.rumbleStatusSwitch.on];
+
 }
 
 - (IBAction)reloadDataButtonPressed:(id)sender {
@@ -90,6 +127,9 @@
 
 - (void)scannerIsConnected {
     
+    self.scannerStatusLabel.text = self.iOSModeBarCodeScanner.scannerName;
+
+    [self updateLastScannedBarcode];
     [self addBarcodeImage];
     [self requestScannerData];
     
@@ -99,7 +139,6 @@
     
     [self.view addSubview:self.spinner];
     
-    self.requestsCounter = 3;
     self.requestsCounter = 4;
     
     [self.iOSModeBarCodeScanner getVersion];
@@ -126,6 +165,12 @@
 
 }
 
+- (void)updateLastScannedBarcode {
+    
+    STMBarCodeScan *barcodeScan = self.resultsController.fetchedObjects.lastObject;
+    self.lastScannedBarcode.text = (barcodeScan) ? barcodeScan.code : nil;
+
+}
 
 #pragma mark - STMBarCodeScannerDelegate
 
@@ -138,11 +183,11 @@
 }
 
 - (void)barCodeScanner:(STMBarCodeScanner *)scanner receiveBarCode:(NSString *)barcode withType:(STMBarCodeScannedType)type {
-    
+    self.lastScannedBarcode.text = barcode;
 }
 
 - (void)barCodeScanner:(STMBarCodeScanner *)scanner receiveError:(NSError *)error {
-    
+    [self countdownRequestsCounter];
 }
 
 - (void)deviceArrivalForBarCodeScanner:(STMBarCodeScanner *)scanner {
@@ -215,6 +260,7 @@
     
 }
 
+
 #pragma mark - barcode image
 
 - (void)addBarcodeImage {
@@ -226,6 +272,13 @@
 
 - (void)removeBarcodeImage {
     self.navigationItem.titleView = nil;
+}
+
+
+#pragma mark - NSFetchedResultsControllerDelegate
+
+- (void)controllerDidChangeContent:(NSFetchedResultsController *)controller {
+    [self updateLastScannedBarcode];
 }
 
 
