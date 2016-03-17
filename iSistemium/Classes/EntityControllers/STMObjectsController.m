@@ -1488,15 +1488,17 @@
         
     }
     
-    NSArray *ownRelationships = [self singleRelationshipsForEntityName:entityName].allKeys;
+    NSDictionary *ownRelationships = [self singleRelationshipsForEntityName:entityName];
     
-    for (NSString *key in ownRelationships) {
+    for (NSString *key in ownRelationships.allKeys) {
         
         NSString *xidString = objectData[key];
 
         if (xidString) {
             
-            NSManagedObject *destinationObject = [self objectForEntityName:entityName andXidString:xidString];
+            NSString *destinationEntityName = ownRelationships[key];
+            
+            NSManagedObject *destinationObject = [self objectForEntityName:destinationEntityName andXidString:xidString];
             
             if (![[object valueForKey:key] isEqual:destinationObject]) {
                 
