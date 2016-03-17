@@ -23,7 +23,6 @@
 @property (weak, nonatomic) IBOutlet UILabel *uncashingLabel;
 @property (weak, nonatomic) IBOutlet UILabel *uncashingSumLabel;
 @property (weak, nonatomic) IBOutlet UISegmentedControl *typeSelector;
-@property (weak, nonatomic) IBOutlet UITextView *commentTextView;
 @property (weak, nonatomic) IBOutlet UIImageView *imageView;
 @property (weak, nonatomic) IBOutlet UIButton *uncashingPlaceButton;
 @property (weak, nonatomic) IBOutlet UILabel *uncashingPlaceLabel;

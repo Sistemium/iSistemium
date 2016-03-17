@@ -24,6 +24,7 @@ class STMUncashingHandOverVC_iPhone: STMUncashingHandOverVC, UIPopoverPresentati
     }
     
     override func showInfoPopover(){
+        self.commentTextView?.endEditing(true)
         let content = self.storyboard!.instantiateViewControllerWithIdentifier("uncashingInfoPopover") as! STMUncashingInfoVC_iPhone
         content.sum = self.uncashingSum
         content.type = self.uncashingType
@@ -32,7 +33,6 @@ class STMUncashingHandOverVC_iPhone: STMUncashingHandOverVC, UIPopoverPresentati
         content.place = self.currentUncashingPlace
         content.modalPresentationStyle = .Popover
         let popover = content.popoverPresentationController
-        content.preferredContentSize = CGSizeMake(388,205)
         popover!.delegate = self
         popover!.sourceView = self.navigationController?.navigationBar
         let frame = (self.navigationItem.rightBarButtonItem!.valueForKey("view") as! UIView).frame

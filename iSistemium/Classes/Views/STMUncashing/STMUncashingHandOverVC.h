@@ -21,6 +21,7 @@
 @property (nonatomic) UIImagePickerControllerSourceType selectedSourceType;
 @property (nonatomic, strong) STMImagePickerController *imagePickerController;
 @property (nonatomic, strong) UIView *spinnerView;
+@property (weak, nonatomic) IBOutlet UITextView *commentTextView;
 
 - (void)doneButtonPressed;
 - (void)dismissInfoPopover;

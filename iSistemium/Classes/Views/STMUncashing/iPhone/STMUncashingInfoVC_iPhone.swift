@@ -19,4 +19,10 @@ class STMUncashingInfoVC_iPhone: STMUncashingInfoVC {
         self.dismissViewControllerAnimated(true, completion: nil)
     }
     
+    override func viewWillAppear(animated: Bool) {
+        super.viewWillAppear(animated)
+        self.commentTextView?.sizeToFit()
+        self.preferredContentSize = CGSizeMake(500,150 + self.commentTextView!.contentSize.height)
+    }
+    
 }
