@@ -624,7 +624,9 @@
     [self setPowerButtonPressNotificationForDevice:deviceInfo];
     [self getVersionForDevice:deviceInfo];
     
-    [self.delegate deviceArrivalForBarCodeScanner:self];
+    if ([self.delegate respondsToSelector:@selector(deviceArrivalForBarCodeScanner:)]) {
+        [self.delegate deviceArrivalForBarCodeScanner:self];
+    }
     
 }
 
@@ -635,7 +637,9 @@
     NSString *logMessage = [NSString stringWithFormat:@"Disconnect scanner: %@", [deviceRemoved getName]];
     [[STMLogger sharedLogger] saveLogMessageWithText:logMessage type:@"important"];
     
-    [self.delegate deviceRemovalForBarCodeScanner:self];
+    if ([self.delegate respondsToSelector:@selector(deviceRemovalForBarCodeScanner:)]) {
+        [self.delegate deviceRemovalForBarCodeScanner:self];
+    }
     
 }
 
@@ -652,13 +656,27 @@
 }
 
 - (void)onError:(SKTRESULT)result {
+    
     NSLog(@"error: %ld", result);
+    
+    if ([self.delegate respondsToSelector:@selector(receiveError)]) {
+        [self.delegate receiveError];
+    }
+    
+}
+
+- (void)onErrorRetrievingScanObject:(SKTRESULT)result {
+    
+    NSLog(@"error: %ld", result);
+    
+    if ([self.delegate respondsToSelector:@selector(receiveError)]) {
+        [self.delegate receiveError];
+    }
+
 }
 
 - (void)onButtonsEvent:(ISktScanObject *)scanObj {
-    
     NSLogMethodName;
-    
 }
 
 - (void)onSetBatteryLevelNotification:(id)sender {

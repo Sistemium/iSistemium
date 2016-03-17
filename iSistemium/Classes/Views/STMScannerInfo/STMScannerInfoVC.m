@@ -28,11 +28,23 @@
 
 @property (nonatomic, strong) STMBarCodeScanner *iOSModeBarCodeScanner;
 
+@property (nonatomic, strong) STMSpinnerView *spinner;
+@property (nonatomic) NSInteger requestsCounter;
+
 
 @end
 
 
 @implementation STMScannerInfoVC
+
+- (STMSpinnerView *)spinner {
+    
+    if (!_spinner) {
+        _spinner = [STMSpinnerView spinnerViewWithFrame:self.view.frame];
+    }
+    return _spinner;
+    
+}
 
 - (IBAction)beepStatusSwitchChanged:(id)sender {
 }
@@ -41,6 +53,7 @@
 }
 
 - (IBAction)reloadDataButtonPressed:(id)sender {
+    [self requestScannerData];
 }
 
 
@@ -84,6 +97,10 @@
 
 - (void)requestScannerData {
     
+    [self.view addSubview:self.spinner];
+    
+    self.requestsCounter = 3;
+    
     [self.iOSModeBarCodeScanner getBeepStatus];
     [self.iOSModeBarCodeScanner getRumbleStatus];
     [self.iOSModeBarCodeScanner getBatteryStatus];
@@ -92,6 +109,8 @@
 
 - (void)scannerIsDisconnected {
     
+    self.scannerStatusLabel.text = NSLocalizedString(@"NO SCANNER AVAILABLE", nil);
+
     self.beepStatusSwitch.enabled = NO;
     self.beepStatusSwitch.on = NO;
     self.rumbleStatusSwitch.enabled = NO;
@@ -153,12 +172,16 @@
     self.beepStatusSwitch.enabled = YES;
     [self.beepStatusSwitch setOn:isBeepEnable animated:YES];
     
+    [self countdownRequestsCounter];
+    
 }
 
 - (void)receiveScannerRumbleStatus:(BOOL)isRumbleEnable {
     
     self.rumbleStatusSwitch.enabled = YES;
     [self.rumbleStatusSwitch setOn:isRumbleEnable animated:YES];
+    
+    [self countdownRequestsCounter];
     
 }
 
@@ -167,8 +190,20 @@
     self.batteryLevel.text = [NSString stringWithFormat:@"%@%%", batteryLevel];
     self.batteryLevel.textColor = (batteryLevel.intValue <= 20) ? [UIColor redColor] : [UIColor blackColor];
     
+    [self countdownRequestsCounter];
+    
 }
 
+- (void)countdownRequestsCounter {
+    
+    if (--self.requestsCounter <= 0) {
+        
+        [self.spinner removeFromSuperview];
+        self.reloadDataButton.enabled = YES;
+        
+    }
+    
+}
 
 #pragma mark - barcode image
 
