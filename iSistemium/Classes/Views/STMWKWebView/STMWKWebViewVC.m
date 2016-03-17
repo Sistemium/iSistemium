@@ -139,13 +139,15 @@
     NSURL *url = [NSURL URLWithString:urlString];
     NSMutableURLRequest *request = [[NSMutableURLRequest alloc] initWithURL:url];
     
-    request.cachePolicy = NSURLRequestReloadIgnoringLocalCacheData;
-    
-    //    NSLog(@"currentDiskUsage %d", [NSURLCache sharedURLCache].currentDiskUsage);
-    //    NSLog(@"currentMemoryUsage %d", [NSURLCache sharedURLCache].currentMemoryUsage);
-    
-    NSLog(@"cachedResponseForRequest %@", [[NSURLCache sharedURLCache] cachedResponseForRequest:request]);
-    [[NSURLCache sharedURLCache] removeCachedResponseForRequest:request];
+//    request.cachePolicy = NSURLRequestReloadIgnoringLocalCacheData;
+//    request.cachePolicy = NSURLRequestReturnCacheDataElseLoad;
+    request.cachePolicy = NSURLRequestUseProtocolCachePolicy;
+
+//    NSLog(@"currentDiskUsage %d", [NSURLCache sharedURLCache].currentDiskUsage);
+//    NSLog(@"currentMemoryUsage %d", [NSURLCache sharedURLCache].currentMemoryUsage);
+//    
+//    NSLog(@"cachedResponseForRequest %@", [[NSURLCache sharedURLCache] cachedResponseForRequest:request]);
+//    [[NSURLCache sharedURLCache] removeCachedResponseForRequest:request];
     
     [self.webView loadRequest:request];
     
