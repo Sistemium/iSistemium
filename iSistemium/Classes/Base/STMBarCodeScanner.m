@@ -177,16 +177,16 @@
     
     STMBarCodeScannedType type = [STMBarCodeController barcodeTypeFromTypes:self.barCodeTypesRC.fetchedObjects forBarcode:barcode];
     
-    STMBarCodeScan *barCodeScan = (STMBarCodeScan *)[STMObjectsController newObjectForEntityName:NSStringFromClass([STMBarCodeScan class])
-                                                                                        isFantom:NO];
-    barCodeScan.code = barcode;
+//    STMBarCodeScan *barCodeScan = (STMBarCodeScan *)[STMObjectsController newObjectForEntityName:NSStringFromClass([STMBarCodeScan class])
+//                                                                                        isFantom:NO];
+//    barCodeScan.code = barcode;
     
     [self.delegate barCodeScanner:self receiveBarCode:barcode withType:type];
-    [self.delegate barCodeScanner:self receiveBarCodeScan:barCodeScan withType:type];
+//    [self.delegate barCodeScanner:self receiveBarCodeScan:barCodeScan withType:type];
     
-    [[STMObjectsController document] saveDocument:^(BOOL success) {
-        
-    }];
+//    [[STMObjectsController document] saveDocument:^(BOOL success) {
+//        
+//    }];
     
 }
 

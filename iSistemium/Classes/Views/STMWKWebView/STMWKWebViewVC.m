@@ -591,26 +591,26 @@
 
     if (self.isInActiveTab) {
         
-        NSMutableArray *arguments = @[].mutableCopy;
-
-        NSString *barcode = barCodeScan.code;
-        if (!barcode) barcode = @"";
-        [arguments addObject:barcode];
-        
-        NSString *typeString = [STMBarCodeController barCodeTypeStringForType:type];
-        if (!typeString) typeString = @"";
-        [arguments addObject:typeString];
-        
-        NSDictionary *barcodeDic = [STMObjectsController dictionaryForJSWithObject:barCodeScan];
-        [arguments addObject:barcodeDic];
-        
-        NSLog(@"send received barcode %@ with type %@ to WKWebView", barcode, typeString);
-        
-        NSString *jsFunction = [NSString stringWithFormat:@"%@.apply(null,%@)", self.receiveBarCodeJSFunction, [STMFunctions jsonStringFromArray:arguments]];
-        
-        [self.webView evaluateJavaScript:jsFunction completionHandler:^(id _Nullable result, NSError * _Nullable error) {
-            
-        }];
+//        NSMutableArray *arguments = @[].mutableCopy;
+//
+//        NSString *barcode = barCodeScan.code;
+//        if (!barcode) barcode = @"";
+//        [arguments addObject:barcode];
+//        
+//        NSString *typeString = [STMBarCodeController barCodeTypeStringForType:type];
+//        if (!typeString) typeString = @"";
+//        [arguments addObject:typeString];
+//        
+//        NSDictionary *barcodeDic = [STMObjectsController dictionaryForJSWithObject:barCodeScan];
+//        [arguments addObject:barcodeDic];
+//        
+//        NSLog(@"send received barcode %@ with type %@ to WKWebView", barcode, typeString);
+//        
+//        NSString *jsFunction = [NSString stringWithFormat:@"%@.apply(null,%@)", self.receiveBarCodeJSFunction, [STMFunctions jsonStringFromArray:arguments]];
+//        
+//        [self.webView evaluateJavaScript:jsFunction completionHandler:^(id _Nullable result, NSError * _Nullable error) {
+//            
+//        }];
 
     }
 
@@ -620,6 +620,27 @@
     
     if (self.isInActiveTab) {
         
+        NSMutableArray *arguments = @[].mutableCopy;
+        
+//        NSString *barcode = barCodeScan.code;
+        if (!barcode) barcode = @"";
+        [arguments addObject:barcode];
+        
+        NSString *typeString = [STMBarCodeController barCodeTypeStringForType:type];
+        if (!typeString) typeString = @"";
+        [arguments addObject:typeString];
+        
+//        NSDictionary *barcodeDic = [STMObjectsController dictionaryForJSWithObject:barCodeScan];
+//        [arguments addObject:barcodeDic];
+        
+        NSLog(@"send received barcode %@ with type %@ to WKWebView", barcode, typeString);
+        
+        NSString *jsFunction = [NSString stringWithFormat:@"%@.apply(null,%@)", self.receiveBarCodeJSFunction, [STMFunctions jsonStringFromArray:arguments]];
+        
+        [self.webView evaluateJavaScript:jsFunction completionHandler:^(id _Nullable result, NSError * _Nullable error) {
+            
+        }];
+
     }
     
 }
