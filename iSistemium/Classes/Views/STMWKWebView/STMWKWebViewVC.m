@@ -153,6 +153,8 @@
 
 - (void)loadURLString:(NSString *)urlString {
     
+    urlString = @"http://maxbook.local:3000/#/orders";
+    
     NSURL *url = [NSURL URLWithString:urlString];
     NSMutableURLRequest *request = [[NSMutableURLRequest alloc] initWithURL:url];
     
