@@ -320,7 +320,10 @@
     if (self.iOSModeBarCodeScanner) {
 
         self.iOSModeBarCodeScanner.delegate = self;
-        [self requestScannerData];
+        
+        if ([self.iOSModeBarCodeScanner isDeviceConnected]) {
+            [self requestScannerData];
+        }
 
     }
     
