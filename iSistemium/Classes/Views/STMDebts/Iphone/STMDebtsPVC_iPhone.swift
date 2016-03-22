@@ -50,9 +50,16 @@ class STMDebtsPVC_iPhone: STMDebtsDetailsPVC, UIPopoverPresentationControllerDel
     
     override func cashingProcessDone() {
         super.cashingProcessDone()
-        self.navigationItem.titleView? = self.segmentedControl!
-        self.navigationItem.setLeftBarButtonItem(self.navigationItem.backBarButtonItem, animated: false)
+        let segment:UISegmentedControl?
+        if self.segmentedControl == nil {
+            segment = UISegmentedControl()
+            self.segmentedControl = segment
+            self.segmentedControl!.sizeToFit()
+            setupSegmentedControl()
+        }
+        self.navigationItem.setLeftBarButtonItem(self.navigationItem.backBarButtonItem, animated: true)
         self.buttonsForVC(self)
+        self.navigationItem.titleView? = self.segmentedControl!
     }
     
     override func addDebtButtonPressed(sender:AnyObject){

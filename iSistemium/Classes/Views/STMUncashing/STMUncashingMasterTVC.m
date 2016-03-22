@@ -219,10 +219,12 @@
         dateFormatter.timeStyle = NSDateFormatterNoStyle;
         cell.textLabel.text = [dateFormatter stringFromDate:[NSDate date]];
 
-        [cell setSelected:YES];
-        [tableView selectRowAtIndexPath:[NSIndexPath indexPathForRow:0 inSection:0]
-                                    animated:YES
-                              scrollPosition:UITableViewScrollPositionNone];
+        if (self.splitVC){
+            [cell setSelected:YES];
+            [tableView selectRowAtIndexPath:[NSIndexPath indexPathForRow:0 inSection:0]
+                                   animated:YES
+                             scrollPosition:UITableViewScrollPositionNone];
+        }
         
         self.splitVC.detailVC.uncashing = nil;
         

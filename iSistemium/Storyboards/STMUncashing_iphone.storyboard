@@ -190,7 +190,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="Hgx-XL-c5V" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="1362" y="1387"/>
+            <point key="canvasLocation" x="1199" y="1387"/>
         </scene>
         <!--Uncashing DetailsTVC i Phone-->
         <scene sceneID="UAK-gE-FPD">
@@ -297,7 +297,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="kRD-je-L8l" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="2110" y="1375"/>
+            <point key="canvasLocation" x="1907" y="1387"/>
         </scene>
         <!--Add EtceteraVC i Phone-->
         <scene sceneID="231-of-oV5">
@@ -587,7 +587,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="kQY-3K-OqS" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="667" y="1367"/>
+            <point key="canvasLocation" x="516" y="1387"/>
         </scene>
     </scenes>
 </document>
