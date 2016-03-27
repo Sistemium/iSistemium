@@ -146,16 +146,16 @@ class STMShippingLocationTVC:STMVariableCellsHeightTVC,UIImagePickerControllerDe
                     let photoArray = (shippingLocation!.shippingLocationPictures as NSSet).sortedArrayUsingDescriptors([sortDesriptor] )[range.toRange()!]
                     
                     for picture in photoArray {
-                        
-                        let pictureButton = self.pictureButtonWithPicture(picture as! STMPicture)
-                        
-                        let count = CGFloat(self.picturesView.subviews.count);
-                        let x = (count > 0) ? count * (STMSwiftConstants.CELL_IMAGES_SIZE + STMSwiftConstants.IMAGE_PADDING) : 0;
-                        
-                        pictureButton.frame = CGRectMake(x, 0, STMSwiftConstants.CELL_IMAGES_SIZE, STMSwiftConstants.CELL_IMAGES_SIZE);
-                        
-                        self.picturesView.addSubview(pictureButton)
-                        
+                        if let pictureData = (picture as! STMPicture).imageThumbnail{
+                            let pictureButton = self.pictureButtonWithPicture(pictureData)
+                            
+                            let count = CGFloat(self.picturesView.subviews.count);
+                            let x = (count > 0) ? count * (STMSwiftConstants.CELL_IMAGES_SIZE + STMSwiftConstants.IMAGE_PADDING) : 0;
+                            
+                            pictureButton.frame = CGRectMake(x, 0, STMSwiftConstants.CELL_IMAGES_SIZE, STMSwiftConstants.CELL_IMAGES_SIZE);
+                            
+                            self.picturesView.addSubview(pictureButton)
+                        }
                     }
                     
                 }
@@ -237,9 +237,9 @@ class STMShippingLocationTVC:STMVariableCellsHeightTVC,UIImagePickerControllerDe
     
     }
     
-    private func pictureButtonWithPicture(picture : STMPicture) -> UIView{
+    private func pictureButtonWithPicture(data : NSData) -> UIView{
     
-    let imageView = UIImageView(image: UIImage(data: picture.imageThumbnail!))
+    let imageView = UIImageView(image: UIImage(data: data))
     
     let tap = UITapGestureRecognizer(target: self, action: "photoButtonPressed:")
     imageView.gestureRecognizers = [tap]
