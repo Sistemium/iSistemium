@@ -127,25 +127,55 @@ static void completionCallback (SystemSoundID sysSound, void *data) {
 
 + (void)say:(NSString *)string {
     
+    [self sayText:string
+         withRate:AVSpeechUtteranceDefaultSpeechRate
+            pitch:1];
+    
+}
+
++ (void)sayText:(NSString *)string withRate:(float)rate pitch:(float)pitch {
+
     AVSpeechUtterance *utterance = [[AVSpeechUtterance alloc] initWithString:string];
-    utterance.rate = AVSpeechUtteranceDefaultSpeechRate;
+    utterance.rate = rate;
+    utterance.pitchMultiplier = pitch;
+    
     [[self sharedController].speechSynthesizer speakUtterance:utterance];
     
     NSLog(@"Say: %@", string);
-    
+
 }
 
 + (void)alertSay:(NSString *)string {
     
-    [self playAlert];
-    [self say:string];
+    [self alertSay:string
+          withRate:AVSpeechUtteranceDefaultSpeechRate
+             pitch:1];
     
 }
 
++ (void)alertSay:(NSString *)string withRate:(float)rate pitch:(float)pitch {
+    
+    [self playAlert];
+    [self sayText:string
+         withRate:rate
+            pitch:pitch];
+
+}
+
 + (void)okSay:(NSString *)string {
+    
+    [self okSay:string
+       withRate:AVSpeechUtteranceDefaultSpeechRate
+          pitch:1];
+    
+}
+
++ (void)okSay:(NSString *)string withRate:(float)rate pitch:(float)pitch {
 
     [self playOk];
-    [self say:string];
+    [self sayText:string
+         withRate:rate
+            pitch:pitch];
 
 }
 

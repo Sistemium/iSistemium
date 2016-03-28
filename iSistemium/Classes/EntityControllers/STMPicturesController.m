@@ -506,7 +506,7 @@
     NSData *weakData = data;
     STMPicture *weakPicture = picture;
     
-    NSString *xid = [STMFunctions UUIDStringFromUUIDData:picture.xid];
+    NSString *xid = (picture.xid) ? [STMFunctions UUIDStringFromUUIDData:(NSData *)picture.xid] : nil;
     NSString *fileName = [xid stringByAppendingString:@".jpg"];
 
 //    NSString *fileName = nil;
@@ -607,7 +607,12 @@
     
     if ([[self instantLoadPicturesEntityNames] containsObject:NSStringFromClass([object class])]) {
         
-        [self downloadConnectionForObject:object];
+//        object is sended to background thread
+//        you should dispatch_get_main_queue in downloadConnectionForObject: for object manipulation
+
+        dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_BACKGROUND, 0), ^{
+            [self downloadConnectionForObject:object];
+        });
         
     } else {
     
@@ -627,11 +632,21 @@
 
 - (void)downloadConnectionForObject:(NSManagedObject *)object {
     
-    NSString *href = [object valueForKey:@"href"];
-
+    __block NSString *href = nil;
+    
+    dispatch_sync(dispatch_get_main_queue(), ^{
+        href = [object valueForKey:@"href"];
+    });
+    
     if (href) {
         
-        if ([object valueForKey:@"imageThumbnail"]) {
+        __block id imageThumbnail = nil;
+        
+        dispatch_sync(dispatch_get_main_queue(), ^{
+            imageThumbnail = [object valueForKey:@"imageThumbnail"];
+        });
+        
+        if (imageThumbnail) {
             
             [self.hrefDictionary removeObjectForKey:href];
             
@@ -640,7 +655,7 @@
             NSURL *url = [NSURL URLWithString:href];
             NSURLRequest *request = [NSURLRequest requestWithURL:url];
             NSURLResponse *response = nil;
-            NSError *error = nil;
+            __block NSError *error = nil;
             
             //        NSLog(@"start loading %@", url.lastPathComponent);
             
@@ -663,7 +678,7 @@
                         
                         [self.secondAttempt addObject:href];
                         
-#warning Is it really need to dispath_async & addOperationForObject here? secondAttempt?
+#warning Is it really need to secondAttempt?
                         dispatch_async(dispatch_get_main_queue(), ^{
                             [self performSelector:@selector(addOperationForObject:) withObject:object afterDelay:0];
                         });
@@ -672,22 +687,30 @@
                     
                 } else {
                     
-                    NSLog(@"error %@ in %@", error.description, [object valueForKey:@"name"]);
-                    [self.hrefDictionary removeObjectForKey:href];
+                    dispatch_async(dispatch_get_main_queue(), ^{
+                        
+                        NSLog(@"error %@ in %@", error.description, [object valueForKey:@"name"]);
+                        [self.hrefDictionary removeObjectForKey:href];
+                        
+                    });
                     
                 }
                 
             } else {
                 
-//                NSLog(@"%@ load successefully", href);
+                //                NSLog(@"%@ load successefully", href);
                 
                 [self.hrefDictionary removeObjectForKey:href];
                 
-                NSData *dataCopy = [data copy];
+                __block NSData *dataCopy = [data copy];
                 
-                if ([object isKindOfClass:[STMPicture class]]) {
-                    [[self class] setImagesFromData:dataCopy forPicture:(STMPicture *)object andUpload:NO];
-                }
+                dispatch_async(dispatch_get_main_queue(), ^{
+                    
+                    if ([object isKindOfClass:[STMPicture class]]) {
+                        [[self class] setImagesFromData:dataCopy forPicture:(STMPicture *)object andUpload:NO];
+                    }
+                    
+                });
                 
             }
             

@@ -11,7 +11,12 @@
 @implementation STMSpinnerView
 
 + (STMSpinnerView *)spinnerViewWithFrame:(CGRect)frame {
-    return [self spinnerViewWithFrame:frame indicatorStyle:UIActivityIndicatorViewStyleWhiteLarge backgroundColor:[UIColor grayColor] alfa:0.75];
+    
+    return [self spinnerViewWithFrame:frame
+                       indicatorStyle:UIActivityIndicatorViewStyleWhiteLarge
+                      backgroundColor:[UIColor grayColor]
+                                 alfa:0.75];
+    
 }
 
 + (STMSpinnerView *)spinnerViewWithFrame:(CGRect)frame indicatorStyle:(UIActivityIndicatorViewStyle)style backgroundColor:(UIColor *)color alfa:(CGFloat)alfa {

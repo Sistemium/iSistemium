@@ -9,7 +9,6 @@
 #import <Foundation/Foundation.h>
 #import <CoreData/CoreData.h>
 
-@class STMComment;
 
 NS_ASSUME_NONNULL_BEGIN
 
@@ -17,6 +16,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 - (NSString *)currentChecksum;
 - (NSDictionary *)propertiesForKeys:(NSArray *)keys;
+- (NSDictionary *)relationshipXidsForKeys:(NSArray *)keys;
 
 
 @end

@@ -171,7 +171,7 @@
             for (STMPhotoReport *photoReport in outlet.photoReports) {
                 
                 if (photoReport.campaign) {
-                    [campaigns addObject:photoReport.campaign];
+                    [campaigns addObject:(STMCampaign *)photoReport.campaign];
                 }
                 
             }

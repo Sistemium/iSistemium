@@ -79,7 +79,7 @@
             
             if (self.tabBarController.view) {
                 
-                CGRect rect = [STMFunctions frameOfHighlightedTabBarButtonForTBC:self.tabBarController];
+                CGRect rect = [STMFunctions frameOfHighlightedTabBarButtonForTBC:(UITabBarController *)self.tabBarController];
                 
                 [self.actionSheetPopover presentPopoverFromRect:rect
                                                          inView:(UIView * _Nonnull)self.tabBarController.view

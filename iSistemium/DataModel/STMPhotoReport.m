@@ -2,8 +2,8 @@
 //  STMPhotoReport.m
 //  iSistemium
 //
-//  Created by Maxim Grigoriev on 11/07/14.
-//  Copyright (c) 2014 Sistemium UAB. All rights reserved.
+//  Created by Maxim Grigoriev on 08/02/16.
+//  Copyright © 2016 Sistemium UAB. All rights reserved.
 //
 
 #import "STMPhotoReport.h"
@@ -11,11 +11,8 @@
 #import "STMOutlet.h"
 #import "STMSalesman.h"
 
-
 @implementation STMPhotoReport
 
-@dynamic campaign;
-@dynamic outlet;
-@dynamic salesman;
+// Insert code here to add functionality to your managed object subclass
 
 @end

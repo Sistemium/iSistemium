@@ -85,7 +85,7 @@
                                                                 action:@selector(cancelButtonPressed:)];
         self.toolbar.items = @[flexibleItem,closeButton,flexibleItem];
         
-        self.mainLabel.text = [NSString stringWithFormat:@"%@ %@", NSLocalizedString(@"UNCASHING DATE", nil), [dateFormatter stringFromDate:self.uncashing.date]];
+        self.mainLabel.text = [NSString stringWithFormat:@"%@ %@", NSLocalizedString(@"UNCASHING DATE", nil), [dateFormatter stringFromDate:(NSDate * _Nonnull)self.uncashing.date]];
         
         sum = self.uncashing.summ;
         type = self.uncashing.type;

@@ -2,7 +2,7 @@
 //  STMDatum+CoreDataProperties.m
 //  iSistemium
 //
-//  Created by Maxim Grigoriev on 01/01/16.
+//  Created by Maxim Grigoriev on 10/03/16.
 //  Copyright © 2016 Sistemium UAB. All rights reserved.
 //
 //  Choose "Create NSManagedObject Subclass…" from the Core Data editor menu
@@ -21,7 +21,5 @@
 @dynamic sqts;
 @dynamic sts;
 @dynamic xid;
-@dynamic checksum;
-@dynamic comments;
 
 @end

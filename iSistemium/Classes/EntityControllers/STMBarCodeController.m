@@ -95,7 +95,7 @@
 
 + (NSArray *)barcodesArrayForBarcodeClass:(Class)barcodeClass barcodeValue:(NSString *)barcodeValue {
     
-    if ([barcodeClass isSubclassOfClass:[STMBarCode class]]) {
+    if ([barcodeClass isSubclassOfClass:[STMArticleBarCode class]] || [barcodeClass isSubclassOfClass:[STMStockBatchBarCode class]]) {
         
         STMFetchRequest *request = [STMFetchRequest fetchRequestWithEntityName:NSStringFromClass(barcodeClass)];
         request.sortDescriptors = @[[NSSortDescriptor sortDescriptorWithKey:@"code" ascending:YES selector:@selector(caseInsensitiveCompare:)]];
@@ -164,6 +164,33 @@
         return STMBarCodeTypeUnknown;
         
     }
+    
+}
+
++ (NSString *)barCodeTypeStringForType:(STMBarCodeScannedType)type {
+    
+    NSString *typeString = nil;
+    
+    switch (type) {
+        case STMBarCodeTypeUnknown: {
+            typeString = @"Unknown";
+            break;
+        }
+        case STMBarCodeTypeArticle: {
+            typeString = @"Article";
+            break;
+        }
+        case STMBarCodeTypeExciseStamp: {
+            typeString = @"ExciseStamp";
+            break;
+        }
+        case STMBarCodeTypeStockBatch: {
+            typeString = @"StockBatch";
+            break;
+        }
+    }
+
+    return typeString;
     
 }
 

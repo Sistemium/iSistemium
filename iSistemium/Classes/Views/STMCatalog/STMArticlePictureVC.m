@@ -66,6 +66,9 @@
             
             [self addObservers];
             
+//            picture is sended to background thread
+//            you should dispatch_get_main_queue in downloadConnectionForObject: for picture manipulation
+            
             dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_BACKGROUND, 0), ^{
                 [STMPicturesController downloadConnectionForObject:picture];
             });

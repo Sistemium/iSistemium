@@ -11,7 +11,7 @@
 #import "STMDebtsSVC.h"
 #import "STMSyncer.h"
 #import "STMCashing.h"
-#import "STMDebt+Cashing.h"
+#import "STMDebt.h"
 #import "STMDatePickerVC.h"
 #import "STMFunctions.h"
 #import "STMCashingProcessController.h"
@@ -115,7 +115,7 @@
         if (selectedDebt) {
             
             NSDateFormatter *dateFormatter = [STMFunctions dateShortNoTimeFormatter];
-            NSString *debtDate = [dateFormatter stringFromDate:selectedDebt.date];
+            NSString *debtDate = [dateFormatter stringFromDate:(NSDate * _Nonnull)selectedDebt.date];
             
             self.debtInfoLabel.text = [NSString stringWithFormat:NSLocalizedString(@"DEBT INFO", nil), selectedDebt.ndoc, debtDate];
 
@@ -368,7 +368,7 @@
         
         NSDecimalNumber *cashingSum = [NSDecimalNumber decimalNumberWithString:decimalNumberString locale:local];
 
-        if ([cashingSum compare:self.selectedDebt.calculatedSum] == NSOrderedDescending) {
+        if (self.selectedDebt.calculatedSum && [cashingSum compare:(NSDecimalNumber * _Nonnull)self.selectedDebt.calculatedSum] == NSOrderedDescending) {
          
             cashingSum = self.selectedDebt.calculatedSum;
             

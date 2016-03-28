@@ -288,7 +288,7 @@
         NSDictionary *appSettings = [[[STMSessionManager sharedManager].currentSession settingsController] currentSettingsForGroup:@"appSettings"];
         NSString *defaultUncashingPlaceXid = [appSettings valueForKey:@"defaultUncashingPlace"];
         NSData *xidData = [STMFunctions dataFromString:[defaultUncashingPlaceXid stringByReplacingOccurrencesOfString:@"-" withString:@""]];
-        NSManagedObject *object = [STMObjectsController objectForXid:xidData];
+        NSManagedObject *object = [STMObjectsController objectForXid:xidData entityName:NSStringFromClass([STMUncashingPlace class])];
 
         if ([object isKindOfClass:[STMUncashingPlace class]]) {
             
@@ -673,7 +673,7 @@
     
     for (STMCashing *cashing in [[STMUncashingProcessController sharedInstance].cashingDictionary allValues]) {
         
-        uncashingSum = [uncashingSum decimalNumberByAdding:cashing.summ];
+        uncashingSum = (cashing.summ) ? [uncashingSum decimalNumberByAdding:(NSDecimalNumber *)cashing.summ] : uncashingSum;
         
     }
     

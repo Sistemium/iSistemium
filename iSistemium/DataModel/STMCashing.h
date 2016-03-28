@@ -2,24 +2,23 @@
 //  STMCashing.h
 //  iSistemium
 //
-//  Created by Maxim Grigoriev on 13/02/15.
-//  Copyright (c) 2015 Sistemium UAB. All rights reserved.
+//  Created by Maxim Grigoriev on 07/02/16.
+//  Copyright © 2016 Sistemium UAB. All rights reserved.
 //
 
 #import <Foundation/Foundation.h>
-#import <CoreData/CoreData.h>
-#import "STMComment.h"
+#import "STMDatum.h"
 
 @class STMDebt, STMOutlet, STMUncashing;
 
-@interface STMCashing : STMComment
+NS_ASSUME_NONNULL_BEGIN
 
-@property (nonatomic, retain) NSDate * date;
-@property (nonatomic, retain) NSNumber * isProcessed;
-@property (nonatomic, retain) NSDecimalNumber * summ;
-@property (nonatomic, retain) NSString * ndoc;
-@property (nonatomic, retain) STMDebt *debt;
-@property (nonatomic, retain) STMOutlet *outlet;
-@property (nonatomic, retain) STMUncashing *uncashing;
+@interface STMCashing : STMDatum
+
+// Insert code here to declare functionality of your managed object subclass
 
 @end
+
+NS_ASSUME_NONNULL_END
+
+#import "STMCashing+CoreDataProperties.h"

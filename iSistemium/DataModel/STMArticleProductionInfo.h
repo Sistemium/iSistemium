@@ -7,13 +7,13 @@
 //
 
 #import <Foundation/Foundation.h>
-#import "STMComment.h"
+#import "STMDatum.h"
 
 @class STMArticle, STMProductionInfoType;
 
 NS_ASSUME_NONNULL_BEGIN
 
-@interface STMArticleProductionInfo : STMComment
+@interface STMArticleProductionInfo : STMDatum
 
 - (NSString *)displayInfo;
 

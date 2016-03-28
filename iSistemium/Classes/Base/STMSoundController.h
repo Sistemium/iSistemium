@@ -16,8 +16,22 @@
 + (void)playOk;
 
 + (void)say:(NSString *)string;
++ (void)sayText:(NSString *)string
+       withRate:(float)rate
+          pitch:(float)pitch;
+
 + (void)alertSay:(NSString *)string;
++ (void)alertSay:(NSString *)string
+        withRate:(float)rate
+           pitch:(float)pitch;
+
 + (void)okSay:(NSString *)string;
++ (void)okSay:(NSString *)string
+     withRate:(float)rate
+        pitch:(float)pitch;
+
++ (void)ringWithProperties:(NSDictionary *)ringProperties;
++ (void)stopRinging;
 
 + (void)ringWithProperties:(NSDictionary *)ringProperties;
 + (void)stopRinging;

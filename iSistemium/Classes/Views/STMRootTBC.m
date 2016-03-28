@@ -289,7 +289,10 @@
             
             UIViewController *vc = [storyboard instantiateInitialViewController];
             vc.title = title;
-            vc.tabBarItem.image = [STMFunctions resizeImage:[UIImage imageNamed:imageName] toSize:CGSizeMake(30, 30)];
+            
+            UIImage *image = [UIImage imageNamed:imageName];
+            
+            if (image) vc.tabBarItem.image = [STMFunctions resizeImage:image toSize:CGSizeMake(30, 30)];
             
             if (!self.allTabsVCs[@(index)]) {
             
@@ -413,9 +416,9 @@
         
 // temporary tab for coding
 //        [self registerTabWithStoryboardParameters:
-//                                                    @{@"name": @"STMScannerInfo",
-//                                                      @"title": @"Scanner Info",
-//                                                      @"imageName": @"scanner_info.png"}
+//                                                    @{@"name": @"STMWKWebView",
+//                                                      @"title": @"JSPicking",
+//                                                      @"imageName": @"move_by_trolley.png"}
 //         
 //                                          atIndex:stcTabs.count];
 // end of temporary tab
@@ -689,6 +692,52 @@
         [(id <STMTabBarItemControllable>)self.currentTappedVC showActionPopoverFromTabBarItem];
         
     }
+    
+}
+
+
+#pragma mark - show/hide tabbar
+
+- (void)hideTabBar {
+    
+    [UIView beginAnimations:nil context:NULL];
+    [UIView setAnimationDuration:0.5];
+    
+    CGFloat viewHeight = CGRectGetHeight(self.view.frame);
+    
+    for (UIView *view in self.view.subviews) {
+        
+        if([view isKindOfClass:[UITabBar class]]) {
+            [view setFrame:CGRectMake(view.frame.origin.x, viewHeight, view.frame.size.width, view.frame.size.height)];
+        } else {
+            [view setFrame:CGRectMake(view.frame.origin.x, view.frame.origin.y, view.frame.size.width, viewHeight)];
+        }
+        
+    }
+    
+    [UIView commitAnimations];
+    
+}
+
+- (void)showTabBar {
+    
+    [UIView beginAnimations:nil context:NULL];
+    [UIView setAnimationDuration:0.5];
+    
+    CGFloat viewHeight = CGRectGetHeight(self.view.frame);
+    CGFloat tabbarHeight = CGRectGetHeight(self.tabBar.frame);
+
+    for (UIView *view in self.view.subviews) {
+
+        if([view isKindOfClass:[UITabBar class]]) {
+            [view setFrame:CGRectMake(view.frame.origin.x, viewHeight - tabbarHeight, view.frame.size.width, view.frame.size.height)];
+        } else {
+            [view setFrame:CGRectMake(view.frame.origin.x, view.frame.origin.y, view.frame.size.width, viewHeight - tabbarHeight)];
+        }
+        
+    }
+    
+    [UIView commitAnimations];
     
 }
 

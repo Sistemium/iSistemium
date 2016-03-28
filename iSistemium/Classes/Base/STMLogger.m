@@ -231,7 +231,7 @@
         STMLogMessage *logMessage = (STMLogMessage *)[STMObjectsController newObjectForEntityName:NSStringFromClass([STMLogMessage class]) isFantom:NO];
         logMessage.text = text;
         logMessage.type = type;
-        logMessage.owner = owner;
+//        logMessage.owner = owner;
         
         [self.document saveDocument:^(BOOL success) {
         }];

@@ -555,7 +555,7 @@
 
 - (CGFloat)heightForRoutePointCell {
     
-    CGFloat diff = [self heightDiffForText:[STMFunctions shortCompanyName:self.point.name]];
+    CGFloat diff = [self heightDiffForText:[STMFunctions shortCompanyName:(NSString *)self.point.name]];
     
     CGFloat height = [self estimatedHeightForRow] + diff;
     
@@ -754,8 +754,12 @@
 
 - (void)fillCell:(UITableViewCell *)cell withRoute:(STMShipmentRoute *)route {
     
-    cell.textLabel.text = [STMFunctions dayWithDayOfWeekFromDate:route.date];
-    cell.detailTextLabel.text = @"";
+    if (route.date) {
+        
+        cell.textLabel.text = [STMFunctions dayWithDayOfWeekFromDate:(NSDate *)route.date];
+        cell.detailTextLabel.text = @"";
+
+    }
 
 }
 
@@ -770,7 +774,7 @@
 
 - (void)fillCell:(UITableViewCell *)cell withRoutePoint:(STMShipmentRoutePoint *)point {
 
-    cell.textLabel.text = [STMFunctions shortCompanyName:point.name];
+    cell.textLabel.text = [STMFunctions shortCompanyName:(NSString *)point.name];
     cell.textLabel.numberOfLines = 0;
     
     cell.detailTextLabel.text = [point shortInfo];
@@ -827,7 +831,7 @@
         buttonCell.titleLabel.textAlignment = NSTextAlignmentCenter;
         
         if (self.point.reachedAtLocation) {
-            buttonCell.detailLabel.text = [[STMFunctions dateMediumTimeMediumFormatter] stringFromDate:self.point.reachedAtLocation.timestamp];
+            buttonCell.detailLabel.text = [[STMFunctions dateMediumTimeMediumFormatter] stringFromDate:(NSDate *)self.point.reachedAtLocation.timestamp];
         } else {
             buttonCell.detailLabel.text = @"";
         }
@@ -1604,13 +1608,13 @@
     
     if (!self.point.shippingLocation.location && self.point.address) {
         
-        [[[CLGeocoder alloc] init] geocodeAddressString:self.point.address completionHandler:^(NSArray *placemarks, NSError *error) {
+        [[[CLGeocoder alloc] init] geocodeAddressString:(NSString *)self.point.address completionHandler:^(NSArray *placemarks, NSError *error) {
             
             if (!error) {
                 
                 CLPlacemark *placemark = placemarks.firstObject;
                 
-                [self.point updateShippingLocationWithGeocodedLocation:placemark.location];
+                [self.point updateShippingLocationWithGeocodedLocation:(CLLocation *)placemark.location];
                 
                 [self.tableView reloadData];
                 [self setupNavBar];

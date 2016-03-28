@@ -9,7 +9,7 @@
 #import "STMOutletDebtsTVC.h"
 #import "STMDocument.h"
 #import "STMSessionManager.h"
-#import "STMDebt+Cashing.h"
+#import "STMDebt.h"
 #import "STMCashing.h"
 #import "STMDebtsCombineVC.h"
 #import "STMConstants.h"
@@ -136,7 +136,7 @@
     
     NSNumberFormatter *numberFormatter = [STMFunctions currencyFormatter];
     
-    NSString *debtSumString = [numberFormatter stringFromNumber:debt.calculatedSum];
+    NSString *debtSumString = [numberFormatter stringFromNumber:(NSDecimalNumber *)debt.calculatedSum];
     
     if (debtSumString) {
 
@@ -193,7 +193,7 @@
             
             [text appendAttributedString:[[NSAttributedString alloc] initWithString:dueDateHeader attributes:attributes]];
             
-            NSNumber *numberOfDays = [STMFunctions daysFromTodayToDate:debt.dateE];
+            NSNumber *numberOfDays = (debt.dateE) ? [STMFunctions daysFromTodayToDate:(NSDate *)debt.dateE] : nil;
 
             NSString *dueDate = nil;
             
@@ -351,7 +351,7 @@
             
             NSDecimalNumber *cashingSum = ([STMCashingProcessController sharedInstance].debtsDictionary)[(NSData * _Nonnull)debt.xid][1];
             
-            fillWidth = [[cashingSum decimalNumberByDividingBy:debt.calculatedSum] doubleValue];
+            fillWidth = [[cashingSum decimalNumberByDividingBy:(NSDecimalNumber *)debt.calculatedSum] doubleValue];
             
             cell.accessoryType = UITableViewCellAccessoryCheckmark;
             
@@ -611,9 +611,9 @@
     
     NSDateFormatter *dateFormatter = [STMFunctions dateMediumNoTimeFormatter];
     
-    NSString *debtDate = [dateFormatter stringFromDate:self.selectedDebt.date];
-    NSString *debtSumOriginString = [numberFormatter stringFromNumber:self.selectedDebt.summOrigin];
-    NSString *debtSumRemainingString = [numberFormatter stringFromNumber:self.selectedDebt.calculatedSum];
+    NSString *debtDate = [dateFormatter stringFromDate:(NSDate *)self.selectedDebt.date];
+    NSString *debtSumOriginString = [numberFormatter stringFromNumber:(NSDecimalNumber *)self.selectedDebt.summOrigin];
+    NSString *debtSumRemainingString = [numberFormatter stringFromNumber:(NSDecimalNumber *)self.selectedDebt.calculatedSum];
     
     messageBody = [messageBody stringByAppendingString:[NSString stringWithFormat:@"Накладная: %@ \n", self.selectedDebt.ndoc]];
     messageBody = [messageBody stringByAppendingString:[NSString stringWithFormat:@"Дата: %@ \n", debtDate]];

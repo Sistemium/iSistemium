@@ -2,7 +2,7 @@
 //  STMPartner+CoreDataProperties.m
 //  iSistemium
 //
-//  Created by Maxim Grigoriev on 14/01/16.
+//  Created by Maxim Grigoriev on 08/02/16.
 //  Copyright © 2016 Sistemium UAB. All rights reserved.
 //
 //  Choose "Create NSManagedObject Subclass…" from the Core Data editor menu
@@ -13,7 +13,18 @@
 
 @implementation STMPartner (CoreDataProperties)
 
+@dynamic commentText;
+@dynamic deviceCts;
+@dynamic deviceTs;
+@dynamic id;
+@dynamic isFantom;
+@dynamic lts;
 @dynamic name;
+@dynamic ownerXid;
+@dynamic source;
+@dynamic sqts;
+@dynamic sts;
+@dynamic xid;
 @dynamic outlets;
 @dynamic supplyOrders;
 
