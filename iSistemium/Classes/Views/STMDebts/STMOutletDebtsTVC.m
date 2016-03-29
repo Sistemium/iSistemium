@@ -276,8 +276,8 @@
 - (NSMutableAttributedString *)detailTextLabelForDebt:(STMDebt *)debt withFont:(UIFont *)font {
     NSNumberFormatter *numberFormatter = [STMFunctions currencyFormatter];
     NSDateFormatter *dateFormatter = [STMFunctions dateMediumNoTimeFormatter];
-    NSString *debtDate = [dateFormatter stringFromDate:debt.date];
-    NSString *debtSumOriginString = [numberFormatter stringFromNumber:debt.summOrigin];
+    NSString *debtDate = [dateFormatter stringFromDate:(id _Nonnull)debt.date];
+    NSString *debtSumOriginString = [numberFormatter stringFromNumber:(id _Nonnull)debt.summOrigin];
     NSMutableAttributedString *text = [[NSMutableAttributedString alloc] initWithString: [NSString stringWithFormat:NSLocalizedString(@"DEBT DETAILS", nil), debt.ndoc, debtDate, debtSumOriginString]];
     return text;
 }

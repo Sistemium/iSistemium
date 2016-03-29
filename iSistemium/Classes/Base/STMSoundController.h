@@ -33,8 +33,5 @@
 + (void)ringWithProperties:(NSDictionary *)ringProperties;
 + (void)stopRinging;
 
-+ (void)ringWithProperties:(NSDictionary *)ringProperties;
-+ (void)stopRinging;
-
 
 @end

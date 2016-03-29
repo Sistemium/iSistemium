@@ -61,8 +61,8 @@ class STMAddEtceteraVC_iPhone: STMAddEtceteraVC,UIPopoverPresentationControllerD
             self.title = NSLocalizedString("ETC", comment: "")
             break
         }
-        self.navigationItem.leftBarButtonItem = UIBarButtonItem(title: NSLocalizedString("CLOSE", comment: ""), style: .Plain, target: self, action: "closeButtonPressed")
-        self.navigationItem.rightBarButtonItem = UIBarButtonItem(title: NSLocalizedString("ADD", comment: ""), style: .Plain, target: self, action: "addButtonPressed")
+        self.navigationItem.leftBarButtonItem = UIBarButtonItem(title: NSLocalizedString("CLOSE", comment: ""), style: .Plain, target: self, action: #selector(STMAddEtceteraVC_iPhone.closeButtonPressed))
+        self.navigationItem.rightBarButtonItem = UIBarButtonItem(title: NSLocalizedString("ADD", comment: ""), style: .Plain, target: self, action: #selector(STMAddEtceteraVC_iPhone.addButtonPressed))
     }
     
 }

@@ -15,7 +15,7 @@ class STMDebtsPVC_iPhone: STMDebtsDetailsPVC, UIPopoverPresentationControllerDel
     
     private var cancelButton:STMBarButtonItem?
     
-    private lazy var addDebt:UIBarButtonItem = UIBarButtonItem(barButtonSystemItem: .Add, target:self, action:"addDebtButtonPressed:")
+    private lazy var addDebt:UIBarButtonItem = UIBarButtonItem(barButtonSystemItem: .Add, target:self, action:#selector(STMDebtsDetailsPVC.addDebtButtonPressed(_:)))
     
     private let dateButton = UIButton(type: .System)
     
@@ -109,7 +109,7 @@ class STMDebtsPVC_iPhone: STMDebtsDetailsPVC, UIPopoverPresentationControllerDel
             let summLabel = UILabel()
             switch toolbar{
             case .SetCashing:
-                let setCahshingSumButton:UIBarButtonItem = UIBarButtonItem(title: "", style: .Plain, target: self, action: "setCashingSum")
+                let setCahshingSumButton:UIBarButtonItem = UIBarButtonItem(title: "", style: .Plain, target: self, action: #selector(STMDebtsPVC_iPhone.setCashingSum))
                 if let limit = STMCashingProcessController.sharedInstance().cashingSummLimit{
                     let numberFormatter = STMFunctions.currencyFormatter
                     setCahshingSumButton.title = NSLocalizedString("CASHING SUMM", comment: "") + ":"
@@ -143,7 +143,7 @@ class STMDebtsPVC_iPhone: STMDebtsDetailsPVC, UIPopoverPresentationControllerDel
             case .LimitedSum:
                 let fixedSpace = UIBarButtonItem(barButtonSystemItem: .FixedSpace , target: nil, action: nil)
                 fixedSpace.width = -5
-                let setCahshingSumButton:UIBarButtonItem = UIBarButtonItem(title: "", style: .Plain, target: self, action: "setCashingSum")
+                let setCahshingSumButton:UIBarButtonItem = UIBarButtonItem(title: "", style: .Plain, target: self, action: #selector(STMDebtsPVC_iPhone.setCashingSum))
                 let summ = STMCashingProcessController.sharedInstance().debtsSumm()
                 let limit = STMCashingProcessController.sharedInstance().cashingSummLimit
                 let numberFormatter = STMFunctions.decimalMaxTwoMinTwoDigitFormatter()
@@ -200,9 +200,9 @@ class STMDebtsPVC_iPhone: STMDebtsDetailsPVC, UIPopoverPresentationControllerDel
                 var finalString = numberFormatter.stringFromNumber(number!)
                 var appendingString:String? = nil
                 var suffix:String? = nil
-                for (var i = 0; i <= 2; i++) {
+                for i in 0...2 {
                     suffix = numberFormatter.decimalSeparator
-                    for (var j = 0; j < i; j++) {
+                    for _ in 0..<i {
                         suffix = suffix!.stringByAppendingString("0")
                     }
                     appendingString = text.hasSuffix(suffix!) ? suffix : appendingString
@@ -287,12 +287,12 @@ class STMDebtsPVC_iPhone: STMDebtsDetailsPVC, UIPopoverPresentationControllerDel
         super.addObservers()
         NSNotificationCenter.defaultCenter().addObserver(
             self,
-            selector: "updateCashingLabel",
+            selector: #selector(STMDebtsPVC_iPhone.updateCashingLabel),
             name: "debtAdded",
             object: STMCashingProcessController.sharedInstance())
         NSNotificationCenter.defaultCenter().addObserver(
             self,
-            selector: "updateCashingLabel",
+            selector: #selector(STMDebtsPVC_iPhone.updateCashingLabel),
             name: "debtRemoved",
             object: STMCashingProcessController.sharedInstance())
     }
@@ -303,9 +303,9 @@ class STMDebtsPVC_iPhone: STMDebtsDetailsPVC, UIPopoverPresentationControllerDel
         super.viewDidLoad()
         setupSegmentedControl()
         removeSwipeGesture()
-        doneButton = STMBarButtonItem(title: NSLocalizedString("DONE", comment: ""), style: .Done, target: self, action: "cashingButtonPressed")
-        cancelButton = STMBarButtonItem(title: NSLocalizedString("CANCEL", comment: ""), style: .Plain, target:STMCashingProcessController.sharedInstance(), action:"cancelCashingProcess")
-        dateButton.addTarget(self, action: "changeDate", forControlEvents: .TouchUpInside)
+        doneButton = STMBarButtonItem(title: NSLocalizedString("DONE", comment: ""), style: .Done, target: self, action: #selector(STMDebtsDetailsPVC.cashingButtonPressed))
+        cancelButton = STMBarButtonItem(title: NSLocalizedString("CANCEL", comment: ""), style: .Plain, target:STMCashingProcessController.sharedInstance(), action:#selector(STMCashingProcessController.cancelCashingProcess))
+        dateButton.addTarget(self, action: #selector(STMDebtsPVC_iPhone.changeDate), forControlEvents: .TouchUpInside)
         
     }
     

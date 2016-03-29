@@ -140,7 +140,7 @@ class STMShippingLocationTVC:STMVariableCellsHeightTVC,UIImagePickerControllerDe
                     
                     let showCount = (shippingLocation!.shippingLocationPictures!.count > STMSwiftConstants.LIMIT_COUNT) ? STMSwiftConstants.LIMIT_COUNT : shippingLocation!.shippingLocationPictures!.count;
                     
-                    let sortDesriptor = NSSortDescriptor(key: "deviceTs", ascending: false, selector: "compare:")
+                    let sortDesriptor = NSSortDescriptor(key: "deviceTs", ascending: false, selector: #selector(NSNumber.compare(_:)))
                     let range = NSMakeRange(0, showCount)
                     
                     let photoArray = (shippingLocation!.shippingLocationPictures! as NSSet).sortedArrayUsingDescriptors([sortDesriptor] )[range.toRange()!]
@@ -241,7 +241,7 @@ class STMShippingLocationTVC:STMVariableCellsHeightTVC,UIImagePickerControllerDe
     
     let imageView = UIImageView(image: UIImage(data: data))
     
-    let tap = UITapGestureRecognizer(target: self, action: "photoButtonPressed:")
+    let tap = UITapGestureRecognizer(target: self, action: #selector(STMShippingLocationTVC.photoButtonPressed(_:)))
     imageView.gestureRecognizers = [tap]
     imageView.userInteractionEnabled = true
     
@@ -253,7 +253,7 @@ class STMShippingLocationTVC:STMVariableCellsHeightTVC,UIImagePickerControllerDe
     
     let imageView = UIImageView(image: STMFunctions.resizeImage(UIImage(named: "plus")!, toSize:THUMB_SIZE))
     
-    let tap = UITapGestureRecognizer(target: self, action: "addPhotoButtonPressed:")
+    let tap = UITapGestureRecognizer(target: self, action: #selector(STMShippingLocationTVC.addPhotoButtonPressed(_:)))
     imageView.gestureRecognizers = [tap]
     imageView.userInteractionEnabled = true
     
@@ -366,7 +366,7 @@ class STMShippingLocationTVC:STMVariableCellsHeightTVC,UIImagePickerControllerDe
         if segue.identifier == "showPhotos" {
             let picturesPVC = segue.destinationViewController as! STMShippingLocationPicturesPVC
             
-            let sortDesriptor = NSSortDescriptor(key: "deviceTs", ascending: false, selector: "compare:")
+            let sortDesriptor = NSSortDescriptor(key: "deviceTs", ascending: false, selector: #selector(NSNumber.compare(_:)))
             let photoArray = (shippingLocation!.shippingLocationPictures! as NSSet).sortedArrayUsingDescriptors([sortDesriptor])
             
             picturesPVC.photoArray =  NSMutableArray(array: photoArray)

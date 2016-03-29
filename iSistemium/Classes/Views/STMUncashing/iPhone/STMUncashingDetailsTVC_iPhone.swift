@@ -35,7 +35,7 @@ class STMUncashingDetailsTVC_iPhone: STMUncashingDetailsTVC, UIPopoverPresentati
     }
     
     override func showAddButton() {
-        self.navigationItem.setRightBarButtonItem(UIBarButtonItem(barButtonSystemItem: .Add, target: self, action: "addButtonPressed"), animated: true)
+        self.navigationItem.setRightBarButtonItem(UIBarButtonItem(barButtonSystemItem: .Add, target: self, action: #selector(STMUncashingDetailsTVC_iPhone.addButtonPressed)), animated: true)
     }
     
     override func hideAddButton() {
@@ -53,8 +53,8 @@ class STMUncashingDetailsTVC_iPhone: STMUncashingDetailsTVC, UIPopoverPresentati
                 self.tableView.selectRowAtIndexPath(indexPath, animated: true, scrollPosition: .None)
             }
         }
-        self.navigationItem.setLeftBarButtonItem(UIBarButtonItem(barButtonSystemItem: .Cancel, target: self, action: "cancelButtonPressed"), animated: true)
-        self.navigationItem.setRightBarButtonItem(UIBarButtonItem(title: NSLocalizedString("CONFIRM", comment: ""), style: .Plain, target: self, action: "confirmButtonPressed"), animated: true)
+        self.navigationItem.setLeftBarButtonItem(UIBarButtonItem(barButtonSystemItem: .Cancel, target: self, action: #selector(STMUncashingDetailsTVC_iPhone.cancelButtonPressed)), animated: true)
+        self.navigationItem.setRightBarButtonItem(UIBarButtonItem(title: NSLocalizedString("CONFIRM", comment: ""), style: .Plain, target: self, action: #selector(STMUncashingDetailsTVC_iPhone.confirmButtonPressed)), animated: true)
         self.navigationItem.titleView = UIView()
         toolbar = .sum
     }
@@ -312,7 +312,7 @@ class STMUncashingDetailsTVC_iPhone: STMUncashingDetailsTVC, UIPopoverPresentati
     
     override func addObservers(){
         super.addObservers()
-        NSNotificationCenter.defaultCenter().addObserver(self, selector: "resetToolbar", name: "cashingDictionaryChanged", object: STMUncashingProcessController.sharedInstance())
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(STMUncashingDetailsTVC_iPhone.resetToolbar), name: "cashingDictionaryChanged", object: STMUncashingProcessController.sharedInstance())
     }
     
     override func viewDidLoad() {

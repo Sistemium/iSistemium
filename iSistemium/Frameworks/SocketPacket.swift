@@ -92,7 +92,7 @@ struct SocketPacket {
         }
         
         binary.append(data)
-        currentPlace++
+        currentPlace += 1
         
         if placeholders == currentPlace {
             currentPlace = 0
@@ -102,7 +102,8 @@ struct SocketPacket {
         }
     }
     
-    private func completeMessage(var message: String, ack: Bool) -> String {
+    private func completeMessage(message: String, ack: Bool) -> String {
+        var message = message
         if data.count == 0 {
             return message + "]"
         }
@@ -297,7 +298,10 @@ private extension SocketPacket {
         }
     }
     
-    static func deconstructData(var data: [AnyObject]) -> ([AnyObject], [NSData]) {
+    static func deconstructData(data: [AnyObject]) -> ([AnyObject], [NSData]) {
+        
+        var data = data
+        
         var binary = [NSData]()
         
         for i in 0..<data.count {

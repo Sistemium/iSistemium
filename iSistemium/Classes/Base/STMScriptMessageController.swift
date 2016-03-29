@@ -85,8 +85,8 @@ class STMScriptMessageController: NSObject {
         
     }
 
-    class func subpredicatesForFilterDictionaryWithEntityName(entityName: String, var filterDictionary: [String: [String: AnyObject]]) -> [NSPredicate] {
-        
+    class func subpredicatesForFilterDictionaryWithEntityName(entityName: String, filterDictionary: [String: [String: AnyObject]]) -> [NSPredicate] {
+        var filterDictionary = filterDictionary
         let entityDescription: STMEntityDescription = STMEntityDescription.entityForName(entityName, inManagedObjectContext: currentContext())
         
         let properties: [String : NSPropertyDescription] = entityDescription.propertiesByName
@@ -193,7 +193,9 @@ class STMScriptMessageController: NSObject {
         
     }
 
-    class func normalizeValue(var value: AnyObject?, className: String) -> AnyObject? {
+    class func normalizeValue(value: AnyObject?, className: String) -> AnyObject? {
+        
+        var value = value
         
         guard value != nil else {
             return nil
@@ -215,8 +217,10 @@ class STMScriptMessageController: NSObject {
         
     }
     
-    class func relationshipObjectForValue(var value: AnyObject?, className: String) -> AnyObject? {
-
+    class func relationshipObjectForValue(value: AnyObject?, className: String) -> AnyObject? {
+        
+        var value = value
+        
         guard value is String else {
             print("relationship value is not a String, can not get xid")
             return nil

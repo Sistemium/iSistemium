@@ -55,8 +55,8 @@ class STMAddDebtVC_iPhone: STMAddDebtVC,UIPopoverPresentationControllerDelegate 
     override func viewDidLoad() {
         super.viewDidLoad()
         self.title = NSLocalizedString("ADD DEBT", comment: "")
-        self.navigationItem.leftBarButtonItem = UIBarButtonItem(title: NSLocalizedString("CLOSE", comment: ""), style: .Plain, target: self, action: "closeButtonPressed")
-        self.navigationItem.rightBarButtonItem = UIBarButtonItem(title: NSLocalizedString("ADD", comment: ""), style: .Plain, target: self, action: "addButtonPressed")
+        self.navigationItem.leftBarButtonItem = UIBarButtonItem(title: NSLocalizedString("CLOSE", comment: ""), style: .Plain, target: self, action: #selector(STMAddDebtVC_iPhone.closeButtonPressed))
+        self.navigationItem.rightBarButtonItem = UIBarButtonItem(title: NSLocalizedString("ADD", comment: ""), style: .Plain, target: self, action: #selector(STMAddDebtVC_iPhone.addButtonPressed))
     }
     
 }

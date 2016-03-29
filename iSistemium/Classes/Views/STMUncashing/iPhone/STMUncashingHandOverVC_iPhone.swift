@@ -17,7 +17,7 @@ class STMUncashingHandOverVC_iPhone: STMUncashingHandOverVC, UIPopoverPresentati
         super.customInit()
         self.navigationItem.leftBarButtonItem = nil
         self.navigationItem.setHidesBackButton(false, animated: false)
-        self.navigationItem.rightBarButtonItem = UIBarButtonItem(title: NSLocalizedString("DONE", comment: ""), style: .Done, target: STMUncashingProcessController.sharedInstance(), action: "checkUncashing")
+        self.navigationItem.rightBarButtonItem = UIBarButtonItem(title: NSLocalizedString("DONE", comment: ""), style: .Done, target: STMUncashingProcessController.sharedInstance(), action: #selector(STMUncashingProcessController.checkUncashing))
         self.navigationController?.setToolbarHidden(true, animated: true)
         STMUncashingProcessController.sharedInstance().uncashingType = nil
         STMUncashingProcessController.sharedInstance().pictureImage = nil
