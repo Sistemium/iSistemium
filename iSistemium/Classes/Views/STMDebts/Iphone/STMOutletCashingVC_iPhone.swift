@@ -31,7 +31,7 @@ class STMOutletCashingVC_iPhone: STMOutletCashingVC {
         var attributes: NSDictionary
         let text = NSMutableAttributedString()
         let numberFormatter = STMFunctions.currencyFormatter
-        let cashingSumString = numberFormatter().stringFromNumber(cashing.summ)
+        let cashingSumString = numberFormatter().stringFromNumber(cashing.summ!)
         let debt = cashing.debt
         backgroundColor = UIColor.clearColor()
         textColor = UIColor.darkGrayColor()
@@ -44,7 +44,7 @@ class STMOutletCashingVC_iPhone: STMOutletCashingVC {
             text.appendAttributedString(NSAttributedString(string: cashingSumString! + " ", attributes: attributes as? [String : AnyObject]))
         }
         if debt?.ndoc != nil{
-            text.appendAttributedString(NSAttributedString(string: NSLocalizedString("FOR", comment: "") + " " + debt.ndoc ,attributes:attributes as? [String : AnyObject]))
+            text.appendAttributedString(NSAttributedString(string: NSLocalizedString("FOR", comment: "") + " " + debt!.ndoc! ,attributes:attributes as? [String : AnyObject]))
         }
         return text
     }
@@ -60,7 +60,7 @@ class STMOutletCashingVC_iPhone: STMOutletCashingVC {
         if debt?.summOrigin == nil{
             debtSumOriginString = nil
         }else{
-            debtSumOriginString = numberFormatter().stringFromNumber(debt.summOrigin)
+            debtSumOriginString = numberFormatter().stringFromNumber(debt!.summOrigin!)
         }
         backgroundColor = UIColor.clearColor()
         textColor = UIColor.darkGrayColor()
@@ -74,7 +74,7 @@ class STMOutletCashingVC_iPhone: STMOutletCashingVC {
         }
         if debt?.date != nil {
             let dateFormatter = STMFunctions.dateMediumNoTimeFormatter
-            let debtDate = dateFormatter().stringFromDate(debt.date)
+            let debtDate = dateFormatter().stringFromDate(debt!.date!)
             text.appendAttributedString(NSAttributedString(string: NSLocalizedString("OF", comment: "") + " " + debtDate, attributes: attributes as? [String : AnyObject]))
         }
         return text
@@ -94,7 +94,7 @@ class STMOutletCashingVC_iPhone: STMOutletCashingVC {
                 NSBackgroundColorAttributeName: backgroundColor,
                 NSForegroundColorAttributeName: textColor
             ]
-            let commentString = NSString(format:"(%@) ", cashing.commentText)
+            let commentString = NSString(format:"(%@) ", cashing.commentText!)
             text.appendAttributedString(NSAttributedString(string: commentString as String, attributes:attributes as? [String : AnyObject]))
         }
         if debt?.responsibility != nil {
@@ -105,7 +105,7 @@ class STMOutletCashingVC_iPhone: STMOutletCashingVC {
                 NSBackgroundColorAttributeName: backgroundColor,
                 NSForegroundColorAttributeName: textColor
             ]
-            let responsibilityString = NSString(format: "%@", debt.responsibility)
+            let responsibilityString = NSString(format: "%@", debt!.responsibility!)
             text.appendAttributedString(NSAttributedString(string:responsibilityString as String, attributes:attributes as? [String : AnyObject]))
             text.appendAttributedString(NSAttributedString(string: " "))
         }

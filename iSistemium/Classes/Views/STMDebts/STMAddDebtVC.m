@@ -184,10 +184,9 @@
 //        NSLog(@"self.debtSum %@", self.debtSum);
 
         [STMDebtsController addNewDebtWithSum:self.debtSum ndoc:self.debtNdoc date:self.selectedDate outlet:self.parentVC.outlet comment:self.commentText];
-        #warning Dont forget!!!!
-//        if (![self.parentVC isKindOfClass: STMDebtsPVC_iPhone.class]){
-//            [self.parentVC dismissAddDebt];
-//        }
+        if (![self.parentVC isKindOfClass: STMDebtsPVC_iPhone.class]){
+            [self.parentVC dismissAddDebt];
+        }
 
     }
     

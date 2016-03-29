@@ -100,11 +100,11 @@ class STMUncashingDetailsTVC_iPhone: STMUncashingDetailsTVC, UIPopoverPresentati
                     let flexibleSpace = UIBarButtonItem(barButtonSystemItem: .FlexibleSpace, target: nil, action: nil)
                     var cashingSum = NSDecimalNumber.zero()
                     for cashing in self.resultsController.fetchedObjects! {
-                        cashingSum = cashingSum.decimalNumberByAdding(cashing.summ)
+                        cashingSum = cashingSum.decimalNumberByAdding(cashing.summ ?? 0)
                     }
                     var uncashingSum = NSDecimalNumber.zero()
                     for cashing in STMUncashingProcessController.sharedInstance().cashingDictionary.allValues {
-                        uncashingSum = uncashingSum.decimalNumberByAdding(cashing.summ)
+                        uncashingSum = uncashingSum.decimalNumberByAdding(cashing.summ ?? 0)
                     }
                     infoLabel?.title = NSLocalizedString("SUM", comment: "") + numberFormatter.stringFromNumber(uncashingSum)! + " " + NSLocalizedString("FROM", comment: "") + " " + numberFormatter.stringFromNumber(cashingSum)!
                     setToolbarItems([flexibleSpace,self.infoLabel!,flexibleSpace], animated: true)
@@ -162,7 +162,6 @@ class STMUncashingDetailsTVC_iPhone: STMUncashingDetailsTVC, UIPopoverPresentati
         var attributes: NSDictionary
         let text = NSMutableAttributedString()
         let numberFormatter = STMFunctions.currencyFormatter
-        let cashingSumString = numberFormatter().stringFromNumber(cashing.summ)
         let debt = cashing.debt
         if uncashing != nil{
             textColor = UIColor.darkGrayColor()
@@ -175,17 +174,18 @@ class STMUncashingDetailsTVC_iPhone: STMUncashingDetailsTVC, UIPopoverPresentati
             NSBackgroundColorAttributeName: backgroundColor,
             NSForegroundColorAttributeName: textColor
         ]
-        if cashingSumString != nil{
+        if let summ = cashing.summ{
+            let cashingSumString = numberFormatter().stringFromNumber(summ)
             text.appendAttributedString(NSAttributedString(string: cashingSumString! + " ", attributes: attributes as? [String : AnyObject]))
         }
         if (debt != nil){
-            if debt.ndoc != nil{
-                text.appendAttributedString(NSAttributedString(string: NSLocalizedString("FOR", comment: "") + " " + debt.ndoc ,attributes:attributes as? [String : AnyObject]))
+            if debt!.ndoc != nil{
+                text.appendAttributedString(NSAttributedString(string: NSLocalizedString("FOR", comment: "") + " " + debt!.ndoc! ,attributes:attributes as? [String : AnyObject]))
             }
         }
         else{
             if (cashing.ndoc != nil) {
-                text.appendAttributedString(NSAttributedString(string:NSLocalizedString("FOR", comment: "") + " " + cashing.ndoc,attributes: attributes as? [String : AnyObject]))
+                text.appendAttributedString(NSAttributedString(string:NSLocalizedString("FOR", comment: "") + " " + cashing.ndoc!,attributes: attributes as? [String : AnyObject]))
             }
         }
         return text
@@ -210,13 +210,13 @@ class STMUncashingDetailsTVC_iPhone: STMUncashingDetailsTVC, UIPopoverPresentati
             NSForegroundColorAttributeName: textColor
         ]
         if debt != nil{
-            if debt.summOrigin != nil {
-                let debtSumOriginString = numberFormatter().stringFromNumber(debt.summOrigin)
+            if debt!.summOrigin != nil {
+                let debtSumOriginString = numberFormatter().stringFromNumber(debt!.summOrigin!)
                 text.appendAttributedString(NSAttributedString(string: NSLocalizedString("BY SUMM", comment: "").uppercaseFirst + " " + debtSumOriginString! + " ", attributes: attributes as? [String : AnyObject]))
             }
-            if debt.date != nil {
+            if debt!.date != nil {
                 let dateFormatter = STMFunctions.dateMediumNoTimeFormatter
-                let debtDate = dateFormatter().stringFromDate(debt.date)
+                let debtDate = dateFormatter().stringFromDate(debt!.date!)
                 text.appendAttributedString(NSAttributedString(string: NSLocalizedString("OF", comment: "") + " " + debtDate, attributes: attributes as? [String : AnyObject]))
             }
         }
@@ -242,12 +242,12 @@ class STMUncashingDetailsTVC_iPhone: STMUncashingDetailsTVC, UIPopoverPresentati
         ]
         if cashing.date != nil {
             let dateFormatter = STMFunctions.dateMediumNoTimeFormatter
-            let cashingDate = dateFormatter().stringFromDate(cashing.date)
+            let cashingDate = dateFormatter().stringFromDate(cashing.date!)
             let commentString = NSString(format:"%@ ", cashingDate)
             text.appendAttributedString(NSAttributedString(string: commentString as String, attributes:attributes as? [String : AnyObject]))
         }
         if cashing.commentText != nil {
-            let commentString = NSString(format:"(%@) ", cashing.commentText)
+            let commentString = NSString(format:"(%@) ", cashing.commentText!)
             text.appendAttributedString(NSAttributedString(string: commentString as String, attributes:attributes as? [String : AnyObject]))
         }
         if debt?.responsibility != nil {
@@ -258,7 +258,7 @@ class STMUncashingDetailsTVC_iPhone: STMUncashingDetailsTVC, UIPopoverPresentati
                 NSBackgroundColorAttributeName: backgroundColor,
                 NSForegroundColorAttributeName: textColor
             ]
-            let responsibilityString = NSString(format: "%@", debt.responsibility)
+            let responsibilityString = NSString(format: "%@", debt!.responsibility!)
             text.appendAttributedString(NSAttributedString(string:responsibilityString as String, attributes:attributes as? [String : AnyObject]))
             text.appendAttributedString(NSAttributedString(string: " "))
         }

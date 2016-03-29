@@ -67,7 +67,7 @@ class STMOutletDebtsTVC_iPhone: STMOutletDebtsTVC {
             var fillWidth: CGFloat = 0
             if debt.xid != nil && STMCashingProcessController.sharedInstance().debtsDictionary.allKeys.contains({$0 as? NSObject == debt.xid}) {
                 let cashingSum = STMCashingProcessController.sharedInstance().debtsDictionary[debt.xid!!]![1]
-                fillWidth = CGFloat(cashingSum.decimalNumberByDividingBy(debt.calculatedSum).doubleValue)
+                fillWidth = CGFloat(cashingSum.decimalNumberByDividingBy(debt.calculatedSum ?? 0).doubleValue)
                 customCell.accessoryType = .DetailButton
                 let checkLabel = STMLabel(frame: customCell.checkboxView.bounds)
                 checkLabel.adjustsFontSizeToFitWidth = true
@@ -116,7 +116,7 @@ class STMOutletDebtsTVC_iPhone: STMOutletDebtsTVC {
             ]
             text.appendAttributedString(NSAttributedString(string: debtSumString! + " ", attributes: attributes as? [String : AnyObject]))
         }
-        if debt.ndoc != nil{
+        if let ndoc = debt.ndoc{
             backgroundColor = UIColor.clearColor()
             textColor = UIColor.blackColor()
             attributes = [
@@ -124,7 +124,7 @@ class STMOutletDebtsTVC_iPhone: STMOutletDebtsTVC {
                 NSBackgroundColorAttributeName: backgroundColor,
                 NSForegroundColorAttributeName: textColor
             ]
-            text.appendAttributedString(NSAttributedString(string: NSLocalizedString("FOR", comment: "") + " " + debt.ndoc ,attributes:attributes as? [String : AnyObject]))
+            text.appendAttributedString(NSAttributedString(string: NSLocalizedString("FOR", comment: "") + " " + ndoc ,attributes:attributes as? [String : AnyObject]))
         }
         return text
     }
@@ -136,8 +136,8 @@ class STMOutletDebtsTVC_iPhone: STMOutletDebtsTVC {
         var attributes: NSDictionary
         let text = NSMutableAttributedString()
         let numberFormatter = STMFunctions.currencyFormatter
-        let debtSumOriginString = numberFormatter().stringFromNumber(debt.summOrigin)
-        if debtSumOriginString != nil {
+        if let summOrigin = debt.summOrigin {
+            let debtSumOriginString = numberFormatter().stringFromNumber(summOrigin)
             backgroundColor = UIColor.clearColor()
             textColor = UIColor.blackColor()
             attributes = [
@@ -149,7 +149,7 @@ class STMOutletDebtsTVC_iPhone: STMOutletDebtsTVC {
         }
         if debt.date != nil {
             let dateFormatter = STMFunctions.dateMediumNoTimeFormatter
-            let debtDate = dateFormatter().stringFromDate(debt.date)
+            let debtDate = dateFormatter().stringFromDate(debt.date!)
             backgroundColor = UIColor.clearColor()
             textColor = UIColor.blackColor()
             attributes = [
@@ -170,7 +170,7 @@ class STMOutletDebtsTVC_iPhone: STMOutletDebtsTVC {
         if debt.dateE != nil{
             backgroundColor = UIColor.clearColor()
             textColor = UIColor.blackColor()
-            var numberOfDays = STMFunctions.daysFromTodayToDate(debt.dateE)
+            var numberOfDays = STMFunctions.daysFromTodayToDate(debt.dateE!)
             var dueDate : NSString
             switch numberOfDays.intValue{
             case 0:
@@ -211,7 +211,7 @@ class STMOutletDebtsTVC_iPhone: STMOutletDebtsTVC {
                 NSBackgroundColorAttributeName: backgroundColor,
                 NSForegroundColorAttributeName: textColor
             ]
-            let commentString = NSString(format:"(%@) ", debt.commentText)
+            let commentString = NSString(format:"(%@) ", debt.commentText!)
             text.appendAttributedString(NSAttributedString(string: commentString as String, attributes:attributes as? [String : AnyObject]))
         }
         if debt.responsibility != nil {
@@ -222,7 +222,7 @@ class STMOutletDebtsTVC_iPhone: STMOutletDebtsTVC {
                 NSBackgroundColorAttributeName: backgroundColor,
                 NSForegroundColorAttributeName: textColor
             ]
-            let responsibilityString = NSString(format: "%@", debt.responsibility)
+            let responsibilityString = NSString(format: "%@", debt.responsibility!)
             text.appendAttributedString(NSAttributedString(string:responsibilityString as String, attributes:attributes as? [String : AnyObject]))
             text.appendAttributedString(NSAttributedString(string: " "))
         }

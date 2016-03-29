@@ -40,7 +40,12 @@ class STMUncashingTVC_iPhone: STMUncashingMasterTVC {
             dateFormatter.dateStyle = .ShortStyle
             dateFormatter.timeStyle = .ShortStyle
             if sender != nil{
-                (segue.destinationViewController as! STMUncashingDetailsTVC).title = NSLocalizedString("HAND OVER", comment: "").dropLast + " (" + dateFormatter.stringFromDate((sender as! STMUncashing).date) + ")"
+                if let destination = segue.destinationViewController as? STMUncashingDetailsTVC{
+                    destination.title = NSLocalizedString("HAND OVER", comment: "").dropLast
+                    if let date = (sender as! STMUncashing).date {
+                        destination.title! += " (" + dateFormatter.stringFromDate(date) + ")"
+                    }
+                }
             }else{
                 (segue.destinationViewController as! STMUncashingDetailsTVC).title = NSLocalizedString("ON HAND", comment: "").dropLast
             }
