@@ -103,11 +103,11 @@
         
         [self.view addSubview:self.spinnerView];
         [self addObservers];
-        
-//        [STMPicturesController hrefProcessingForObject:self.picture];
+
+        NSManagedObjectID *pictureID = self.picture.objectID;
         
         dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_BACKGROUND, 0), ^{
-            [STMPicturesController downloadConnectionForObject:self.picture];
+            [STMPicturesController downloadConnectionForObjectID:pictureID];
         });
 
     }

@@ -591,20 +591,44 @@
 
 - (void)addOperationForObject:(NSManagedObject *)object {
     
+    __weak NSManagedObjectID *objectID = object.objectID;
+
     if ([[self instantLoadPicturesEntityNames] containsObject:NSStringFromClass([object class])]) {
         
-        [self downloadConnectionForObject:object];
+        [self downloadConnectionForObjectID:objectID];
         
     } else {
-    
-        __weak NSManagedObject *weakObject = object;
-
+        
         [self.downloadQueue addOperationWithBlock:^{
-            [self downloadConnectionForObject:weakObject];
+            [self downloadConnectionForObjectID:objectID];
         }];
 
     }
     
+}
+
++ (void)downloadConnectionForObjectID:(NSManagedObjectID *)objectID {
+    [[self sharedController] downloadConnectionForObjectID:objectID];
+}
+
+- (void)downloadConnectionForObjectID:(NSManagedObjectID *)objectID {
+    
+    dispatch_async(dispatch_get_main_queue(), ^{
+        
+        NSError *error;
+        
+        NSManagedObject *object = [[STMPicturesController document].managedObjectContext existingObjectWithID:objectID error:&error];
+        
+        if (!error && object) {
+            
+            [self downloadConnectionForObject:object];
+            
+        } else {
+            NSLog(@"existingObjectWithID %@ error: %@", objectID, error.localizedDescription);
+        }
+        
+    });
+
 }
 
 + (void)downloadConnectionForObject:(NSManagedObject *)object {
@@ -623,59 +647,67 @@
             
         } else {
             
-            NSURL *url = [NSURL URLWithString:href];
-            NSURLRequest *request = [NSURLRequest requestWithURL:url];
-            NSURLResponse *response = nil;
-            NSError *error = nil;
+            dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_BACKGROUND, 0), ^{
             
-            //        NSLog(@"start loading %@", url.lastPathComponent);
-            
-            NSData *data = [NSURLConnection sendSynchronousRequest:request returningResponse:&response error:&error];
-            
-            if (error) {
+                NSURL *url = [NSURL URLWithString:href];
+                NSURLRequest *request = [NSURLRequest requestWithURL:url];
+                NSURLResponse *response = nil;
+                NSError *error = nil;
                 
-                if (error.code == -1001) {
+                //        NSLog(@"start loading %@", url.lastPathComponent);
+
+                NSData *data = [NSURLConnection sendSynchronousRequest:request returningResponse:&response error:&error];
+                
+                if (error) {
                     
-                    NSLog(@"error code -1001 timeout for %@", href);
-                    
-                    if ([self.secondAttempt containsObject:href]) {
+                    if (error.code == -1001) {
                         
-                        NSLog(@"second load attempt fault for %@", href);
+                        NSLog(@"error code -1001 timeout for %@", href);
                         
-                        [self.secondAttempt removeObject:href];
-                        [self.hrefDictionary removeObjectForKey:href];
+                        if ([self.secondAttempt containsObject:href]) {
+                            
+                            NSLog(@"second load attempt fault for %@", href);
+                            
+                            [self.secondAttempt removeObject:href];
+                            [self.hrefDictionary removeObjectForKey:href];
+                            
+                        } else {
+                            
+                            [self.secondAttempt addObject:href];
+                            
+#warning Is it really need to dispath_async & addOperationForObject here? secondAttempt?
+                            dispatch_async(dispatch_get_main_queue(), ^{
+                                [self performSelector:@selector(addOperationForObject:) withObject:object afterDelay:0];
+                            });
+                            
+                        }
                         
                     } else {
                         
-                        [self.secondAttempt addObject:href];
-                        
-#warning Is it really need to dispath_async & addOperationForObject here? secondAttempt?
-                        dispatch_async(dispatch_get_main_queue(), ^{
-                            [self performSelector:@selector(addOperationForObject:) withObject:object afterDelay:0];
-                        });
+                        NSLog(@"error %@ in %@", error.description, [object valueForKey:@"name"]);
+                        [self.hrefDictionary removeObjectForKey:href];
                         
                     }
                     
                 } else {
                     
-                    NSLog(@"error %@ in %@", error.description, [object valueForKey:@"name"]);
+                    //                NSLog(@"%@ load successefully", href);
+                    
                     [self.hrefDictionary removeObjectForKey:href];
+                    
+                    NSData *dataCopy = [data copy];
+                    
+                    dispatch_async(dispatch_get_main_queue(), ^{
+
+                        if ([object isKindOfClass:[STMPicture class]]) {
+                            [[self class] setImagesFromData:dataCopy forPicture:(STMPicture *)object andUpload:NO];
+                        }
+
+                    });
                     
                 }
                 
-            } else {
-                
-//                NSLog(@"%@ load successefully", href);
-                
-                [self.hrefDictionary removeObjectForKey:href];
-                
-                NSData *dataCopy = [data copy];
-                
-                if ([object isKindOfClass:[STMPicture class]]) {
-                    [[self class] setImagesFromData:dataCopy forPicture:(STMPicture *)object andUpload:NO];
-                }
-                
-            }
+            });
             
         }
         
