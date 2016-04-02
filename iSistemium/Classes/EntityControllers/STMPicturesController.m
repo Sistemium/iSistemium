@@ -25,7 +25,8 @@
 
 @property (nonatomic, strong) NSOperationQueue *uploadQueue;
 @property (nonatomic, strong) NSMutableDictionary *hrefDictionary;
-//@property (nonatomic, strong) NSMutableArray *secondAttempt;
+@property (nonatomic) BOOL waitingForDownloadPicture;
+
 @property (nonatomic, strong) STMSession *session;
 @property (nonatomic, strong) NSMutableDictionary *settings;
 
@@ -85,16 +86,13 @@
     
     if ([STMAuthController authController].controllerState != STMAuthSuccess) {
         
-        self.downloadQueue.suspended = YES;
-        [self.downloadQueue cancelAllOperations];
-        self.downloadQueue = nil;
-
+        self.downloadingPictures = NO;
+        
         self.uploadQueue.suspended = YES;
         [self.uploadQueue cancelAllOperations];
         self.uploadQueue = nil;
         
         self.hrefDictionary = nil;
-//        self.secondAttempt = nil;
         self.session = nil;
         self.settings = nil;
         self.nonloadedPicturesResultsController = nil;
@@ -107,6 +105,17 @@
     return [STMSessionManager sharedManager].currentSession;
 }
 
+- (void)setDownloadingPictures:(BOOL)downloadingPictures {
+    
+    if (_downloadingPictures != downloadingPictures) {
+        
+        _downloadingPictures = downloadingPictures;
+
+        (_downloadingPictures) ? [self startDownloadingPictures] : [self stopDownloadingPictures];
+        
+    }
+    
+}
 
 - (NSMutableDictionary *)hrefDictionary {
     
@@ -114,28 +123,6 @@
         _hrefDictionary = [NSMutableDictionary dictionary];
     }
     return _hrefDictionary;
-    
-}
-
-//- (NSMutableArray *)secondAttempt {
-//    
-//    if (!_secondAttempt) {
-//        _secondAttempt = [NSMutableArray array];
-//    }
-//    return _secondAttempt;
-//    
-//}
-
-- (NSOperationQueue *)downloadQueue {
-    
-    if (!_downloadQueue) {
-        
-        _downloadQueue = [[NSOperationQueue alloc] init];
-        _downloadQueue.maxConcurrentOperationCount = 1;
-        _downloadQueue.suspended = YES;
-        
-    }
-    return _downloadQueue;
     
 }
 
@@ -183,15 +170,6 @@
     
 }
 
-//- (void)performFetch {
-//    
-//    NSError *error;
-//    if (![self.nonloadedPicturesResultsController performFetch:&error]) {
-//        NSLog(@"unloadedPicturesResultsController fetch error: ", error.localizedDescription);
-//    }
-//
-//}
-
 - (NSArray *)photoEntitiesNames {
     
     return @[NSStringFromClass([STMPhotoReport class]),
@@ -221,7 +199,7 @@
             
         }];
         
-        self.downloadQueue.suspended = YES;
+        self.downloadingPictures = NO;
     
     }
     
@@ -473,7 +451,22 @@
             if (![[self sharedController].hrefDictionary.allKeys containsObject:href]) {
                 
                 ([self sharedController].hrefDictionary)[href] = object;
-                [[self sharedController] addOperationForObject:object];
+                
+                if ([self sharedController].downloadingPictures) {
+                    
+                    [[self sharedController] downloadNextPicture];
+                    
+                } else {
+                
+                    __weak NSManagedObjectID *objectID = object.objectID;
+                    
+                    if ([[[self sharedController] instantLoadPicturesEntityNames] containsObject:NSStringFromClass([object class])]) {
+                        
+                        [self downloadConnectionForObjectID:objectID];
+                        
+                    }
+
+                }
                 
             }
             
@@ -483,10 +476,6 @@
     
 }
 
-//+ (void)setImagesFromData:(NSData *)data forPicture:(STMPicture *)picture {
-//    [self setImagesFromData:data forPicture:picture andUpload:NO];
-//}
-
 + (void)setImagesFromData:(NSData *)data forPicture:(STMPicture *)picture andUpload:(BOOL)shouldUpload {
     
     NSData *weakData = data;
@@ -494,13 +483,8 @@
     
     NSString *xid = [STMFunctions UUIDStringFromUUIDData:picture.xid];
     NSString *fileName = [xid stringByAppendingString:@".jpg"];
-
-//    NSString *fileName = nil;
     
     if ([picture isKindOfClass:[STMPhoto class]]) {
-        
-//        NSString *xid = [STMFunctions UUIDStringFromUUIDData:picture.xid];
-//        fileName = [xid stringByAppendingString:@".jpg"];
         
         if (shouldUpload) {
             [[self sharedController] addUploadOperationForPicture:picture data:weakData];
@@ -508,15 +492,7 @@
 
     } else if ([picture isKindOfClass:[STMPicture class]]) {
         
-//        fileName = [[NSURL URLWithString:picture.href] lastPathComponent];
-
-// https://github.com/Sistemium/iSistemium/issues/323
-//#warning - have to use xid for filename like STMPhoto class
-
     }
-    
-//#warning should check filename is not nil
-////https://crashlytics.com/sistemium2/ios/apps/com.sistemium.isistemium/issues/5572b38ef505b5ccf00d93eb
     
     if (fileName) {
         
@@ -589,21 +565,29 @@
 
 #pragma mark - queues
 
-- (void)addOperationForObject:(NSManagedObject *)object {
-    
-    __weak NSManagedObjectID *objectID = object.objectID;
+- (void)startDownloadingPictures {
+    [self downloadNextPicture];
+}
 
-    if ([[self instantLoadPicturesEntityNames] containsObject:NSStringFromClass([object class])]) {
+- (void)downloadNextPicture {
+    
+    if (self.downloadingPictures && !self.waitingForDownloadPicture) {
         
-        [self downloadConnectionForObjectID:objectID];
+        NSManagedObject *object = self.hrefDictionary.allValues.firstObject;
+        
+        if (object) {
+            [self downloadConnectionForObjectID:object.objectID];
+        } else {
+            [self stopDownloadingPictures];
+        }
         
     } else {
-        
-        [self.downloadQueue addOperationWithBlock:^{
-            [self downloadConnectionForObjectID:objectID];
-        }];
-
+        [self stopDownloadingPictures];
     }
+    
+}
+
+- (void)stopDownloadingPictures {
     
 }
 
@@ -642,11 +626,13 @@
     if (href) {
         
         if ([object valueForKey:@"imageThumbnail"]) {
-            
-            [self.hrefDictionary removeObjectForKey:href];
+
+            [self didProcessHref:href];
             
         } else {
         
+            self.waitingForDownloadPicture = YES;
+            
             NSURL *url = [NSURL URLWithString:href];
             NSURLRequest *request = [NSURLRequest requestWithURL:url];
             
@@ -656,29 +642,38 @@
                                                queue:[NSOperationQueue mainQueue]
                                    completionHandler:^(NSURLResponse * _Nullable response, NSData * _Nullable data, NSError * _Nullable connectionError) {
 
+                self.waitingForDownloadPicture = NO;
+                                       
                 if (connectionError) {
                    
-                   NSLog(@"error %@ in %@", connectionError.description, [object valueForKey:@"name"]);
-                   [self.hrefDictionary removeObjectForKey:href];
-                   
+                    NSLog(@"error %@ in %@", connectionError.description, [object valueForKey:@"name"]);
+                    [self didProcessHref:href];
+
                 } else {
                    
                    //                NSLog(@"%@ load successefully", href);
                    
-                   [self.hrefDictionary removeObjectForKey:href];
-                   
-                   if ([object isKindOfClass:[STMPicture class]]) {
+                    [self didProcessHref:href];
+
+                    if ([object isKindOfClass:[STMPicture class]]) {
                        [[self class] setImagesFromData:data forPicture:(STMPicture *)object andUpload:NO];
-                   }
+                    }
                    
                 }
-                                       
+
             }];
             
         }
         
     }
     
+}
+
+- (void)didProcessHref:(NSString *)href {
+
+    [self.hrefDictionary removeObjectForKey:href];
+    [self downloadNextPicture];
+
 }
 
 - (void)repeatUploadOperationForObject:(NSManagedObject *)object {
@@ -718,7 +713,9 @@
     [request setValue: @"image/jpeg" forHTTPHeaderField:@"content-type"];
     [request setHTTPBody:data];
     
-    [NSURLConnection sendAsynchronousRequest:request queue:[NSOperationQueue mainQueue] completionHandler:^(NSURLResponse *response, NSData *data, NSError *error) {
+    [NSURLConnection sendAsynchronousRequest:request
+                                       queue:[NSOperationQueue mainQueue]
+                           completionHandler:^(NSURLResponse *response, NSData *data, NSError *error) {
         
         if (!error) {
             
