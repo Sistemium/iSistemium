@@ -25,7 +25,7 @@
 
 @property (nonatomic, strong) NSOperationQueue *uploadQueue;
 @property (nonatomic, strong) NSMutableDictionary *hrefDictionary;
-@property (nonatomic, strong) NSMutableArray *secondAttempt;
+//@property (nonatomic, strong) NSMutableArray *secondAttempt;
 @property (nonatomic, strong) STMSession *session;
 @property (nonatomic, strong) NSMutableDictionary *settings;
 
@@ -94,7 +94,7 @@
         self.uploadQueue = nil;
         
         self.hrefDictionary = nil;
-        self.secondAttempt = nil;
+//        self.secondAttempt = nil;
         self.session = nil;
         self.settings = nil;
         self.nonloadedPicturesResultsController = nil;
@@ -117,14 +117,14 @@
     
 }
 
-- (NSMutableArray *)secondAttempt {
-    
-    if (!_secondAttempt) {
-        _secondAttempt = [NSMutableArray array];
-    }
-    return _secondAttempt;
-    
-}
+//- (NSMutableArray *)secondAttempt {
+//    
+//    if (!_secondAttempt) {
+//        _secondAttempt = [NSMutableArray array];
+//    }
+//    return _secondAttempt;
+//    
+//}
 
 - (NSOperationQueue *)downloadQueue {
     
@@ -646,68 +646,34 @@
             [self.hrefDictionary removeObjectForKey:href];
             
         } else {
+        
+            NSURL *url = [NSURL URLWithString:href];
+            NSURLRequest *request = [NSURLRequest requestWithURL:url];
             
-            dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_BACKGROUND, 0), ^{
+            //        NSLog(@"start loading %@", url.lastPathComponent);
             
-                NSURL *url = [NSURL URLWithString:href];
-                NSURLRequest *request = [NSURLRequest requestWithURL:url];
-                NSURLResponse *response = nil;
-                NSError *error = nil;
-                
-                //        NSLog(@"start loading %@", url.lastPathComponent);
+            [NSURLConnection sendAsynchronousRequest:request
+                                               queue:[NSOperationQueue mainQueue]
+                                   completionHandler:^(NSURLResponse * _Nullable response, NSData * _Nullable data, NSError * _Nullable connectionError) {
 
-                NSData *data = [NSURLConnection sendSynchronousRequest:request returningResponse:&response error:&error];
-                
-                if (error) {
-                    
-                    if (error.code == -1001) {
-                        
-                        NSLog(@"error code -1001 timeout for %@", href);
-                        
-                        if ([self.secondAttempt containsObject:href]) {
-                            
-                            NSLog(@"second load attempt fault for %@", href);
-                            
-                            [self.secondAttempt removeObject:href];
-                            [self.hrefDictionary removeObjectForKey:href];
-                            
-                        } else {
-                            
-                            [self.secondAttempt addObject:href];
-                            
-#warning Is it really need to dispath_async & addOperationForObject here? secondAttempt?
-                            dispatch_async(dispatch_get_main_queue(), ^{
-                                [self performSelector:@selector(addOperationForObject:) withObject:object afterDelay:0];
-                            });
-                            
-                        }
-                        
-                    } else {
-                        
-                        NSLog(@"error %@ in %@", error.description, [object valueForKey:@"name"]);
-                        [self.hrefDictionary removeObjectForKey:href];
-                        
-                    }
-                    
+                if (connectionError) {
+                   
+                   NSLog(@"error %@ in %@", connectionError.description, [object valueForKey:@"name"]);
+                   [self.hrefDictionary removeObjectForKey:href];
+                   
                 } else {
-                    
-                    //                NSLog(@"%@ load successefully", href);
-                    
-                    [self.hrefDictionary removeObjectForKey:href];
-                    
-                    NSData *dataCopy = [data copy];
-                    
-                    dispatch_async(dispatch_get_main_queue(), ^{
-
-                        if ([object isKindOfClass:[STMPicture class]]) {
-                            [[self class] setImagesFromData:dataCopy forPicture:(STMPicture *)object andUpload:NO];
-                        }
-
-                    });
-                    
+                   
+                   //                NSLog(@"%@ load successefully", href);
+                   
+                   [self.hrefDictionary removeObjectForKey:href];
+                   
+                   if ([object isKindOfClass:[STMPicture class]]) {
+                       [[self class] setImagesFromData:data forPicture:(STMPicture *)object andUpload:NO];
+                   }
+                   
                 }
-                
-            });
+                                       
+            }];
             
         }
         
