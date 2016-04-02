@@ -448,22 +448,20 @@
         
         if ([object isKindOfClass:[STMPicture class]]) {
             
-            if (![[self sharedController].hrefDictionary.allKeys containsObject:href]) {
+            STMPicturesController *pc = [self sharedController];
+            
+            if (![pc.hrefDictionary.allKeys containsObject:href]) {
                 
-                ([self sharedController].hrefDictionary)[href] = object;
+                (pc.hrefDictionary)[href] = object;
                 
-                if ([self sharedController].downloadingPictures) {
+                if (pc.downloadingPictures) {
                     
-                    [[self sharedController] downloadNextPicture];
+                    [pc downloadNextPicture];
                     
                 } else {
-                
-                    __weak NSManagedObjectID *objectID = object.objectID;
                     
-                    if ([[[self sharedController] instantLoadPicturesEntityNames] containsObject:NSStringFromClass([object class])]) {
-                        
-                        [self downloadConnectionForObjectID:objectID];
-                        
+                    if ([[pc instantLoadPicturesEntityNames] containsObject:NSStringFromClass([object class])]) {
+                        [self downloadConnectionForObjectID:object.objectID];
                     }
 
                 }
