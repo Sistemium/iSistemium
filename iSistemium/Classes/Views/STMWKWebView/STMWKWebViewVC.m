@@ -359,6 +359,31 @@
         
         [self handleTabbarMessage:message];
         
+    } else if ([message.name isEqualToString:WK_MESSAGE_SUBSCRIBE]) {
+        
+        [self handleSubscribeMessage:message];
+        
+    }
+    
+}
+
+- (void)handleSubscribeMessage:(WKScriptMessage *)message {
+    
+    NSDictionary *parameters = message.body;
+
+    NSLog(@"%@", parameters);
+
+    if ([parameters[@"entities"] isKindOfClass:[NSArray class]]) {
+        
+        NSArray *entities = parameters[@"entities"];
+        
+        [self callbackWithData:@[@"subscribe to entities success"] parameters:parameters];
+        
+    } else {
+        
+        [self callbackWithError:@"message.parameters.entities is not a NSArray class"
+                     parameters:@{@"messageBody": [message.body description]}];
+
     }
     
 }
@@ -366,8 +391,6 @@
 - (void)handleTabbarMessage:(WKScriptMessage *)message {
     
     NSDictionary *parameters = message.body;
-    
-    NSLog(@"%@", parameters);
     
     NSString *action = parameters[@"action"];
     
