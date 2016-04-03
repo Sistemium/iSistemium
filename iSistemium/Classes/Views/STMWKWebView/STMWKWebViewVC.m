@@ -377,12 +377,23 @@
         
         NSArray *entities = parameters[@"entities"];
         
-        [self callbackWithData:@[@"subscribe to entities success"] parameters:parameters];
+        NSError *error = nil;
+
+        if ([STMObjectsController subscribeViewController:self toEntities:entities error:&error]) {
+        
+            [self callbackWithData:@[@"subscribe to entities success"] parameters:parameters];
+
+        } else {
+            
+            [self callbackWithError:error.localizedDescription
+                         parameters:parameters];
+            
+        }
         
     } else {
         
         [self callbackWithError:@"message.parameters.entities is not a NSArray class"
-                     parameters:@{@"messageBody": [message.body description]}];
+                     parameters:parameters];
 
     }
     
@@ -563,6 +574,13 @@
         
     }];
 
+}
+
+
+#pragma mark - STMEntitiesSubscribable
+
+- (void)subscribedEntitiesObjectsWasReceived:(NSArray *)objects {
+    
 }
 
 

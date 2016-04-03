@@ -41,11 +41,24 @@
 @property (nonatomic, strong) NSArray *coreEntityRelationships;
 @property (nonatomic) BOOL isInFlushingProcess;
 
+@property (nonatomic, strong) NSMutableDictionary <NSString *, NSArray <UIViewController <STMEntitiesSubscribable> *> *> *entitiesToSubscribe;
+
 
 @end
 
 
 @implementation STMObjectsController
+
+- (NSMutableDictionary <NSString *, NSArray <UIViewController <STMEntitiesSubscribable> *> *> *)entitiesToSubscribe {
+    
+    if (!_entitiesToSubscribe) {
+    
+        _entitiesToSubscribe = @{}.mutableCopy;
+        
+    }
+    return _entitiesToSubscribe;
+    
+}
 
 - (NSMutableDictionary *)timesDic {
     
@@ -1277,6 +1290,63 @@
     NSLog(@"fantoms count %d", [self numberOfFantoms]);
     NSLog(@"total count %d", totalCount);
 
+}
+
+
+#pragma mark - subscribe entities from WKWebView
+
++ (BOOL)subscribeViewController:(UIViewController <STMEntitiesSubscribable> *)vc toEntities:(NSArray *)entities error:(NSError **)error {
+    
+    BOOL result = YES;
+    NSString *errorMessage;
+    NSMutableArray *entitiesToSubscribe = @[].mutableCopy;
+    
+    for (id item in entities) {
+        
+        if ([item isKindOfClass:[NSString class]]) {
+            
+            NSString *entityName = [NSString stringWithFormat:@"STM%@", item];
+            
+            if ([[self localDataModelEntityNames] containsObject:entityName]) {
+            
+                [entitiesToSubscribe addObject:entityName];
+                
+            } else {
+                
+                errorMessage = [NSString stringWithFormat:@"entity name %@ is not in local data model", entityName];
+                result = NO;
+                break;
+                
+            }
+            
+        } else {
+            
+            errorMessage = [NSString stringWithFormat:@"entities array item %@ is not a NSString", item];
+            result = NO;
+            break;
+            
+        }
+        
+    }
+    
+    if (result) {
+
+        for (NSString *entityName in entitiesToSubscribe) {
+            
+            NSArray *vcArray = [self sharedController].entitiesToSubscribe[entityName];
+            vcArray = (vcArray) ? [vcArray arrayByAddingObject:vc] : @[vc];
+            [self sharedController].entitiesToSubscribe[entityName] = vcArray;
+            
+        }
+        
+    } else {
+        
+        [self error:error withMessage:errorMessage];
+
+    }
+    
+    return result;
+    
 }
 
 
