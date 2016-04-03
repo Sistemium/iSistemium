@@ -1099,7 +1099,10 @@
             
             if (!connectionError) {
                 
-                NSInteger statusCode = [(NSHTTPURLResponse *)response statusCode];
+                NSHTTPURLResponse *httpResponse = (NSHTTPURLResponse *)response;
+                
+                NSInteger statusCode = httpResponse.statusCode;
+                NSString *stringForStatusCode = [NSHTTPURLResponse localizedStringForStatusCode:statusCode];
                 
                 switch (statusCode) {
                         
@@ -1109,13 +1112,13 @@
                         break;
                         
                     case 204:
-                        NSLog(@"    news: 204 No Content");
+                        NSLog(@"    news: 204 %@", stringForStatusCode);
                         self.fetchResult = UIBackgroundFetchResultNoData;
                         [self receivingDidFinish];
                         break;
                         
                     default:
-                        NSLog(@"    news statusCode: %d", statusCode);
+                        NSLog(@"    news statusCode: %d %@", statusCode, stringForStatusCode);
                         self.fetchResult = UIBackgroundFetchResultFailed;
                         [self receivingDidFinish];
                         break;
@@ -1423,8 +1426,11 @@
 
 - (void)connection:(NSURLConnection *)connection didReceiveResponse:(NSURLResponse *)response {
     
-    NSInteger statusCode = [(NSHTTPURLResponse *)response statusCode];
-    NSDictionary *headers = [(NSHTTPURLResponse *)response allHeaderFields];
+    NSHTTPURLResponse *httpResponse = (NSHTTPURLResponse *)response;
+    
+    NSInteger statusCode = httpResponse.statusCode;
+    NSString *stringForStatusCode = [NSHTTPURLResponse localizedStringForStatusCode:statusCode];
+    NSDictionary *headers = httpResponse.allHeaderFields;
     
 //    NSLog(@"response %@", response);
     
@@ -1432,7 +1438,7 @@
     
     if (statusCode == 200) {
         
-        (self.responses)[entityName] = [NSMutableData data];
+        self.responses[entityName] = [NSMutableData data];
         
         NSString *eTag = headers[@"eTag"];
         
@@ -1442,54 +1448,51 @@
             if (![entityName isEqualToString:SEND_DATA_CONNECTION]) [self receiveNoContentStatusForEntityWithName:entityName];
         }
         
-    } else if (statusCode == 410) {
-        
-        NSLog(@"%@: 410 Gone", entityName);
-        
-        [STMEntityController deleteEntityWithName:entityName];
-
-        [self entityCountDecrease];
-        
-    }  else if (statusCode == 401) {
-        
-        NSLog(@"%@: 401 Unauthorized", entityName);
-        [self notAuthorized];
-        
-    }  else if (statusCode == 204) {
-        
-        NSLog(@"%@: 204 No Content", entityName);
-        [self receiveNoContentStatusForEntityWithName:entityName];
-        
     } else {
-        
-        NSLog(@"%@: HTTP status %d", entityName, statusCode);
-        
-        if ([entityName isEqualToString:@"SEND_DATA"]) {
-            
-            self.syncing = NO;
-            self.syncerState = STMSyncerIdle;
-            
-        } else if ([entityName isEqualToString:@"STMEntity"]) {
+    
+        NSLog(@"%@: %d %@", entityName, statusCode, stringForStatusCode);
 
-            self.syncing = NO;
-            self.syncerState = STMSyncerIdle;
+        self.responses[entityName] = nil;
+        
+        switch (statusCode) {
+                
+            case 204:
+                [self receiveNoContentStatusForEntityWithName:entityName];
+                break;
 
-//        } else if (! -- self.entityCount) {
-//            
-//            self.syncing = NO;
-//            self.syncerState = STMSyncerIdle;
-            
-        } else {
-            [self entityCountDecrease];
+            case 401:
+                [self notAuthorized];
+                break;
+
+            case 410:
+                [STMEntityController deleteEntityWithName:entityName];
+                [self entityCountDecrease];
+                break;
+
+            default:
+                if ([entityName isEqualToString:@"SEND_DATA"]) {
+                    
+                    self.syncing = NO;
+                    self.syncerState = STMSyncerIdle;
+                    
+                } else if ([entityName isEqualToString:@"STMEntity"]) {
+                    
+                    self.syncing = NO;
+                    self.syncerState = STMSyncerIdle;
+                    
+                } else {
+                    [self entityCountDecrease];
+                }
+                break;
+                
         }
+    
     }
     
 }
 
 - (void)receiveNoContentStatusForEntityWithName:(NSString *)entityName {
-    
-    [self.responses removeObjectForKey:entityName];
-    
+
     if ([entityName isEqualToString:@"STMEntity"]) {
         
         [STMEntityController flushSelf];
