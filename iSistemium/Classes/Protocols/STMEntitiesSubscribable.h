@@ -10,7 +10,7 @@
 
 @protocol STMEntitiesSubscribable <NSObject>
 
-- (void)subscribedEntitiesObjectsWasRecived:(NSArray *)objects;
+- (void)subscribedEntitiesObjectWasReceived:(NSDictionary *)objectDic;
 
 
 @end

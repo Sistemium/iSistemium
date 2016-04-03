@@ -538,8 +538,8 @@
 
     NSMutableArray *arguments = @[].mutableCopy;
     
-    [arguments addObject:data];
-    [arguments addObject:parameters];
+    if (data) [arguments addObject:data];
+    if (parameters) [arguments addObject:parameters];
     
     NSString *jsFunction = [NSString stringWithFormat:@"%@.apply(null,%@)", self.iSistemiumIOSCallbackJSFunction, [STMFunctions jsonStringFromArray:arguments]];
     
@@ -579,8 +579,14 @@
 
 #pragma mark - STMEntitiesSubscribable
 
-- (void)subscribedEntitiesObjectsWasReceived:(NSArray *)objects {
+- (void)subscribedEntitiesObjectWasReceived:(NSDictionary *)objectDic {
+
+    NSArray *result = @[objectDic];
+    NSDictionary *parameters = @{@"reason": @"subscription"};
     
+    [self callbackWithData:result
+                parameters:parameters];
+
 }
 
 

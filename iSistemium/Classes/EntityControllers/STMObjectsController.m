@@ -383,6 +383,10 @@
 //    [[self sharedController].timesDic[@"4"] addObject:@([start timeIntervalSinceNow])];
 // -------------
     
+    if ([[self sharedController].entitiesToSubscribe.allKeys containsObject:entityName]) {
+        if ([object isKindOfClass:[STMDatum class]]) [self sendSubscribedEntityObject:(STMDatum *)object entityName:entityName];
+    }
+    
 }
 
 + (id)typeConversionForValue:(id)value key:(NSString *)key entityAttributes:(NSDictionary *)entityAttributes {
@@ -1305,7 +1309,7 @@
         
         if ([item isKindOfClass:[NSString class]]) {
             
-            NSString *entityName = [NSString stringWithFormat:@"STM%@", item];
+            NSString *entityName = [NSString stringWithFormat:@"%@%@", ISISTEMIUM_PREFIX, item];
             
             if ([[self localDataModelEntityNames] containsObject:entityName]) {
             
@@ -1349,6 +1353,18 @@
     
 }
 
++ (void)sendSubscribedEntityObject:(STMDatum *)object entityName:(NSString *)entityName {
+    
+    NSArray <UIViewController <STMEntitiesSubscribable> *> *vcArray = [self sharedController].entitiesToSubscribe[entityName];
+    
+    for (UIViewController <STMEntitiesSubscribable> *vc in vcArray) {
+    
+        [vc subscribedEntitiesObjectWasReceived:[self dictionaryForJSWithObject:object]];
+
+    }
+    
+}
+
 
 #pragma mark - destroy objects from WKWebView
 
@@ -1365,7 +1381,7 @@
     
     NSDictionary *parameters = scriptMessage.body;
 
-    NSString *entityName = [NSString stringWithFormat:@"STM%@", parameters[@"entity"]];
+    NSString *entityName = [NSString stringWithFormat:@"%@%@", ISISTEMIUM_PREFIX, parameters[@"entity"]];
     
     if (![[self localDataModelEntityNames] containsObject:entityName]) {
         
@@ -1455,7 +1471,7 @@
     
     NSDictionary *parameters = scriptMessage.body;
     
-    NSString *entityName = [NSString stringWithFormat:@"STM%@", parameters[@"entity"]];
+    NSString *entityName = [NSString stringWithFormat:@"%@%@", ISISTEMIUM_PREFIX, parameters[@"entity"]];
     
     if (![[self localDataModelEntityNames] containsObject:entityName]) {
         
@@ -1804,7 +1820,7 @@
     
     if (*error) return nil;
 
-    NSString *entityName = [NSString stringWithFormat:@"STM%@", parameters[@"entity"]];
+    NSString *entityName = [NSString stringWithFormat:@"%@%@", ISISTEMIUM_PREFIX, parameters[@"entity"]];
     NSDictionary *options = parameters[@"options"];
     NSUInteger pageSize = [options[@"pageSize"] integerValue];
     NSUInteger startPage = [options[@"startPage"] integerValue] - 1;
@@ -1841,7 +1857,7 @@
     
     NSString *errorMessage = nil;
 
-    NSString *entityName = [NSString stringWithFormat:@"STM%@", parameters[@"entity"]];
+    NSString *entityName = [NSString stringWithFormat:@"%@%@", ISISTEMIUM_PREFIX, parameters[@"entity"]];
     
     if ([[self localDataModelEntityNames] containsObject:entityName]) {
         
