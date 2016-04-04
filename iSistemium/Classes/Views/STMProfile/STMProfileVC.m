@@ -461,6 +461,9 @@
         self.downloadAlertWasShown = NO;
         self.nonloadedPicturesButton.enabled = NO;
         
+        [STMPicturesController sharedController].downloadingPictures = NO;
+        [UIApplication sharedApplication].idleTimerDisabled = NO;
+
     }
     
     [self.nonloadedPicturesButton setTitle:title forState:UIControlStateNormal];
@@ -533,13 +536,17 @@
     
     [STMPicturesController checkPhotos];
     [STMPicturesController sharedController].downloadingPictures = YES;
-    [self updateNonloadedPicturesInfo];
+    [UIApplication sharedApplication].idleTimerDisabled = YES;
 
+    [self updateNonloadedPicturesInfo];
+    
 }
 
 - (void)stopPicturesDownloading {
     
     [STMPicturesController sharedController].downloadingPictures = NO;
+    [UIApplication sharedApplication].idleTimerDisabled = NO;
+    
     [self updateNonloadedPicturesInfo];
 
 }
@@ -1132,6 +1139,18 @@
         [[STMRootTBC sharedRootVC] newAppVersionAvailable:nil];
     }
     
+    if ([STMPicturesController sharedController].downloadingPictures) {
+        [UIApplication sharedApplication].idleTimerDisabled = YES;
+    }
+    
+}
+
+- (void)viewWillDisappear:(BOOL)animated {
+    
+    [super viewWillDisappear:animated];
+    
+    [UIApplication sharedApplication].idleTimerDisabled = NO;
+
 }
 
 - (void)didReceiveMemoryWarning {
