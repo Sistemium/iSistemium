@@ -532,7 +532,12 @@
 #ifdef DEBUG
     
     NSString *requestId = parameters[@"options"][@"requestId"];
-    NSLog(@"requestId %@ callbackWithData: %@ objects", requestId, @(data.count));
+
+    if (requestId) {
+        NSLog(@"requestId %@ callbackWithData: %@ objects", requestId, @(data.count));
+    } else {
+        NSLog(@"callbackWithData: %@ objects for message parameters: %@", @(data.count), parameters);
+    }
     
 #endif
 

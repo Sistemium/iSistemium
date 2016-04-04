@@ -1338,7 +1338,15 @@
         for (NSString *entityName in entitiesToSubscribe) {
             
             NSArray *vcArray = [self sharedController].entitiesToSubscribe[entityName];
-            vcArray = (vcArray) ? [vcArray arrayByAddingObject:vc] : @[vc];
+            
+            if (vcArray) {
+                if (![vcArray containsObject:vc]) {
+                    vcArray = [vcArray arrayByAddingObject:vc];
+                }
+            } else {
+                vcArray = @[vc];
+            }
+            
             [self sharedController].entitiesToSubscribe[entityName] = vcArray;
             
         }
