@@ -8,7 +8,10 @@
 
 #import <UIKit/UIKit.h>
 
-@interface STMWKWebViewVC : UIViewController
+#import "STMEntitiesSubscribable.h"
+
+
+@interface STMWKWebViewVC : UIViewController <STMEntitiesSubscribable>
 
 - (void)reloadWebView;
 

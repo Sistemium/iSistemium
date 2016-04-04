@@ -416,9 +416,8 @@
         
 // temporary tab for coding
 //        [self registerTabWithStoryboardParameters:
-//                                                    @{@"name": @"STMWKWebView",
-//                                                      @"title": @"JSPicking",
-//                                                      @"imageName": @"move_by_trolley.png"}
+//                                                    @{@"name": @"STMScannerTest",
+//                                                      @"title": @"STMScannerTest"}
 //         
 //                                          atIndex:stcTabs.count];
 // end of temporary tab

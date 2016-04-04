@@ -469,3 +469,6 @@
 "REMAIN TO PICK" = "Remain to pick: ";
 "SELECT DATE" = "Select date";
 "FROM" = "from";
+"LAST SCANNED BARCODE" = "Last scanned barcode:";
+"RELOAD SCANNER DATA" = "Reload data";
+

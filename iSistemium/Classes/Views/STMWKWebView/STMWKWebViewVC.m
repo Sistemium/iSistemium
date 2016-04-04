@@ -153,6 +153,8 @@
 
 - (void)loadURLString:(NSString *)urlString {
     
+    urlString = @"http://maxbook.local:3000/#/orders";
+    
     NSURL *url = [NSURL URLWithString:urlString];
     NSMutableURLRequest *request = [[NSMutableURLRequest alloc] initWithURL:url];
     
@@ -357,6 +359,42 @@
         
         [self handleTabbarMessage:message];
         
+    } else if ([message.name isEqualToString:WK_MESSAGE_SUBSCRIBE]) {
+        
+        [self handleSubscribeMessage:message];
+        
+    }
+    
+}
+
+- (void)handleSubscribeMessage:(WKScriptMessage *)message {
+    
+    NSDictionary *parameters = message.body;
+
+    NSLog(@"%@", parameters);
+
+    if ([parameters[@"entities"] isKindOfClass:[NSArray class]]) {
+        
+        NSArray *entities = parameters[@"entities"];
+        
+        NSError *error = nil;
+
+        if ([STMObjectsController subscribeViewController:self toEntities:entities error:&error]) {
+        
+            [self callbackWithData:@[@"subscribe to entities success"] parameters:parameters];
+
+        } else {
+            
+            [self callbackWithError:error.localizedDescription
+                         parameters:parameters];
+            
+        }
+        
+    } else {
+        
+        [self callbackWithError:@"message.parameters.entities is not a NSArray class"
+                     parameters:parameters];
+
     }
     
 }
@@ -364,8 +402,6 @@
 - (void)handleTabbarMessage:(WKScriptMessage *)message {
     
     NSDictionary *parameters = message.body;
-    
-    NSLog(@"%@", parameters);
     
     NSString *action = parameters[@"action"];
     
@@ -496,14 +532,19 @@
 #ifdef DEBUG
     
     NSString *requestId = parameters[@"options"][@"requestId"];
-    NSLog(@"requestId %@ callbackWithData: %@ objects", requestId, @(data.count));
+
+    if (requestId) {
+        NSLog(@"requestId %@ callbackWithData: %@ objects", requestId, @(data.count));
+    } else {
+        NSLog(@"callbackWithData: %@ objects for message parameters: %@", @(data.count), parameters);
+    }
     
 #endif
 
     NSMutableArray *arguments = @[].mutableCopy;
     
-    [arguments addObject:data];
-    [arguments addObject:parameters];
+    if (data) [arguments addObject:data];
+    if (parameters) [arguments addObject:parameters];
     
     NSString *jsFunction = [NSString stringWithFormat:@"%@.apply(null,%@)", self.iSistemiumIOSCallbackJSFunction, [STMFunctions jsonStringFromArray:arguments]];
     
@@ -537,6 +578,19 @@
     [self.webView evaluateJavaScript:jsFunction completionHandler:^(id _Nullable result, NSError * _Nullable error) {
         
     }];
+
+}
+
+
+#pragma mark - STMEntitiesSubscribable
+
+- (void)subscribedEntitiesObjectWasReceived:(NSDictionary *)objectDic {
+
+    NSArray *result = @[objectDic];
+    NSDictionary *parameters = @{@"reason": @"subscription"};
+    
+    [self callbackWithData:result
+                parameters:parameters];
 
 }
 

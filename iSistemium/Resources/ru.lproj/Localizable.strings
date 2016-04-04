@@ -469,4 +469,6 @@
 "REMAIN TO PICK" = "Осталось собрать: ";
 "SELECT DATE" = "Выберите дату";
 "FROM" = "из";
+"LAST SCANNED BARCODE" = "Последний штрихкод:";
+"RELOAD SCANNER DATA" = "Обновить";
 
