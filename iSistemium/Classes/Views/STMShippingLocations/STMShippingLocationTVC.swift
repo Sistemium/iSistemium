@@ -13,7 +13,7 @@ class STMShippingLocationTVC:STMVariableCellsHeightTVC,UIImagePickerControllerDe
     private var picturesView = UIView()
     
     var THUMB_SIZE:CGSize {
-        return CGSizeMake(Constants.CELL_IMAGES_SIZE, Constants.CELL_IMAGES_SIZE)
+        return CGSizeMake(STMSwiftConstants.CELL_IMAGES_SIZE, STMSwiftConstants.CELL_IMAGES_SIZE)
     }
 
     var shippingLocation: STMShippingLocation?{
@@ -37,7 +37,7 @@ class STMShippingLocationTVC:STMVariableCellsHeightTVC,UIImagePickerControllerDe
             if (_resultsController == nil && shippingLocation != nil) {
                 let shippingFetchRequest = NSFetchRequest(entityName: NSStringFromClass(STMShipmentRoutePoint))
                 shippingFetchRequest.sortDescriptors = [NSSortDescriptor(key: "deviceTs", ascending:false)]
-                shippingFetchRequest.predicate = NSPredicate(format: "shippingLocation.name == %@", shippingLocation!.name)
+                shippingFetchRequest.predicate = NSPredicate(format: "shippingLocation.name == %@", shippingLocation!.name!)
                 _resultsController = NSFetchedResultsController(fetchRequest: shippingFetchRequest, managedObjectContext: self.document.managedObjectContext, sectionNameKeyPath: nil, cacheName: nil)
                 _resultsController!.delegate = self
             }
@@ -128,34 +128,34 @@ class STMShippingLocationTVC:STMVariableCellsHeightTVC,UIImagePickerControllerDe
                 
                 self.picturesView = UIView()
                 
-                if (shippingLocation!.shippingLocationPictures.count == 0) {
+                if (shippingLocation!.shippingLocationPictures!.count == 0) {
                     
                     let blankPicture = self.blankPicture
                     
-                    blankPicture.frame = CGRectMake(0, 0, Constants.CELL_IMAGES_SIZE, Constants.CELL_IMAGES_SIZE);
+                    blankPicture.frame = CGRectMake(0, 0, STMSwiftConstants.CELL_IMAGES_SIZE, STMSwiftConstants.CELL_IMAGES_SIZE);
                     
                     picturesView.addSubview(blankPicture)
                     
                 } else {
                     
-                    let showCount = (shippingLocation!.shippingLocationPictures.count > Constants.LIMIT_COUNT) ? Constants.LIMIT_COUNT : shippingLocation!.shippingLocationPictures.count;
+                    let showCount = (shippingLocation!.shippingLocationPictures!.count > STMSwiftConstants.LIMIT_COUNT) ? STMSwiftConstants.LIMIT_COUNT : shippingLocation!.shippingLocationPictures!.count;
                     
-                    let sortDesriptor = NSSortDescriptor(key: "deviceTs", ascending: false, selector: "compare:")
+                    let sortDesriptor = NSSortDescriptor(key: "deviceTs", ascending: false, selector: #selector(NSNumber.compare(_:)))
                     let range = NSMakeRange(0, showCount)
                     
-                    let photoArray = (shippingLocation!.shippingLocationPictures as NSSet).sortedArrayUsingDescriptors([sortDesriptor] )[range.toRange()!]
+                    let photoArray = (shippingLocation!.shippingLocationPictures! as NSSet).sortedArrayUsingDescriptors([sortDesriptor] )[range.toRange()!]
                     
                     for picture in photoArray {
-                        
-                        let pictureButton = self.pictureButtonWithPicture(picture as! STMPicture)
-                        
-                        let count = CGFloat(self.picturesView.subviews.count);
-                        let x = (count > 0) ? count * (Constants.CELL_IMAGES_SIZE + Constants.IMAGE_PADDING) : 0;
-                        
-                        pictureButton.frame = CGRectMake(x, 0, Constants.CELL_IMAGES_SIZE, Constants.CELL_IMAGES_SIZE);
-                        
-                        self.picturesView.addSubview(pictureButton)
-                        
+                        if let pictureData = (picture as! STMPicture).imageThumbnail{
+                            let pictureButton = self.pictureButtonWithPicture(pictureData)
+                            
+                            let count = CGFloat(self.picturesView.subviews.count);
+                            let x = (count > 0) ? count * (STMSwiftConstants.CELL_IMAGES_SIZE + STMSwiftConstants.IMAGE_PADDING) : 0;
+                            
+                            pictureButton.frame = CGRectMake(x, 0, STMSwiftConstants.CELL_IMAGES_SIZE, STMSwiftConstants.CELL_IMAGES_SIZE);
+                            
+                            self.picturesView.addSubview(pictureButton)
+                        }
                     }
                     
                 }
@@ -163,17 +163,17 @@ class STMShippingLocationTVC:STMVariableCellsHeightTVC,UIImagePickerControllerDe
                 
                 let addButton = self.addPhotoButton
                 
-                var x = CGFloat(self.picturesView.subviews.count) * (Constants.CELL_IMAGES_SIZE + Constants.IMAGE_PADDING);
+                var x = CGFloat(self.picturesView.subviews.count) * (STMSwiftConstants.CELL_IMAGES_SIZE + STMSwiftConstants.IMAGE_PADDING);
                 
-                addButton.frame = CGRectMake(x, 0, Constants.CELL_IMAGES_SIZE, Constants.CELL_IMAGES_SIZE);
+                addButton.frame = CGRectMake(x, 0, STMSwiftConstants.CELL_IMAGES_SIZE, STMSwiftConstants.CELL_IMAGES_SIZE);
                 
                 self.picturesView.addSubview(addButton)
                 
-                let picturesWidth = Constants.CELL_IMAGES_SIZE * CGFloat(self.picturesView.subviews.count) + Constants.IMAGE_PADDING * CGFloat(self.picturesView.subviews.count - 1)
+                let picturesWidth = STMSwiftConstants.CELL_IMAGES_SIZE * CGFloat(self.picturesView.subviews.count) + STMSwiftConstants.IMAGE_PADDING * CGFloat(self.picturesView.subviews.count - 1)
                 x = ceil((cell.contentView.frame.size.width - picturesWidth) / 2);
-                let y = ceil((cell.contentView.frame.size.height - Constants.CELL_IMAGES_SIZE) / 2);
+                let y = ceil((cell.contentView.frame.size.height - STMSwiftConstants.CELL_IMAGES_SIZE) / 2);
                 
-                self.picturesView.frame = CGRectMake(x, y, picturesWidth, Constants.CELL_IMAGES_SIZE);
+                self.picturesView.frame = CGRectMake(x, y, picturesWidth, STMSwiftConstants.CELL_IMAGES_SIZE);
                 
                 cell.contentView.addSubview(self.picturesView)
                 
@@ -184,7 +184,7 @@ class STMShippingLocationTVC:STMVariableCellsHeightTVC,UIImagePickerControllerDe
         case 2:
             let formatter = NSDateFormatter()
             formatter.dateStyle = .LongStyle
-            cell.titleLabel?.text = formatter.stringFromDate((resultsController!.fetchedObjects![indexPath.row] as! STMShipmentRoutePoint).shipmentRoute.date!)
+            cell.titleLabel?.text = formatter.stringFromDate((resultsController!.fetchedObjects![indexPath.row] as! STMShipmentRoutePoint).shipmentRoute!.date!)
             cell.detailLabel?.text = (resultsController!.fetchedObjects![indexPath.row] as! STMShipmentRoutePoint).shortInfo()
         default:
             break
@@ -200,7 +200,7 @@ class STMShippingLocationTVC:STMVariableCellsHeightTVC,UIImagePickerControllerDe
         case 1:
             switch (indexPath.row) {
             case 1:
-                return Constants.CELL_IMAGES_SIZE + Constants.IMAGE_PADDING * 2;
+                return STMSwiftConstants.CELL_IMAGES_SIZE + STMSwiftConstants.IMAGE_PADDING * 2;
             default:
                 break;
             }
@@ -229,7 +229,7 @@ class STMShippingLocationTVC:STMVariableCellsHeightTVC,UIImagePickerControllerDe
     
     private var blankPicture:UIView {
     
-    let image = STMFunctions.resizeImage(UIImage(named:"Picture-100"), toSize:THUMB_SIZE).imageWithRenderingMode(.AlwaysTemplate)
+    let image = STMFunctions.resizeImage(UIImage(named:"Picture-100")!, toSize:THUMB_SIZE).imageWithRenderingMode(.AlwaysTemplate)
     let imageView = UIImageView(image: image)
     imageView.tintColor = UIColor.lightGrayColor()
     
@@ -237,11 +237,11 @@ class STMShippingLocationTVC:STMVariableCellsHeightTVC,UIImagePickerControllerDe
     
     }
     
-    private func pictureButtonWithPicture(picture : STMPicture) -> UIView{
+    private func pictureButtonWithPicture(data : NSData) -> UIView{
     
-    let imageView = UIImageView(image: UIImage(data: picture.imageThumbnail!))
+    let imageView = UIImageView(image: UIImage(data: data))
     
-    let tap = UITapGestureRecognizer(target: self, action: "photoButtonPressed:")
+    let tap = UITapGestureRecognizer(target: self, action: #selector(STMShippingLocationTVC.photoButtonPressed(_:)))
     imageView.gestureRecognizers = [tap]
     imageView.userInteractionEnabled = true
     
@@ -251,9 +251,9 @@ class STMShippingLocationTVC:STMVariableCellsHeightTVC,UIImagePickerControllerDe
     
     private var addPhotoButton : UIView {
     
-    let imageView = UIImageView(image: STMFunctions.resizeImage(UIImage(named: "plus"), toSize:THUMB_SIZE))
+    let imageView = UIImageView(image: STMFunctions.resizeImage(UIImage(named: "plus")!, toSize:THUMB_SIZE))
     
-    let tap = UITapGestureRecognizer(target: self, action: "addPhotoButtonPressed:")
+    let tap = UITapGestureRecognizer(target: self, action: #selector(STMShippingLocationTVC.addPhotoButtonPressed(_:)))
     imageView.gestureRecognizers = [tap]
     imageView.userInteractionEnabled = true
     
@@ -366,8 +366,8 @@ class STMShippingLocationTVC:STMVariableCellsHeightTVC,UIImagePickerControllerDe
         if segue.identifier == "showPhotos" {
             let picturesPVC = segue.destinationViewController as! STMShippingLocationPicturesPVC
             
-            let sortDesriptor = NSSortDescriptor(key: "deviceTs", ascending: false, selector: "compare:")
-            let photoArray = (shippingLocation!.shippingLocationPictures as NSSet).sortedArrayUsingDescriptors([sortDesriptor])
+            let sortDesriptor = NSSortDescriptor(key: "deviceTs", ascending: false, selector: #selector(NSNumber.compare(_:)))
+            let photoArray = (shippingLocation!.shippingLocationPictures! as NSSet).sortedArrayUsingDescriptors([sortDesriptor])
             
             picturesPVC.photoArray =  NSMutableArray(array: photoArray)
             let index = picturesView.subviews.indexOf(sender as! UIView)

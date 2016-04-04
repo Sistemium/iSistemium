@@ -2,18 +2,23 @@
 //  STMShippingLocationPicture.h
 //  iSistemium
 //
-//  Created by Maxim Grigoriev on 25/06/15.
-//  Copyright (c) 2015 Sistemium UAB. All rights reserved.
+//  Created by Maxim Grigoriev on 07/02/16.
+//  Copyright © 2016 Sistemium UAB. All rights reserved.
 //
 
 #import <Foundation/Foundation.h>
-#import <CoreData/CoreData.h>
 #import "STMPhoto.h"
 
 @class STMShippingLocation;
 
+NS_ASSUME_NONNULL_BEGIN
+
 @interface STMShippingLocationPicture : STMPhoto
 
-@property (nonatomic, retain) STMShippingLocation *shippingLocation;
+// Insert code here to declare functionality of your managed object subclass
 
 @end
+
+NS_ASSUME_NONNULL_END
+
+#import "STMShippingLocationPicture+CoreDataProperties.h"

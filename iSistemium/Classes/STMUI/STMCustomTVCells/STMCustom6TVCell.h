@@ -13,6 +13,7 @@
 @property (weak, nonatomic) IBOutlet STMLabel *titleLabel;
 @property (weak, nonatomic) IBOutlet STMLabel *detailLabel;
 @property (weak, nonatomic) IBOutlet STMLabel *messageLabel;
+@property (nonatomic) CGFloat heightLimiter;
 
 
 @end

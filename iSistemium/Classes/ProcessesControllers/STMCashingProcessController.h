@@ -8,7 +8,7 @@
 
 #import "STMController.h"
 #import "STMOutlet.h"
-#import "STMDebt+Cashing.h"
+#import "STMDebt.h"
 #import "STMCashingController.h"
 
 typedef NS_ENUM(NSInteger, STMCashingProcessState) {

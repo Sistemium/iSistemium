@@ -47,7 +47,7 @@ typedef NS_ENUM(NSInteger, STMSyncerState) {
 
 @protocol STMSession <NSObject>
 
-+ (id <STMSession>)initWithUID:(NSString *)uid authDelegate:(id <STMRequestAuthenticatable>)authDelegate trackers:(NSArray *)trackers startSettings:(NSDictionary *)startSettings documentPrefix:(NSString *)prefix;
++ (id <STMSession>)initWithUID:(NSString *)uid iSisDB:(NSString *)iSisDB authDelegate:(id <STMRequestAuthenticatable>)authDelegate trackers:(NSArray *)trackers startSettings:(NSDictionary *)startSettings documentPrefix:(NSString *)prefix;
 
 @property (nonatomic, strong) STMDocument *document;
 @property (nonatomic, strong) NSString *uid;
@@ -63,7 +63,7 @@ typedef NS_ENUM(NSInteger, STMSyncerState) {
 
 @protocol STMSessionManager <NSObject>
 
-- (id <STMSession>)startSessionForUID:(NSString *)uid authDelegate:(id <STMRequestAuthenticatable>)authDelegate trackers:(NSArray *)trackers startSettings:(NSDictionary *)startSettings defaultSettingsFileName:(NSString *)defualtSettingsFileName documentPrefix:(NSString *)prefix;
+- (id <STMSession>)startSessionForUID:(NSString *)uid iSisDB:(NSString *)iSisDB authDelegate:(id <STMRequestAuthenticatable>)authDelegate trackers:(NSArray *)trackers startSettings:(NSDictionary *)startSettings defaultSettingsFileName:(NSString *)defualtSettingsFileName documentPrefix:(NSString *)prefix;
 - (void)stopSessionForUID:(NSString *)uid;
 - (void)sessionStopped:(id)session;
 - (void)cleanStoppedSessions;

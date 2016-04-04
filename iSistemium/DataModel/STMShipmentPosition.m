@@ -2,30 +2,26 @@
 //  STMShipmentPosition.m
 //  iSistemium
 //
-//  Created by Maxim Grigoriev on 04/10/15.
-//  Copyright (c) 2015 Sistemium UAB. All rights reserved.
+//  Created by Maxim Grigoriev on 07/02/16.
+//  Copyright © 2016 Sistemium UAB. All rights reserved.
 //
 
 #import "STMShipmentPosition.h"
 #import "STMArticle.h"
 #import "STMShipment.h"
 
+#import "STMFunctions.h"
+
 
 @implementation STMShipmentPosition
 
-@dynamic badVolume;
-@dynamic doneVolume;
-@dynamic excessVolume;
-@dynamic isProcessed;
-@dynamic ord;
-@dynamic price;
-@dynamic priceDoc;
-@dynamic regradeVolume;
-@dynamic shortageVolume;
-@dynamic volume;
-@dynamic brokenVolume;
-@dynamic article;
-@dynamic articleFact;
-@dynamic shipment;
+- (BOOL)wasProcessed {
+    return (self.isProcessed) ? self.isProcessed.boolValue : NO;
+}
+
+- (NSString *)volumeText {
+    return [STMFunctions volumeStringWithVolume:self.volume.integerValue andPackageRel:self.article.packageRel.integerValue];
+}
+
 
 @end

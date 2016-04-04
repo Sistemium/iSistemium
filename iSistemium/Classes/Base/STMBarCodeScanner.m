@@ -1,3 +1,4 @@
+
 //
 //  STMBarCodeScanner.m
 //  iSistemium
@@ -42,7 +43,7 @@
 @implementation STMBarCodeScanner
 
 - (instancetype)initWithMode:(STMBarCodeScannerMode)mode {
-
+    
     self = (mode == STMBarCodeScannerIOSMode) ? [STMBarCodeScanner iOSModeScanner] : [super init];
     
     if (self) {
@@ -52,7 +53,7 @@
         
     }
     return self;
-
+    
 }
 
 - (NSString *)scannerName {
@@ -83,7 +84,7 @@
     if (self.status != STMBarCodeScannerStarted) {
         
         _status = STMBarCodeScannerStarted;
-
+        
         switch (self.mode) {
             case STMBarCodeScannerCameraMode: {
                 
@@ -106,7 +107,7 @@
                 break;
             }
         }
-
+        
     }
     
 }
@@ -143,7 +144,7 @@
         self.delegate = nil;
         
     }
-
+    
 }
 
 - (NSFetchedResultsController *)barCodeTypesRC {
@@ -165,7 +166,7 @@
             [rc performFetch:nil];
             
             _barCodeTypesRC = rc;
-
+            
         }
         
     }
@@ -212,14 +213,14 @@
         [self stopScan];
         
     }
-
+    
 }
 
 - (void)finishCameraMode {
     
     [self.session stopRunning];
     [self.preview removeFromSuperlayer];
-
+    
     self.preview = nil;
     self.output = nil;
     self.session = nil;
@@ -259,11 +260,11 @@
     AVCaptureConnection *con = self.preview.connection;
     
     con.videoOrientation = AVCaptureVideoOrientationPortrait;
-
+    
     [superView.layer insertSublayer:self.preview above:superView.layer];
     
     [self.session startRunning];
-
+    
 }
 
 
@@ -297,7 +298,7 @@
 #pragma mark - STMBarCodeScannerHIDKeyboardMode
 
 - (void)prepareForHIDScanMode {
-
+    
     
     self.hiddenBarCodeTextField = [[UITextField alloc] init];
     
@@ -311,13 +312,13 @@
         inputAssistantItem.trailingBarButtonGroups = @[];
         
     }
-
+    
     [self.hiddenBarCodeTextField becomeFirstResponder];
     
     self.hiddenBarCodeTextField.delegate = self;
     
     [[self.delegate viewForScanner:self] addSubview:self.hiddenBarCodeTextField];
-
+    
 }
 
 - (void)finishHIDScanMode {
@@ -345,7 +346,7 @@
 #pragma mark - STMBarCodeScannerIOSMode
 
 + (STMBarCodeScanner *)iOSModeScanner {
-
+    
     static dispatch_once_t pred = 0;
     __strong static id _iOSModeScanner = nil;
     
@@ -357,7 +358,7 @@
     });
     
     return _iOSModeScanner;
-
+    
 }
 
 + (void)addScanHelperToScanner:(STMBarCodeScanner *)scanner {
@@ -365,13 +366,13 @@
     scanner.iOSScanHelper = [[STMScanApiHelper alloc] init];
     [scanner.iOSScanHelper setDelegate:scanner];
     [scanner.iOSScanHelper open];
-
+    
     scanner.scanApiConsumer = [NSTimer scheduledTimerWithTimeInterval:.2
                                                                target:scanner
                                                              selector:@selector(onScanApiConsumerTimer:)
                                                              userInfo:nil
                                                               repeats:YES];
-
+    
 }
 
 - (void)prepareForIOSScanMode {
@@ -387,7 +388,7 @@
 }
 
 - (void)finishIOSScanMode {
-
+    
 }
 
 - (void)getBeepStatus {
@@ -422,7 +423,7 @@
 }
 
 - (void)getBatteryStatus {
-
+    
     [self.iOSScanHelper postGetBattery:self.deviceInfo
                                 Target:self
                               Response:@selector(onGetBatteryStatus:)];
@@ -441,7 +442,7 @@
 }
 
 - (void)onSetDecodeAction:(ISktScanObject *)scanObj {
-
+    
 }
 
 - (void)onGetBatteryStatus:(ISktScanObject *)scanObj {
@@ -451,8 +452,8 @@
     unsigned char currentLevel = SKTBATTERY_GETCURLEVEL(batteryStatus);
     
     NSNumber *batteryLevel = [NSNumber numberWithUnsignedChar:currentLevel];
-
-//    [SktClassFactory releaseScanObject:scanObj];
+    
+    //    [SktClassFactory releaseScanObject:scanObj];
     
     [self.delegate receiveBatteryLevel:batteryLevel];
     
@@ -461,21 +462,21 @@
 - (void)getBeepStatusFrom:(ISktScanObject *)scanObj {
     
     BOOL isBeepEnabled = ([[scanObj Property] getByte] & kSktScanLocalDecodeActionBeep);
-
-//    [SktClassFactory releaseScanObject:scanObj];
-
+    
+    //    [SktClassFactory releaseScanObject:scanObj];
+    
     [self.delegate receiveScannerBeepStatus:isBeepEnabled];
-
+    
 }
 
 - (void)getRumbleStatusFrom:(ISktScanObject *)scanObj {
     
     BOOL isRumbleEnabled = ([[scanObj Property] getByte] & kSktScanLocalDecodeActionRumble);
     
-//    [SktClassFactory releaseScanObject:scanObj];
-
+    //    [SktClassFactory releaseScanObject:scanObj];
+    
     [self.delegate receiveScannerRumbleStatus:isRumbleEnabled];
-
+    
 }
 
 - (void)postGetPostamble:(id)sender {
@@ -483,11 +484,11 @@
 }
 
 - (void)postGetSymbology:(id)sender {
-
+    
     if ([sender isKindOfClass:[ISktScanObject class]]) {
         
         ISktScanObject *scanObj = (ISktScanObject *)sender;
-     
+        
         SKTRESULT result = [[scanObj Msg] Result];
         
         if (SKTSUCCESS(result)) {
@@ -513,7 +514,7 @@
                                                         Response:nil];
                         
                     }
-
+                    
                 } else {
                     
                     if ([symbology getStatus] == kSktScanSymbologyStatusEnable) {
@@ -525,13 +526,13 @@
                                                         Response:nil];
                         
                     }
-
+                    
                 }
                 
             }
             
         }
-
+        
     }
     
 }
@@ -615,9 +616,9 @@
     
     NSString *logMessage = [NSString stringWithFormat:@"Connect scanner: %@", [deviceInfo getName]];
     [[STMLogger sharedLogger] saveLogMessageWithText:logMessage type:@"important"];
-
+    
     [self.iOSScanHelper postSetPostambleDevice:deviceInfo Postamble:@"" Target:nil Response:nil];
-
+    
     [self checkSymbologiesOnDevice:deviceInfo];
     
     [self setBatteryLevelNotificationForDevice:deviceInfo];
@@ -629,9 +630,9 @@
 }
 
 - (void)onDeviceRemoval:(DeviceInfo *)deviceRemoved {
-
+    
     self.deviceInfo = nil;
-
+    
     NSString *logMessage = [NSString stringWithFormat:@"Disconnect scanner: %@", [deviceRemoved getName]];
     [[STMLogger sharedLogger] saveLogMessageWithText:logMessage type:@"important"];
     
@@ -644,11 +645,11 @@
     if(SKTSUCCESS(result)){
         
         NSString *resultString = [NSString stringWithUTF8String:(const char *)[decodedData getData]];
-
+        
         [self checkScannedBarcode:resultString];
-
+        
     }
-
+    
 }
 
 - (void)onError:(SKTRESULT)result {
@@ -663,7 +664,7 @@
 
 - (void)onSetBatteryLevelNotification:(id)sender {
     
-//    NSLog(@"onSetBatteryLevelNotification sender %@", sender);
+    //    NSLog(@"onSetBatteryLevelNotification sender %@", sender);
     
     if ([sender isKindOfClass:[ISktScanObject class]]) {
         
@@ -676,14 +677,14 @@
         } else {
             NSLog(@"setBatteryLevelNotification NOT SUCCESS");
         }
-    
+        
     }
     
 }
 
 - (void)onSetPowerButtonPressNotification:(id)sender {
     
-//    NSLog(@"onSetPowerButtonPressNotification sender %@", sender);
+    //    NSLog(@"onSetPowerButtonPressNotification sender %@", sender);
     
     if ([sender isKindOfClass:[ISktScanObject class]]) {
         
@@ -698,7 +699,7 @@
         }
         
     }
-
+    
 }
 
 - (void)onGetVersion:(id)sender {
@@ -720,14 +721,14 @@
             if ([property getType] == kSktScanPropTypeVersion) {
                 
                 NSLog(@"Version %@", [NSString stringWithFormat:@"%lx.%lx.%lx.%ld",
-                                                [[property Version] getMajor],
-                                                [[property Version] getMiddle],
-                                                [[property Version] getMinor],
-                                                [[property Version] getBuild]]
+                                      [[property Version] getMajor],
+                                      [[property Version] getMiddle],
+                                      [[property Version] getMinor],
+                                      [[property Version] getBuild]]
                       );
                 
             }
-
+            
             
         } else {
             
@@ -736,7 +737,7 @@
         }
         
     }
-
+    
 }
 
 

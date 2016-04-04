@@ -18,15 +18,17 @@
 @property (weak, nonatomic) IBOutlet UIToolbar *toolbar;
 @property (weak, nonatomic) IBOutlet UIBarButtonItem *cancelButton;
 @property (weak, nonatomic) IBOutlet UIBarButtonItem *confirmButton;
-@property (weak, nonatomic) IBOutlet UITextView *commentTextView;
 
 @end
 
 @implementation STMUncashingInfoVC
 
 - (IBAction)cancelButtonPressed:(id)sender {
-
-    [self.parentVC dismissInfoPopover];
+    if (_parentVC){
+        [self.parentVC dismissInfoPopover];
+    }else{
+        [self dismissViewControllerAnimated:YES completion:nil];
+    }
     
 }
 
@@ -76,9 +78,14 @@
     
     if (self.uncashing) {
         
-        self.toolbar.hidden = YES;
+        UIBarButtonItem *flexibleItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFlexibleSpace target:nil action:nil];
+        UIBarButtonItem *closeButton = [[UIBarButtonItem alloc] initWithTitle:NSLocalizedString(@"CLOSE", nil)
+                                                                 style:UIBarButtonItemStylePlain
+                                                                target:self
+                                                                action:@selector(cancelButtonPressed:)];
+        self.toolbar.items = @[flexibleItem,closeButton,flexibleItem];
         
-        self.mainLabel.text = [NSString stringWithFormat:@"%@ %@", NSLocalizedString(@"UNCASHING DATE", nil), [dateFormatter stringFromDate:self.uncashing.date]];
+        self.mainLabel.text = [NSString stringWithFormat:@"%@ %@", NSLocalizedString(@"UNCASHING DATE", nil), [dateFormatter stringFromDate:(NSDate * _Nonnull)self.uncashing.date]];
         
         sum = self.uncashing.summ;
         type = self.uncashing.type;

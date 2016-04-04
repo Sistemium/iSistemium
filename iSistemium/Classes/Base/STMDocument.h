@@ -15,7 +15,10 @@
 //@property (nonatomic, strong, readonly) NSManagedObjectContext *mainContext;
 //@property (nonatomic, strong, readonly) NSManagedObjectContext *privateContext;
 
-+ (STMDocument *)documentWithUID:(NSString *)uid dataModelName:(NSString *)dataModelName prefix:(NSString *)prefix;
++ (STMDocument *)documentWithUID:(NSString *)uid
+                          iSisDB:(NSString *)iSisDB
+                   dataModelName:(NSString *)dataModelName
+                          prefix:(NSString *)prefix;
 
 - (void)saveDocument:(void (^)(BOOL success))completionHandler;
 

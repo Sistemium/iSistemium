@@ -7,13 +7,13 @@
 //
 
 #import <Foundation/Foundation.h>
-#import "STMComment.h"
+#import "STMDatum.h"
 
 @class STMInventoryBatch;
 
 NS_ASSUME_NONNULL_BEGIN
 
-@interface STMInventoryBatchItem : STMComment
+@interface STMInventoryBatchItem : STMDatum
 
 // Insert code here to declare functionality of your managed object subclass
 

@@ -11,23 +11,13 @@
 #import "STMDebtsSVC.h"
 #import "STMSyncer.h"
 #import "STMCashing.h"
-#import "STMDebt+Cashing.h"
+#import "STMDebt.h"
 #import "STMDatePickerVC.h"
 #import "STMFunctions.h"
 #import "STMCashingProcessController.h"
 #import "STMUI.h"
 
 @interface STMCashingControlsVC () <UITextFieldDelegate, UITextViewDelegate>
-
-@property (weak, nonatomic) IBOutlet UILabel *summLabel;
-@property (weak, nonatomic) IBOutlet UITextField *debtSummTextField;
-@property (weak, nonatomic) IBOutlet UILabel *remainderLabel;
-@property (weak, nonatomic) IBOutlet UIButton *dateButton;
-@property (weak, nonatomic) IBOutlet UITextField *cashingSummTextField;
-@property (weak, nonatomic) IBOutlet UILabel *cashingSumLabel;
-@property (weak, nonatomic) IBOutlet UILabel *debtSumLabel;
-@property (weak, nonatomic) IBOutlet UITextView *commentTextView;
-@property (weak, nonatomic) IBOutlet UILabel *debtInfoLabel;
 
 @property (nonatomic) CGFloat textViewShiftDistance;
 @property (nonatomic) BOOL textViewIsShifted;
@@ -37,7 +27,6 @@
 @property (nonatomic, strong) NSString *initialTextFieldValue;
 
 @property (nonatomic, weak) STMDebtsSVC *splitVC;
-@property (nonatomic, strong) STMDebt *selectedDebt;
 
 @end
 
@@ -115,6 +104,8 @@
 
 - (void)setSelectedDebt:(STMDebt *)selectedDebt {
     
+    [self view]; //this loads view hierarchy, fixes problem when IBOutlets are nil if debt is set from prepare for segue
+    
     if (_selectedDebt != selectedDebt) {
         
         _selectedDebt = selectedDebt;
@@ -124,7 +115,7 @@
         if (selectedDebt) {
             
             NSDateFormatter *dateFormatter = [STMFunctions dateShortNoTimeFormatter];
-            NSString *debtDate = [dateFormatter stringFromDate:selectedDebt.date];
+            NSString *debtDate = [dateFormatter stringFromDate:(NSDate * _Nonnull)selectedDebt.date];
             
             self.debtInfoLabel.text = [NSString stringWithFormat:NSLocalizedString(@"DEBT INFO", nil), selectedDebt.ndoc, debtDate];
 
@@ -377,7 +368,7 @@
         
         NSDecimalNumber *cashingSum = [NSDecimalNumber decimalNumberWithString:decimalNumberString locale:local];
 
-        if ([cashingSum compare:self.selectedDebt.calculatedSum] == NSOrderedDescending) {
+        if (self.selectedDebt.calculatedSum && [cashingSum compare:(NSDecimalNumber * _Nonnull)self.selectedDebt.calculatedSum] == NSOrderedDescending) {
          
             cashingSum = self.selectedDebt.calculatedSum;
             

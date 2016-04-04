@@ -38,7 +38,7 @@
 #pragma mark - STMTabBarItemControllable protocol
 
 - (BOOL)shouldShowOwnActions {
-    return (BOOL)self.actions.count;
+    return YES;
 }
 
 - (void)selectActionAtIndex:(NSUInteger)index {

@@ -176,9 +176,7 @@
         
         STMSaleOrder *saleOrder = [[sectionInfo objects] lastObject];
         
-        NSString *dateString = [STMFunctions dayWithDayOfWeekFromDate:saleOrder.date];
-        
-        return dateString;
+        return (saleOrder.date) ? [STMFunctions dayWithDayOfWeekFromDate:(NSDate *)saleOrder.date] : nil;
         
     } else {
         
@@ -232,7 +230,7 @@
     cell.titleLabel.text = [STMFunctions shortCompanyName:saleOrder.outlet.name];
     
     NSNumberFormatter *currencyFormatter = [STMFunctions currencyFormatter];
-    NSString *totalCostString = [currencyFormatter stringFromNumber:saleOrder.totalCost];
+    NSString *totalCostString = [currencyFormatter stringFromNumber:(NSDecimalNumber *)saleOrder.totalCost];
     
     NSUInteger positionsCount = saleOrder.saleOrderPositions.count;
     NSString *pluralTypeString = [[STMFunctions pluralTypeForCount:positionsCount] stringByAppendingString:@"POSITIONS"];

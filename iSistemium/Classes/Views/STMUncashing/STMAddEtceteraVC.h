@@ -15,5 +15,9 @@
 @property (nonatomic, weak) STMUncashingDetailsTVC *parentVC;
 @property (nonatomic, strong) NSDate *selectedDate;
 @property (nonatomic) STMCashingType cashingType;
+@property (weak, nonatomic) IBOutlet UIButton *dateButton;
+
+- (IBAction)doneButtonPressed:(id)sender;
+- (BOOL)textFieldFillingIsCorrect;
 
 @end

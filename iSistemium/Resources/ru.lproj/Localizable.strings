@@ -138,7 +138,7 @@
 "ADD SUM" = "Добавить сумму";
 "DEDUCTION" = "Вычет";
 "DEDUCTIONS" = "Вычеты";
-"BASIS" = "Обоснование: ";
+"BASIS" = "Основание: ";
 "OUTLET" = "Точка: ";
 "DEBT COMMENT" = "Комментарий: ";
 "CATALOG" = "Каталог";
@@ -185,6 +185,7 @@
 "RECEIVE DATE" = "Данные получены: ";
 "RECEIVE" = "Получено";
 "RECEIVE1" = "Получен";
+"RECEIVE2" = "Получено %@ из";
 "0OBJECTS" = "нет объектов";
 "1OBJECTS" = "объект";
 "2OBJECTS" = "объекта";
@@ -451,6 +452,9 @@
 "ONE MORE CODE" = "Ещё наклейку";
 "OPERATION COMPLETE" = "Партия принята";
 "MANUAL LINK BARCODE TO ARTICLE" = "Привяжите штрих код к товару вручную";
+"BY SUMM" ="на сумму";
+"OF" = "от";
+"FOR" = "за";
 "0BATCHES" = "нет партий";
 "1BATCHES" = "партия";
 "2BATCHES" = "партии";
@@ -463,4 +467,6 @@
 "ALL POSITIONS ARE SUPPLIED" = "Подтвердите завершение приёмки";
 "WRONG VOLUME TO REPEAT" = "Неверное количество для повтора";
 "REMAIN TO PICK" = "Осталось собрать: ";
+"SELECT DATE" = "Выберите дату";
+"FROM" = "из";
 

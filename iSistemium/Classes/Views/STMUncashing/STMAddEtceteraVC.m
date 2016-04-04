@@ -20,7 +20,6 @@
 @property (weak, nonatomic) IBOutlet UILabel *sumLabel;
 @property (weak, nonatomic) IBOutlet UILabel *commentLabel;
 
-@property (weak, nonatomic) IBOutlet UIButton *dateButton;
 @property (weak, nonatomic) IBOutlet UITextField *numberTextField;
 @property (weak, nonatomic) IBOutlet UITextField *sumTextField;
 @property (weak, nonatomic) IBOutlet UITextField *commentTextField;

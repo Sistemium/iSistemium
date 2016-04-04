@@ -175,13 +175,13 @@
             
             [self.waitGeocodingPoints addObject:point];
             
-            [[[CLGeocoder alloc] init] geocodeAddressString:point.address completionHandler:^(NSArray *placemarks, NSError *error) {
+            [[[CLGeocoder alloc] init] geocodeAddressString:(NSString *)point.address completionHandler:^(NSArray *placemarks, NSError *error) {
                 
                 if (!error) {
                     
                     CLPlacemark *placemark = placemarks.firstObject;
                     
-                    [point updateShippingLocationWithGeocodedLocation:placemark.location];
+                    [point updateShippingLocationWithGeocodedLocation:(CLLocation *)placemark.location];
                                         
                     NSIndexPath *indexPath = [NSIndexPath indexPathForRow:[self.resultsController.fetchedObjects indexOfObject:point] inSection:1];
                     if (indexPath) [self.tableView reloadRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationNone];
@@ -354,7 +354,7 @@
     switch (indexPath.row) {
         case 0:
 
-            cell.titleLabel.text = [STMFunctions dayWithDayOfWeekFromDate:self.route.date];
+            if (self.route.date) cell.titleLabel.text = [STMFunctions dayWithDayOfWeekFromDate:(NSDate *)self.route.date];
             cell.detailLabel.attributedText = [self detailTextForLabel:cell.detailLabel];
         break;
             
@@ -415,7 +415,7 @@
         attributes = @{NSFontAttributeName: font,
                        NSForegroundColorAttributeName: detailLabel.textColor};
         
-        [detailText appendAttributedString:[[NSAttributedString alloc] initWithString:self.route.commentText attributes:attributes]];
+        [detailText appendAttributedString:[[NSAttributedString alloc] initWithString:(NSString *)self.route.commentText attributes:attributes]];
         
     }
     

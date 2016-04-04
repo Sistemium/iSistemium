@@ -169,7 +169,7 @@
     cell.pictureView.image = nil;
     
     NSDateFormatter *dateFormatter = [STMFunctions dateMediumTimeMediumFormatter];
-    cell.titleLabel.text = [dateFormatter stringFromDate:message.cts];
+    cell.titleLabel.text = [dateFormatter stringFromDate:(NSDate *)message.cts];
 
     [self fillDetailLabel:cell.detailLabel forMessage:message];
     
@@ -184,7 +184,7 @@
     NSDictionary *attributes = @{NSFontAttributeName: detailLabel.font,
                                  NSForegroundColorAttributeName: detailLabel.textColor};
 
-    NSMutableAttributedString *detailText = [[NSMutableAttributedString alloc] initWithString:message.body attributes:attributes];
+    NSMutableAttributedString *detailText = [[NSMutableAttributedString alloc] initWithString:(NSString *)message.body attributes:attributes];
     
     if (message.processing) {
         
@@ -217,7 +217,7 @@
         attributes = @{NSFontAttributeName: font,
                        NSForegroundColorAttributeName: detailLabel.textColor};
         
-        [detailText appendAttributedString:[[NSAttributedString alloc] initWithString:message.commentText attributes:attributes]];
+        [detailText appendAttributedString:[[NSAttributedString alloc] initWithString:(NSString *)message.commentText attributes:attributes]];
 
     }
 
@@ -344,7 +344,7 @@
         
         STMMessagePicture *messagePicture = (STMMessagePicture *)notification.object;
         
-        NSIndexPath *indexPath = [self.resultsController indexPathForObject:messagePicture.message];
+        NSIndexPath *indexPath = [self.resultsController indexPathForObject:(STMMessage *)messagePicture.message];
         if (indexPath) [self.tableView reloadRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationFade];
         
     }

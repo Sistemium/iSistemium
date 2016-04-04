@@ -7,6 +7,7 @@
 //
 
 #import "STMObjectsController.h"
+
 #import "STMAuthController.h"
 #import "STMFunctions.h"
 #import "STMSyncer.h"
@@ -22,6 +23,9 @@
 
 #import "STMNS.h"
 
+#import "iSistemium-Swift.h"
+
+
 #define FLUSH_LIMIT 17
 
 
@@ -32,6 +36,9 @@
 @property (nonatomic, strong) NSMutableDictionary *entitiesOwnRelationships;
 @property (nonatomic, strong) NSMutableDictionary *entitiesSingleRelationships;
 @property (nonatomic, strong) NSMutableDictionary *objectsCache;
+@property (nonatomic, strong) NSArray *localDataModelEntityNames;
+@property (nonatomic, strong) NSArray *coreEntityKeys;
+@property (nonatomic, strong) NSArray *coreEntityRelationships;
 @property (nonatomic) BOOL isInFlushingProcess;
 
 
@@ -284,7 +291,7 @@
 // -------------
             
             if (!object) {
-                object = (xid) ? [self objectForEntityName:entityName andXid:xid] : [self newObjectForEntityName:entityName];
+                object = (xid) ? [self objectForEntityName:entityName andXidString:xid] : [self newObjectForEntityName:entityName];
             }
             
 // time checking
@@ -367,19 +374,21 @@
 
 + (id)typeConversionForValue:(id)value key:(NSString *)key entityAttributes:(NSDictionary *)entityAttributes {
     
-    if ([[entityAttributes[key] attributeValueClassName] isEqualToString:NSStringFromClass([NSDecimalNumber class])]) {
+    NSString *valueClassName = [entityAttributes[key] attributeValueClassName];
+    
+    if ([valueClassName isEqualToString:NSStringFromClass([NSDecimalNumber class])]) {
         
         value = [NSDecimalNumber decimalNumberWithString:value];
         
-    } else if ([[entityAttributes[key] attributeValueClassName] isEqualToString:NSStringFromClass([NSDate class])]) {
+    } else if ([valueClassName isEqualToString:NSStringFromClass([NSDate class])]) {
         
         value = [[STMFunctions dateFormatter] dateFromString:value];
         
-    } else if ([[entityAttributes[key] attributeValueClassName] isEqualToString:NSStringFromClass([NSNumber class])]) {
+    } else if ([valueClassName isEqualToString:NSStringFromClass([NSNumber class])]) {
         
         value = @([value intValue]);
         
-    } else if ([[entityAttributes[key] attributeValueClassName] isEqualToString:NSStringFromClass([NSData class])]) {
+    } else if ([valueClassName isEqualToString:NSStringFromClass([NSData class])]) {
         
         value = [STMFunctions dataFromString:[value stringByReplacingOccurrencesOfString:@"-" withString:@""]];
         
@@ -402,7 +411,7 @@
             
             if (destinationObjectXid) {
                 
-                NSManagedObject *destinationObject = [self objectForEntityName:ownObjectRelationships[relationship] andXid:destinationObjectXid];
+                NSManagedObject *destinationObject = [self objectForEntityName:ownObjectRelationships[relationship] andXidString:destinationObjectXid];
                 
                 if (![[object valueForKey:relationship] isEqual:destinationObject]) {
                     
@@ -604,8 +613,8 @@
         
         if (ok) {
             
-            NSManagedObject *ownerObject = [self objectForEntityName:roleOwnerEntityName andXid:ownerXid];
-            NSManagedObject *destinationObject = [self objectForEntityName:destinationEntityName andXid:destinationXid];
+            NSManagedObject *ownerObject = [self objectForEntityName:roleOwnerEntityName andXidString:ownerXid];
+            NSManagedObject *destinationObject = [self objectForEntityName:destinationEntityName andXidString:destinationXid];
             
 // time checking
 //            [[self sharedController].timesDic[@"6"] addObject:@([start timeIntervalSinceNow])];
@@ -683,19 +692,39 @@
 + (NSManagedObject *)objectForXid:(NSData *)xidData {
     
     id cachedObject = [self sharedController].objectsCache[xidData];
+    return (NSManagedObject *)cachedObject;
     
-//    if ([cachedObject isKindOfClass:[NSManagedObjectID class]]) {
+//    for (NSString *entityName in [self localDataModelEntityNames]) {
 //        
-//        cachedObject = [[self document].managedObjectContext existingObjectWithID:(NSManagedObjectID *)cachedObject error:nil];
-//        [self sharedController].objectsCache[xidData] = cachedObject;
+//        NSManagedObject *object = [self objectForXid:xidData entityName:entityName];
+//        
+//        if (object) return object;
 //        
 //    }
+//
+//    return nil;
+
+}
+
++ (NSManagedObject *)objectForXid:(NSData *)xidData entityName:(NSString *)entityName {
     
-    return (NSManagedObject *)cachedObject;
+    if ([[self localDataModelEntityNames] containsObject:entityName]) {
+        
+        NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:entityName];
+        request.sortDescriptors = @[[NSSortDescriptor sortDescriptorWithKey:@"id" ascending:YES selector:@selector(compare:)]];
+        request.predicate = [NSPredicate predicateWithFormat:@"xid == %@", xidData];
+        
+        NSArray *fetchResult = [[self document].managedObjectContext executeFetchRequest:request error:nil];
+        
+        if (fetchResult.firstObject) return fetchResult.firstObject;
+
+    }
+    
+    return nil;
     
 }
 
-+ (NSManagedObject *)objectForEntityName:(NSString *)entityName andXid:(NSString *)xid {
++ (NSManagedObject *)objectForEntityName:(NSString *)entityName andXidString:(NSString *)xid {
     
     NSArray *dataModelEntityNames = [self localDataModelEntityNames];
     
@@ -703,16 +732,16 @@
         
         NSData *xidData = [STMFunctions xidDataFromXidString:xid];
 
-        NSManagedObject *object = [self objectForXid:xidData];
+        NSManagedObject *object = [self objectForXid:xidData entityName:entityName];
         
         if (object) {
             
-            if (![object.entity.name isEqualToString:entityName]) {
-                
-                NSLog(@"No %@ object with xid %@, %@ object fetched instead", entityName, xid, object.entity.name);
-                object = nil;
-                
-            }
+//            if (![object.entity.name isEqualToString:entityName]) {
+//                
+//                NSLog(@"No %@ object with xid %@, %@ object fetched instead", entityName, xid, object.entity.name);
+//                object = nil;
+//                
+//            }
             
         } else {
             
@@ -744,73 +773,47 @@
 
 + (NSManagedObject *)newObjectForEntityName:(NSString *)entityName andXid:(NSData *)xidData isFantom:(BOOL)isFantom {
     
-    NSManagedObject *object = [STMEntityDescription insertNewObjectForEntityForName:entityName inManagedObjectContext:[self document].managedObjectContext];
-    [object setValue:@(isFantom) forKey:@"isFantom"];
+    if ([self document].managedObjectContext) {
     
-    if (xidData) {
-        [object setValue:xidData forKey:@"xid"];
+        NSManagedObject *object = [STMEntityDescription insertNewObjectForEntityForName:entityName inManagedObjectContext:[self document].managedObjectContext];
+        [object setValue:@(isFantom) forKey:@"isFantom"];
+        
+        if (xidData) {
+            [object setValue:xidData forKey:@"xid"];
+        } else {
+            xidData = [object valueForKey:@"xid"];
+        }
+        
+        [self sharedController].objectsCache[xidData] = object;
+        
+        return object;
+
     } else {
-        xidData = [object valueForKey:@"xid"];
+        
+        return nil;
+        
     }
     
-    [self sharedController].objectsCache[xidData] = object;
-
-    return object;
-
-}
-
-+ (NSArray *)objectsWithXids:(NSArray *)xids {
-    
-    NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:NSStringFromClass([STMDatum class])];
-    request.sortDescriptors = @[[NSSortDescriptor sortDescriptorWithKey:@"id" ascending:YES selector:@selector(compare:)]];
-    request.predicate = [NSPredicate predicateWithFormat:@"xid IN %@", xids];
-    
-    NSError *error;
-    NSArray *fetchResult = [[self document].managedObjectContext executeFetchRequest:request error:&error];
-    
-    return fetchResult;
-
 }
 
 + (NSArray *)allObjectsFromContext:(NSManagedObjectContext *)context {
     
     if (!context) context = [self document].managedObjectContext;
+    
+    NSMutableArray *results = @[].mutableCopy;
+    
+    for (NSString *entityName in [self localDataModelEntityNames]) {
+        
+        NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:entityName];
+        request.sortDescriptors = @[[NSSortDescriptor sortDescriptorWithKey:@"id" ascending:YES selector:@selector(compare:)]];
+        
+        NSArray *fetchResult = [context executeFetchRequest:request error:nil];
+        
+        if (fetchResult) [results addObjectsFromArray:fetchResult];
+        
+    }
 
-    NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:NSStringFromClass([STMDatum class])];
-    request.sortDescriptors = @[[NSSortDescriptor sortDescriptorWithKey:@"id" ascending:YES selector:@selector(compare:)]];
-    
-    NSError *error;
-    NSArray *fetchResult = [context executeFetchRequest:request error:&error];
-    
-    return fetchResult;
-
-}
-
-+ (NSArray *)allObjectIDsFromContext:(NSManagedObjectContext *)context {
-    
-    if (!context) context = [self document].managedObjectContext;
-
-    NSString *entityName = NSStringFromClass([STMDatum class]);
-    
-    STMFetchRequest *request = [STMFetchRequest fetchRequestWithEntityName:entityName];
-    request.resultType = NSDictionaryResultType;
-    
-    STMEntityDescription *entity = [STMEntityDescription entityForName:entityName inManagedObjectContext:context];
-    NSPropertyDescription *xidProperty = entity.propertiesByName[@"xid"];
-
-    NSExpressionDescription* objectIDDescription = [NSExpressionDescription new];
-    objectIDDescription.name = @"objectID";
-    objectIDDescription.expression = [NSExpression expressionForEvaluatedObject];
-    objectIDDescription.expressionResultType = NSObjectIDAttributeType;
-
-    request.sortDescriptors = @[[NSSortDescriptor sortDescriptorWithKey:@"id" ascending:YES selector:@selector(compare:)]];
-    
-    request.propertiesToFetch = @[xidProperty, objectIDDescription];
-    
-    NSError *error;
-    NSArray *fetchResult = [context executeFetchRequest:request error:&error];
-    
-    return fetchResult;
+    return results;
 
 }
 
@@ -848,40 +851,6 @@
         completionHandler(YES);
     }];
     
-/*
-    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_BACKGROUND, 0), ^{
-    
-        __weak NSManagedObjectContext *context = [self document].managedObjectContext.parentContext;
-        
-        [context performBlock:^{
-            
-            __block NSArray *allObjectIDs = [self allObjectIDsFromContext:context];
-            
-            NSLog(@"fetch existing objectIDs for initObjectsCache");
-            TOCK;
-            
-            dispatch_async(dispatch_get_main_queue(), ^{
-                
-                NSArray *keys = [allObjectIDs valueForKeyPath:@"xid"];
-                NSArray *values = [allObjectIDs valueForKeyPath:@"objectID"];
-                NSDictionary *objectsCache = [NSDictionary dictionaryWithObjects:values forKeys:keys];
-
-                [[self sharedController].objectsCache addEntriesFromDictionary:objectsCache];
-                
-                NSLog(@"finish initObjectsCache");
-                TOCK;
-                
-                [[self document] saveDocument:^(BOOL success) {
-                    completionHandler(YES);
-                }];
-                
-            });
-            
-        }];
-        
-    });
-*/
-
 }
 
 
@@ -914,10 +883,11 @@
     
     if (!objectKeys) {
 
-        STMEntityDescription *coreEntity = [STMEntityDescription entityForName:NSStringFromClass([STMDatum class]) inManagedObjectContext:[self document].managedObjectContext];
-        NSSet *coreKeys = [NSSet setWithArray:coreEntity.attributesByName.allKeys];
+        STMEntityDescription *objectEntity = [STMEntityDescription entityForName:entityName
+                                                          inManagedObjectContext:[self document].managedObjectContext];
+        
+        NSSet *coreKeys = [NSSet setWithArray:[self coreEntityKeys]];
 
-        STMEntityDescription *objectEntity = [STMEntityDescription entityForName:entityName inManagedObjectContext:[self document].managedObjectContext];
         objectKeys = [NSMutableSet setWithArray:objectEntity.attributesByName.allKeys];
         [objectKeys minusSet:coreKeys];
         
@@ -936,11 +906,12 @@
     
     if (!objectRelationships) {
 
-        STMEntityDescription *coreEntity = [STMEntityDescription entityForName:NSStringFromClass([STMDatum class]) inManagedObjectContext:[self document].managedObjectContext];
-        NSSet *coreRelationshipNames = [NSSet setWithArray:[[coreEntity relationshipsByName] allKeys]];
+        STMEntityDescription *objectEntity = [STMEntityDescription entityForName:entityName
+                                                          inManagedObjectContext:[self document].managedObjectContext];
+
+        NSSet *coreRelationshipNames = [NSSet setWithArray:[self coreEntityRelationships]];
         
-        STMEntityDescription *objectEntity = [STMEntityDescription entityForName:entityName inManagedObjectContext:[self document].managedObjectContext];
-        NSMutableSet *objectRelationshipNames = [NSMutableSet setWithArray:[[objectEntity relationshipsByName] allKeys]];
+        NSMutableSet *objectRelationshipNames = [NSMutableSet setWithArray:objectEntity.relationshipsByName.allKeys];
         
         [objectRelationshipNames minusSet:coreRelationshipNames];
         
@@ -948,8 +919,8 @@
         
         for (NSString *relationshipName in objectRelationshipNames) {
             
-            NSRelationshipDescription *relationship = [objectEntity relationshipsByName][relationshipName];
-            objectRelationships[relationshipName] = [relationship destinationEntity].name;
+            NSRelationshipDescription *relationship = objectEntity.relationshipsByName[relationshipName];
+            objectRelationships[relationshipName] = relationship.destinationEntity.name;
             
         }
     
@@ -970,10 +941,11 @@
     
     if (!objectRelationships) {
 
-        STMEntityDescription *coreEntity = [STMEntityDescription entityForName:NSStringFromClass([STMDatum class]) inManagedObjectContext:[self document].managedObjectContext];
-        NSSet *coreRelationshipNames = [NSSet setWithArray:[[coreEntity relationshipsByName] allKeys]];
+        STMEntityDescription *objectEntity = [STMEntityDescription entityForName:entityName
+                                                          inManagedObjectContext:[self document].managedObjectContext];
         
-        STMEntityDescription *objectEntity = [STMEntityDescription entityForName:entityName inManagedObjectContext:[self document].managedObjectContext];
+        NSSet *coreRelationshipNames = [NSSet setWithArray:[self coreEntityRelationships]];
+        
         NSMutableSet *objectRelationshipNames = [NSMutableSet setWithArray:[[objectEntity relationshipsByName] allKeys]];
         
         [objectRelationshipNames minusSet:coreRelationshipNames];
@@ -998,9 +970,58 @@
 
 }
 
-+ (NSArray *)localDataModelEntityNames {
++ (NSArray <NSString *> *)localDataModelEntityNames {
+    return [self sharedController].localDataModelEntityNames;
+}
+
+- (NSArray *)localDataModelEntityNames {
     
-    return [[self document].managedObjectModel.entitiesByName allKeys];
+    if (!_localDataModelEntityNames) {
+        
+        NSArray *entities = [[self class] document].managedObjectModel.entitiesByName.allValues;
+        
+        NSPredicate *predicate = [NSPredicate predicateWithFormat:@"abstract == NO"];
+        
+        _localDataModelEntityNames = [[entities filteredArrayUsingPredicate:predicate] valueForKeyPath:@"name"];
+        
+    }
+    return _localDataModelEntityNames;
+    
+}
+
++ (NSArray *)coreEntityKeys {
+    return [self sharedController].coreEntityKeys;
+}
+
+- (NSArray *)coreEntityKeys {
+    
+    if (!_coreEntityKeys) {
+        
+        STMEntityDescription *coreEntity = [STMEntityDescription entityForName:NSStringFromClass([STMDatum class])
+                                                        inManagedObjectContext:[STMObjectsController document].managedObjectContext];
+        
+        _coreEntityKeys = coreEntity.attributesByName.allKeys;
+        
+    }
+    return _coreEntityKeys;
+    
+}
+
++ (NSArray *)coreEntityRelationships {
+    return [self sharedController].coreEntityRelationships;
+}
+
+- (NSArray *)coreEntityRelationships {
+    
+    if (!_coreEntityRelationships) {
+        
+        STMEntityDescription *coreEntity = [STMEntityDescription entityForName:NSStringFromClass([STMDatum class])
+                                                        inManagedObjectContext:[STMObjectsController document].managedObjectContext];
+        
+        _coreEntityRelationships = coreEntity.relationshipsByName.allKeys;
+        
+    }
+    return _coreEntityRelationships;
     
 }
 
@@ -1058,7 +1079,6 @@
         
     }
 
-    
     NSDate *startFlushing = [NSDate date];
     
     NSArray *entitiesWithLifeTime = [STMEntityController entitiesWithLifeTime];
@@ -1242,86 +1262,593 @@
 
 + (void)totalNumberOfObjects {
 
-    NSArray *entityNames = @[NSStringFromClass([STMDatum class]),
-                             NSStringFromClass([STMArticle class]),
-                             NSStringFromClass([STMArticleBarCode class]),
-                             NSStringFromClass([STMArticleDoc class]),
-                             NSStringFromClass([STMArticleGroup class]),
-                             NSStringFromClass([STMArticlePicture class]),
-                             NSStringFromClass([STMArticleProductionInfo class]),
-                             NSStringFromClass([STMBarCodeType class]),
-                             NSStringFromClass([STMBarCodeScan class]),
-                             NSStringFromClass([STMBasketPosition class]),
-                             NSStringFromClass([STMBatteryStatus class]),
-                             NSStringFromClass([STMCampaign class]),
-                             NSStringFromClass([STMCampaignGroup class]),
-                             NSStringFromClass([STMCampaignPicture class]),
-                             NSStringFromClass([STMCashing class]),
-                             NSStringFromClass([STMClientData class]),
-                             NSStringFromClass([STMDebt class]),
-                             NSStringFromClass([STMDriver class]),
-                             NSStringFromClass([STMInventoryBatch class]),
-                             NSStringFromClass([STMInventoryBatchItem class]),
-                             NSStringFromClass([STMLocation class]),
-                             NSStringFromClass([STMLogMessage class]),
-                             NSStringFromClass([STMMessage class]),
-                             NSStringFromClass([STMMessagePicture class]),
-                             NSStringFromClass([STMOutlet class]),
-                             NSStringFromClass([STMPartner class]),
-                             NSStringFromClass([STMPhotoReport class]),
-                             NSStringFromClass([STMPicker class]),
-                             NSStringFromClass([STMPickingOrder class]),
-                             NSStringFromClass([STMPickingOrderPosition class]),
-                             NSStringFromClass([STMPickingOrderPositionPicked class]),
-                             NSStringFromClass([STMPrice class]),
-                             NSStringFromClass([STMPriceType class]),
-                             NSStringFromClass([STMProductionInfoType class]),
-                             NSStringFromClass([STMQualityClass class]),
-                             NSStringFromClass([STMRecordStatus class]),
-                             NSStringFromClass([STMSaleOrder class]),
-                             NSStringFromClass([STMSaleOrderPosition class]),
-                             NSStringFromClass([STMSalesman class]),
-                             NSStringFromClass([STMSetting class]),
-                             NSStringFromClass([STMShipment class]),
-                             NSStringFromClass([STMShipmentPosition class]),
-                             NSStringFromClass([STMShipmentRoute class]),
-                             NSStringFromClass([STMShipmentRoutePoint class]),
-                             NSStringFromClass([STMShippingLocation class]),
-                             NSStringFromClass([STMShippingLocationPicture class]),
-                             NSStringFromClass([STMStock class]),
-                             NSStringFromClass([STMStockBatch class]),
-                             NSStringFromClass([STMStockBatchBarCode class]),
-                             NSStringFromClass([STMStockBatchOperation class]),
-                             NSStringFromClass([STMSupplyOrder class]),
-                             NSStringFromClass([STMSupplyOrderArticleDoc class]),
-                             NSStringFromClass([STMTrack class]),
-                             NSStringFromClass([STMUncashing class]),
-                             NSStringFromClass([STMUncashingPicture class]),
-                             NSStringFromClass([STMUncashingPlace class]),
-                             NSStringFromClass([STMWorkflow class]),
-                             NSStringFromClass([STMClientEntity class]),
-                             NSStringFromClass([STMEntity class])];
+    NSArray *entityNames = [self localDataModelEntityNames];
     
-    NSUInteger totalCount = [self numberOfObjectsForEntityName:NSStringFromClass([STMDatum class])];
-    NSUInteger counter = totalCount;
+    NSUInteger totalCount = 0;
     
     for (NSString *entityName in entityNames) {
         
-        if (![entityName isEqualToString:NSStringFromClass([STMDatum class])]) {
-            
-            NSUInteger count = [self numberOfObjectsForEntityName:entityName];
-            NSLog(@"%@ count %d", entityName, count);
-            counter -= count;
-
-        }
+        NSUInteger count = [self numberOfObjectsForEntityName:entityName];
+        NSLog(@"%@ count %d", entityName, count);
+        totalCount += count;
 
     }
     
-    NSLog(@"unknow count %d", counter);
     NSLog(@"fantoms count %d", [self numberOfFantoms]);
     NSLog(@"total count %d", totalCount);
 
 }
+
+
+#pragma mark - destroy objects from WKWebView
+
++ (NSArray *)destroyObjectFromScriptMessage:(WKScriptMessage *)scriptMessage error:(NSError **)error {
+
+    NSString *errorMessage = nil;
+    
+    if (![scriptMessage.body isKindOfClass:[NSDictionary class]]) {
+        
+        [self error:error withMessage:@"message.body is not a NSDictionary class"];
+        return nil;
+        
+    }
+    
+    NSDictionary *parameters = scriptMessage.body;
+
+    NSString *entityName = [NSString stringWithFormat:@"STM%@", parameters[@"entity"]];
+    
+    if (![[self localDataModelEntityNames] containsObject:entityName]) {
+        
+        [self error:error withMessage:[entityName stringByAppendingString:@": not found in data model"]];
+        return nil;
+        
+    }
+    
+    NSString *xidString = parameters[@"id"];
+    
+    if (!xidString) {
+        
+        [self error:error withMessage:@"empty xid"];
+        return nil;
+
+    }
+            
+    NSData *xid = [STMFunctions xidDataFromXidString:xidString];
+    
+    STMDatum *object = [self sharedController].objectsCache[xid];
+    
+    if (object) {
+        
+        if (![object.entity.name isEqualToString:entityName]) {
+            
+            errorMessage = [NSString stringWithFormat:@"object with xid %@ have entity name %@, not %@", xidString, object.entity.name, entityName];
+            [self error:error withMessage:errorMessage];
+            return nil;
+            
+        } else {
+            
+            STMRecordStatus *recordStatus = [self createRecordStatusAndRemoveObject:object];
+            return [self arrayForJSWithObjects:@[recordStatus]];
+            
+        }
+        
+    }
+
+    NSPredicate *predicate = [NSPredicate predicateWithFormat:@"entity.name == %@ && xid == %@", entityName, xid];
+    
+    NSArray *objectsArray = [self objectsForEntityName:entityName
+                                               orderBy:@"id"
+                                             ascending:YES
+                                            fetchLimit:0
+                                           fetchOffset:0
+                                           withFantoms:NO
+                                             predicate:predicate
+                                inManagedObjectContext:[self document].managedObjectContext
+                                                 error:error];
+    
+    if (objectsArray.count == 0) {
+        
+        errorMessage = [NSString stringWithFormat:@"no object for destroy with xid %@ and entity name %@", xidString, entityName];
+        [self error:error withMessage:errorMessage];
+        return nil;
+
+    }
+    
+    if (objectsArray.count > 1) {
+        
+        errorMessage = [NSString stringWithFormat:@"more than 1 object for destroy with xid %@ and entity name %@", xidString, entityName];
+        [self error:error withMessage:errorMessage];
+        return nil;
+        
+    }
+
+    object = objectsArray.firstObject;
+    
+    STMRecordStatus *recordStatus = [self createRecordStatusAndRemoveObject:object];
+    return [self arrayForJSWithObjects:@[recordStatus]];
+    
+}
+
+
+#pragma mark - update objects from WKWebView
+
++ (NSArray *)updateObjectsFromScriptMessage:(WKScriptMessage *)scriptMessage error:(NSError **)error {
+    
+    NSMutableArray *result = @[].mutableCopy;
+    
+    if (![scriptMessage.body isKindOfClass:[NSDictionary class]]) {
+        
+        [self error:error withMessage:@"message.body is not a NSDictionary class"];
+        return nil;
+        
+    }
+    
+    NSDictionary *parameters = scriptMessage.body;
+    
+    NSString *entityName = [NSString stringWithFormat:@"STM%@", parameters[@"entity"]];
+    
+    if (![[self localDataModelEntityNames] containsObject:entityName]) {
+        
+        [self error:error withMessage:[entityName stringByAppendingString:@": not found in data model"]];
+        return nil;
+
+    }
+
+    if ([scriptMessage.name isEqualToString:WK_MESSAGE_UPDATE]) {
+        
+        if (![parameters[@"data"] isKindOfClass:[NSDictionary class]]) {
+            
+            [self error:error withMessage:[NSString stringWithFormat:@"message.body.data for %@ message is not a NSDictionary class", scriptMessage.name]];
+            return nil;
+            
+        } else {
+            
+            NSDictionary *updatedData = [self updateObjectWithData:parameters[@"data"] entityName:entityName error:error];
+            if (*error) return nil;
+            
+            [result addObject:updatedData];
+
+        }
+
+    } else if ([scriptMessage.name isEqualToString:WK_MESSAGE_UPDATE_ALL]) {
+        
+        if (![parameters[@"data"] isKindOfClass:[NSArray <NSDictionary *> class]]) {
+            
+            [self error:error withMessage:[NSString stringWithFormat:@"message.body.data for %@ message is not a NSArray[NSDictionary] class", scriptMessage.name]];
+            return nil;
+            
+        } else {
+            
+            NSArray *data = parameters[@"data"];
+            
+            NSString *errorMessage = nil;
+            
+            for (NSDictionary *objectData in data) {
+                
+                NSError *localError = nil;
+                
+                NSDictionary *updatedData = [self updateObjectWithData:objectData entityName:entityName error:&localError];
+                
+                if (localError) {
+                    errorMessage = (errorMessage) ? [errorMessage stringByAppendingString:localError.localizedDescription] : localError.localizedDescription;
+                } else {
+                    [result addObject:updatedData];
+                }
+                
+            }
+            
+            if (errorMessage) [self error:error withMessage:errorMessage];
+            
+        }
+        
+    }
+    
+    [[self document] saveDocument:^(BOOL success) {
+        
+    }];
+    
+    return result;
+    
+}
+
++ (NSDictionary *)updateObjectWithData:(NSDictionary *)objectData entityName:(NSString *)entityName error:(NSError **)error {
+    
+    NSString *xidString = objectData[@"id"];
+    NSData *xidData = [STMFunctions xidDataFromXidString:xidString];
+
+    STMDatum *object = (STMDatum *)[self objectForXid:xidData entityName:entityName];
+    
+    if (!object) object = (STMDatum *)[self newObjectForEntityName:entityName andXid:xidData isFantom:NO];
+
+    [self processingKeysForUpdatingObject:object withObjectData:objectData error:error];
+
+    return (*error) ? nil : [self dictionaryForJSWithObject:object];
+    
+}
+
++ (void)processingKeysForUpdatingObject:(STMDatum *)object withObjectData:(NSDictionary *)objectData error:(NSError **)error {
+    
+    objectData = [self normalizeObjectData:objectData forObject:object error:error];
+    
+    if (*error) return;
+    
+    NSString *entityName = object.entity.name;
+    
+    NSSet *ownKeys = [self ownObjectKeysForEntityName:entityName];
+    
+    for (NSString *key in ownKeys) {
+        
+        id value = objectData[key];
+        
+        if (value && ![value isKindOfClass:[NSNull class]]) {
+            [object setValue:value forKey:key];
+        } else {
+            [object setValue:nil forKey:key];
+        }
+        
+    }
+    
+    NSDictionary *ownRelationships = [self singleRelationshipsForEntityName:entityName];
+    
+    for (NSString *key in ownRelationships.allKeys) {
+        
+        NSString *xidString = objectData[key];
+
+        if (xidString) {
+            
+            NSString *destinationEntityName = ownRelationships[key];
+            
+            NSManagedObject *destinationObject = [self objectForEntityName:destinationEntityName andXidString:xidString];
+            
+            if (![[object valueForKey:key] isEqual:destinationObject]) {
+                
+                BOOL waitingForSync = [self isWaitingToSyncForObject:destinationObject];
+                
+                [object setValue:destinationObject forKey:key];
+                
+                if (!waitingForSync) {
+                    
+                    [destinationObject addObserver:[self sharedController]
+                                        forKeyPath:@"deviceTs"
+                                           options:(NSKeyValueObservingOptionNew|NSKeyValueObservingOptionOld)
+                                           context:nil];
+                    
+                }
+                
+            }
+            
+        } else {
+            
+            NSManagedObject *destinationObject = [object valueForKey:key];
+            
+            if (destinationObject) {
+                
+                BOOL waitingForSync = [self isWaitingToSyncForObject:destinationObject];
+                
+                [object setValue:nil forKey:key];
+                
+                if (!waitingForSync) {
+                    
+                    [destinationObject addObserver:[self sharedController]
+                                        forKeyPath:@"deviceTs"
+                                           options:(NSKeyValueObservingOptionNew|NSKeyValueObservingOptionOld)
+                                           context:nil];
+                    
+                }
+                
+            }
+
+        }
+        
+    }
+    
+}
+
++ (NSDictionary *)normalizeObjectData:(NSDictionary *)objectData forObject:(STMDatum *)object error:(NSError **)error {
+    
+    NSString *errorMessage = nil;
+    
+    NSMutableDictionary *resultDic = @{}.mutableCopy;
+    
+    NSString *entityName = object.entity.name;
+    
+    NSSet *ownKeys = [self ownObjectKeysForEntityName:entityName];
+    
+    for (NSString *key in ownKeys) {
+        
+        id value = objectData[key];
+        
+        if (value && ![value isKindOfClass:[NSNull class]]) {
+            
+            value = [self normalizeValue:value forKey:key updatingObject:object];
+            
+            if (value) {
+                
+                resultDic[key] =  value;
+                
+            } else {
+                
+                NSString *message = [NSString stringWithFormat:@"%@ object %@ can't update value %@ for key %@\n", entityName, object.xid, value, key];
+                
+                errorMessage = (errorMessage) ? [errorMessage stringByAppendingString:message] : message;
+                
+                continue;
+                
+            }
+            
+        }
+        
+    }
+    
+    NSArray *ownRelationships = [self singleRelationshipsForEntityName:entityName].allKeys;
+    
+    for (NSString *key in ownRelationships) {
+        
+        id value = objectData[key];
+        
+        if (value) {
+            
+            if ([value isKindOfClass:[NSString class]]) {
+                
+                NSString *xidString = (NSString *)value;
+                
+                NSManagedObject *destinationObject = [self objectForEntityName:entityName andXidString:xidString];
+                
+                if (![[object valueForKey:key] isEqual:destinationObject]) {
+                    resultDic[key] = value;
+                }
+                
+            } else {
+                
+                NSString *message = [NSString stringWithFormat:@"%@ object %@ relationship value %@ is not a String for key %@, can't get xid\n", entityName, object.xid, value, key];
+                
+                errorMessage = (errorMessage) ? [errorMessage stringByAppendingString:message] : message;
+                
+                continue;
+                
+            }
+            
+        }
+        
+    }
+    
+    if (errorMessage) {
+        
+        [self error:error withMessage:errorMessage];
+        return nil;
+        
+    } else {
+        
+        return resultDic;
+        
+    }
+
+}
+
++ (id)normalizeValue:(id)value forKey:(NSString *)key updatingObject:(STMDatum *)object {
+    
+    NSString *valueClassName = object.entity.attributesByName[key].attributeValueClassName;
+    Class valueClass = NSClassFromString(valueClassName);
+    NSAttributeType attributeType = object.entity.attributesByName[key].attributeType;
+    
+    if ([valueClass isSubclassOfClass:[NSNumber class]]) {
+        
+        if ([value isKindOfClass:[NSString class]]) {
+            
+            NSString *stringValue = (NSString *)value;
+            
+            switch (attributeType) {
+                case NSInteger16AttributeType:
+                case NSInteger32AttributeType:
+                case NSInteger64AttributeType: {
+                    value = @(stringValue.integerValue);
+                    break;
+                }
+                case NSDecimalAttributeType: {
+                    value = [NSDecimalNumber decimalNumberWithString:stringValue];
+                    break;
+                }
+                case NSDoubleAttributeType: {
+                    value = @(stringValue.doubleValue);
+                    break;
+                }
+                case NSFloatAttributeType: {
+                    value = @(stringValue.floatValue);
+                    break;
+                }
+                case NSBooleanAttributeType: {
+                    value = @(stringValue.boolValue);
+                    break;
+                }
+                default: {
+                    return nil;
+                }
+            }
+            
+        } else if (![value isKindOfClass:[NSNumber class]]) {
+            return nil;
+        }
+        
+    } else if ([valueClass isSubclassOfClass:[NSString class]]) {
+
+        if (![value isKindOfClass:[NSString class]]) {
+
+            if ([value respondsToSelector:@selector(stringValue)]) {
+                value = (NSString *)[value stringValue];
+            } else {
+                return nil;
+            }
+
+        }
+        
+    } else {
+        
+        if (![value isKindOfClass:[NSString class]]) return nil;
+        
+        if ([valueClass isSubclassOfClass:[NSDate class]]) {
+            
+            value = [[STMFunctions dateFormatter] dateFromString:value];
+            
+        } else if ([valueClass isSubclassOfClass:[NSData class]]) {
+            
+            if ([key.lowercaseString hasSuffix:@"uuid"] || [key.lowercaseString hasSuffix:@"xid"]) {
+                value = [STMFunctions xidDataFromXidString:value];
+            } else {
+                value = [STMFunctions dataFromString:value];
+            }
+            
+        }
+
+    }
+    
+    return value;
+    
+}
+
+
+#pragma mark - find objects for WKWebView
+
++ (NSArray *)arrayOfObjectsRequestedByScriptMessage:(WKScriptMessage *)scriptMessage error:(NSError **)error {
+    
+    NSArray *result = nil;
+
+    if (![scriptMessage.body isKindOfClass:[NSDictionary class]]) {
+        
+        [self error:error withMessage:@"message.body is not a NSDictionary class"];
+        return nil;
+        
+    }
+
+    NSDictionary *parameters = scriptMessage.body;
+
+    if ([scriptMessage.name isEqualToString:WK_MESSAGE_FIND]) {
+        
+        result = [self findObjectInCacheWithParameters:parameters error:error];
+
+        if (*error) return nil;
+        if (result) return result;
+
+    }
+    
+    NSPredicate *predicate = [STMScriptMessageController predicateForScriptMessage:scriptMessage error:error];
+    
+    if (*error) return nil;
+
+    NSString *entityName = [NSString stringWithFormat:@"STM%@", parameters[@"entity"]];
+    NSDictionary *options = parameters[@"options"];
+    NSUInteger pageSize = [options[@"pageSize"] integerValue];
+    NSUInteger startPage = [options[@"startPage"] integerValue] - 1;
+    
+    NSArray *objectsArray = [self objectsForEntityName:entityName
+                                               orderBy:@"id"
+                                             ascending:YES
+                                            fetchLimit:pageSize
+                                           fetchOffset:(pageSize * startPage)
+                                           withFantoms:NO
+                                             predicate:predicate
+                                inManagedObjectContext:[self document].managedObjectContext
+                                                 error:error];
+    
+    if (*error) {
+        return nil;
+    } else {
+        return [self arrayForJSWithObjects:objectsArray];
+    }
+
+}
+
++ (void)error:(NSError **)error withMessage:(NSString *)errorMessage {
+    
+    NSString *bundleId = [NSBundle mainBundle].bundleIdentifier;
+    
+    if (bundleId && error) *error = [NSError errorWithDomain:(NSString * _Nonnull)bundleId
+                                                        code:1
+                                                    userInfo:@{NSLocalizedDescriptionKey: errorMessage}];
+
+}
+
++ (NSArray *)findObjectInCacheWithParameters:(NSDictionary *)parameters error:(NSError **)error {
+    
+    NSString *errorMessage = nil;
+
+    NSString *entityName = [NSString stringWithFormat:@"STM%@", parameters[@"entity"]];
+    
+    if ([[self localDataModelEntityNames] containsObject:entityName]) {
+        
+        NSString *xidString = parameters[@"id"];
+        
+        if (xidString) {
+            
+            NSData *xid = [STMFunctions xidDataFromXidString:xidString];
+            
+            STMDatum *object = [self sharedController].objectsCache[xid];
+            
+            if (object) {
+                
+                if (object.isFantom.boolValue) {
+                    
+                    errorMessage = [NSString stringWithFormat:@"object with xid %@ is fantom", xidString];
+                    
+                } else if (![object.entity.name isEqualToString:entityName]) {
+                    
+                    errorMessage = [NSString stringWithFormat:@"object with xid %@ have entity name %@, not %@", xidString, object.entity.name, entityName];
+                    
+                } else {
+                    
+                    return [self arrayForJSWithObjects:@[object]];
+                    
+                }
+                
+            }
+            
+        } else {
+            errorMessage = @"empty xid";
+        }
+        
+    } else {
+        errorMessage = [entityName stringByAppendingString:@": not found in data model"];
+    }
+
+    if (errorMessage) [self error:error withMessage:errorMessage];
+
+    return nil;
+
+}
+
++ (NSArray *)arrayForJSWithObjects:(NSArray <STMDatum *> *)objects {
+
+    NSMutableArray *dataArray = @[].mutableCopy;
+    
+    for (STMDatum *object in objects) {
+        
+        NSDictionary *propertiesDictionary = [self dictionaryForJSWithObject:object];
+        [dataArray addObject:propertiesDictionary];
+        
+    }
+    
+    return dataArray;
+    
+}
+
++ (NSDictionary *)dictionaryForJSWithObject:(STMDatum *)object {
+    
+    NSMutableDictionary *propertiesDictionary = @{}.mutableCopy;
+    
+    if (object.xid) propertiesDictionary[@"id"] = [STMFunctions UUIDStringFromUUIDData:(NSData *)object.xid];
+    if (object.deviceTs) propertiesDictionary[@"ts"] = [[STMFunctions dateFormatter] stringFromDate:(NSDate *)object.deviceTs];
+    
+    NSArray *ownKeys = [self ownObjectKeysForEntityName:object.entity.name].allObjects;
+    NSArray *ownRelationships = [self singleRelationshipsForEntityName:object.entity.name].allKeys;
+    
+    [propertiesDictionary addEntriesFromDictionary:[object propertiesForKeys:ownKeys]];
+    [propertiesDictionary addEntriesFromDictionary:[object relationshipXidsForKeys:ownRelationships]];
+    
+    return propertiesDictionary;
+    
+}
+
+
+#pragma mark - fetching objects
 
 + (NSArray *)objectsForEntityName:(NSString *)entityName {
 
@@ -1336,29 +1863,67 @@
 }
 
 + (NSArray *)objectsForEntityName:(NSString *)entityName orderBy:(NSString *)orderBy ascending:(BOOL)ascending fetchLimit:(NSUInteger)fetchLimit withFantoms:(BOOL)withFantoms inManagedObjectContext:(NSManagedObjectContext *)context error:(NSError **)error {
+
+    return [self objectsForEntityName:entityName
+                              orderBy:orderBy
+                            ascending:ascending
+                           fetchLimit:fetchLimit
+                          fetchOffset:0
+                          withFantoms:withFantoms
+               inManagedObjectContext:context
+                                error:error];
+
+}
+
++ (NSArray *)objectsForEntityName:(NSString *)entityName orderBy:(NSString *)orderBy ascending:(BOOL)ascending fetchLimit:(NSUInteger)fetchLimit fetchOffset:(NSUInteger)fetchOffset withFantoms:(BOOL)withFantoms inManagedObjectContext:(NSManagedObjectContext *)context error:(NSError **)error {
+    
+    return [self objectsForEntityName:entityName
+                              orderBy:orderBy
+                            ascending:ascending
+                           fetchLimit:fetchLimit
+                          fetchOffset:fetchOffset
+                          withFantoms:withFantoms
+                            predicate:nil
+               inManagedObjectContext:context
+                                error:error];
+
+}
+
++ (NSArray *)objectsForEntityName:(NSString *)entityName orderBy:(NSString *)orderBy ascending:(BOOL)ascending fetchLimit:(NSUInteger)fetchLimit fetchOffset:(NSUInteger)fetchOffset withFantoms:(BOOL)withFantoms predicate:(NSPredicate *)predicate inManagedObjectContext:(NSManagedObjectContext *)context error:(NSError **)error {
     
     NSString *errorMessage = nil;
     
     context = (context) ? context : [self document].managedObjectContext;
+    
+    if (context.hasChanges && fetchOffset > 0) {
+        
+        [[self document] saveDocument:^(BOOL success) {
+            
+        }];
+        
+    }
     
     if ([[self localDataModelEntityNames] containsObject:entityName]) {
         
         STMEntityDescription *entity = [STMEntityDescription entityForName:entityName inManagedObjectContext:context];
         
         if ([entity.propertiesByName.allKeys containsObject:orderBy]) {
-
+            
             NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:entityName];
             request.sortDescriptors = @[[NSSortDescriptor sortDescriptorWithKey:orderBy ascending:ascending selector:@selector(compare:)]];
             request.fetchLimit = fetchLimit;
+            request.fetchOffset = fetchOffset;
             
-            if (!withFantoms) {
-                request.predicate = [STMPredicate predicateWithNoFantoms];
+            request.predicate = (withFantoms) ? predicate : [STMPredicate predicateWithNoFantomsFromPredicate:predicate];
+            
+            NSError *fetchError;
+            NSArray *result = [[self document].managedObjectContext executeFetchRequest:request error:&fetchError];
+            
+            if (!fetchError) {
+                return result;
+            } else {
+                errorMessage = fetchError.localizedDescription;
             }
-            
-            NSError *error;
-            NSArray *result = [[self document].managedObjectContext executeFetchRequest:request error:&error];
-            
-            return result;
             
         } else {
             
@@ -1369,18 +1934,10 @@
     } else {
         
         errorMessage = [NSString stringWithFormat:@"%@: not found in data model", entityName];
-
+        
     }
     
-    if (errorMessage) {
-        
-        NSString *bundleId = [NSBundle mainBundle].bundleIdentifier;
-        
-        if (bundleId && error) *error = [NSError errorWithDomain:(NSString * _Nonnull)bundleId
-                                                            code:1
-                                                        userInfo:@{NSLocalizedDescriptionKey: errorMessage}];
-
-    }
+    if (errorMessage) [self error:error withMessage:errorMessage];
     
     return nil;
 
@@ -1406,14 +1963,22 @@
 }
 
 + (NSUInteger)numberOfFantoms {
-
-    NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:NSStringFromClass([STMDatum class])];
-    request.sortDescriptors = @[[NSSortDescriptor sortDescriptorWithKey:@"id" ascending:YES selector:@selector(compare:)]];
-    request.predicate = [NSPredicate predicateWithFormat:@"isFantom == YES"];
-    NSError *error;
-    NSUInteger result = [[self document].managedObjectContext countForFetchRequest:request error:&error];
     
-    return result;
+    NSUInteger resultCount = 0;
+    
+    for (NSString *entityName in [self localDataModelEntityNames]) {
+        
+        NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:entityName];
+        request.sortDescriptors = @[[NSSortDescriptor sortDescriptorWithKey:@"id" ascending:YES selector:@selector(compare:)]];
+        request.predicate = [NSPredicate predicateWithFormat:@"isFantom == YES"];
+
+        NSUInteger result = [[self document].managedObjectContext countForFetchRequest:request error:nil];
+        
+        resultCount += result;
+
+    }
+    
+    return resultCount;
 
 }
 
@@ -1470,15 +2035,7 @@
         
     }
 
-    if (errorMessage) {
-        
-        NSString *bundleId = [NSBundle mainBundle].bundleIdentifier;
-        
-        if (bundleId && error) *error = [NSError errorWithDomain:(NSString * _Nonnull)bundleId
-                                                            code:0
-                                                        userInfo:@{NSLocalizedDescriptionKey: errorMessage}];
-        
-    }
+    if (errorMessage) [self error:error withMessage:errorMessage];
     
     return nil;
     
@@ -1513,7 +2070,7 @@
         allKeys = object.entity.attributesByName.allKeys.mutableCopy;
     }
     
-    NSArray *notSyncableProperties = @[@"xid", @"imagePath", @"resizedImagePath", @"imageThumbnail", @"checksum"];
+    NSArray *notSyncableProperties = @[@"xid", @"imagePath", @"resizedImagePath", @"imageThumbnail"];
     
     [allKeys removeObjectsInArray:notSyncableProperties];
     

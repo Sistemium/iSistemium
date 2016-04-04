@@ -104,7 +104,7 @@
 
     cell.accessoryType = (route.shipmentRoutePoints.count > 0) ? UITableViewCellAccessoryDisclosureIndicator : UITableViewCellAccessoryNone;
 
-    cell.textLabel.text = [STMFunctions dayWithDayOfWeekFromDate:route.date];
+    if (route.date) cell.textLabel.text = [STMFunctions dayWithDayOfWeekFromDate:(NSDate *)route.date];
     
     NSString *detailText = [route planSummary];
     

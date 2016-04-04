@@ -160,9 +160,7 @@
         
         STMSaleOrder *saleOrder = [[sectionInfo objects] lastObject];
         
-        NSString *dateString = [STMFunctions dayWithDayOfWeekFromDate:saleOrder.date];
-        
-        return dateString;
+        return (saleOrder.date) ? [STMFunctions dayWithDayOfWeekFromDate:(NSDate *)saleOrder.date] : nil;
         
     } else {
         

@@ -15,16 +15,10 @@
 #import "STMRecordStatusController.h"
 #import "STMObjectsController.h"
 
-@interface STMOutletCashingTV : UITableView
 
-@end
+@interface STMOutletCashingVC () 
 
-
-@interface STMOutletCashingVC () <UITableViewDataSource, UITableViewDelegate, NSFetchedResultsControllerDelegate>
-
-@property (nonatomic, strong) NSFetchedResultsController *resultsController;
 @property (nonatomic, strong) STMDocument *document;
-@property (weak, nonatomic) IBOutlet STMOutletCashingTV *tableView;
 
 @property (nonatomic, strong) NSMutableIndexSet *deletedSectionIndexes;
 @property (nonatomic, strong) NSMutableIndexSet *insertedSectionIndexes;
@@ -226,7 +220,7 @@
     
     for (STMCashing *cashing in sectionInfo.objects) {
         
-        summ = [summ decimalNumberByAdding:cashing.summ];
+        summ = (cashing.summ) ? [summ decimalNumberByAdding:(NSDecimalNumber *)cashing.summ] : summ;
         
     }
     
@@ -249,7 +243,7 @@
     
     NSNumberFormatter *numberFormatter = [STMFunctions currencyFormatter];
 
-    NSString *sumString = [[numberFormatter stringFromNumber:cashing.summ] stringByAppendingString:@" "];
+    NSString *sumString = [[numberFormatter stringFromNumber:(NSDecimalNumber *)cashing.summ] stringByAppendingString:@" "];
 
     UIColor *textColor = cashing.uncashing ? [UIColor darkGrayColor] : [UIColor blackColor];
     UIColor *backgroundColor = [UIColor clearColor];
@@ -268,7 +262,7 @@
         font = cell.detailTextLabel.font;
         attributes = @{NSFontAttributeName: font};
         
-        [text appendAttributedString:[[NSAttributedString alloc] initWithString:cashing.commentText attributes:attributes]];
+        [text appendAttributedString:[[NSAttributedString alloc] initWithString:(NSString *)cashing.commentText attributes:attributes]];
 
     }
     
@@ -276,9 +270,9 @@
     
     
     NSDateFormatter *dateFormatter = [STMFunctions dateMediumNoTimeFormatter];    
-    NSString *debtDate = [dateFormatter stringFromDate:cashing.debt.date];
+    NSString *debtDate = [dateFormatter stringFromDate:(NSDate *)cashing.debt.date];
     
-    NSString *summOriginString = [numberFormatter stringFromNumber:cashing.debt.summOrigin];
+    NSString *summOriginString = [numberFormatter stringFromNumber:(NSDecimalNumber *)cashing.debt.summOrigin];
     
     NSString *detailText = [NSString stringWithFormat:NSLocalizedString(@"DEBT DETAILS", nil), cashing.debt.ndoc, debtDate, summOriginString];
     
@@ -377,11 +371,12 @@
     
     [self.tableView deleteSections:self.deletedSectionIndexes withRowAnimation:UITableViewRowAnimationFade];
     [self.tableView insertSections:self.insertedSectionIndexes withRowAnimation:UITableViewRowAnimationFade];
-    [self.tableView reloadSections:self.updatedSectionIndexes withRowAnimation:UITableViewRowAnimationFade];
+    [self.tableView reloadSections:self.updatedSectionIndexes withRowAnimation:UITableViewRowAnimationNone];
     
     [self.tableView deleteRowsAtIndexPaths:self.deletedRowIndexPaths withRowAnimation:UITableViewRowAnimationFade];
     [self.tableView insertRowsAtIndexPaths:self.insertedRowIndexPaths withRowAnimation:UITableViewRowAnimationFade];
     [self.tableView reloadRowsAtIndexPaths:self.updatedRowIndexPaths withRowAnimation:UITableViewRowAnimationFade];
+
     
     [self.tableView endUpdates];
     
@@ -406,6 +401,7 @@
             
         case NSFetchedResultsChangeDelete:
             [self.deletedSectionIndexes addIndex:sectionIndex];
+            [self.updatedSectionIndexes removeIndex:sectionIndex];
             break;
             
 //        case NSFetchedResultsChangeUpdate:
@@ -440,9 +436,7 @@
         
         [self.deletedRowIndexPaths addObject:indexPath];
         
-        if (newIndexPath) {
-            [self.updatedSectionIndexes addIndex:newIndexPath.section];
-        }
+        [self.updatedSectionIndexes addIndex:indexPath.section];
         
         self.wasChanged = YES;
         
@@ -489,7 +483,7 @@
     
     self.tableView.dataSource = self;
     self.tableView.delegate = self;
-//    [self.tableView setEditing:YES animated:YES];
+   [self.tableView setEditing:YES animated:YES];
 
 }
 
@@ -512,6 +506,7 @@
 - (void)viewWillAppear:(BOOL)animated {
     
     [super viewWillAppear:animated];
+    
     
 }
 

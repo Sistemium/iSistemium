@@ -7,10 +7,10 @@
 //
 
 #import "STMDatum.h"
-#import "STMComment.h"
 
 #import "STMDataModel.h"
 #import "STMFunctions.h"
+#import "STMObjectsController.h"
 
 
 @implementation STMDatum
@@ -222,17 +222,21 @@
 
 - (NSArray *)excludeProperties {
     
-    return @[@"checksum",
-             @"lts",
-             @"sts",
-             @"sqts",
-             @"deviceTs",
-             @"imagePath",
-             @"resizedImagePath",
-             @"calculatedSum",
-             @"imageThumbnail",
-             @"isFantom"];
+    static NSArray *excludeProperties = nil;
+    static dispatch_once_t onceToken;
+    
+    dispatch_once(&onceToken, ^{
+        
+        NSArray *coreEntityKeys = [STMObjectsController coreEntityKeys];
+        
+        excludeProperties = [coreEntityKeys arrayByAddingObjectsFromArray:@[@"imagePath",
+                                                                            @"resizedImagePath",
+                                                                            @"calculatedSum",
+                                                                            @"imageThumbnail"]];
+    });
 
+    return excludeProperties;
+    
 }
 
 - (NSDictionary *)propertiesForKeys:(NSArray *)keys {

@@ -16,24 +16,26 @@
 
 @interface STMFunctions : NSObject
 
+NS_ASSUME_NONNULL_BEGIN
+
 + (BOOL)isCorrectPhoneNumber:(NSString *)phoneNumberString;
 + (BOOL)isCorrectSMSCode:(NSString *)SMSCode;
 
 + (NSData *)dataFromString:(NSString *)string;
-+ (NSData *)xidDataFromXidString:(NSString *)xidString;
++ (nullable NSData *)xidDataFromXidString:(nullable NSString  *)xidString;
 + (NSString *)UUIDStringFromUUIDData:(NSData *)UUIDData;
 + (NSString *)hexStringFromData:(NSData *)data;
 
 + (NSString *)pluralTypeForCount:(NSUInteger)count;
 
-+ (UIImage *)resizeImage:(UIImage *)image toSize:(CGSize)size;
-+ (UIImage *)resizeImage:(UIImage *)image toSize:(CGSize)size allowRetina:(BOOL)retina;
++ (UIImage *)resizeImage:(nullable UIImage *)image toSize:(CGSize)size;
++ (UIImage *)resizeImage:(nullable UIImage *)image toSize:(CGSize)size allowRetina:(BOOL)retina;
 + (UIImage *)colorImage:(UIImage *)origImage withColor:(UIColor *)color;
 + (UIImage *)drawText:(NSString *)text withFont:(UIFont *)font color:(UIColor *)color inImage:(UIImage *)image atCenter:(BOOL)atCenter;
 
 + (NSNumber *)daysFromTodayToDate:(NSDate *)date;
 
-+ (NSString *)displayDateInfo:(NSString *)dateInfo;
++ (NSString *)displayDateInfo:(nullable NSString *)dateInfo;
 
 + (STMDateFormatter *)dateFormatter;
 + (NSDateFormatter *)dateNumbersFormatter;
@@ -70,7 +72,7 @@
 + (NSString *)currentAppVersion;
 
 + (NSString *)documentsDirectory;
-+ (NSString *)absolutePathForPath:(NSString *)path;
++ (NSString *)absolutePathForPath:(nullable NSString *)path;
 
 + (UIColor *)colorForColorString:(NSString *)colorSting;
 
@@ -78,6 +80,7 @@
 
 // - JSON representation
 
++ (NSString *)jsonStringFromArray:(NSArray *)objectArray;
 + (NSString *)jsonStringFromDictionary:(NSDictionary *)objectDic;
 + (NSDictionary *)validJSONDictionaryFromDictionary:(NSDictionary *)dictionary;
 
@@ -87,11 +90,13 @@
 + (void)nilifyViewForVC:(UIViewController *)vc;
 + (void)logMemoryStat;
 
-+ (NSString *)shortCompanyName:(NSString *)companyName;
++ (nullable NSString *)shortCompanyName:(nullable NSString *)companyName;
 
 + (NSString *)appStateString;
 
 + (uint64_t)freeDiskspace;
+
+NS_ASSUME_NONNULL_END
 
 
 @end

@@ -2,20 +2,23 @@
 //  STMPrice.h
 //  iSistemium
 //
-//  Created by Maxim Grigoriev on 22/03/15.
-//  Copyright (c) 2015 Sistemium UAB. All rights reserved.
+//  Created by Maxim Grigoriev on 07/02/16.
+//  Copyright © 2016 Sistemium UAB. All rights reserved.
 //
 
 #import <Foundation/Foundation.h>
-#import <CoreData/CoreData.h>
-#import "STMComment.h"
+#import "STMDatum.h"
 
 @class STMArticle, STMPriceType;
 
-@interface STMPrice : STMComment
+NS_ASSUME_NONNULL_BEGIN
 
-@property (nonatomic, retain) NSDecimalNumber * price;
-@property (nonatomic, retain) STMArticle *article;
-@property (nonatomic, retain) STMPriceType *priceType;
+@interface STMPrice : STMDatum
+
+// Insert code here to declare functionality of your managed object subclass
 
 @end
+
+NS_ASSUME_NONNULL_END
+
+#import "STMPrice+CoreDataProperties.h"

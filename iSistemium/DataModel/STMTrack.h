@@ -2,28 +2,23 @@
 //  STMTrack.h
 //  iSistemium
 //
-//  Created by Maxim Grigoriev on 22/06/14.
-//  Copyright (c) 2014 Sistemium UAB. All rights reserved.
+//  Created by Maxim Grigoriev on 07/02/16.
+//  Copyright © 2016 Sistemium UAB. All rights reserved.
 //
 
 #import <Foundation/Foundation.h>
-#import <CoreData/CoreData.h>
-#import "STMComment.h"
+#import "STMDatum.h"
 
 @class STMLocation;
 
-@interface STMTrack : STMComment
+NS_ASSUME_NONNULL_BEGIN
 
-@property (nonatomic, retain) NSDate * finishTime;
-@property (nonatomic, retain) NSDate * startTime;
-@property (nonatomic, retain) NSSet *locations;
-@end
+@interface STMTrack : STMDatum
 
-@interface STMTrack (CoreDataGeneratedAccessors)
-
-- (void)addLocationsObject:(STMLocation *)value;
-- (void)removeLocationsObject:(STMLocation *)value;
-- (void)addLocations:(NSSet *)values;
-- (void)removeLocations:(NSSet *)values;
+// Insert code here to declare functionality of your managed object subclass
 
 @end
+
+NS_ASSUME_NONNULL_END
+
+#import "STMTrack+CoreDataProperties.h"
