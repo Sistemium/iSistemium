@@ -2164,7 +2164,7 @@
         allKeys = object.entity.attributesByName.allKeys.mutableCopy;
     }
     
-    NSArray *notSyncableProperties = @[@"xid", @"imagePath", @"resizedImagePath", @"imageThumbnail"];
+    NSArray *notSyncableProperties = @[@"xid", @"resizedImagePath", @"imageThumbnail"];
     
     [allKeys removeObjectsInArray:notSyncableProperties];
     
