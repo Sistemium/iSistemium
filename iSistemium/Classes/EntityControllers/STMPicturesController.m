@@ -109,7 +109,6 @@
 
 - (void)setDownloadingPictures:(BOOL)downloadingPictures {
     
-<<<<<<< HEAD
     if (_downloadingPictures != downloadingPictures) {
         
         _downloadingPictures = downloadingPictures;
@@ -117,27 +116,6 @@
         (_downloadingPictures) ? [self startDownloadingPictures] : [self stopDownloadingPictures];
         
     }
-=======
-    if (!_hrefDictionary) {
-        
-        _hrefDictionary = [NSMutableDictionary dictionary];
-        
-    }
-    
-    return _hrefDictionary;
-    
-}
-
-- (NSMutableArray *)secondAttempt {
-    
-    if (!_secondAttempt) {
-        
-        _secondAttempt = [NSMutableArray array];
-        
-    }
-    
-    return _secondAttempt;
->>>>>>> iphoneDebts
     
 }
 
@@ -146,12 +124,7 @@
     if (!_hrefDictionary) {
         _hrefDictionary = [NSMutableDictionary dictionary];
     }
-<<<<<<< HEAD
     return _hrefDictionary;
-=======
-    
-    return _downloadQueue;
->>>>>>> iphoneDebts
     
 }
 
@@ -607,20 +580,11 @@
         
         NSManagedObject *object = self.hrefDictionary.allValues.firstObject;
         
-<<<<<<< HEAD
         if (object) {
             [self downloadConnectionForObjectID:object.objectID];
         } else {
             [self stopDownloadingPictures];
         }
-=======
-//        object is sended to background thread
-//        you should dispatch_get_main_queue in downloadConnectionForObject: for object manipulation
-
-        dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_BACKGROUND, 0), ^{
-            [self downloadConnectionForObject:object];
-        });
->>>>>>> iphoneDebts
         
     } else {
         [self stopDownloadingPictures];
@@ -670,21 +634,9 @@
     
     if (href) {
         
-<<<<<<< HEAD
         if ([object valueForKey:@"imageThumbnail"]) {
 
             [self didProcessHref:href];
-=======
-        __block id imageThumbnail = nil;
-        
-        dispatch_sync(dispatch_get_main_queue(), ^{
-            imageThumbnail = [object valueForKey:@"imageThumbnail"];
-        });
-        
-        if (imageThumbnail) {
-            
-            [self.hrefDictionary removeObjectForKey:href];
->>>>>>> iphoneDebts
             
         } else {
         
@@ -692,7 +644,6 @@
             
             NSURL *url = [NSURL URLWithString:href];
             NSURLRequest *request = [NSURLRequest requestWithURL:url];
-<<<<<<< HEAD
             
             //        NSLog(@"start loading %@", url.lastPathComponent);
             
@@ -720,67 +671,6 @@
                 }
 
             }];
-=======
-            NSURLResponse *response = nil;
-            __block NSError *error = nil;
-            
-            //        NSLog(@"start loading %@", url.lastPathComponent);
-            
-            NSData *data = [NSURLConnection sendSynchronousRequest:request returningResponse:&response error:&error];
-            
-            if (error) {
-                
-                if (error.code == -1001) {
-                    
-                    NSLog(@"error code -1001 timeout for %@", href);
-                    
-                    if ([self.secondAttempt containsObject:href]) {
-                        
-                        NSLog(@"second load attempt fault for %@", href);
-                        
-                        [self.secondAttempt removeObject:href];
-                        [self.hrefDictionary removeObjectForKey:href];
-                        
-                    } else {
-                        
-                        [self.secondAttempt addObject:href];
-                        
-#warning Is it really need to secondAttempt?
-                        dispatch_async(dispatch_get_main_queue(), ^{
-                            [self performSelector:@selector(addOperationForObject:) withObject:object afterDelay:0];
-                        });
-                        
-                    }
-                    
-                } else {
-                    
-                    dispatch_async(dispatch_get_main_queue(), ^{
-                        
-                        NSLog(@"error %@ in %@", error.description, [object valueForKey:@"name"]);
-                        [self.hrefDictionary removeObjectForKey:href];
-                        
-                    });
-                    
-                }
-                
-            } else {
-                
-                //                NSLog(@"%@ load successefully", href);
-                
-                [self.hrefDictionary removeObjectForKey:href];
-                
-                __block NSData *dataCopy = [data copy];
-                
-                dispatch_async(dispatch_get_main_queue(), ^{
-                    
-                    if ([object isKindOfClass:[STMPicture class]]) {
-                        [[self class] setImagesFromData:dataCopy forPicture:(STMPicture *)object andUpload:NO];
-                    }
-                    
-                });
-                
-            }
->>>>>>> iphoneDebts
             
         }
         
@@ -810,6 +700,7 @@
 }
 
 - (void)addUploadOperationForPicture:(STMPicture *)picture data:(NSData *)data {
+
     NSString *url = @"https://api.sistemium.com/ims/dr50?folder=";
     NSString *entityName = picture.entity.name;
     NSDate *currentDate = [NSDate date];
@@ -825,15 +716,11 @@
     [request setHTTPMethod:@"POST"];
     [request setValue: @"image/jpeg" forHTTPHeaderField:@"content-type"];
     [request setHTTPBody:data];
-<<<<<<< HEAD
     
     [NSURLConnection sendAsynchronousRequest:request
                                        queue:[NSOperationQueue mainQueue]
                            completionHandler:^(NSURLResponse *response, NSData *data, NSError *error) {
-        
-=======
-    [NSURLConnection sendAsynchronousRequest:request queue:[NSOperationQueue mainQueue] completionHandler:^(NSURLResponse *response, NSData *data, NSError *error) {
->>>>>>> iphoneDebts
+
         if (!error) {
             NSInteger statusCode = [(NSHTTPURLResponse *)response statusCode];
             if (statusCode == 200){
@@ -862,8 +749,9 @@
             
             NSLog(@"connectionError %@", error.localizedDescription);
         }
+
     }];
-    
+
 }
 
 

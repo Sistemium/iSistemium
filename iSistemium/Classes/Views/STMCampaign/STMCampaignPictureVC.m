@@ -103,14 +103,8 @@
         
         [self.view addSubview:self.spinnerView];
         [self addObservers];
-<<<<<<< HEAD
 
         NSManagedObjectID *pictureID = self.picture.objectID;
-=======
-        
-//        self.picture is sended to background thread
-//        you should dispatch_get_main_queue in downloadConnectionForObject: for self.picture manipulation
->>>>>>> iphoneDebts
         
         dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_BACKGROUND, 0), ^{
             [STMPicturesController downloadConnectionForObjectID:pictureID];
