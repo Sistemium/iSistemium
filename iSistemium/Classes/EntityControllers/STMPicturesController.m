@@ -628,9 +628,7 @@
     
     __block NSString *href = nil;
     
-    dispatch_sync(dispatch_get_main_queue(), ^{
-        href = [object valueForKey:@"href"];
-    });
+    href = [object valueForKey:@"href"];
     
     if (href) {
         
