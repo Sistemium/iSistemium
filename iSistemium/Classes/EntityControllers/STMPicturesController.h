@@ -11,7 +11,7 @@
 
 @interface STMPicturesController : STMController
 
-@property (nonatomic, strong) NSOperationQueue *downloadQueue;
+@property (nonatomic) BOOL downloadingPictures;
 
 + (STMPicturesController *)sharedController;
 
@@ -24,8 +24,8 @@
 
 + (void)hrefProcessingForObject:(NSManagedObject *)object;
 + (void)downloadConnectionForObject:(NSManagedObject *)object;
++ (void)downloadConnectionForObjectID:(NSManagedObjectID *)objectID;
 
-//+ (void)setImagesFromData:(NSData *)data forPicture:(STMPicture *)picture;
 + (void)setImagesFromData:(NSData *)data forPicture:(STMPicture *)picture andUpload:(BOOL)shouldUpload;
 + (void)saveImageFile:(NSString *)fileName forPicture:(STMPicture *)picture fromImageData:(NSData *)data;
 

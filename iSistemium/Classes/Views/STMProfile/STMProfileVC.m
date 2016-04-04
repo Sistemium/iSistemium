@@ -466,7 +466,7 @@
     [self.nonloadedPicturesButton setTitle:title forState:UIControlStateNormal];
     self.navigationController.tabBarItem.badgeValue = badgeValue;
     
-    UIColor *titleColor = [STMPicturesController sharedController].downloadQueue.suspended ? [UIColor redColor] : ACTIVE_BLUE_COLOR;
+    UIColor *titleColor = [STMPicturesController sharedController].downloadingPictures ? ACTIVE_BLUE_COLOR : [UIColor redColor];
     [self.nonloadedPicturesButton setTitleColor:titleColor forState:UIControlStateNormal];
     
 }
@@ -483,17 +483,17 @@
         actionSheet.title = NSLocalizedString(@"UNLOADED PICTURES", nil);
         actionSheet.delegate = self;
 
-        if ([STMPicturesController sharedController].downloadQueue.suspended) {
+        if ([STMPicturesController sharedController].downloadingPictures) {
         
-            actionSheet.tag = 1;
-            [actionSheet addButtonWithTitle:NSLocalizedString(@"DOWNLOAD NOW", nil)];
-            [actionSheet addButtonWithTitle:NSLocalizedString(@"DOWNLOAD LATER", nil)];
-
-        } else {
-
             actionSheet.tag = 2;
             [actionSheet addButtonWithTitle:NSLocalizedString(@"DOWNLOAD STOP", nil)];
             [actionSheet addButtonWithTitle:NSLocalizedString(@"CLOSE", nil)];
+
+        } else {
+
+            actionSheet.tag = 1;
+            [actionSheet addButtonWithTitle:NSLocalizedString(@"DOWNLOAD NOW", nil)];
+            [actionSheet addButtonWithTitle:NSLocalizedString(@"DOWNLOAD LATER", nil)];
 
         }
 
@@ -532,14 +532,14 @@
 - (void)startPicturesDownloading {
     
     [STMPicturesController checkPhotos];
-    [STMPicturesController sharedController].downloadQueue.suspended = NO;
+    [STMPicturesController sharedController].downloadingPictures = YES;
     [self updateNonloadedPicturesInfo];
 
 }
 
 - (void)stopPicturesDownloading {
     
-    [STMPicturesController sharedController].downloadQueue.suspended = YES;
+    [STMPicturesController sharedController].downloadingPictures = NO;
     [self updateNonloadedPicturesInfo];
 
 }
