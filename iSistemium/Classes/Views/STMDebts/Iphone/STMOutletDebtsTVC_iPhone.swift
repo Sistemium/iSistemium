@@ -63,12 +63,18 @@ class STMOutletDebtsTVC_iPhone: STMOutletDebtsTVC {
         customCell.titleLabel!.backgroundColor = UIColor.clearColor()
         customCell.detailLabel!.backgroundColor = UIColor.clearColor()
         customCell.checkboxView.viewWithTag(444)?.removeFromSuperview()
+        
         if STMCashingProcessController.sharedInstance().state == .Running {
+            
             var fillWidth: CGFloat = 0
-            if debt.xid != nil && STMCashingProcessController.sharedInstance().debtsDictionary.allKeys.contains({$0 as? NSObject == debt.xid}) {
-                let cashingSum = STMCashingProcessController.sharedInstance().debtsDictionary[debt.xid!!]![1]
+            let debtsDictionary: NSDictionary = STMCashingProcessController.sharedInstance().debtsDictionary
+            
+            if debt.xid != nil && debtsDictionary.allKeys.contains({$0 as? NSObject == debt.xid}) {
+                
+                let debtValues: NSArray = debtsDictionary[debt.xid!!]! as! NSArray
+                let cashingSum = debtValues[1]
                 fillWidth = CGFloat(cashingSum.decimalNumberByDividingBy(debt.calculatedSum ?? 0).doubleValue)
-                customCell.accessoryType = .DetailButton
+                
                 let checkLabel = STMLabel(frame: customCell.checkboxView.bounds)
                 checkLabel.adjustsFontSizeToFitWidth = true
                 checkLabel.text = "✓"
@@ -76,9 +82,15 @@ class STMOutletDebtsTVC_iPhone: STMOutletDebtsTVC {
                 checkLabel.textAlignment = .Left
                 checkLabel.tag = 444
                 customCell.checkboxView.addSubview(checkLabel)
+
+                customCell.accessoryType = .DetailButton
+
             } else {
+                
                 customCell.accessoryType = .None
+                
             }
+            
             if (fillWidth != 0) {
                 fillWidth *= customCell.frame.size.width
                 if (fillWidth < 10) {
