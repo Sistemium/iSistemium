@@ -185,7 +185,7 @@
 "RECEIVE DATE" = "Receive date: ";
 "RECEIVE" = "Receive";
 "RECEIVE1" = "Receive";
-"RECEIVE2" = "Received %@ of %@";
+"RECEIVE2" = "Received %@ of";
 "0OBJECTS" = "no objects";
 "1OBJECTS" = "object";
 "2OBJECTS" = "objects";
