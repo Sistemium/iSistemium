@@ -394,10 +394,18 @@
                 
             } else {
                 
-                NSString *logMessage = [NSString stringWithFormat:@"attempt to set images for picture %@, photoData %@, length %lu", picture, photoData, (unsigned long)photoData.length];
-                [[STMLogger sharedLogger] saveLogMessageWithText:logMessage type:@"error"];
+                if (picture.href) {
+                    
+                    [self hrefProcessingForObject:picture];
+                    
+                } else {
                 
-                [self deletePicture:picture];
+                    NSString *logMessage = [NSString stringWithFormat:@"attempt to set images for picture %@, photoData %@, length %lu", picture, photoData, (unsigned long)photoData.length];
+                    [[STMLogger sharedLogger] saveLogMessageWithText:logMessage type:@"error"];
+                    
+                    [self deletePicture:picture];
+
+                }
                 
             }
             
@@ -581,19 +589,25 @@
         NSManagedObject *object = self.hrefDictionary.allValues.firstObject;
         
         if (object) {
+            
             [self downloadConnectionForObjectID:object.objectID];
+            
         } else {
-            [self stopDownloadingPictures];
+            
+            self.downloadingPictures = NO;
+            [STMPicturesController checkBrokenPhotos];
+            self.downloadingPictures = (self.hrefDictionary.allValues.count > 0);
+            
         }
         
     } else {
-        [self stopDownloadingPictures];
+
     }
     
 }
 
 - (void)stopDownloadingPictures {
-    
+
 }
 
 + (void)downloadConnectionForObjectID:(NSManagedObjectID *)objectID {
