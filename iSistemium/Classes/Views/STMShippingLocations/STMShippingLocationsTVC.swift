@@ -15,7 +15,7 @@ class STMShippingLocationsTVC: STMSearchableTVC, UISearchBarDelegate{
     override var resultsController : NSFetchedResultsController? {
         get {
             if (_resultsController == nil) {
-                let shippingFetchRequest = NSFetchRequest(entityName: "STMShippingLocation")
+                let shippingFetchRequest = STMFetchRequest(entityName: "STMShippingLocation")
                 shippingFetchRequest.sortDescriptors = [NSSortDescriptor(key: "deviceTs",ascending:false)]
                 shippingFetchRequest.predicate = self.predicate
                 _resultsController = NSFetchedResultsController(fetchRequest: shippingFetchRequest, managedObjectContext: self.document.managedObjectContext, sectionNameKeyPath: nil, cacheName: nil)

@@ -35,9 +35,9 @@ class STMShippingLocationTVC:STMVariableCellsHeightTVC,UIImagePickerControllerDe
     override var resultsController : NSFetchedResultsController? {
         get {
             if (_resultsController == nil && shippingLocation != nil) {
-                let shippingFetchRequest = NSFetchRequest(entityName: NSStringFromClass(STMShipmentRoutePoint))
+                let shippingFetchRequest = STMFetchRequest(entityName: NSStringFromClass(STMShipmentRoutePoint))
                 shippingFetchRequest.sortDescriptors = [NSSortDescriptor(key: "deviceTs", ascending:false)]
-                shippingFetchRequest.predicate = NSPredicate(format: "shippingLocation.name == %@", shippingLocation!.name!)
+                shippingFetchRequest.predicate = NSPredicate(format: "shippingLocation == %@", shippingLocation!)
                 _resultsController = NSFetchedResultsController(fetchRequest: shippingFetchRequest, managedObjectContext: self.document.managedObjectContext, sectionNameKeyPath: nil, cacheName: nil)
                 _resultsController!.delegate = self
             }
