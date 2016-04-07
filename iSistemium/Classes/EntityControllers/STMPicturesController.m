@@ -430,7 +430,7 @@
     
     for (STMPicture *picture in result) {
         
-        if (!picture.objectID.temporaryID) {
+        if (!picture.hasChanges) {
             
             NSData *photoData = [NSData dataWithContentsOfFile:[STMFunctions absolutePathForPath:picture.imagePath]];
             
