@@ -22,6 +22,5 @@
 @property (nonatomic, strong) NSString *comment;
 @property (nonatomic, strong) UIImage *image;
 @property (nonatomic, strong) STMUncashingPlace *place;
-@property (weak, nonatomic) IBOutlet UITextView *commentTextView;
 
 @end
