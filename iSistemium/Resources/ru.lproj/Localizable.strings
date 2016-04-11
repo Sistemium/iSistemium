@@ -471,4 +471,4 @@
 "FROM" = "из";
 "LAST SCANNED BARCODE" = "Последний штрихкод:";
 "RELOAD SCANNER DATA" = "Обновить";
-
+"UNKNOWN LOCATION" = "Нет координат";

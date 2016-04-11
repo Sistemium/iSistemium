@@ -110,6 +110,7 @@ class STMShippingLocationTVC:STMVariableCellsHeightTVC,UIImagePickerControllerDe
                     if ((shippingLocation?.location) != nil) {
                         
                         cell.titleLabel!.text = NSLocalizedString("SHOW MAP", comment: "");
+                        cell.titleLabel.tintColor = UIColor.blackColor()
                         
                         if (!(shippingLocation?.isLocationConfirmed ?? 0).boolValue ) {
                             
@@ -117,6 +118,9 @@ class STMShippingLocationTVC:STMVariableCellsHeightTVC,UIImagePickerControllerDe
                             cell.detailLabel!.textColor = UIColor.redColor()
                             
                         }
+                    }else{
+                        cell.titleLabel!.text = NSLocalizedString("UNKNOWN LOCATION", comment: "");
+                        cell.titleLabel.tintColor = UIColor.grayColor()
                     }
                 
                     cell.accessoryType = .None
@@ -216,8 +220,9 @@ class STMShippingLocationTVC:STMVariableCellsHeightTVC,UIImagePickerControllerDe
             
             switch (indexPath.row) {
             case 0:
-                performSegueWithIdentifier("showShippingLocationMap", sender:self.shippingLocation)
-                
+                if ((shippingLocation?.location) != nil) {
+                    performSegueWithIdentifier("showShippingLocationMap", sender:self.shippingLocation)
+                }
             default:
                 break;
             }
@@ -397,7 +402,7 @@ class STMShippingLocationTVC:STMVariableCellsHeightTVC,UIImagePickerControllerDe
             
             let mapVC = segue.destinationViewController as! STMShippingLocationMapVC
             
-            mapVC.point = resultsController?.fetchedObjects![0] as! STMShipmentRoutePoint
+            mapVC.shippingLocation = self.shippingLocation
             
         }
     }
