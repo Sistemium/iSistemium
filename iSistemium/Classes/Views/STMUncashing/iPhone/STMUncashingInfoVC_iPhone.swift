@@ -13,7 +13,7 @@ class STMUncashingInfoVC_iPhone: STMUncashingInfoVC {
     @IBOutlet weak var sumTextLabel: UILabel!
     @IBOutlet weak var typeTextLabel: UILabel!
     @IBOutlet weak var imageView: UIImageView!
-    @IBOutlet weak var commentTextView: UITextView!
+    @IBOutlet weak var commentTextView: UILabel!
     
     @IBAction func cancelButtonPressed(){
         self.dismissViewControllerAnimated(true, completion: nil)
@@ -26,28 +26,36 @@ class STMUncashingInfoVC_iPhone: STMUncashingInfoVC {
     
     override func viewWillAppear(animated: Bool) {
         super.viewWillAppear(animated)
-        mainTextLabel.constraintWithIdentifier("minHeight")?.constant = mainTextLabel.requiredHeight(self.view.frame.width )
-        sumTextLabel.constraintWithIdentifier("minHeight")?.constant = mainTextLabel.requiredHeight(self.view.frame.width )
-        typeTextLabel.constraintWithIdentifier("minHeight")?.constant = mainTextLabel.requiredHeight(self.view.frame.width )
+        if self.uncashing != nil {
+            commentTextView.text = self.uncashing.commentText
+        }
+        else{
+            commentTextView.text = self.comment
+        }
+        mainTextLabel.constraintWithIdentifier("height")?.constant = mainTextLabel.requiredHeight(self.view.frame.width )
+        sumTextLabel.constraintWithIdentifier("height")?.constant = sumTextLabel.requiredHeight(self.view.frame.width )
+        typeTextLabel.constraintWithIdentifier("height")?.constant = typeTextLabel.requiredHeight(self.view.frame.width )
+        commentTextView.constraintWithIdentifier("height")?.constant = commentTextView.requiredHeight(self.view.frame.width )
         if imageView.image != nil {
             mainTextLabel?.preferredMaxLayoutWidth = self.view.frame.width / 2
             sumTextLabel?.preferredMaxLayoutWidth = self.view.frame.width / 2
             typeTextLabel?.preferredMaxLayoutWidth = self.view.frame.width / 2
-            mainTextLabel.constraintWithIdentifier("minHeight")?.constant = mainTextLabel.requiredHeight(self.view.frame.width / 2)
-            sumTextLabel.constraintWithIdentifier("minHeight")?.constant = mainTextLabel.requiredHeight(self.view.frame.width / 2)
-            typeTextLabel.constraintWithIdentifier("minHeight")?.constant = mainTextLabel.requiredHeight(self.view.frame.width / 2)
+            commentTextView?.preferredMaxLayoutWidth = self.view.frame.width / 2
+            mainTextLabel.constraintWithIdentifier("height")?.constant = mainTextLabel.requiredHeight(self.view.frame.width / 2)
+            sumTextLabel.constraintWithIdentifier("height")?.constant = sumTextLabel.requiredHeight(self.view.frame.width / 2)
+            typeTextLabel.constraintWithIdentifier("height")?.constant = typeTextLabel.requiredHeight(self.view.frame.width / 2)
+            commentTextView.constraintWithIdentifier("height")?.constant = commentTextView.requiredHeight(self.view.frame.width / 2)
         }
-        commentTextView.sizeToFit()
-        self.preferredContentSize = CGSizeMake(500,150 + commentTextView.frame.size.height / 2)
+        self.preferredContentSize = CGSizeMake(500,mainTextLabel.constraintWithIdentifier("height")!.constant + sumTextLabel.constraintWithIdentifier("height")!.constant +
+            typeTextLabel.constraintWithIdentifier("height")!.constant + commentTextView.constraintWithIdentifier("height")!.constant + 80)
     }
     
 }
 
 private extension UILabel{
     func requiredHeight(width:CGFloat) -> CGFloat{
-        
         let label:UILabel = UILabel(frame: CGRectMake(0, 0, width, CGFloat.max))
-        label.numberOfLines = 2
+        label.numberOfLines = 0
         label.lineBreakMode = NSLineBreakMode.ByWordWrapping
         label.font = self.font
         label.text = self.text
