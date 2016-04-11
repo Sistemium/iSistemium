@@ -18,6 +18,15 @@ class STMShippingLocationTVC:STMVariableCellsHeightTVC,UIImagePickerControllerDe
 
     var shippingLocation: STMShippingLocation?{
         didSet{
+            if shippingLocation?.location == nil{
+                CLGeocoder().geocodeAddressString(shippingLocation?.address ?? "") { (placemarks, error) -> Void in
+                    if error == nil{
+                        if let firstPlacemark = placemarks?[0] {
+                            self.shippingLocation?.location = STMLocationController.locationObjectFromCLLocation(firstPlacemark.location)
+                        }
+                    }
+                }
+            }
             tableView.reloadData()
         }
     }

@@ -24,3 +24,4 @@
 #import "STMDatePickerVC.h"
 #import "STMUncashingInfoVC.h"
 #import "STMAddEtceteraVC.h"
+#import "STMLocationController.h"
