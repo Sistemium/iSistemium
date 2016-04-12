@@ -26,7 +26,7 @@
 #import "STMWorkflowEditablesVC.h"
 
 
-@interface STMShipmentRouteTVC () <UIActionSheetDelegate>
+@interface STMShipmentRouteTVC () <UIActionSheetDelegate,UIAlertViewDelegate>
 
 @property (nonatomic, strong) STMShipmentsSVC *splitVC;
 
@@ -548,6 +548,37 @@
     
 }
 
+- (void)tableView:(UITableView *)tableView commitEditingStyle:(UITableViewCellEditingStyle)editingStyle forRowAtIndexPath:(NSIndexPath *)indexPath {
+    if (indexPath.section == 1) {
+        if (editingStyle == UITableViewCellEditingStyleDelete) {
+            UIAlertView * alert = [[UIAlertView alloc]initWithTitle:NSLocalizedString(@"DELETE ROUTE POINT", nil) message:NSLocalizedString(@"COMMENT", nil) delegate:self cancelButtonTitle:NSLocalizedString(@"CANCEL", nil) otherButtonTitles:NSLocalizedString(@"DELETE", nil), nil];
+            alert.alertViewStyle= UIAlertViewStylePlainTextInput;
+            alert.tag = [indexPath row];
+            [alert show];
+        }
+    }
+}
+
+#pragma mark - UIAlertViewDelegate
+
+- (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex{
+    if (buttonIndex == 0){
+        [self.tableView setEditing:NO animated:NO];
+    }
+    else if (buttonIndex == 1){
+        STMShipmentRoutePoint *point = [self.resultsController objectAtIndexPath:[NSIndexPath indexPathForRow:alertView.tag inSection:0]];
+        UITextField *textField = [alertView textFieldAtIndex:0];
+        STMRecordStatus *recordStatus = [STMObjectsController createRecordStatusAndRemoveObject:point withComment:textField.text];
+    }
+}
+
+- (BOOL)alertViewShouldEnableFirstOtherButton:(UIAlertView *)alertView{
+    UITextField *textField = [alertView textFieldAtIndex:0];
+    if (textField.text.length == 0){
+        return NO;
+    }
+    return YES;
+}
 
 #pragma mark - UIActionSheetDelegate
 

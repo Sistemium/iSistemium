@@ -472,3 +472,4 @@
 "LAST SCANNED BARCODE" = "Последний штрихкод:";
 "RELOAD SCANNER DATA" = "Обновить";
 "UNKNOWN LOCATION" = "Нет координат";
+"DELETE ROUTE POINT" = "Удалить точку маршрута";
