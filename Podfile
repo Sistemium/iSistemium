@@ -1,7 +1,13 @@
 platform :ios, '7.1'
-pod 'KiteJSONValidator', :git => 'https://github.com/grgcombs/KiteJSONValidator.git', :tag => 'v0.1.2-Pod'
+
+use_frameworks!
+
+pod 'KiteJSONValidator', '~> 0.2.3'
 pod 'Reachability', '~> 3.1.0'
+pod 'Crashlytics', '~> 3.7.0'
+pod 'JNKeychain', '~> 0.1.4'
 pod 'ScanAPI', :path => '../ScanApiSDK'
+pod 'iSistemiumCore', :git => 'https://github.com/Sistemium/iSistemiumCore.git', :branch => 'master'
 
 post_install do |installer_representation|
     installer_representation.pods_project.targets.each do |target|
