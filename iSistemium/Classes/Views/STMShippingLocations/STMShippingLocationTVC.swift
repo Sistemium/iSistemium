@@ -22,7 +22,14 @@ class STMShippingLocationTVC:STMVariableCellsHeightTVC,UIImagePickerControllerDe
                 CLGeocoder().geocodeAddressString(shippingLocation?.address ?? "") { (placemarks, error) -> Void in
                     if error == nil{
                         if let firstPlacemark = placemarks?[0] {
-                            self.shippingLocation?.location = STMLocationController.locationObjectFromCLLocation(firstPlacemark.location)
+                            
+                            let location: STMLocation = STMLocationController.locationObjectFromCLLocation(firstPlacemark.location)
+                            location.source = "geocoder"
+                            self.shippingLocation?.isLocationConfirmed = false
+                            self.shippingLocation?.location = location
+
+                            self.tableView.reloadData()
+
                         }
                     }
                 }
