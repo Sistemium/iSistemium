@@ -1,0 +1,30 @@
+{
+  "DVTSourceControlWorkspaceBlueprintPrimaryRemoteRepositoryKey" : "A0BF99BFBD3EB9BB68129F9B7687ECA35BC5F91E",
+  "DVTSourceControlWorkspaceBlueprintWorkingCopyRepositoryLocationsKey" : {
+
+  },
+  "DVTSourceControlWorkspaceBlueprintWorkingCopyStatesKey" : {
+    "4650A218FFD30E33B9EE32F7453B6F8E80E7385C" : 0,
+    "A0BF99BFBD3EB9BB68129F9B7687ECA35BC5F91E" : 0
+  },
+  "DVTSourceControlWorkspaceBlueprintIdentifierKey" : "828A6D54-5EEF-4F91-97EE-949BC447BA12",
+  "DVTSourceControlWorkspaceBlueprintWorkingCopyPathsKey" : {
+    "4650A218FFD30E33B9EE32F7453B6F8E80E7385C" : "iSistemiumCore\/",
+    "A0BF99BFBD3EB9BB68129F9B7687ECA35BC5F91E" : "iSistemium\/"
+  },
+  "DVTSourceControlWorkspaceBlueprintNameKey" : "iSistemium",
+  "DVTSourceControlWorkspaceBlueprintVersion" : 204,
+  "DVTSourceControlWorkspaceBlueprintRelativePathToProjectKey" : "iSistemium.xcworkspace",
+  "DVTSourceControlWorkspaceBlueprintRemoteRepositoriesKey" : [
+    {
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryURLKey" : "https:\/\/github.com\/Sistemium\/iSistemiumCore.git",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositorySystemKey" : "com.apple.dt.Xcode.sourcecontrol.Git",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryIdentifierKey" : "4650A218FFD30E33B9EE32F7453B6F8E80E7385C"
+    },
+    {
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryURLKey" : "https:\/\/github.com\/Sistemium\/iSistemium.git",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositorySystemKey" : "com.apple.dt.Xcode.sourcecontrol.Git",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryIdentifierKey" : "A0BF99BFBD3EB9BB68129F9B7687ECA35BC5F91E"
+    }
+  ]
+}
