@@ -488,7 +488,6 @@
 		2CCD06E31B5931E6002591C4 /* STMShipmentRouteSummaryTVC.m in Sources */ = {isa = PBXBuildFile; fileRef = 2CCD06E21B5931E6002591C4 /* STMShipmentRouteSummaryTVC.m */; };
 		2CCD06E51B5B9551002591C4 /* data_in_both_directions.png in Resources */ = {isa = PBXBuildFile; fileRef = 2CCD06E41B5B9551002591C4 /* data_in_both_directions.png */; };
 		2CCD06E81B5B9EF8002591C4 /* STMRegradeArticleVC.m in Sources */ = {isa = PBXBuildFile; fileRef = 2CCD06E71B5B9EF8002591C4 /* STMRegradeArticleVC.m */; };
-		2CD4311D1A850A4F00AFB5DE /* KeychainItemWrapper.m in Sources */ = {isa = PBXBuildFile; fileRef = 2CD4311C1A850A4F00AFB5DE /* KeychainItemWrapper.m */; };
 		2CD443F1195AD76E004ADE58 /* photo-icon.png in Resources */ = {isa = PBXBuildFile; fileRef = 2CD443F0195AD76E004ADE58 /* photo-icon.png */; };
 		2CE03EF81C9A9F3A0070CA84 /* STMScannerInfoVC.m in Sources */ = {isa = PBXBuildFile; fileRef = 2CE03EF71C9A9F3A0070CA84 /* STMScannerInfoVC.m */; };
 		2CE3F4DC1C071F8400D8B4F3 /* barcode.png in Resources */ = {isa = PBXBuildFile; fileRef = 2CE3F4DB1C071F8400D8B4F3 /* barcode.png */; };
@@ -1406,8 +1405,6 @@
 		2CCD06E41B5B9551002591C4 /* data_in_both_directions.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = data_in_both_directions.png; sourceTree = "<group>"; };
 		2CCD06E61B5B9EF8002591C4 /* STMRegradeArticleVC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = STMRegradeArticleVC.h; sourceTree = "<group>"; };
 		2CCD06E71B5B9EF8002591C4 /* STMRegradeArticleVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = STMRegradeArticleVC.m; sourceTree = "<group>"; };
-		2CD4311B1A850A4F00AFB5DE /* KeychainItemWrapper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = KeychainItemWrapper.h; sourceTree = "<group>"; };
-		2CD4311C1A850A4F00AFB5DE /* KeychainItemWrapper.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = KeychainItemWrapper.m; sourceTree = "<group>"; };
 		2CD443F0195AD76E004ADE58 /* photo-icon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "photo-icon.png"; sourceTree = "<group>"; };
 		2CE03EF61C9A9F3A0070CA84 /* STMScannerInfoVC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = STMScannerInfoVC.h; sourceTree = "<group>"; };
 		2CE03EF71C9A9F3A0070CA84 /* STMScannerInfoVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = STMScannerInfoVC.m; sourceTree = "<group>"; };
@@ -2584,18 +2581,8 @@
 			isa = PBXGroup;
 			children = (
 				2C90CAF81BCBDD58002DC1AE /* SocketIOClientSwift */,
-				2CD4311E1A850A5E00AFB5DE /* KeychainItemWrapper */,
 			);
 			path = Frameworks;
-			sourceTree = "<group>";
-		};
-		2CD4311E1A850A5E00AFB5DE /* KeychainItemWrapper */ = {
-			isa = PBXGroup;
-			children = (
-				2CD4311B1A850A4F00AFB5DE /* KeychainItemWrapper.h */,
-				2CD4311C1A850A4F00AFB5DE /* KeychainItemWrapper.m */,
-			);
-			path = KeychainItemWrapper;
 			sourceTree = "<group>";
 		};
 		2CD443EF195AD741004ADE58 /* Images */ = {
@@ -3512,7 +3499,6 @@
 				2CC5D42B1C85C7C700193CD7 /* STMFetchRequest.m in Sources */,
 				2CC5D32D1C85C73D00193CD7 /* STMLocation.m in Sources */,
 				6D074DDB1CA9AB7D00EB5121 /* STMOutletCashingVC_iPhone.swift in Sources */,
-				2CD4311D1A850A4F00AFB5DE /* KeychainItemWrapper.m in Sources */,
 				6D074DDD1CA9AB7D00EB5121 /* STMOutletsTVC_iPhone.swift in Sources */,
 				2C42ECC81B15F37000B5C91A /* STMCatalogParametersTVC.m in Sources */,
 				2CC5D34C1C85C73D00193CD7 /* STMProductionInfoType+CoreDataProperties.m in Sources */,
