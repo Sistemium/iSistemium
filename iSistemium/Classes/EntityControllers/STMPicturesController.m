@@ -18,8 +18,6 @@
 
 #import <objc/runtime.h>
 
-#import <Security/Security.h>
-#import "KeychainItemWrapper.h"
 
 @interface STMPicturesController() <NSFetchedResultsControllerDelegate>
 
