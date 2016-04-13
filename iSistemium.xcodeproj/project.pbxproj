@@ -10,16 +10,16 @@
 	<string>46</string>
 	<key>objects</key>
 	<dict>
-		<key>01DC92BB42AC12125D6B8AAC</key>
+		<key>088797BDEF51F21B33845A3E</key>
 		<dict>
 			<key>explicitFileType</key>
-			<string>wrapper.framework</string>
+			<string>archive.ar</string>
 			<key>includeInIndex</key>
 			<string>0</string>
 			<key>isa</key>
 			<string>PBXFileReference</string>
 			<key>path</key>
-			<string>Pods.framework</string>
+			<string>libPods.a</string>
 			<key>sourceTree</key>
 			<string>BUILT_PRODUCTS_DIR</string>
 		</dict>
@@ -6416,7 +6416,7 @@
 				<string>2C8EF5A31940859F0021D202</string>
 				<string>2C8EF59F1940859F0021D202</string>
 				<string>2C9D04B91ADE549400D0421D</string>
-				<string>BA4694B45970A9FBF97F05F1</string>
+				<string>B1B0EB1FF1B99D41C2DAA57E</string>
 			</array>
 			<key>isa</key>
 			<string>PBXFrameworksBuildPhase</string>
@@ -6655,7 +6655,7 @@
 				<string>2C8EF5A01940859F0021D202</string>
 				<string>2C8EF5A21940859F0021D202</string>
 				<string>2C8EF5BD1940859F0021D202</string>
-				<string>01DC92BB42AC12125D6B8AAC</string>
+				<string>088797BDEF51F21B33845A3E</string>
 			</array>
 			<key>isa</key>
 			<string>PBXGroup</string>
@@ -18537,10 +18537,10 @@ fi
 			<key>showEnvVarsInLog</key>
 			<string>0</string>
 		</dict>
-		<key>BA4694B45970A9FBF97F05F1</key>
+		<key>B1B0EB1FF1B99D41C2DAA57E</key>
 		<dict>
 			<key>fileRef</key>
-			<string>01DC92BB42AC12125D6B8AAC</string>
+			<string>088797BDEF51F21B33845A3E</string>
 			<key>isa</key>
 			<string>PBXBuildFile</string>
 		</dict>
