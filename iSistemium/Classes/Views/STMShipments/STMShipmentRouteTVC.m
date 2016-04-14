@@ -568,7 +568,7 @@
     else if (buttonIndex == 1){
         STMShipmentRoutePoint *point = [self.resultsController objectAtIndexPath:[NSIndexPath indexPathForRow:alertView.tag inSection:0]];
         UITextField *textField = [alertView textFieldAtIndex:0];
-        STMRecordStatus *recordStatus = [STMObjectsController createRecordStatusAndRemoveObject:point withComment:textField.text];
+        [STMObjectsController createRecordStatusAndRemoveObject:point withComment:textField.text];
     }
 }
 
