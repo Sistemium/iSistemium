@@ -551,6 +551,7 @@
 		6D074DE81CA9AB9600EB5121 /* STMUncashingTVC_iPhone.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6D074DE31CA9AB9600EB5121 /* STMUncashingTVC_iPhone.swift */; };
 		6DE2B48B1C3E7F4F001F1DE1 /* STMShippingLocationTVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6DE2B48A1C3E7F4F001F1DE1 /* STMShippingLocationTVC.swift */; };
 		6DF12A301C3ABA8E00E94C3E /* STMShippingLocationsTVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6DF12A2F1C3ABA8E00E94C3E /* STMShippingLocationsTVC.swift */; };
+		6DF6B1621CBE624000F911F3 /* Download-100.png in Resources */ = {isa = PBXBuildFile; fileRef = 6DF6B1611CBE624000F911F3 /* Download-100.png */; };
 		D94AC566198BC66700D8CD63 /* cash_receiving-128.png in Resources */ = {isa = PBXBuildFile; fileRef = D94AC565198BC66700D8CD63 /* cash_receiving-128.png */; };
 		D94AC56A198BC68A00D8CD63 /* christmas_gift-128.png in Resources */ = {isa = PBXBuildFile; fileRef = D94AC569198BC68A00D8CD63 /* christmas_gift-128.png */; };
 		D94AC56C198BC6A300D8CD63 /* password2-128.png in Resources */ = {isa = PBXBuildFile; fileRef = D94AC56B198BC6A300D8CD63 /* password2-128.png */; };
@@ -1490,6 +1491,7 @@
 		6D074DE31CA9AB9600EB5121 /* STMUncashingTVC_iPhone.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = STMUncashingTVC_iPhone.swift; sourceTree = "<group>"; };
 		6DE2B48A1C3E7F4F001F1DE1 /* STMShippingLocationTVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = STMShippingLocationTVC.swift; sourceTree = "<group>"; };
 		6DF12A2F1C3ABA8E00E94C3E /* STMShippingLocationsTVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = STMShippingLocationsTVC.swift; sourceTree = "<group>"; };
+		6DF6B1611CBE624000F911F3 /* Download-100.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Download-100.png"; sourceTree = "<group>"; };
 		85E24A798D258E2910066983 /* libPods.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libPods.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		D2CCBEEC9AB2F5CD81CE0373 /* Pods.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = Pods.debug.xcconfig; path = "Pods/Target Support Files/Pods/Pods.debug.xcconfig"; sourceTree = "<group>"; };
 		D94AC565198BC66700D8CD63 /* cash_receiving-128.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "cash_receiving-128.png"; sourceTree = "<group>"; };
@@ -2651,6 +2653,7 @@
 				2C16CC3E1AF3940200A2EC2D /* Upload To Cloud-100.png */,
 				2C4620731B6E027B007FD646 /* waypoint_map.png */,
 				2C5764381AA8962600B9FD2C /* wine_bottle-512.png */,
+				6DF6B1611CBE624000F911F3 /* Download-100.png */,
 			);
 			path = Images;
 			sourceTree = "<group>";
@@ -2961,6 +2964,7 @@
 				2CC5D1EA1C85C70000193CD7 /* STMInventory.storyboard in Resources */,
 				2CF365AE19EE8C0100F078BD /* settings3-128.png in Resources */,
 				2CC5D1F91C85C70000193CD7 /* STMUncashing.storyboard in Resources */,
+				6DF6B1621CBE624000F911F3 /* Download-100.png in Resources */,
 				2CC5D1E21C85C70000193CD7 /* STMArticleBarcodes.storyboard in Resources */,
 				2CC5D1EC1C85C70000193CD7 /* STMMessages.storyboard in Resources */,
 				2CD443F1195AD76E004ADE58 /* photo-icon.png in Resources */,

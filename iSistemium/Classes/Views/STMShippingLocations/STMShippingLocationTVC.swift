@@ -175,6 +175,13 @@ class STMShippingLocationTVC:STMVariableCellsHeightTVC,UIImagePickerControllerDe
                             pictureButton.frame = CGRectMake(x, 0, STMSwiftConstants.CELL_IMAGES_SIZE, STMSwiftConstants.CELL_IMAGES_SIZE);
                             
                             self.picturesView.addSubview(pictureButton)
+                        }else{
+                            let downloadPlaceholder = self.downloadPlaceholder
+                            let count = CGFloat(self.picturesView.subviews.count);
+                            let x = (count > 0) ? count * (STMSwiftConstants.CELL_IMAGES_SIZE + STMSwiftConstants.IMAGE_PADDING) : 0;
+                            downloadPlaceholder.frame = CGRectMake(x, 0, STMSwiftConstants.CELL_IMAGES_SIZE - 5 , STMSwiftConstants.CELL_IMAGES_SIZE - 5);
+                            
+                            picturesView.addSubview(downloadPlaceholder)
                         }
                     }
                     
@@ -256,6 +263,18 @@ class STMShippingLocationTVC:STMVariableCellsHeightTVC,UIImagePickerControllerDe
     
     return imageView;
     
+    }
+    
+    private var downloadPlaceholder:UIView {
+        
+        let image = STMFunctions.resizeImage(UIImage(named:"Download-100")!, toSize:THUMB_SIZE).imageWithRenderingMode(.AlwaysTemplate)
+        let imageView = UIImageView(image: image)
+        imageView.tintColor = UIColor.grayColor()
+        let tap = UITapGestureRecognizer(target: self, action: #selector(STMShippingLocationTVC.photoButtonPressed(_:)))
+        imageView.gestureRecognizers = [tap]
+        imageView.userInteractionEnabled = true
+        return imageView;
+        
     }
     
     private func pictureButtonWithPicture(data : NSData) -> UIView{
@@ -365,7 +384,7 @@ class STMShippingLocationTVC:STMVariableCellsHeightTVC,UIImagePickerControllerDe
         let jpgQuality = STMPicturesController.jpgQuality()
         
         STMPicturesController.setImagesFromData(UIImageJPEGRepresentation(image, jpgQuality),forPicture: shippingLocationPicture ,andUpload:true)
-    
+
         shippingLocationPicture.shippingLocation = self.shippingLocation
         self.document.saveDocument{
             if ($0) {
@@ -447,6 +466,11 @@ class STMShippingLocationTVC:STMVariableCellsHeightTVC,UIImagePickerControllerDe
         let cellNib = UINib(nibName: NSStringFromClass(STMCustom7TVCell.self), bundle:nil)
         self.tableView.registerNib(cellNib, forCellReuseIdentifier:self.cellIdentifier)
         performFetch()
+    }
+    
+    override func viewWillAppear(animated: Bool) {
+        super.viewWillAppear(animated)
+        tableView.reloadData()
     }
     
 }

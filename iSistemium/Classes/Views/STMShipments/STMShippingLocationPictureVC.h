@@ -16,7 +16,4 @@
 @property (nonatomic, strong) STMShippingLocationPicture *photo;
 @property (nonatomic) NSUInteger index;
 
-@property (nonatomic, strong) UIImage *image;
-
-
 @end

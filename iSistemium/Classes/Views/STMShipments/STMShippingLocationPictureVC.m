@@ -7,6 +7,7 @@
 //
 
 #import "STMShippingLocationPictureVC.h"
+#import "STMPicturesController.h"
 
 @interface STMShippingLocationPictureVC () <UIAlertViewDelegate, UIGestureRecognizerDelegate>
 
@@ -46,11 +47,39 @@
 - (void)showImage {
     
     self.photoView.contentMode = UIViewContentModeScaleAspectFit;
-    self.photoView.image = self.image;
+    self.photoView.image = [UIImage imageWithContentsOfFile:[STMFunctions absolutePathForPath:self.photo.resizedImagePath]];
     
     UITapGestureRecognizer *tap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(photoViewTap)];
     tap.delegate = self;
     [self.view addGestureRecognizer:tap];
+    [[self.photoView viewWithTag:555] removeFromSuperview];
+    [self removeObservers];
+    
+}
+
+- (void)addSpinner {
+    
+    self.photoView.contentMode = UIViewContentModeScaleAspectFit;
+    self.photoView.image = [UIImage imageWithContentsOfFile:[STMFunctions absolutePathForPath:self.photo.resizedImagePath]];
+    
+    UITapGestureRecognizer *tap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(photoViewTap)];
+    tap.delegate = self;
+    [self.view addGestureRecognizer:tap];
+    
+    UIView *view = [[UIView alloc] initWithFrame:self.photoView.bounds];
+    view.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
+    view.backgroundColor = [UIColor whiteColor];
+    view.alpha = 0.75;
+    view.tag = 555;
+    UIActivityIndicatorView *spinner = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleGray];
+    spinner.center = view.center;
+    spinner.autoresizingMask = UIViewAutoresizingFlexibleLeftMargin | UIViewAutoresizingFlexibleRightMargin | UIViewAutoresizingFlexibleTopMargin | UIViewAutoresizingFlexibleBottomMargin;
+    [spinner startAnimating];
+    [view addSubview:spinner];
+    [self.photoView addSubview:view];
+    [self addObservers];
+    NSManagedObjectID *pictureID = self.photo.objectID;
+    [STMPicturesController downloadConnectionForObjectID:pictureID];
     
 }
 
@@ -133,6 +162,23 @@
 
 #pragma mark - view lifecycle
 
+- (void)addObservers {
+    
+    NSNotificationCenter *nc = [NSNotificationCenter defaultCenter];
+    
+    [nc addObserver:self
+           selector:@selector(showImage)
+               name:@"downloadPicture"
+             object:self.photo];
+    
+}
+
+- (void)removeObservers {
+    
+    [[NSNotificationCenter defaultCenter] removeObserver:self];
+    
+}
+
 - (void)customInit {
     
     [[UIApplication sharedApplication] setStatusBarStyle:UIStatusBarStyleLightContent];
@@ -147,7 +193,10 @@
     
     [self checkFrameOrientationForView:self.view];
     
-    [self showImage];
+    if (self.photo.imageThumbnail) [self showImage];
+    else{
+        [self addSpinner];
+    }
     
 }
 
