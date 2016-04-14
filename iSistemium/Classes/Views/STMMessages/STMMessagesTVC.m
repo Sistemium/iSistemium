@@ -48,8 +48,11 @@
     
     if (!_resultsController) {
         
-        NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:NSStringFromClass([STMMessage class])];
-        request.sortDescriptors = @[[NSSortDescriptor sortDescriptorWithKey:@"cts" ascending:NO selector:@selector(compare:)]];
+        STMFetchRequest *request = [STMFetchRequest fetchRequestWithEntityName:NSStringFromClass([STMMessage class])];
+        
+        request.sortDescriptors = @[[NSSortDescriptor sortDescriptorWithKey:@"cts"
+                                                                  ascending:NO
+                                                                   selector:@selector(compare:)]];
 
         _resultsController = [[NSFetchedResultsController alloc] initWithFetchRequest:request
                                                                  managedObjectContext:self.document.managedObjectContext
