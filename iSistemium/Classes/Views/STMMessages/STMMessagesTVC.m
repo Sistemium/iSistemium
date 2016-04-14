@@ -184,7 +184,9 @@
     NSDictionary *attributes = @{NSFontAttributeName: detailLabel.font,
                                  NSForegroundColorAttributeName: detailLabel.textColor};
 
-    NSMutableAttributedString *detailText = [[NSMutableAttributedString alloc] initWithString:(NSString *)message.body attributes:attributes];
+    NSString *messageBody = (message.body) ? message.body : @"";
+
+    NSMutableAttributedString *detailText = [[NSMutableAttributedString alloc] initWithString:messageBody attributes:attributes];
     
     if (message.processing) {
         
