@@ -16,9 +16,19 @@
 @property (weak, nonatomic) IBOutlet UIBarButtonItem *deletePhotoButton;
 
 
+
 @end
 
 @implementation STMShippingLocationPictureVC
+
+- (STMSpinnerView *)spinnerView {
+    
+    if (!_spinnerView) {
+        _spinnerView = [STMSpinnerView spinnerViewWithFrame:self.view.frame indicatorStyle:UIActivityIndicatorViewStyleGray backgroundColor: [UIColor clearColor] alfa:1.0];
+    }
+    return _spinnerView;
+    
+}
 
 - (void)setPhoto:(STMShippingLocationPicture *)photo {
     
@@ -48,35 +58,20 @@
     
     self.photoView.contentMode = UIViewContentModeScaleAspectFit;
     self.photoView.image = [UIImage imageWithContentsOfFile:[STMFunctions absolutePathForPath:self.photo.resizedImagePath]];
-    
     UITapGestureRecognizer *tap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(photoViewTap)];
     tap.delegate = self;
     [self.view addGestureRecognizer:tap];
-    [[self.photoView viewWithTag:555] removeFromSuperview];
+    [self.spinnerView removeFromSuperview];
     [self removeObservers];
     
 }
 
 - (void)addSpinner {
     
-    self.photoView.contentMode = UIViewContentModeScaleAspectFit;
-    self.photoView.image = [UIImage imageWithContentsOfFile:[STMFunctions absolutePathForPath:self.photo.resizedImagePath]];
-    
     UITapGestureRecognizer *tap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(photoViewTap)];
     tap.delegate = self;
     [self.view addGestureRecognizer:tap];
-    
-    UIView *view = [[UIView alloc] initWithFrame:self.photoView.bounds];
-    view.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
-    view.backgroundColor = [UIColor whiteColor];
-    view.alpha = 0.75;
-    view.tag = 555;
-    UIActivityIndicatorView *spinner = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleGray];
-    spinner.center = view.center;
-    spinner.autoresizingMask = UIViewAutoresizingFlexibleLeftMargin | UIViewAutoresizingFlexibleRightMargin | UIViewAutoresizingFlexibleTopMargin | UIViewAutoresizingFlexibleBottomMargin;
-    [spinner startAnimating];
-    [view addSubview:spinner];
-    [self.photoView addSubview:view];
+    [self.view addSubview:self.spinnerView];
     [self addObservers];
     NSManagedObjectID *pictureID = self.photo.objectID;
     [STMPicturesController downloadConnectionForObjectID:pictureID];
