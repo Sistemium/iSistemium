@@ -55,7 +55,7 @@
 }
 
 - (void)showImage {
-    
+    self.deletePhotoButton.enabled = true;
     self.photoView.contentMode = UIViewContentModeScaleAspectFit;
     self.photoView.image = [UIImage imageWithContentsOfFile:[STMFunctions absolutePathForPath:self.photo.resizedImagePath]];
     UITapGestureRecognizer *tap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(photoViewTap)];
@@ -71,6 +71,7 @@
     UITapGestureRecognizer *tap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(photoViewTap)];
     tap.delegate = self;
     [self.view addGestureRecognizer:tap];
+    self.deletePhotoButton.enabled = false;
     [self.view addSubview:self.spinnerView];
     [self addObservers];
     NSManagedObjectID *pictureID = self.photo.objectID;
