@@ -1073,17 +1073,10 @@
 }
 
 + (STMRecordStatus *)createRecordStatusAndRemoveObject:(NSManagedObject *)object {
-    
-    STMRecordStatus *recordStatus = [STMRecordStatusController recordStatusForObject:object];
-    recordStatus.isRemoved = @YES;
-    
-    [self removeObject:object];
-    
-    return recordStatus;
-
+    return [self createRecordStatusAndRemoveObject:object withComment:nil];
 }
 
-+ (STMRecordStatus *)createRecordStatusAndRemoveObject:(NSManagedObject *)object withComment:(NSString *) commentText {
++ (STMRecordStatus *)createRecordStatusAndRemoveObject:(NSManagedObject *)object withComment:(NSString *)commentText {
 
     STMRecordStatus *recordStatus = [STMRecordStatusController recordStatusForObject:object];
     recordStatus.isRemoved = @YES;
