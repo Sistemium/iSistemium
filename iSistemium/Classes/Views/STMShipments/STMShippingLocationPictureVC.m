@@ -24,7 +24,12 @@
 - (STMSpinnerView *)spinnerView {
     
     if (!_spinnerView) {
-        _spinnerView = [STMSpinnerView spinnerViewWithFrame:self.view.frame indicatorStyle:UIActivityIndicatorViewStyleGray backgroundColor: [UIColor clearColor] alfa:1.0];
+        
+        _spinnerView = [STMSpinnerView spinnerViewWithFrame:self.view.frame
+                                             indicatorStyle:UIActivityIndicatorViewStyleGray
+                                            backgroundColor: [UIColor clearColor]
+                                                       alfa:1.0];
+        
     }
     return _spinnerView;
     
@@ -60,7 +65,7 @@
     self.photoView.image = [UIImage imageWithContentsOfFile:[STMFunctions absolutePathForPath:self.photo.resizedImagePath]];
     UITapGestureRecognizer *tap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(photoViewTap)];
     tap.delegate = self;
-    [self.view addGestureRecognizer:tap];
+    self.view.gestureRecognizers = @[tap];
     [self.spinnerView removeFromSuperview];
     [self removeObservers];
     
@@ -70,7 +75,7 @@
     
     UITapGestureRecognizer *tap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(photoViewTap)];
     tap.delegate = self;
-    [self.view addGestureRecognizer:tap];
+    self.view.gestureRecognizers = @[tap];
     [self.view addSubview:self.spinnerView];
     [self addObservers];
     NSManagedObjectID *pictureID = self.photo.objectID;
@@ -115,17 +120,7 @@
 #pragma mark - UIGestureRecognizerDelegate
 
 - (BOOL)gestureRecognizer:(UIGestureRecognizer *)gestureRecognizer shouldReceiveTouch:(UITouch *)touch {
-    
-    if (touch.view != self.view) {
-        
-        return NO;
-        
-    } else {
-        
-        return YES;
-        
-    }
-    
+    return ([touch.view isEqual:self.view] || [touch.view isEqual:self.spinnerView]);
 }
 
 
