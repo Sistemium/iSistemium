@@ -7,6 +7,7 @@
 //
 
 #import "STMSplitViewController.h"
+#import "STMDataModel.h"
 
 @interface STMArticlesSVC : STMSplitViewController
 

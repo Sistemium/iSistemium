@@ -18,7 +18,7 @@
 #import "STMPicturesController.h"
 #import "STMObjectsController.h"
 #import "STMLocationController.h"
-#import "STMPhotosController.h"
+#import "STMPhotosController+category.h"
 
 
 #define LOCATION_IMAGE_SIZE 25

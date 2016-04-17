@@ -7,6 +7,8 @@
 //
 
 #import "STMVariableCellsHeightTVC.h"
+#import "STMDataModel.h"
+
 
 @interface STMSupplyOrderOperationsTVC : STMVariableCellsHeightTVC
 

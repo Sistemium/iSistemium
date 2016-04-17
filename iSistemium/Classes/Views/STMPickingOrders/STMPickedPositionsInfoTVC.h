@@ -7,6 +7,7 @@
 //
 
 #import "STMVariableCellsHeightTVC.h"
+#import "STMDataModel.h"
 
 @interface STMPickedPositionsInfoTVC : STMVariableCellsHeightTVC
 

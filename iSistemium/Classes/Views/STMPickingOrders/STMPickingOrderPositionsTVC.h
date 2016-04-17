@@ -8,6 +8,7 @@
 
 #import "STMVariableCellsHeightTVC.h"
 #import "STMWorkflowable.h"
+#import "STMDataModel.h"
 
 
 @interface STMPickingOrderPositionsTVC : STMVariableCellsHeightTVC <STMWorkflowable>

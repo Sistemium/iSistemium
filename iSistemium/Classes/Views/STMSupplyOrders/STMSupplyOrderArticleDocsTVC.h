@@ -7,6 +7,7 @@
 //
 
 #import "STMSearchableTVC.h"
+#import "STMDataModel.h"
 
 @interface STMSupplyOrderArticleDocsTVC : STMSearchableTVC
 
