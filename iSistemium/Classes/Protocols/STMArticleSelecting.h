@@ -8,6 +8,9 @@
 
 #import <Foundation/Foundation.h>
 
+#import "STMDataModel.h"
+
+
 @protocol STMArticleSelecting <NSObject>
 
 - (void)selectArticle:(STMArticle *)article withSearchedBarcode:(NSString *)barcode;

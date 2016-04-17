@@ -6,7 +6,7 @@
 //  Copyright © 2016 Sistemium UAB. All rights reserved.
 //
 
-#import "STMController.h"
+#import "STMController+category.h"
 
 @interface STMArticleController : STMController
 

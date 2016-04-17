@@ -8,6 +8,9 @@
 
 #import "STMBarCodeController.h"
 
+#import "STMController+category.h"
+
+
 @interface STMBarCodeController (category)
 
 + (NSArray <STMArticle *> *)articlesForBarcode:(NSString *)barcode;

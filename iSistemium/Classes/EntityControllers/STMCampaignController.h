@@ -6,7 +6,7 @@
 //  Copyright (c) 2015 Sistemium UAB. All rights reserved.
 //
 
-#import "STMController.h"
+#import "STMController+category.h"
 
 @interface STMCampaignController : STMController
 

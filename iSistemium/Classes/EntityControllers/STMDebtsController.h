@@ -6,7 +6,7 @@
 //  Copyright (c) 2014 Sistemium UAB. All rights reserved.
 //
 
-#import "STMController.h"
+#import "STMController+category.h"
 #import "STMDebt.h"
 
 @interface STMDebtsController : STMController
