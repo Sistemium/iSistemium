@@ -16,7 +16,7 @@
 #import "STMBarCodeScanner.h"
 #import "STMSoundController.h"
 #import "STMSupplyOrdersProcessController.h"
-#import "STMBarCodeController.h"
+#import "STMBarCodeController+category.h"
 #import "STMObjectsController.h"
 
 #define POPOVER_SIZE 512

@@ -11,7 +11,9 @@
 #import "STMFunctions.h"
 #import "STMDebtsController.h"
 #import <QuartzCore/QuartzCore.h>
-#import "iSistemium-Swift.h"
+
+#import "iSistemiumCore-Swift.h"
+
 
 @interface STMAddDebtVC () <UITextFieldDelegate>
 
@@ -30,7 +32,9 @@
 @property (nonatomic, strong) UIToolbar *keyboardToolbar;
 @property (nonatomic, strong) NSString *initialTextFieldValue;
 
+
 @end
+
 
 @implementation STMAddDebtVC
 

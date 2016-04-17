@@ -11,7 +11,7 @@
 #import "STMPickingPositionInfoTVC.h"
 #import "STMInventoryInfoSelectTVC.h"
 
-#import "iSistemium-Swift.h"
+#import "iSistemiumCore-Swift.h"
 
 
 @interface STMPickingPositionAddInfoVC : UIViewController
