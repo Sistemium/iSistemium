@@ -9,6 +9,8 @@
 #ifndef iSistemium_STMDataModel_h
 #define iSistemium_STMDataModel_h
 
+#import "STMCoreDataModel.h"
+
 #import "STMArticle.h"
 #import "STMArticleBarCode.h"
 #import "STMArticleDoc.h"
@@ -16,29 +18,18 @@
 #import "STMArticlePicture.h"
 #import "STMArticleProductionInfo.h"
 
-#import "STMBarCodeType.h"
-#import "STMBarCodeScan.h"
 #import "STMBasketPosition.h"
-#import "STMBatteryStatus.h"
 
 #import "STMCampaign.h"
 #import "STMCampaignGroup.h"
 #import "STMCampaignPicture.h"
 #import "STMCashing.h"
-#import "STMClientData.h"
-#import "STMClientEntity.h"
 
-#import "STMDatum.h"
 #import "STMDebt.h"
 #import "STMDriver.h"
 
-#import "STMEntity.h"
-
 #import "STMInventoryBatch.h"
 #import "STMInventoryBatchItem.h"
-
-#import "STMLocation.h"
-#import "STMLogMessage.h"
 
 #import "STMMessage.h"
 #import "STMMessagePicture.h"
@@ -46,25 +37,20 @@
 #import "STMOutlet.h"
 
 #import "STMPartner.h"
-#import "STMPhoto.h"
 #import "STMPhotoReport.h"
 #import "STMPicker.h"
 #import "STMPickingOrder.h"
 #import "STMPickingOrderPosition.h"
 #import "STMPickingOrderPositionPicked.h"
-#import "STMPicture.h"
 #import "STMPrice.h"
 #import "STMPriceType.h"
 #import "STMProductionInfoType.h"
 
 #import "STMQualityClass.h"
 
-#import "STMRecordStatus.h"
-
 #import "STMSaleOrder.h"
 #import "STMSaleOrderPosition.h"
 #import "STMSalesman.h"
-#import "STMSetting.h"
 #import "STMShipment.h"
 #import "STMShipmentPosition.h"
 #import "STMShipmentRoute.h"
@@ -84,8 +70,6 @@
 #import "STMUncashing.h"
 #import "STMUncashingPicture.h"
 #import "STMUncashingPlace.h"
-
-#import "STMWorkflow.h"
 
 
 #endif
