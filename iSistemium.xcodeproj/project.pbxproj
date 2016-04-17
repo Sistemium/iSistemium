@@ -89,7 +89,6 @@
 		2C3CED691C1C47A000291AAD /* STMSupplyOrdersMasterNC.m in Sources */ = {isa = PBXBuildFile; fileRef = 2C3CED681C1C47A000291AAD /* STMSupplyOrdersMasterNC.m */; };
 		2C3CED6C1C1C47B300291AAD /* STMSupplyOrdersDetailNC.m in Sources */ = {isa = PBXBuildFile; fileRef = 2C3CED6B1C1C47B300291AAD /* STMSupplyOrdersDetailNC.m */; };
 		2C3CED6F1C1C501E00291AAD /* STMSupplyOrderOperationsTVC.m in Sources */ = {isa = PBXBuildFile; fileRef = 2C3CED6E1C1C501E00291AAD /* STMSupplyOrderOperationsTVC.m */; };
-		2C3F75981CBE7F2300F8BFB8 /* iSistemiumCore in Resources */ = {isa = PBXBuildFile; fileRef = 2C3F75971CBE7F2300F8BFB8 /* iSistemiumCore */; };
 		2C420FC81A4C29B4001C65B9 /* STMMessagesNC.m in Sources */ = {isa = PBXBuildFile; fileRef = 2C420FC71A4C29B4001C65B9 /* STMMessagesNC.m */; };
 		2C42ECAB1B0A591E00B5C91A /* STMSettingsNC.m in Sources */ = {isa = PBXBuildFile; fileRef = 2C42ECAA1B0A591E00B5C91A /* STMSettingsNC.m */; };
 		2C42ECAE1B0B1A3300B5C91A /* STMTabBarButtonTVC.m in Sources */ = {isa = PBXBuildFile; fileRef = 2C42ECAD1B0B1A3300B5C91A /* STMTabBarButtonTVC.m */; };
@@ -688,7 +687,6 @@
 		2C3CED6B1C1C47B300291AAD /* STMSupplyOrdersDetailNC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = STMSupplyOrdersDetailNC.m; sourceTree = "<group>"; };
 		2C3CED6D1C1C501E00291AAD /* STMSupplyOrderOperationsTVC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = STMSupplyOrderOperationsTVC.h; sourceTree = "<group>"; };
 		2C3CED6E1C1C501E00291AAD /* STMSupplyOrderOperationsTVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = STMSupplyOrderOperationsTVC.m; sourceTree = "<group>"; };
-		2C3F75971CBE7F2300F8BFB8 /* iSistemiumCore */ = {isa = PBXFileReference; lastKnownFileType = folder; path = iSistemiumCore; sourceTree = "<group>"; };
 		2C420FC61A4C29B4001C65B9 /* STMMessagesNC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = STMMessagesNC.h; sourceTree = "<group>"; };
 		2C420FC71A4C29B4001C65B9 /* STMMessagesNC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = STMMessagesNC.m; sourceTree = "<group>"; };
 		2C42ECA91B0A591E00B5C91A /* STMSettingsNC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = STMSettingsNC.h; sourceTree = "<group>"; };
@@ -2337,6 +2335,13 @@
 			path = STMNS;
 			sourceTree = "<group>";
 		};
+		2C7084101CC393600002F3FF /* iSisCore */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			name = iSisCore;
+			sourceTree = "<group>";
+		};
 		2C8379BD1C17138D00621419 /* ProcessesControllers */ = {
 			isa = PBXGroup;
 			children = (
@@ -2437,7 +2442,7 @@
 		2C8EF5A41940859F0021D202 /* iSistemium */ = {
 			isa = PBXGroup;
 			children = (
-				2C3F75971CBE7F2300F8BFB8 /* iSistemiumCore */,
+				2C7084101CC393600002F3FF /* iSisCore */,
 				2CD4311A1A85098A00AFB5DE /* Frameworks */,
 				2CE8B51719547A7900C84A6D /* Storyboards */,
 				2C53B8AF1940A0A3002298A5 /* DataModel */,
@@ -3003,7 +3008,6 @@
 				2CC5D1E71C85C70000193CD7 /* STMCampaigns.storyboard in Resources */,
 				2C1AB3011B70AE4400BF5C50 /* 1_circle_filled.png in Resources */,
 				2C1AB3181B70B47D00BF5C50 /* circle_colored_blue.png in Resources */,
-				2C3F75981CBE7F2300F8BFB8 /* iSistemiumCore in Resources */,
 				2CA9AFE61C43A8E40071D429 /* ok.mp3 in Resources */,
 				2CF126631B7CB4F50059701F /* uncheckmark_filled.png in Resources */,
 				2CEE305F1BF24086009B229F /* camera.png in Resources */,
