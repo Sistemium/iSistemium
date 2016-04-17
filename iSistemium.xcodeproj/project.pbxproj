@@ -3822,6 +3822,7 @@
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "";
 				SWIFT_OBJC_BRIDGING_HEADER = "iSistemium/iSistemium-Bridging-Header.h";
+				SWIFT_OBJC_INTERFACE_HEADER_NAME = "iSistemiumCore-Swift.h";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				TARGETED_DEVICE_FAMILY = "1,2";
 				WRAPPER_EXTENSION = app;
@@ -3853,6 +3854,7 @@
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "";
 				SWIFT_OBJC_BRIDGING_HEADER = "iSistemium/iSistemium-Bridging-Header.h";
+				SWIFT_OBJC_INTERFACE_HEADER_NAME = "iSistemiumCore-Swift.h";
 				TARGETED_DEVICE_FAMILY = "1,2";
 				WRAPPER_EXTENSION = app;
 			};
