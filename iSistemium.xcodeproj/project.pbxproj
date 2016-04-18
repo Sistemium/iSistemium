@@ -297,8 +297,6 @@
 		2C70861D1CC394500002F3FF /* uncheckmark_filled.png in Resources */ = {isa = PBXBuildFile; fileRef = 2C7085501CC394500002F3FF /* uncheckmark_filled.png */; };
 		2C70861E1CC394500002F3FF /* Up4-25.png in Resources */ = {isa = PBXBuildFile; fileRef = 2C7085511CC394500002F3FF /* Up4-25.png */; };
 		2C70861F1CC394500002F3FF /* Upload To Cloud-100.png in Resources */ = {isa = PBXBuildFile; fileRef = 2C7085521CC394500002F3FF /* Upload To Cloud-100.png */; };
-		2C7086201CC394500002F3FF /* iphoneTabs.json in Resources */ = {isa = PBXBuildFile; fileRef = 2C7085531CC394500002F3FF /* iphoneTabs.json */; };
-		2C7086211CC394500002F3FF /* settings.json in Resources */ = {isa = PBXBuildFile; fileRef = 2C7085541CC394500002F3FF /* settings.json */; };
 		2C7086221CC394500002F3FF /* settings_schema.json in Resources */ = {isa = PBXBuildFile; fileRef = 2C7085551CC394500002F3FF /* settings_schema.json */; };
 		2C7086231CC394500002F3FF /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = 2C7085571CC394500002F3FF /* Localizable.strings */; };
 		2C7086241CC394500002F3FF /* STMAuth.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 2C70855A1CC394500002F3FF /* STMAuth.storyboard */; };
@@ -328,6 +326,8 @@
 		2C7086441CC3B71E0002F3FF /* STMController+category.m in Sources */ = {isa = PBXBuildFile; fileRef = 2C7086431CC3B71E0002F3FF /* STMController+category.m */; };
 		2C70864A1CC504260002F3FF /* STMWKWebViewNC.m in Sources */ = {isa = PBXBuildFile; fileRef = 2C7086471CC504260002F3FF /* STMWKWebViewNC.m */; };
 		2C70864B1CC504260002F3FF /* STMWKWebViewVC.m in Sources */ = {isa = PBXBuildFile; fileRef = 2C7086491CC504260002F3FF /* STMWKWebViewVC.m */; };
+		2C7086541CC505750002F3FF /* iphoneTabs.json in Resources */ = {isa = PBXBuildFile; fileRef = 2C7086521CC505750002F3FF /* iphoneTabs.json */; };
+		2C7086551CC505750002F3FF /* settings.json in Resources */ = {isa = PBXBuildFile; fileRef = 2C7086531CC505750002F3FF /* settings.json */; };
 		2C734B8219B4E6FD00EE33FA /* archive-128.png in Resources */ = {isa = PBXBuildFile; fileRef = 2C734B8119B4E6FD00EE33FA /* archive-128.png */; };
 		2C761BAF1B008185001DA33E /* Picture-100.png in Resources */ = {isa = PBXBuildFile; fileRef = 2C761BAE1B008185001DA33E /* Picture-100.png */; };
 		2C761BB21B00824F001DA33E /* Picture-32.png in Resources */ = {isa = PBXBuildFile; fileRef = 2C761BB01B00824F001DA33E /* Picture-32.png */; };
@@ -1062,8 +1062,6 @@
 		2C7085501CC394500002F3FF /* uncheckmark_filled.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = uncheckmark_filled.png; sourceTree = "<group>"; };
 		2C7085511CC394500002F3FF /* Up4-25.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Up4-25.png"; sourceTree = "<group>"; };
 		2C7085521CC394500002F3FF /* Upload To Cloud-100.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Upload To Cloud-100.png"; sourceTree = "<group>"; };
-		2C7085531CC394500002F3FF /* iphoneTabs.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = iphoneTabs.json; sourceTree = "<group>"; };
-		2C7085541CC394500002F3FF /* settings.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = settings.json; sourceTree = "<group>"; };
 		2C7085551CC394500002F3FF /* settings_schema.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = settings_schema.json; sourceTree = "<group>"; };
 		2C7085581CC394500002F3FF /* ru */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ru; path = Localizable.strings; sourceTree = "<group>"; };
 		2C70855A1CC394500002F3FF /* STMAuth.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = STMAuth.storyboard; sourceTree = "<group>"; };
@@ -1099,6 +1097,8 @@
 		2C7086471CC504260002F3FF /* STMWKWebViewNC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = STMWKWebViewNC.m; sourceTree = "<group>"; };
 		2C7086481CC504260002F3FF /* STMWKWebViewVC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = STMWKWebViewVC.h; sourceTree = "<group>"; };
 		2C7086491CC504260002F3FF /* STMWKWebViewVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = STMWKWebViewVC.m; sourceTree = "<group>"; };
+		2C7086521CC505750002F3FF /* iphoneTabs.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = iphoneTabs.json; sourceTree = "<group>"; };
+		2C7086531CC505750002F3FF /* settings.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = settings.json; sourceTree = "<group>"; };
 		2C734B8119B4E6FD00EE33FA /* archive-128.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "archive-128.png"; sourceTree = "<group>"; };
 		2C761BAE1B008185001DA33E /* Picture-100.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Picture-100.png"; sourceTree = "<group>"; };
 		2C761BB01B00824F001DA33E /* Picture-32.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Picture-32.png"; sourceTree = "<group>"; };
@@ -2484,8 +2484,6 @@
 			isa = PBXGroup;
 			children = (
 				2C70852A1CC394500002F3FF /* Images */,
-				2C7085531CC394500002F3FF /* iphoneTabs.json */,
-				2C7085541CC394500002F3FF /* settings.json */,
 				2C7085551CC394500002F3FF /* settings_schema.json */,
 			);
 			name = Resources;
@@ -2719,6 +2717,8 @@
 		2C8EF5E0194086450021D202 /* Resources */ = {
 			isa = PBXGroup;
 			children = (
+				2C7086521CC505750002F3FF /* iphoneTabs.json */,
+				2C7086531CC505750002F3FF /* settings.json */,
 				2CA9AFE01C439B740071D429 /* Sounds */,
 				2CD443EF195AD741004ADE58 /* Images */,
 				2C8EF5EF194086E10021D202 /* Localizable.strings */,
@@ -3076,7 +3076,6 @@
 				2CC5D1E61C85C70000193CD7 /* STMCameraOverlayView.xib in Resources */,
 				2C7086171CC394500002F3FF /* scanner_info.png in Resources */,
 				2C1AB3141B70B22800BF5C50 /* 6_circle_colored_blue.png in Resources */,
-				2C7086201CC394500002F3FF /* iphoneTabs.json in Resources */,
 				2C1F751B1BFA2D0C003699C8 /* move_by_trolley.png in Resources */,
 				2CC5D1EA1C85C70000193CD7 /* STMInventory.storyboard in Resources */,
 				2CC5D1F91C85C70000193CD7 /* STMUncashing.storyboard in Resources */,
@@ -3089,6 +3088,7 @@
 				2C1AB3121B70B22800BF5C50 /* 3_circle_colored_blue.png in Resources */,
 				2C1AB30E1B70B22800BF5C50 /* 1_circle_colored_blue.png in Resources */,
 				2C1AB3021B70AE4400BF5C50 /* 6_circle_filled.png in Resources */,
+				2C7086551CC505750002F3FF /* settings.json in Resources */,
 				2CA9AFE41C439B930071D429 /* error.mp3 in Resources */,
 				2C1AB2E81B70ADBB00BF5C50 /* 4_circle.png in Resources */,
 				2C1AB2EE1B70ADBB00BF5C50 /* 2_circle.png in Resources */,
@@ -3143,7 +3143,6 @@
 				2C2968F019A0C22F0038B122 /* banknotes-128.png in Resources */,
 				2C1AB3101B70B22800BF5C50 /* 9_circle_colored_blue.png in Resources */,
 				2CC5D4981C85C90D00193CD7 /* bell-phone-ring.mp3 in Resources */,
-				2C7086211CC394500002F3FF /* settings.json in Resources */,
 				2C7086231CC394500002F3FF /* Localizable.strings in Resources */,
 				2C1AB2E71B70ADBB00BF5C50 /* 8_circle.png in Resources */,
 				2C70862C1CC394500002F3FF /* STMCustom5TVCell.xib in Resources */,
@@ -3192,6 +3191,7 @@
 				2C7086161CC394500002F3FF /* reordering.png in Resources */,
 				2C1AB2FD1B70AE4400BF5C50 /* 2_circle_filled.png in Resources */,
 				2CC5D1EE1C85C70000193CD7 /* STMOrders.storyboard in Resources */,
+				2C7086541CC505750002F3FF /* iphoneTabs.json in Resources */,
 				2CC5D1E11C85C70000193CD7 /* STMArticleBarcodes_iphone.storyboard in Resources */,
 				2C7086221CC394500002F3FF /* settings_schema.json in Resources */,
 				2C8EF5ED194086E10021D202 /* Localizable.strings in Resources */,
