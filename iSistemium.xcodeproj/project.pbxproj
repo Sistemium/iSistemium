@@ -240,7 +240,6 @@
 		2C7085E41CC394500002F3FF /* STMSetting.m in Sources */ = {isa = PBXBuildFile; fileRef = 2C70850E1CC394500002F3FF /* STMSetting.m */; };
 		2C7085E51CC394500002F3FF /* STMWorkflow+CoreDataProperties.m in Sources */ = {isa = PBXBuildFile; fileRef = 2C7085101CC394500002F3FF /* STMWorkflow+CoreDataProperties.m */; };
 		2C7085E61CC394500002F3FF /* STMWorkflow.m in Sources */ = {isa = PBXBuildFile; fileRef = 2C7085121CC394500002F3FF /* STMWorkflow.m */; };
-		2C7085E71CC394500002F3FF /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = 2C7085141CC394500002F3FF /* Localizable.strings */; };
 		2C7085E81CC394500002F3FF /* SocketAckEmitter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2C7085181CC394500002F3FF /* SocketAckEmitter.swift */; };
 		2C7085E91CC394500002F3FF /* SocketAckManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2C7085191CC394500002F3FF /* SocketAckManager.swift */; };
 		2C7085EA1CC394500002F3FF /* SocketAnyEvent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2C70851A1CC394500002F3FF /* SocketAnyEvent.swift */; };
@@ -298,7 +297,6 @@
 		2C70861E1CC394500002F3FF /* Up4-25.png in Resources */ = {isa = PBXBuildFile; fileRef = 2C7085511CC394500002F3FF /* Up4-25.png */; };
 		2C70861F1CC394500002F3FF /* Upload To Cloud-100.png in Resources */ = {isa = PBXBuildFile; fileRef = 2C7085521CC394500002F3FF /* Upload To Cloud-100.png */; };
 		2C7086221CC394500002F3FF /* settings_schema.json in Resources */ = {isa = PBXBuildFile; fileRef = 2C7085551CC394500002F3FF /* settings_schema.json */; };
-		2C7086231CC394500002F3FF /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = 2C7085571CC394500002F3FF /* Localizable.strings */; };
 		2C7086241CC394500002F3FF /* STMAuth.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 2C70855A1CC394500002F3FF /* STMAuth.storyboard */; };
 		2C7086251CC394500002F3FF /* STMCustom10TVCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 2C70855C1CC394500002F3FF /* STMCustom10TVCell.xib */; };
 		2C7086261CC394500002F3FF /* STMCustom1CVCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 2C70855D1CC394500002F3FF /* STMCustom1CVCell.xib */; };
@@ -1004,7 +1002,6 @@
 		2C7085101CC394500002F3FF /* STMWorkflow+CoreDataProperties.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "STMWorkflow+CoreDataProperties.m"; sourceTree = "<group>"; };
 		2C7085111CC394500002F3FF /* STMWorkflow.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = STMWorkflow.h; sourceTree = "<group>"; };
 		2C7085121CC394500002F3FF /* STMWorkflow.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = STMWorkflow.m; sourceTree = "<group>"; };
-		2C7085151CC394500002F3FF /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = Localizable.strings; sourceTree = "<group>"; };
 		2C7085181CC394500002F3FF /* SocketAckEmitter.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SocketAckEmitter.swift; sourceTree = "<group>"; };
 		2C7085191CC394500002F3FF /* SocketAckManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SocketAckManager.swift; sourceTree = "<group>"; };
 		2C70851A1CC394500002F3FF /* SocketAnyEvent.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SocketAnyEvent.swift; sourceTree = "<group>"; };
@@ -1063,7 +1060,6 @@
 		2C7085511CC394500002F3FF /* Up4-25.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Up4-25.png"; sourceTree = "<group>"; };
 		2C7085521CC394500002F3FF /* Upload To Cloud-100.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Upload To Cloud-100.png"; sourceTree = "<group>"; };
 		2C7085551CC394500002F3FF /* settings_schema.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = settings_schema.json; sourceTree = "<group>"; };
-		2C7085581CC394500002F3FF /* ru */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ru; path = Localizable.strings; sourceTree = "<group>"; };
 		2C70855A1CC394500002F3FF /* STMAuth.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = STMAuth.storyboard; sourceTree = "<group>"; };
 		2C70855C1CC394500002F3FF /* STMCustom10TVCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = STMCustom10TVCell.xib; sourceTree = "<group>"; };
 		2C70855D1CC394500002F3FF /* STMCustom1CVCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = STMCustom1CVCell.xib; sourceTree = "<group>"; };
@@ -2069,11 +2065,9 @@
 			children = (
 				2C7084111CC394500002F3FF /* Classes */,
 				2C7084D81CC394500002F3FF /* DataModel */,
-				2C7085131CC394500002F3FF /* en.lproj */,
 				2C7085161CC394500002F3FF /* Frameworks */,
 				2C7085281CC394500002F3FF /* iSistemiumCore-Bridging-Header.h */,
 				2C7085291CC394500002F3FF /* Resources */,
-				2C7085561CC394500002F3FF /* ru.lproj */,
 				2C7085591CC394500002F3FF /* Storyboards */,
 			);
 			name = iSisCore;
@@ -2439,15 +2433,6 @@
 			path = ../../iSistemiumCore/iSistemiumCore/DataModel;
 			sourceTree = "<group>";
 		};
-		2C7085131CC394500002F3FF /* en.lproj */ = {
-			isa = PBXGroup;
-			children = (
-				2C7085141CC394500002F3FF /* Localizable.strings */,
-			);
-			name = en.lproj;
-			path = ../../iSistemiumCore/iSistemiumCore/en.lproj;
-			sourceTree = "<group>";
-		};
 		2C7085161CC394500002F3FF /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
@@ -2535,15 +2520,6 @@
 				2C7085521CC394500002F3FF /* Upload To Cloud-100.png */,
 			);
 			path = Images;
-			sourceTree = "<group>";
-		};
-		2C7085561CC394500002F3FF /* ru.lproj */ = {
-			isa = PBXGroup;
-			children = (
-				2C7085571CC394500002F3FF /* Localizable.strings */,
-			);
-			name = ru.lproj;
-			path = ../../iSistemiumCore/iSistemiumCore/ru.lproj;
 			sourceTree = "<group>";
 		};
 		2C7085591CC394500002F3FF /* Storyboards */ = {
@@ -3123,7 +3099,6 @@
 				2C70860F1CC394500002F3FF /* numerical_sorting_12.png in Resources */,
 				2C1AB2EB1B70ADBB00BF5C50 /* 7_circle.png in Resources */,
 				2CC5D1EF1C85C70000193CD7 /* STMPhotoReports.storyboard in Resources */,
-				2C7085E71CC394500002F3FF /* Localizable.strings in Resources */,
 				2C7086051CC394500002F3FF /* data_in_both_directions.png in Resources */,
 				2CC5D1E71C85C70000193CD7 /* STMCampaigns.storyboard in Resources */,
 				2C1AB3011B70AE4400BF5C50 /* 1_circle_filled.png in Resources */,
@@ -3143,7 +3118,6 @@
 				2C2968F019A0C22F0038B122 /* banknotes-128.png in Resources */,
 				2C1AB3101B70B22800BF5C50 /* 9_circle_colored_blue.png in Resources */,
 				2CC5D4981C85C90D00193CD7 /* bell-phone-ring.mp3 in Resources */,
-				2C7086231CC394500002F3FF /* Localizable.strings in Resources */,
 				2C1AB2E71B70ADBB00BF5C50 /* 8_circle.png in Resources */,
 				2C70862C1CC394500002F3FF /* STMCustom5TVCell.xib in Resources */,
 				2C1AB2FA1B70AE4400BF5C50 /* 7_circle_filled.png in Resources */,
@@ -3692,22 +3666,6 @@
 /* End PBXTargetDependency section */
 
 /* Begin PBXVariantGroup section */
-		2C7085141CC394500002F3FF /* Localizable.strings */ = {
-			isa = PBXVariantGroup;
-			children = (
-				2C7085151CC394500002F3FF /* en */,
-			);
-			name = Localizable.strings;
-			sourceTree = "<group>";
-		};
-		2C7085571CC394500002F3FF /* Localizable.strings */ = {
-			isa = PBXVariantGroup;
-			children = (
-				2C7085581CC394500002F3FF /* ru */,
-			);
-			name = Localizable.strings;
-			sourceTree = "<group>";
-		};
 		2C8EF5A71940859F0021D202 /* InfoPlist.strings */ = {
 			isa = PBXVariantGroup;
 			children = (
