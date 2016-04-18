@@ -8,6 +8,9 @@
 
 #import "STMObjectsController.h"
 
+#import "STMDataModel.h"
+
+
 @implementation STMObjectsController
 
 + (void)checkLocation:(STMLocation *)location forAddingTo:(NSMutableSet *)objectsSet {

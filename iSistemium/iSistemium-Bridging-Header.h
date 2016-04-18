@@ -4,6 +4,8 @@
 
 #import "iSistemiumCore-Bridging-Header.h"
 
+#import "STMObjectsController.h"
+
 #import "STMShippingLocation.h"
 #import "STMSearchableTVC.h"
 #import "STMConstants.h"
