@@ -332,6 +332,7 @@
 		2C70867A1CC528BE0002F3FF /* STMLocationTracker+category.m in Sources */ = {isa = PBXBuildFile; fileRef = 2C7086791CC528BE0002F3FF /* STMLocationTracker+category.m */; };
 		2C70867E1CC52B1F0002F3FF /* STMVolumePicker+category.m in Sources */ = {isa = PBXBuildFile; fileRef = 2C70867D1CC52B1F0002F3FF /* STMVolumePicker+category.m */; };
 		2C7086811CC52C9A0002F3FF /* STMPicturesController+category.m in Sources */ = {isa = PBXBuildFile; fileRef = 2C7086801CC52C9A0002F3FF /* STMPicturesController+category.m */; };
+		2C7086841CC52DD40002F3FF /* STMVolumeTVCell+category.m in Sources */ = {isa = PBXBuildFile; fileRef = 2C7086831CC52DD40002F3FF /* STMVolumeTVCell+category.m */; };
 		2C734B8219B4E6FD00EE33FA /* archive-128.png in Resources */ = {isa = PBXBuildFile; fileRef = 2C734B8119B4E6FD00EE33FA /* archive-128.png */; };
 		2C761BAF1B008185001DA33E /* Picture-100.png in Resources */ = {isa = PBXBuildFile; fileRef = 2C761BAE1B008185001DA33E /* Picture-100.png */; };
 		2C761BB21B00824F001DA33E /* Picture-32.png in Resources */ = {isa = PBXBuildFile; fileRef = 2C761BB01B00824F001DA33E /* Picture-32.png */; };
@@ -1113,6 +1114,8 @@
 		2C70867D1CC52B1F0002F3FF /* STMVolumePicker+category.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "STMVolumePicker+category.m"; sourceTree = "<group>"; };
 		2C70867F1CC52C9A0002F3FF /* STMPicturesController+category.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "STMPicturesController+category.h"; sourceTree = "<group>"; };
 		2C7086801CC52C9A0002F3FF /* STMPicturesController+category.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "STMPicturesController+category.m"; sourceTree = "<group>"; };
+		2C7086821CC52DD40002F3FF /* STMVolumeTVCell+category.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "STMVolumeTVCell+category.h"; sourceTree = "<group>"; };
+		2C7086831CC52DD40002F3FF /* STMVolumeTVCell+category.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "STMVolumeTVCell+category.m"; sourceTree = "<group>"; };
 		2C734B8119B4E6FD00EE33FA /* archive-128.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "archive-128.png"; sourceTree = "<group>"; };
 		2C761BAE1B008185001DA33E /* Picture-100.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Picture-100.png"; sourceTree = "<group>"; };
 		2C761BB01B00824F001DA33E /* Picture-32.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Picture-32.png"; sourceTree = "<group>"; };
@@ -2611,6 +2614,8 @@
 			children = (
 				2C70867C1CC52B1F0002F3FF /* STMVolumePicker+category.h */,
 				2C70867D1CC52B1F0002F3FF /* STMVolumePicker+category.m */,
+				2C7086821CC52DD40002F3FF /* STMVolumeTVCell+category.h */,
+				2C7086831CC52DD40002F3FF /* STMVolumeTVCell+category.m */,
 			);
 			path = STMUI;
 			sourceTree = "<group>";
@@ -3314,6 +3319,7 @@
 				2C7085BA1CC394500002F3FF /* STMLogMessagesDetailTVC.m in Sources */,
 				2C7085C51CC394500002F3FF /* STMTabBarButtonTVC.m in Sources */,
 				2CC5D3741C85C73D00193CD7 /* STMTrack+CoreDataProperties.m in Sources */,
+				2C7086841CC52DD40002F3FF /* STMVolumeTVCell+category.m in Sources */,
 				2C774C601C1DA3C10091222C /* STMStockBatchCodesTVC.m in Sources */,
 				2C57641E1AA5E1E500B9FD2C /* STMDebtsDetailsPVC.m in Sources */,
 				2C42ECC21B159AD100B5C91A /* STMCatalogSettingsTVC.m in Sources */,
