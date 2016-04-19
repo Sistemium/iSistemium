@@ -8,12 +8,14 @@
 
 #import "STMShippingLocationPictureVC.h"
 #import "STMPicturesController.h"
+#import "STMUI.h"
 
 @interface STMShippingLocationPictureVC () <UIAlertViewDelegate, UIGestureRecognizerDelegate>
 
 @property (weak, nonatomic) IBOutlet UIImageView *photoView;
 @property (weak, nonatomic) IBOutlet UIToolbar *toolbar;
 @property (weak, nonatomic) IBOutlet UIBarButtonItem *deletePhotoButton;
+@property (nonatomic, strong) STMSpinnerView *spinnerView;
 
 
 
@@ -75,6 +77,7 @@
     [self.view addSubview:self.spinnerView];
     [self addObservers];
     NSManagedObjectID *pictureID = self.photo.objectID;
+    self.photo.imageThumbnail = nil;
     [STMPicturesController downloadConnectionForObjectID:pictureID];
     
 }
@@ -189,7 +192,7 @@
     
     [self checkFrameOrientationForView:self.view];
     
-    if (self.photo.imageThumbnail) [self showImage];
+    if (self.photo.imagePath) [self showImage];
     else{
         [self addSpinner];
     }
