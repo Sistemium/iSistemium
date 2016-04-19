@@ -549,6 +549,7 @@
 		6D074DE61CA9AB9600EB5121 /* STMUncashingHandOverVC_iPhone.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6D074DE11CA9AB9600EB5121 /* STMUncashingHandOverVC_iPhone.swift */; };
 		6D074DE71CA9AB9600EB5121 /* STMUncashingInfoVC_iPhone.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6D074DE21CA9AB9600EB5121 /* STMUncashingInfoVC_iPhone.swift */; };
 		6D074DE81CA9AB9600EB5121 /* STMUncashingTVC_iPhone.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6D074DE31CA9AB9600EB5121 /* STMUncashingTVC_iPhone.swift */; };
+		6D69FA4C1CC6624900A3BCB2 /* STMGarbageCollector.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6D69FA4B1CC6624900A3BCB2 /* STMGarbageCollector.swift */; };
 		6DE2B48B1C3E7F4F001F1DE1 /* STMShippingLocationTVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6DE2B48A1C3E7F4F001F1DE1 /* STMShippingLocationTVC.swift */; };
 		6DF12A301C3ABA8E00E94C3E /* STMShippingLocationsTVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6DF12A2F1C3ABA8E00E94C3E /* STMShippingLocationsTVC.swift */; };
 		6DF6B1621CBE624000F911F3 /* Download-100.png in Resources */ = {isa = PBXBuildFile; fileRef = 6DF6B1611CBE624000F911F3 /* Download-100.png */; };
@@ -1489,6 +1490,7 @@
 		6D074DE11CA9AB9600EB5121 /* STMUncashingHandOverVC_iPhone.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = STMUncashingHandOverVC_iPhone.swift; sourceTree = "<group>"; };
 		6D074DE21CA9AB9600EB5121 /* STMUncashingInfoVC_iPhone.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = STMUncashingInfoVC_iPhone.swift; sourceTree = "<group>"; };
 		6D074DE31CA9AB9600EB5121 /* STMUncashingTVC_iPhone.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = STMUncashingTVC_iPhone.swift; sourceTree = "<group>"; };
+		6D69FA4B1CC6624900A3BCB2 /* STMGarbageCollector.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = STMGarbageCollector.swift; sourceTree = "<group>"; };
 		6DA2037C1CC108310092EFEF /* STMDataModel 2.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "STMDataModel 2.xcdatamodel"; sourceTree = "<group>"; };
 		6DE2B48A1C3E7F4F001F1DE1 /* STMShippingLocationTVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = STMShippingLocationTVC.swift; sourceTree = "<group>"; };
 		6DF12A2F1C3ABA8E00E94C3E /* STMShippingLocationsTVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = STMShippingLocationsTVC.swift; sourceTree = "<group>"; };
@@ -1579,6 +1581,7 @@
 				2CC5D3A41C85C78100193CD7 /* STMTracker.m */,
 				2CE634641C8AB5C7007CF578 /* STMScriptMessageController.swift */,
 				2CE634661C8D96FD007CF578 /* STMSwiftConstants.swift */,
+				6D69FA4B1CC6624900A3BCB2 /* STMGarbageCollector.swift */,
 			);
 			path = Base;
 			sourceTree = "<group>";
@@ -3337,6 +3340,7 @@
 				2CC5D3791C85C73D00193CD7 /* STMUncashingPlace.m in Sources */,
 				2CE634671C8D96FD007CF578 /* STMSwiftConstants.swift in Sources */,
 				2CC5D42C1C85C7C700193CD7 /* STMPredicate.m in Sources */,
+				6D69FA4C1CC6624900A3BCB2 /* STMGarbageCollector.swift in Sources */,
 				2C5764241AA5E1E500B9FD2C /* STMSelectPartnerTVC.m in Sources */,
 				2C3CED6F1C1C501E00291AAD /* STMSupplyOrderOperationsTVC.m in Sources */,
 				2C57641D1AA5E1E500B9FD2C /* STMDebtsCombineVC.m in Sources */,
