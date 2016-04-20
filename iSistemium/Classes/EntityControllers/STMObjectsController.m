@@ -1275,7 +1275,7 @@
     
 //    [self avgTimesCalc];
     
-//    [self resolveFantoms];
+    [self resolveFantoms];
     [STMPicturesController checkPhotos];
 //    [self checkObjectsForFlushing];
     
@@ -1327,100 +1327,100 @@
             NSArray *results = [[self document].managedObjectContext executeFetchRequest:request error:&error];
             
             if (results.count > 0) {
-                
-                NSLog(@"resolve %@ %@ fantom(s)", @(results.count), entityName);
-
-                STMEntity *entity = [STMEntityController stcEntities][entityName];
-                
-                if (!entity.url) continue;
-                
-                NSURL *url = [NSURL URLWithString:(NSString *)entity.url];
-
-                for (NSManagedObject *fantomObject in results) {
-                    
-                    NSData *xid = [fantomObject valueForKey:@"xid"];
-                    
-                    if (!xid) continue;
-                    
-                    NSString *xidString = [STMFunctions UUIDStringFromUUIDData:xid];
-                    
-                    NSURL *urlWithXid = [url URLByAppendingPathComponent:xidString];
-                    
-                    NSURLRequest *request = [NSURLRequest requestWithURL:urlWithXid];
-                    
-                    request = [[STMAuthController authController] authenticateRequest:request];
-                    
-                    if (request) {
-                     
-                        [NSURLConnection sendAsynchronousRequest:request
-                                                           queue:[NSOperationQueue mainQueue]
-                                               completionHandler:^(NSURLResponse * _Nullable response, NSData * _Nullable data, NSError * _Nullable connectionError) {
-                                                   
-                            if (!connectionError) {
-                               
-                                if ([response isKindOfClass:[NSHTTPURLResponse class]]) {
-
-                                    NSHTTPURLResponse *httpResponse = (NSHTTPURLResponse *)response;
-                                    
-                                    if (httpResponse.statusCode == 200 && data.length > 0) {
-                                        
-                                        NSError *error;
-                                        NSDictionary *responseJSON = [NSJSONSerialization JSONObjectWithData:(NSData *)data
-                                                                                                     options:NSJSONReadingMutableContainers
-                                                                                                       error:&error];
-                                        
-                                        NSLog(@"responseJSON %@", responseJSON);
-                                        
-                                        //                            NSString *errorString = nil;
-                                        //
-                                        //                            if ([responseJSON isKindOfClass:[NSDictionary class]]) {
-                                        //                                errorString = responseJSON[@"error"];
-                                        //                            } else {
-                                        //                                errorString = @"response not a dictionary";
-                                        //                            }
-                                        //
-                                        //                            if (!errorString) {
-                                        //
-                                        //                                NSString *connectionEntityName = [self entityNameForConnection:connection];
-                                        //                                NSArray *dataArray = responseJSON[@"data"];
-                                        //
-                                        //                                STMEntity *entity = (self.stcEntities)[connectionEntityName];
-                                        //
-                                        //                                if (entity) {
-                                        //
-                                        //                                    [STMObjectsController processingOfDataArray:dataArray roleName:entity.roleName withCompletionHandler:^(BOOL success) {
-                                        //
-                                        //                                        if (success) {
-                                        //                                        }
-                                        //
-                                        //                                    }];
-                                        //                                }
-                                        //                                     
-                                        //                            }
-                                        
-                                    } else {
-                                        
-                                        NSLog(@"%@ status %@", response.URL.absoluteString, @(httpResponse.statusCode));
-                                        
-                                    }
-
-                                }
-                                
-                            }
-                            
-
-                        }];
-
-                    }
-
-                }
-                
+                [self resolveFantoms:results forEntityName:entityName];
             }
             
         }
         
     }
     
+}
+
++ (void)resolveFantoms:(NSArray *)fantomsArray forEntityName:(NSString *)entityName {
+    
+    NSLog(@"resolve %@ %@ fantom(s)", @(fantomsArray.count), entityName);
+    
+    __block STMEntity *entity = [STMEntityController stcEntities][entityName];
+    
+    if (!entity.url) return;
+    
+    NSURL *url = [NSURL URLWithString:(NSString *)entity.url];
+    
+    for (NSManagedObject *fantomObject in fantomsArray) {
+        
+        NSData *xid = [fantomObject valueForKey:@"xid"];
+        
+        if (!xid) continue;
+        
+        NSString *xidString = [STMFunctions UUIDStringFromUUIDData:xid];
+        
+        NSURL *urlWithXid = [url URLByAppendingPathComponent:xidString];
+        
+        NSURLRequest *request = [NSURLRequest requestWithURL:urlWithXid];
+        
+        request = [[STMAuthController authController] authenticateRequest:request];
+        
+        if (request) {
+            
+            [NSURLConnection sendAsynchronousRequest:request
+                                               queue:[NSOperationQueue mainQueue]
+                                   completionHandler:^(NSURLResponse * _Nullable response, NSData * _Nullable data, NSError * _Nullable connectionError) {
+                                       
+                if (!connectionError) {
+                   [self receiveFantomResolveResponse:response withData:data forEntity:entity];
+                }
+
+            }];
+            
+        }
+        
+    }
+
+}
+
++ (void)receiveFantomResolveResponse:(NSURLResponse *)response withData:(NSData *)data forEntity:(STMEntity *)entity {
+    
+    if ([response isKindOfClass:[NSHTTPURLResponse class]]) {
+        
+        NSHTTPURLResponse *httpResponse = (NSHTTPURLResponse *)response;
+        
+        if (httpResponse.statusCode == 200 && data.length > 0) {
+            
+            NSError *error;
+            NSDictionary *responseJSON = [NSJSONSerialization JSONObjectWithData:(NSData *)data
+                                                                         options:NSJSONReadingMutableContainers
+                                                                           error:&error];
+            
+            NSString *errorString = nil;
+            
+            if ([responseJSON isKindOfClass:[NSDictionary class]]) {
+                errorString = responseJSON[@"error"];
+            } else {
+                errorString = @"response not a dictionary";
+            }
+            
+            if (!errorString) {
+                
+                NSArray *dataArray = responseJSON[@"data"];
+                
+                [STMObjectsController processingOfDataArray:dataArray roleName:entity.roleName withCompletionHandler:^(BOOL success) {
+                    
+                }];
+                
+            } else {
+                
+                [[STMLogger sharedLogger] saveLogMessageWithText:errorString type:@"error"];
+                
+            }
+            
+        } else {
+            
+            NSLog(@"%@ status %@", response.URL.absoluteString, @(httpResponse.statusCode));
+            
+        }
+        
+    }
+
 }
 
 + (NSFetchRequest *)isFantomFetchRequestForEntityName:(NSString *)entityName {
