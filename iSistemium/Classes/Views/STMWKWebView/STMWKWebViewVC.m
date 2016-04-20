@@ -34,7 +34,7 @@
 @property (nonatomic, strong) STMBarCodeScanner *iOSModeBarCodeScanner;
 
 @property (nonatomic, strong) NSString *receiveBarCodeJSFunction;
-@property (nonatomic, strong) NSString *subscribeCallbackJSFunction;
+@property (nonatomic, strong) NSString *subscribeDataCallbackJSFunction;
 @property (nonatomic, strong) NSString *iSistemiumIOSCallbackJSFunction;
 @property (nonatomic, strong) NSString *iSistemiumIOSErrorCallbackJSFunction;
 
@@ -376,7 +376,7 @@
 
     if ([parameters[@"entities"] isKindOfClass:[NSArray class]]) {
         
-        self.subscribeCallbackJSFunction = parameters[@"callback"];
+        self.subscribeDataCallbackJSFunction = parameters[@"dataCallback"];
         
         NSArray *entities = parameters[@"entities"];
         
@@ -384,7 +384,7 @@
 
         if ([STMObjectsController subscribeViewController:self toEntities:entities error:&error]) {
         
-            [self callbackWithData:@[@"subscribe to entities success"] parameters:parameters];
+            [self callbackWithData:@[@"subscribe to entities success"] parameters:parameters jsCallbackFunction:parameters[@"callback"]];
 
         } else {
             
@@ -597,7 +597,7 @@
     
     [self callbackWithData:result
                 parameters:parameters
-        jsCallbackFunction:self.subscribeCallbackJSFunction];
+        jsCallbackFunction:self.subscribeDataCallbackJSFunction];
 
 }
 
