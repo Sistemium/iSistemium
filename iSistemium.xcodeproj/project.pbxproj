@@ -884,6 +884,7 @@
 		2CA611EB19FB7B1A0046ECF4 /* STMUncashingHandOverVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = STMUncashingHandOverVC.m; sourceTree = "<group>"; };
 		2CA9AFE21C439B930071D429 /* error.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = error.mp3; sourceTree = "<group>"; };
 		2CA9AFE51C43A8E40071D429 /* ok.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = ok.mp3; sourceTree = "<group>"; };
+		2CA9E3731CC7CC7D00E2663E /* STMDataModel 4.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "STMDataModel 4.xcdatamodel"; sourceTree = "<group>"; };
 		2CAFB2561C297FE600BBEDC1 /* STMArticleSelectionTVC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = STMArticleSelectionTVC.h; sourceTree = "<group>"; };
 		2CAFB2571C297FE600BBEDC1 /* STMArticleSelectionTVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = STMArticleSelectionTVC.m; sourceTree = "<group>"; };
 		2CAFB25E1C2EC08700BBEDC1 /* refresh_barcode.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = refresh_barcode.png; sourceTree = "<group>"; };
@@ -3833,11 +3834,12 @@
 		2CC5D2431C85C73C00193CD7 /* STMDataModel2.xcdatamodeld */ = {
 			isa = XCVersionGroup;
 			children = (
+				2CA9E3731CC7CC7D00E2663E /* STMDataModel 4.xcdatamodel */,
 				2C45F9DD1CC763D5003B79B4 /* STMDataModel 3.xcdatamodel */,
 				6DA2037C1CC108310092EFEF /* STMDataModel 2.xcdatamodel */,
 				2CC5D2441C85C73C00193CD7 /* STMDataModel2.xcdatamodel */,
 			);
-			currentVersion = 2C45F9DD1CC763D5003B79B4 /* STMDataModel 3.xcdatamodel */;
+			currentVersion = 2CA9E3731CC7CC7D00E2663E /* STMDataModel 4.xcdatamodel */;
 			path = STMDataModel2.xcdatamodeld;
 			sourceTree = "<group>";
 			versionGroupType = wrapper.xcdatamodel;
