@@ -674,10 +674,10 @@
     
     if (self.isInActiveTab) {
         
-        NSMutableArray *arguments = @[].mutableCopy;
-        
         if (barcode) {
-         
+        
+            NSMutableArray *arguments = @[].mutableCopy;
+
             [arguments addObject:barcode];
 
             NSString *typeString = [STMBarCodeController barCodeTypeStringForType:type];
@@ -705,18 +705,26 @@
                     NSLog(@"send received barcode %@ with type %@ to WKWebView", barcode, typeString);
                 }
 
+            } else {
+                NSLog(@"send received barcode %@ to WKWebView", barcode);
             }
+
+            [self evaluateReceiveBarCodeJSFunctionWithArguments:arguments];
 
         }
         
-        NSString *jsFunction = [NSString stringWithFormat:@"%@.apply(null,%@)", self.receiveBarCodeJSFunction, [STMFunctions jsonStringFromArray:arguments]];
-        
-        [self.webView evaluateJavaScript:jsFunction completionHandler:^(id _Nullable result, NSError * _Nullable error) {
-            
-        }];
-
     }
     
+}
+
+- (void)evaluateReceiveBarCodeJSFunctionWithArguments:(NSArray *)arguments {
+
+    NSString *jsFunction = [NSString stringWithFormat:@"%@.apply(null,%@)", self.receiveBarCodeJSFunction, [STMFunctions jsonStringFromArray:arguments]];
+    
+    [self.webView evaluateJavaScript:jsFunction completionHandler:^(id _Nullable result, NSError * _Nullable error) {
+        
+    }];
+
 }
 
 - (void)barCodeScanner:(STMBarCodeScanner *)scanner receiveError:(NSError *)error {
