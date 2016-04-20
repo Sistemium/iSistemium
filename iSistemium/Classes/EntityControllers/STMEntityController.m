@@ -156,6 +156,20 @@
     return [self sharedInstance].uploadableEntitiesNames;
 }
 
++ (NSSet *)entityNamesWithResolveFantoms {
+    
+    NSMutableDictionary *stcEntities = [[self stcEntities] mutableCopy];
+    
+    return [NSSet setWithArray:stcEntities.allKeys];
+    
+    NSSet *filteredKeys = [stcEntities keysOfEntriesPassingTest:^BOOL(id key, id obj, BOOL *stop) {
+        return ([[obj valueForKey:@"resolveFantoms"] boolValue]);
+    }];
+    
+    return filteredKeys;
+    
+}
+
 + (NSSet *)entityNamesWithLifeTime {
     
     NSMutableDictionary *stcEntities = [[self stcEntities] mutableCopy];
