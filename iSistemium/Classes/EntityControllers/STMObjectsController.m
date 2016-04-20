@@ -1344,9 +1344,9 @@
                     
                     NSString *xidString = [STMFunctions UUIDStringFromUUIDData:xid];
                     
-                    url = [url URLByAppendingPathComponent:xidString];
+                    NSURL *urlWithXid = [url URLByAppendingPathComponent:xidString];
                     
-                    NSURLRequest *request = [NSURLRequest requestWithURL:url];
+                    NSURLRequest *request = [NSURLRequest requestWithURL:urlWithXid];
                     
                     request = [[STMAuthController authController] authenticateRequest:request];
                     
@@ -1356,45 +1356,60 @@
                                                            queue:[NSOperationQueue mainQueue]
                                                completionHandler:^(NSURLResponse * _Nullable response, NSData * _Nullable data, NSError * _Nullable connectionError) {
                                                    
-                            if (!connectionError && data) {
+                            if (!connectionError) {
                                
-                                NSError *error;
-                                NSDictionary *responseJSON = [NSJSONSerialization JSONObjectWithData:(NSData *)data
-                                                                                            options:NSJSONReadingMutableContainers
-                                                                                              error:&error];
+                                if ([response isKindOfClass:[NSHTTPURLResponse class]]) {
 
-                                NSLog(@"responseJSON %@", responseJSON);
+                                    NSHTTPURLResponse *httpResponse = (NSHTTPURLResponse *)response;
+                                    
+                                    if (httpResponse.statusCode == 200 && data.length > 0) {
+                                        
+                                        NSError *error;
+                                        NSDictionary *responseJSON = [NSJSONSerialization JSONObjectWithData:(NSData *)data
+                                                                                                     options:NSJSONReadingMutableContainers
+                                                                                                       error:&error];
+                                        
+                                        NSLog(@"responseJSON %@", responseJSON);
+                                        
+                                        //                            NSString *errorString = nil;
+                                        //
+                                        //                            if ([responseJSON isKindOfClass:[NSDictionary class]]) {
+                                        //                                errorString = responseJSON[@"error"];
+                                        //                            } else {
+                                        //                                errorString = @"response not a dictionary";
+                                        //                            }
+                                        //
+                                        //                            if (!errorString) {
+                                        //
+                                        //                                NSString *connectionEntityName = [self entityNameForConnection:connection];
+                                        //                                NSArray *dataArray = responseJSON[@"data"];
+                                        //
+                                        //                                STMEntity *entity = (self.stcEntities)[connectionEntityName];
+                                        //
+                                        //                                if (entity) {
+                                        //
+                                        //                                    [STMObjectsController processingOfDataArray:dataArray roleName:entity.roleName withCompletionHandler:^(BOOL success) {
+                                        //
+                                        //                                        if (success) {
+                                        //                                        }
+                                        //
+                                        //                                    }];
+                                        //                                }
+                                        //                                     
+                                        //                            }
+                                        
+                                    } else {
+                                        
+                                        NSLog(@"%@ status %@", response.URL.absoluteString, @(httpResponse.statusCode));
+                                        
+                                    }
 
-                                //                            NSString *errorString = nil;
-                                //
-                                //                            if ([responseJSON isKindOfClass:[NSDictionary class]]) {
-                                //                                errorString = responseJSON[@"error"];
-                                //                            } else {
-                                //                                errorString = @"response not a dictionary";
-                                //                            }
-                                //
-                                //                            if (!errorString) {
-                                //
-                                //                                NSString *connectionEntityName = [self entityNameForConnection:connection];
-                                //                                NSArray *dataArray = responseJSON[@"data"];
-                                //                                
-                                //                                STMEntity *entity = (self.stcEntities)[connectionEntityName];
-                                //                                
-                                //                                if (entity) {
-                                //                                    
-                                //                                    [STMObjectsController processingOfDataArray:dataArray roleName:entity.roleName withCompletionHandler:^(BOOL success) {
-                                //                                        
-                                //                                        if (success) {
-                                //                                        }
-                                //                                        
-                                //                                    }];
-                                //                                }
-                                //                                     
-                                //                            }
-                               
                                 }
+                                
+                            }
+                            
 
-                            }];
+                        }];
 
                     }
 
