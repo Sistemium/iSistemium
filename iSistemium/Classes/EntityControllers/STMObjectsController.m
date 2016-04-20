@@ -1480,6 +1480,8 @@
     }
     
     if (result) {
+        
+        [self flushSubscribedViewController:vc];
 
         for (NSString *entityName in entitiesToSubscribe) {
             
@@ -1504,6 +1506,20 @@
     }
     
     return result;
+    
+}
+
++ (void)flushSubscribedViewController:(UIViewController <STMEntitiesSubscribable> *)vc {
+    
+    for (NSString *entityName in [self sharedController].entitiesToSubscribe.allKeys) {
+        
+        NSMutableArray *vcArray = [self sharedController].entitiesToSubscribe[entityName].mutableCopy;
+        
+        [vcArray removeObject:vc];
+        
+        [self sharedController].entitiesToSubscribe[entityName] = vcArray;
+
+    }
     
 }
 
