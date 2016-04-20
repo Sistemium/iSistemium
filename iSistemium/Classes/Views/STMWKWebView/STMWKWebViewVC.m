@@ -34,6 +34,7 @@
 @property (nonatomic, strong) STMBarCodeScanner *iOSModeBarCodeScanner;
 
 @property (nonatomic, strong) NSString *receiveBarCodeJSFunction;
+@property (nonatomic, strong) NSString *subscribeCallbackJSFunction;
 @property (nonatomic, strong) NSString *iSistemiumIOSCallbackJSFunction;
 @property (nonatomic, strong) NSString *iSistemiumIOSErrorCallbackJSFunction;
 
@@ -375,6 +376,8 @@
 
     if ([parameters[@"entities"] isKindOfClass:[NSArray class]]) {
         
+        self.subscribeCallbackJSFunction = parameters[@"callback"];
+        
         NSArray *entities = parameters[@"entities"];
         
         NSError *error = nil;
@@ -527,12 +530,12 @@
         
 }
 
-- (void)callbackWithData:(NSArray *)data parameters:(NSDictionary *)parameters {
+- (void)callbackWithData:(NSArray *)data parameters:(NSDictionary *)parameters jsCallbackFunction:(NSString *)jsCallbackFunction {
     
 #ifdef DEBUG
     
     NSString *requestId = parameters[@"options"][@"requestId"];
-
+    
     if (requestId) {
         NSLog(@"requestId %@ callbackWithData: %@ objects", requestId, @(data.count));
     } else {
@@ -540,18 +543,21 @@
     }
     
 #endif
-
+    
     NSMutableArray *arguments = @[].mutableCopy;
     
     if (data) [arguments addObject:data];
     if (parameters) [arguments addObject:parameters];
     
-    NSString *jsFunction = [NSString stringWithFormat:@"%@.apply(null,%@)", self.iSistemiumIOSCallbackJSFunction, [STMFunctions jsonStringFromArray:arguments]];
+    NSString *jsFunction = [NSString stringWithFormat:@"%@.apply(null,%@)", jsCallbackFunction, [STMFunctions jsonStringFromArray:arguments]];
     
     [self.webView evaluateJavaScript:jsFunction completionHandler:^(id _Nullable result, NSError * _Nullable error) {
         
     }];
-    
+
+}
+- (void)callbackWithData:(NSArray *)data parameters:(NSDictionary *)parameters {
+    [self callbackWithData:data parameters:parameters jsCallbackFunction:self.iSistemiumIOSCallbackJSFunction];
 }
 
 - (void)callbackWithError:(NSString *)errorDescription parameters:(NSDictionary *)parameters {
@@ -590,7 +596,8 @@
     NSDictionary *parameters = @{@"reason": @"subscription"};
     
     [self callbackWithData:result
-                parameters:parameters];
+                parameters:parameters
+        jsCallbackFunction:self.subscribeCallbackJSFunction];
 
 }
 
