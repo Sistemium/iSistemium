@@ -2,7 +2,7 @@
 //  STMEntity+CoreDataProperties.m
 //  iSistemium
 //
-//  Created by Maxim Grigoriev on 08/02/16.
+//  Created by Maxim Grigoriev on 20/04/16.
 //  Copyright © 2016 Sistemium UAB. All rights reserved.
 //
 //  Choose "Create NSManagedObject Subclass…" from the Core Data editor menu
@@ -33,6 +33,7 @@
 @dynamic url;
 @dynamic workflow;
 @dynamic xid;
+@dynamic isResolveFantoms;
 @dynamic wf;
 
 @end

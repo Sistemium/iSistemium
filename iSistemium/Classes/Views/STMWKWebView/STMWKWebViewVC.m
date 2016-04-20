@@ -153,7 +153,7 @@
 
 - (void)loadURLString:(NSString *)urlString {
     
-    urlString = @"http://maxbook.local:3000/#/orders";
+//    urlString = @"http://maxbook.local:3000/#/orders";
     
     NSURL *url = [NSURL URLWithString:urlString];
     NSMutableURLRequest *request = [[NSMutableURLRequest alloc] initWithURL:url];
@@ -674,29 +674,57 @@
     
     if (self.isInActiveTab) {
         
-        NSMutableArray *arguments = @[].mutableCopy;
+        if (barcode) {
         
-//        NSString *barcode = barCodeScan.code;
-        if (!barcode) barcode = @"";
-        [arguments addObject:barcode];
-        
-        NSString *typeString = [STMBarCodeController barCodeTypeStringForType:type];
-        if (!typeString) typeString = @"";
-        [arguments addObject:typeString];
-        
-//        NSDictionary *barcodeDic = [STMObjectsController dictionaryForJSWithObject:barCodeScan];
-//        [arguments addObject:barcodeDic];
-        
-        NSLog(@"send received barcode %@ with type %@ to WKWebView", barcode, typeString);
-        
-        NSString *jsFunction = [NSString stringWithFormat:@"%@.apply(null,%@)", self.receiveBarCodeJSFunction, [STMFunctions jsonStringFromArray:arguments]];
-        
-        [self.webView evaluateJavaScript:jsFunction completionHandler:^(id _Nullable result, NSError * _Nullable error) {
-            
-        }];
+            NSMutableArray *arguments = @[].mutableCopy;
 
+            [arguments addObject:barcode];
+
+            NSString *typeString = [STMBarCodeController barCodeTypeStringForType:type];
+
+            if (typeString) {
+             
+                [arguments addObject:typeString];
+                
+                if (type == STMBarCodeTypeStockBatch) {
+                    
+                    STMStockBatch *stockBatch = [STMBarCodeController stockBatchForBarcode:barcode].firstObject;
+                    
+                    if (stockBatch) {
+
+                        NSDictionary *stockBatchDic = [STMObjectsController dictionaryForJSWithObject:stockBatch];
+                        [arguments addObject:stockBatchDic];
+                        
+                        NSLog(@"send received barcode %@ with type %@ and stockBatch %@ to WKWebView", barcode, typeString, stockBatchDic);
+
+                    } else {
+                        NSLog(@"send received barcode %@ with type %@ to WKWebView", barcode, typeString);
+                    }
+                    
+                } else {
+                    NSLog(@"send received barcode %@ with type %@ to WKWebView", barcode, typeString);
+                }
+
+            } else {
+                NSLog(@"send received barcode %@ to WKWebView", barcode);
+            }
+
+            [self evaluateReceiveBarCodeJSFunctionWithArguments:arguments];
+
+        }
+        
     }
     
+}
+
+- (void)evaluateReceiveBarCodeJSFunctionWithArguments:(NSArray *)arguments {
+
+    NSString *jsFunction = [NSString stringWithFormat:@"%@.apply(null,%@)", self.receiveBarCodeJSFunction, [STMFunctions jsonStringFromArray:arguments]];
+    
+    [self.webView evaluateJavaScript:jsFunction completionHandler:^(id _Nullable result, NSError * _Nullable error) {
+        
+    }];
+
 }
 
 - (void)barCodeScanner:(STMBarCodeScanner *)scanner receiveError:(NSError *)error {

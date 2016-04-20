@@ -2,7 +2,7 @@
 //  STMEntity+CoreDataProperties.h
 //  iSistemium
 //
-//  Created by Maxim Grigoriev on 08/02/16.
+//  Created by Maxim Grigoriev on 20/04/16.
 //  Copyright © 2016 Sistemium UAB. All rights reserved.
 //
 //  Choose "Create NSManagedObject Subclass…" from the Core Data editor menu
@@ -35,6 +35,7 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nullable, nonatomic, retain) NSString *url;
 @property (nullable, nonatomic, retain) NSString *workflow;
 @property (nullable, nonatomic, retain) NSData *xid;
+@property (nullable, nonatomic, retain) NSNumber *isResolveFantoms;
 @property (nullable, nonatomic, retain) STMWorkflow *wf;
 
 @end
