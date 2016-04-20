@@ -9,7 +9,7 @@
 #import <Foundation/Foundation.h>
 #import "STMDatum.h"
 
-@class STMPicker, STMPickingOrderPosition;
+@class STMOutlet, STMPicker, STMPickingOrderPosition;
 
 NS_ASSUME_NONNULL_BEGIN
 
