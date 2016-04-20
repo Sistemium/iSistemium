@@ -2,7 +2,7 @@
 //  STMOutlet+CoreDataProperties.m
 //  iSistemium
 //
-//  Created by Maxim Grigoriev on 08/02/16.
+//  Created by Maxim Grigoriev on 20/04/16.
 //  Copyright © 2016 Sistemium UAB. All rights reserved.
 //
 //  Choose "Create NSManagedObject Subclass…" from the Core Data editor menu
@@ -34,6 +34,7 @@
 @dynamic debts;
 @dynamic partner;
 @dynamic photoReports;
+@dynamic pickingOrders;
 @dynamic saleOrders;
 @dynamic salesman;
 @dynamic shipments;

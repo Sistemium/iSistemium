@@ -13,6 +13,7 @@
 #import "STMDebt.h"
 #import "STMPartner.h"
 #import "STMPhotoReport.h"
+#import "STMPickingOrder.h"
 #import "STMSaleOrder.h"
 #import "STMSalesman.h"
 #import "STMShipment.h"

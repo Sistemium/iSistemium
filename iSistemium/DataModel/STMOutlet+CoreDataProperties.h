@@ -2,7 +2,7 @@
 //  STMOutlet+CoreDataProperties.h
 //  iSistemium
 //
-//  Created by Maxim Grigoriev on 08/02/16.
+//  Created by Maxim Grigoriev on 20/04/16.
 //  Copyright © 2016 Sistemium UAB. All rights reserved.
 //
 //  Choose "Create NSManagedObject Subclass…" from the Core Data editor menu
@@ -36,6 +36,7 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nullable, nonatomic, retain) NSSet<STMDebt *> *debts;
 @property (nullable, nonatomic, retain) STMPartner *partner;
 @property (nullable, nonatomic, retain) NSSet<STMPhotoReport *> *photoReports;
+@property (nullable, nonatomic, retain) NSSet<STMPickingOrder *> *pickingOrders;
 @property (nullable, nonatomic, retain) NSSet<STMSaleOrder *> *saleOrders;
 @property (nullable, nonatomic, retain) STMSalesman *salesman;
 @property (nullable, nonatomic, retain) NSSet<STMShipment *> *shipments;
@@ -68,6 +69,11 @@ NS_ASSUME_NONNULL_BEGIN
 - (void)removePhotoReportsObject:(STMPhotoReport *)value;
 - (void)addPhotoReports:(NSSet<STMPhotoReport *> *)values;
 - (void)removePhotoReports:(NSSet<STMPhotoReport *> *)values;
+
+- (void)addPickingOrdersObject:(STMPickingOrder *)value;
+- (void)removePickingOrdersObject:(STMPickingOrder *)value;
+- (void)addPickingOrders:(NSSet<STMPickingOrder *> *)values;
+- (void)removePickingOrders:(NSSet<STMPickingOrder *> *)values;
 
 - (void)addSaleOrdersObject:(STMSaleOrder *)value;
 - (void)removeSaleOrdersObject:(STMSaleOrder *)value;

@@ -9,7 +9,7 @@
 #import <Foundation/Foundation.h>
 #import "STMDatum.h"
 
-@class STMBasketPosition, STMCampaign, STMCashing, STMDebt, STMPartner, STMPhotoReport, STMSaleOrder, STMSalesman, STMShipment;
+@class STMBasketPosition, STMCampaign, STMCashing, STMDebt, STMPartner, STMPhotoReport, STMPickingOrder, STMSaleOrder, STMSalesman, STMShipment;
 
 NS_ASSUME_NONNULL_BEGIN
 

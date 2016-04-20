@@ -707,6 +707,7 @@
 		2C42ECC41B15A39400B5C91A /* STMCatalogSettingsNC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = STMCatalogSettingsNC.m; sourceTree = "<group>"; };
 		2C42ECC61B15F37000B5C91A /* STMCatalogParametersTVC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = STMCatalogParametersTVC.h; sourceTree = "<group>"; };
 		2C42ECC71B15F37000B5C91A /* STMCatalogParametersTVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = STMCatalogParametersTVC.m; sourceTree = "<group>"; };
+		2C45F9DD1CC763D5003B79B4 /* STMDataModel 3.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "STMDataModel 3.xcdatamodel"; sourceTree = "<group>"; };
 		2C4620581B68F813007FD646 /* STMPositionVolumesVC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = STMPositionVolumesVC.h; sourceTree = "<group>"; };
 		2C4620591B68F813007FD646 /* STMPositionVolumesVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = STMPositionVolumesVC.m; sourceTree = "<group>"; };
 		2C46206A1B6B5F45007FD646 /* STMRouteSummaryArticleInfoTVC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = STMRouteSummaryArticleInfoTVC.h; sourceTree = "<group>"; };
@@ -3832,10 +3833,11 @@
 		2CC5D2431C85C73C00193CD7 /* STMDataModel2.xcdatamodeld */ = {
 			isa = XCVersionGroup;
 			children = (
+				2C45F9DD1CC763D5003B79B4 /* STMDataModel 3.xcdatamodel */,
 				6DA2037C1CC108310092EFEF /* STMDataModel 2.xcdatamodel */,
 				2CC5D2441C85C73C00193CD7 /* STMDataModel2.xcdatamodel */,
 			);
-			currentVersion = 6DA2037C1CC108310092EFEF /* STMDataModel 2.xcdatamodel */;
+			currentVersion = 2C45F9DD1CC763D5003B79B4 /* STMDataModel 3.xcdatamodel */;
 			path = STMDataModel2.xcdatamodeld;
 			sourceTree = "<group>";
 			versionGroupType = wrapper.xcdatamodel;
