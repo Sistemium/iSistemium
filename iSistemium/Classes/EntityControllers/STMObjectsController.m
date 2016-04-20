@@ -372,7 +372,15 @@
         }
         
     }
-    
+    if ([object isKindOfClass:[STMPicture class]]){
+        STMPicture *picture = (STMPicture*)object;
+        if (picture.imageThumbnail == nil && picture.thumbnailHref != nil){
+            NSString* thumbnailHref = picture.thumbnailHref;
+            NSURL *thumbnailUrl = [NSURL URLWithString: thumbnailHref];
+            NSData *thumbnailData = [[NSData alloc] initWithContentsOfURL: thumbnailUrl];
+            if (thumbnailData) [STMPicturesController setThumbnailForPicture:picture fromImageData:thumbnailData];
+        }
+    }
     [self processingOfRelationshipsForObject:object withEntityName:entityName andValues:properties];
     
     [object setValue:[NSDate date] forKey:@"lts"];
