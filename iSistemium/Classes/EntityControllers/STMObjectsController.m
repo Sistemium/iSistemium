@@ -1528,9 +1528,17 @@
     NSArray <UIViewController <STMEntitiesSubscribable> *> *vcArray = [self sharedController].entitiesToSubscribe[entityName];
     
     for (UIViewController <STMEntitiesSubscribable> *vc in vcArray) {
+        
+        entityName = ([entityName hasPrefix:ISISTEMIUM_PREFIX]) ? [entityName substringFromIndex:ISISTEMIUM_PREFIX.length] : entityName;
     
-        [vc subscribedEntitiesObjectWasReceived:[self dictionaryForJSWithObject:object]];
+        if (object.xid) {
+            
+            NSDictionary *subscribeDic = @{@"entity": entityName, @"xid": [STMFunctions UUIDStringFromUUIDData:(NSData *)object.xid]};
+            
+            [vc subscribedEntitiesObjectWasReceived:subscribeDic];
 
+        }
+        
     }
     
 }
