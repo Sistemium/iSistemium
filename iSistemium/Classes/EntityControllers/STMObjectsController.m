@@ -2104,8 +2104,8 @@
     NSArray *ownKeys = [self ownObjectKeysForEntityName:object.entity.name].allObjects;
     NSArray *ownRelationships = [self singleRelationshipsForEntityName:object.entity.name].allKeys;
     
-    [propertiesDictionary addEntriesFromDictionary:[object propertiesForKeys:ownKeys]];
-    [propertiesDictionary addEntriesFromDictionary:[object relationshipXidsForKeys:ownRelationships]];
+    [propertiesDictionary addEntriesFromDictionary:[object propertiesForKeys:ownKeys withNulls:YES]];
+    [propertiesDictionary addEntriesFromDictionary:[object relationshipXidsForKeys:ownRelationships withNulls:YES]];
     
     return propertiesDictionary;
     
@@ -2340,8 +2340,9 @@
     
     [allKeys removeObjectsInArray:notSyncableProperties];
     
-    NSMutableDictionary *propertiesDictionary = [NSMutableDictionary dictionaryWithDictionary:[object propertiesForKeys:allKeys]];
-    
+    NSMutableDictionary *propertiesDictionary = [NSMutableDictionary dictionaryWithDictionary:[object propertiesForKeys:allKeys withNulls:NO]];
+ 
+// STMDatum method relationshipXidsForKeys:withNulls: — should use it in new data protocol version
     for (NSString *key in object.entity.relationshipsByName.allKeys) {
         
         NSRelationshipDescription *relationshipDescription = [object.entity.relationshipsByName valueForKey:key];
@@ -2367,6 +2368,7 @@
         }
         
     }
+// STMDatum method relationshipXidsForKeys:withNulls:
     
     return propertiesDictionary;
     
