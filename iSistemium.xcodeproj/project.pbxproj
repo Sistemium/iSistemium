@@ -549,6 +549,7 @@
 		6D074DE61CA9AB9600EB5121 /* STMUncashingHandOverVC_iPhone.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6D074DE11CA9AB9600EB5121 /* STMUncashingHandOverVC_iPhone.swift */; };
 		6D074DE71CA9AB9600EB5121 /* STMUncashingInfoVC_iPhone.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6D074DE21CA9AB9600EB5121 /* STMUncashingInfoVC_iPhone.swift */; };
 		6D074DE81CA9AB9600EB5121 /* STMUncashingTVC_iPhone.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6D074DE31CA9AB9600EB5121 /* STMUncashingTVC_iPhone.swift */; };
+		6D2D518A1CC8FC2D0076765C /* Upload-100.png in Resources */ = {isa = PBXBuildFile; fileRef = 6D2D51891CC8FC2D0076765C /* Upload-100.png */; };
 		6D69FA4C1CC6624900A3BCB2 /* STMGarbageCollector.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6D69FA4B1CC6624900A3BCB2 /* STMGarbageCollector.swift */; };
 		6DE2B48B1C3E7F4F001F1DE1 /* STMShippingLocationTVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6DE2B48A1C3E7F4F001F1DE1 /* STMShippingLocationTVC.swift */; };
 		6DF12A301C3ABA8E00E94C3E /* STMShippingLocationsTVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6DF12A2F1C3ABA8E00E94C3E /* STMShippingLocationsTVC.swift */; };
@@ -1492,6 +1493,7 @@
 		6D074DE11CA9AB9600EB5121 /* STMUncashingHandOverVC_iPhone.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = STMUncashingHandOverVC_iPhone.swift; sourceTree = "<group>"; };
 		6D074DE21CA9AB9600EB5121 /* STMUncashingInfoVC_iPhone.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = STMUncashingInfoVC_iPhone.swift; sourceTree = "<group>"; };
 		6D074DE31CA9AB9600EB5121 /* STMUncashingTVC_iPhone.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = STMUncashingTVC_iPhone.swift; sourceTree = "<group>"; };
+		6D2D51891CC8FC2D0076765C /* Upload-100.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Upload-100.png"; sourceTree = "<group>"; };
 		6D69FA4B1CC6624900A3BCB2 /* STMGarbageCollector.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = STMGarbageCollector.swift; sourceTree = "<group>"; };
 		6DA2037C1CC108310092EFEF /* STMDataModel 2.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "STMDataModel 2.xcdatamodel"; sourceTree = "<group>"; };
 		6DE2B48A1C3E7F4F001F1DE1 /* STMShippingLocationTVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = STMShippingLocationTVC.swift; sourceTree = "<group>"; };
@@ -2660,6 +2662,7 @@
 				2C4620731B6E027B007FD646 /* waypoint_map.png */,
 				2C5764381AA8962600B9FD2C /* wine_bottle-512.png */,
 				6DF6B1611CBE624000F911F3 /* Download-100.png */,
+				6D2D51891CC8FC2D0076765C /* Upload-100.png */,
 			);
 			path = Images;
 			sourceTree = "<group>";
@@ -2908,7 +2911,7 @@
 				ORGANIZATIONNAME = "Sistemium UAB";
 				TargetAttributes = {
 					2C8EF59A1940859F0021D202 = {
-						DevelopmentTeam = HZMMGDCLPA;
+						DevelopmentTeam = DP58H3X45C;
 						SystemCapabilities = {
 							com.apple.BackgroundModes = {
 								enabled = 1;
@@ -3019,6 +3022,7 @@
 				2CC5D1C11C85C6E900193CD7 /* STMCustom7TVCell.xib in Resources */,
 				2C1AB2F01B70AE0F00BF5C50 /* 0_circle_filled.png in Resources */,
 				2C2957991B400FD600A2D163 /* plus.png in Resources */,
+				6D2D518A1CC8FC2D0076765C /* Upload-100.png in Resources */,
 				2C8EF5B71940859F0021D202 /* Images.xcassets in Resources */,
 				2CC5D1B91C85C6E900193CD7 /* STMCustom1CVCell.xib in Resources */,
 				2C2968F019A0C22F0038B122 /* banknotes-128.png in Resources */,

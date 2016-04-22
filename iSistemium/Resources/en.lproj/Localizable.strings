@@ -473,3 +473,7 @@
 "RELOAD SCANNER DATA" = "Reload data";
 "UNKNOWN LOCATION" = "Unknown location";
 "DELETE ROUTE POINT" = "Delete route point";
+"SAVE TO CAMERA ROLL" = "Image was saved to the camera roll";
+"IMPOSSIBLE TO SAVE" = "Impossible to save image to the camera roll (access to photos is denied)";
+"GIVE PERMISSIONS" = "Change photos permissions in app settings";
+
