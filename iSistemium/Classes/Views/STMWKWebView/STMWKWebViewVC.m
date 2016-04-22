@@ -33,7 +33,8 @@
 
 @property (nonatomic, strong) STMBarCodeScanner *iOSModeBarCodeScanner;
 
-@property (nonatomic, strong) NSString *receiveBarCodeJSFunction;
+@property (nonatomic, strong) NSString *scannerScanJSFunction;
+@property (nonatomic, strong) NSString *scannerPowerButtonJSFunction;
 @property (nonatomic, strong) NSString *subscribeDataCallbackJSFunction;
 @property (nonatomic, strong) NSString *iSistemiumIOSCallbackJSFunction;
 @property (nonatomic, strong) NSString *iSistemiumIOSErrorCallbackJSFunction;
@@ -345,8 +346,7 @@
         
     } else if ([message.name isEqualToString:WK_MESSAGE_SCANNER_ON]) {
 
-        [self startBarcodeScanning];
-        self.receiveBarCodeJSFunction = message.body;
+        [self handleScannerMessage:message];
         
     } else if ([@[WK_MESSAGE_FIND, WK_MESSAGE_FIND_ALL] containsObject:message.name]) {
         
@@ -366,6 +366,15 @@
         
     }
     
+}
+
+- (void)handleScannerMessage:(WKScriptMessage *)message {
+    
+    self.scannerScanJSFunction = message.body[@"scanCallback"];
+    self.scannerPowerButtonJSFunction = message.body[@"powerButtonCallback"];
+    
+    [self startBarcodeScanning];
+
 }
 
 - (void)handleSubscribeMessage:(WKScriptMessage *)message {
@@ -726,12 +735,20 @@
 
 - (void)evaluateReceiveBarCodeJSFunctionWithArguments:(NSArray *)arguments {
 
-    NSString *jsFunction = [NSString stringWithFormat:@"%@.apply(null,%@)", self.receiveBarCodeJSFunction, [STMFunctions jsonStringFromArray:arguments]];
+    NSString *jsFunction = [NSString stringWithFormat:@"%@.apply(null,%@)", self.scannerScanJSFunction, [STMFunctions jsonStringFromArray:arguments]];
     
     [self.webView evaluateJavaScript:jsFunction completionHandler:^(id _Nullable result, NSError * _Nullable error) {
         
     }];
 
+}
+
+- (void)powerButtonPressedOnBarCodeScanner:(STMBarCodeScanner *)scanner {
+    
+    if (self.isInActiveTab) {
+        [self callbackWithData:@[@"powerButtonPressed"] parameters:nil jsCallbackFunction:self.scannerPowerButtonJSFunction];
+    }
+    
 }
 
 - (void)barCodeScanner:(STMBarCodeScanner *)scanner receiveError:(NSError *)error {
