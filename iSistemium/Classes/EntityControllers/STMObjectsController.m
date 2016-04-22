@@ -43,11 +43,32 @@
 
 @property (nonatomic, strong) NSMutableDictionary <NSString *, NSArray <UIViewController <STMEntitiesSubscribable> *> *> *entitiesToSubscribe;
 
+@property (nonatomic, strong) NSMutableArray *fantomsArray;
+@property (nonatomic, strong) NSMutableArray *notFoundFantomsArray;
+
 
 @end
 
 
 @implementation STMObjectsController
+
+- (NSMutableArray *)fantomsArray {
+    
+    if (!_fantomsArray) {
+        _fantomsArray = @[].mutableCopy;
+    }
+    return _fantomsArray;
+    
+}
+
+- (NSMutableArray *)notFoundFantomsArray {
+    
+    if (!_notFoundFantomsArray) {
+        _notFoundFantomsArray = @[].mutableCopy;
+    }
+    return _notFoundFantomsArray;
+    
+}
 
 - (NSMutableDictionary <NSString *, NSArray <UIViewController <STMEntitiesSubscribable> *> *> *)entitiesToSubscribe {
     
@@ -1275,7 +1296,6 @@
     
 //    [self avgTimesCalc];
     
-    [self resolveFantoms];
     [STMPicturesController checkPhotos];
 //    [self checkObjectsForFlushing];
     
@@ -1285,6 +1305,8 @@
 
 #endif
     
+    [self resolveFantoms];
+
     [[self document] saveDocument:^(BOOL success) {
 
     }];
@@ -1315,6 +1337,8 @@
 
 + (void)resolveFantoms {
     
+    STMObjectsController *objController = [self sharedController];
+    
     NSSet *entityNamesWithResolveFantoms = [STMEntityController entityNamesWithResolveFantoms];
     
     for (NSString *entityName in entityNamesWithResolveFantoms) {
@@ -1327,58 +1351,106 @@
             NSArray *results = [[self document].managedObjectContext executeFetchRequest:request error:&error];
             
             if (results.count > 0) {
-                [self resolveFantoms:results forEntityName:entityName];
+                
+                NSLog(@"%@ %@ fantom(s)", @(results.count), entityName);
+
+                STMEntity *entity = [STMEntityController stcEntities][entityName];
+
+                if (entity.url) {
+
+                    for (STMDatum *fantomObject in results) {
+                        
+                        NSDictionary *fantomDic = @{entityName:fantomObject};
+                        
+                        if (![objController.notFoundFantomsArray containsObject:fantomDic]) {
+                            [objController.fantomsArray addObject:fantomDic];
+                        }
+                        
+                    }
+                    
+                } else {
+                    NSLog(@"have no url for entity name: %@, fantoms will not to be resolved", entityName);
+                }
+
             }
             
         }
         
     }
-    
+
+    if (objController.fantomsArray.count > 0) {
+        [self resolveFantom:objController.fantomsArray.firstObject];
+    } else {
+        [objController.notFoundFantomsArray removeAllObjects];
+    }
+
 }
 
-+ (void)resolveFantoms:(NSArray *)fantomsArray forEntityName:(NSString *)entityName {
++ (void)resolveFantom:(NSDictionary *)fantomDic {
     
-    NSLog(@"resolve %@ %@ fantom(s)", @(fantomsArray.count), entityName);
+    NSString *entityName = fantomDic.allKeys.firstObject;
     
     __block STMEntity *entity = [STMEntityController stcEntities][entityName];
     
-    if (!entity.url) return;
+    if (!entity.url) {
+        
+        [self didFinishResolveFantom:fantomDic successfully:NO];
+        NSLog(@"no entity url");
+        return;
+        
+    }
     
     NSURL *url = [NSURL URLWithString:(NSString *)entity.url];
-    
-    for (NSManagedObject *fantomObject in fantomsArray) {
-        
-        NSData *xid = [fantomObject valueForKey:@"xid"];
-        
-        if (!xid) continue;
-        
-        NSString *xidString = [STMFunctions UUIDStringFromUUIDData:xid];
-        
-        NSURL *urlWithXid = [url URLByAppendingPathComponent:xidString];
-        
-        NSURLRequest *request = [NSURLRequest requestWithURL:urlWithXid];
-        
-        request = [[STMAuthController authController] authenticateRequest:request];
-        
-        if (request) {
-            
-            [NSURLConnection sendAsynchronousRequest:request
-                                               queue:[NSOperationQueue mainQueue]
-                                   completionHandler:^(NSURLResponse * _Nullable response, NSData * _Nullable data, NSError * _Nullable connectionError) {
-                                       
-                if (!connectionError) {
-                   [self receiveFantomResolveResponse:response withData:data forEntity:entity];
-                }
 
-            }];
-            
-        }
+    STMDatum *fantomObject = fantomDic.allValues.firstObject;
+
+    NSData *xid = fantomObject.xid;
+    
+    if (!xid) {
+        
+        [self didFinishResolveFantom:fantomDic successfully:NO];
+        NSLog(@"no xid");
+        return;
+        
+    }
+    
+    NSString *xidString = [STMFunctions UUIDStringFromUUIDData:xid];
+    
+    NSURL *urlWithXid = [url URLByAppendingPathComponent:xidString];
+    
+    NSURLRequest *request = [NSURLRequest requestWithURL:urlWithXid];
+    
+    request = [[STMAuthController authController] authenticateRequest:request];
+    
+    if (request) {
+    
+        [NSURLConnection sendAsynchronousRequest:request
+                                           queue:[NSOperationQueue mainQueue]
+                               completionHandler:^(NSURLResponse * _Nullable response, NSData * _Nullable data, NSError * _Nullable connectionError) {
+                                   
+            if (!connectionError) {
+                
+                [self receiveFantomResolveResponse:response withData:data forEntity:entity fantomDic:fantomDic];
+                
+            } else {
+                
+                [self didFinishResolveFantom:fantomDic successfully:NO];
+                NSLog(@"connectionError: %@", connectionError.localizedDescription);
+                
+            }
+
+        }];
+        
+    } else {
+        
+        [self didFinishResolveFantom:fantomDic successfully:NO];
+        NSLog(@"Do I have access token?");
         
     }
 
 }
 
-+ (void)receiveFantomResolveResponse:(NSURLResponse *)response withData:(NSData *)data forEntity:(STMEntity *)entity {
++ (void)receiveFantomResolveResponse:(NSURLResponse *)response withData:(NSData *)data forEntity:(STMEntity *)entity fantomDic:(NSDictionary *)fantomDic {
     
     if ([response isKindOfClass:[NSHTTPURLResponse class]]) {
         
@@ -1404,23 +1476,54 @@
                 NSArray *dataArray = responseJSON[@"data"];
                 
                 [STMObjectsController processingOfDataArray:dataArray roleName:entity.roleName withCompletionHandler:^(BOOL success) {
-                    
+                    [self didFinishResolveFantom:fantomDic successfully:success];
                 }];
                 
             } else {
                 
+                [self didFinishResolveFantom:fantomDic successfully:NO];
                 [[STMLogger sharedLogger] saveLogMessageWithText:errorString type:@"error"];
-                
+
             }
             
         } else {
             
-            NSLog(@"%@ status %@", response.URL.absoluteString, @(httpResponse.statusCode));
-            
+            [self didFinishResolveFantom:fantomDic successfully:NO];
+            NSLog(@"status %@", @(httpResponse.statusCode));
+
         }
+        
+    } else {
+        
+        [self didFinishResolveFantom:fantomDic successfully:NO];
+        NSLog(@"response is not the NSHTTPURLResponse class");
         
     }
 
+}
+
++ (void)didFinishResolveFantom:(NSDictionary *)fantomDic successfully:(BOOL)successfully {
+    
+    STMObjectsController *objController = [self sharedController];
+    
+    [objController.fantomsArray removeObject:fantomDic];
+    
+    NSString *entityName = fantomDic.allKeys.firstObject;
+    STMDatum *fantomObject = fantomDic.allValues.firstObject;
+
+    if (successfully) {
+        NSLog(@"success defantomize %@ %@", entityName, fantomObject.xid);
+    } else {
+        [objController.notFoundFantomsArray addObject:fantomDic];
+        NSLog(@"bad luck defantomize %@ %@", entityName, fantomObject.xid);
+    }
+    
+    if (objController.fantomsArray.count > 0) {
+        [self resolveFantom:objController.fantomsArray.firstObject];
+    } else {
+        [self resolveFantoms];
+    }
+    
 }
 
 + (NSFetchRequest *)isFantomFetchRequestForEntityName:(NSString *)entityName {
@@ -1431,7 +1534,7 @@
         request.sortDescriptors = @[[NSSortDescriptor sortDescriptorWithKey:@"id"
                                                                   ascending:YES
                                                                    selector:@selector(compare:)]];
-        request.predicate = [NSPredicate predicateWithFormat:@"isFantom == YES"];
+        request.predicate = [NSPredicate predicateWithFormat:@"isFantom == YES && xid != nil"];
         
         return request;
 
@@ -1442,6 +1545,7 @@
     }
     
 }
+
 
 #pragma mark - subscribe entities from WKWebView
 
