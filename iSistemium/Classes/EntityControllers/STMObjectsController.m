@@ -35,7 +35,7 @@
 @property (nonatomic, strong) NSMutableDictionary *entitiesOwnKeys;
 @property (nonatomic, strong) NSMutableDictionary *entitiesOwnRelationships;
 @property (nonatomic, strong) NSMutableDictionary *entitiesSingleRelationships;
-@property (nonatomic, strong) NSMutableDictionary *objectsCache;
+//@property (nonatomic, strong) NSMutableDictionary *objectsCache;
 @property (nonatomic, strong) NSArray *localDataModelEntityNames;
 @property (nonatomic, strong) NSArray *coreEntityKeys;
 @property (nonatomic, strong) NSArray *coreEntityRelationships;
@@ -128,14 +128,14 @@
     
 }
 
-- (NSMutableDictionary *)objectsCache {
-    
-    if (!_objectsCache) {
-        _objectsCache = [@{} mutableCopy];
-    }
-    return _objectsCache;
-    
-}
+//- (NSMutableDictionary *)objectsCache {
+//    
+//    if (!_objectsCache) {
+//        _objectsCache = [@{} mutableCopy];
+//    }
+//    return _objectsCache;
+//    
+//}
 
 - (instancetype)init {
     
@@ -179,7 +179,7 @@
         STMSession *session = notification.object;
         
         if (![session.status isEqualToString:@"running"]) {
-            self.objectsCache = nil;
+//            self.objectsCache = nil;
         }
         
     }
@@ -737,18 +737,18 @@
 
 + (NSManagedObject *)objectForXid:(NSData *)xidData {
     
-    id cachedObject = [self sharedController].objectsCache[xidData];
-    return (NSManagedObject *)cachedObject;
+//    id cachedObject = [self sharedController].objectsCache[xidData];
+//    return (NSManagedObject *)cachedObject;
     
-//    for (NSString *entityName in [self localDataModelEntityNames]) {
-//        
-//        NSManagedObject *object = [self objectForXid:xidData entityName:entityName];
-//        
-//        if (object) return object;
-//        
-//    }
-//
-//    return nil;
+    for (NSString *entityName in [self localDataModelEntityNames]) {
+        
+        NSManagedObject *object = [self objectForXid:xidData entityName:entityName];
+        
+        if (object) return object;
+        
+    }
+
+    return nil;
 
 }
 
@@ -830,7 +830,7 @@
             xidData = [object valueForKey:@"xid"];
         }
         
-        [self sharedController].objectsCache[xidData] = object;
+//        [self sharedController].objectsCache[xidData] = object;
         
         return object;
 
@@ -868,9 +868,9 @@
     TICK;
     NSLog(@"initObjectsCache tick");
     
-    [self sharedController].objectsCache = nil;
+//    [self sharedController].objectsCache = nil;
 
-    NSArray *allObjects = [self allObjectsFromContext:[self document].managedObjectContext];
+//    NSArray *allObjects = [self allObjectsFromContext:[self document].managedObjectContext];
 
 //    for (NSManagedObject *object in allObjects) {
 //        
@@ -885,10 +885,10 @@
     NSLog(@"fetch existing objects for initObjectsCache");
     TOCK;
     
-    NSArray *keys = [allObjects valueForKeyPath:@"xid"];
-    NSDictionary *objectsCache = [NSDictionary dictionaryWithObjects:allObjects forKeys:keys];
+//    NSArray *keys = [allObjects valueForKeyPath:@"xid"];
+//    NSDictionary *objectsCache = [NSDictionary dictionaryWithObjects:allObjects forKeys:keys];
     
-    [[self sharedController].objectsCache addEntriesFromDictionary:objectsCache];
+//    [[self sharedController].objectsCache addEntriesFromDictionary:objectsCache];
 
     NSLog(@"finish initObjectsCache");
     TOCK;
@@ -1084,9 +1084,9 @@
         
         if (!context) context = [self document].managedObjectContext;
         
-        if ([object valueForKey:@"xid"]) {
-            [[self sharedController].objectsCache removeObjectForKey:(id _Nonnull)[object valueForKey:@"xid"]];
-        }
+//        if ([object valueForKey:@"xid"]) {
+//            [[self sharedController].objectsCache removeObjectForKey:(id _Nonnull)[object valueForKey:@"xid"]];
+//        }
         
         [context performBlock:^{
             
@@ -1683,57 +1683,20 @@
             
     NSData *xid = [STMFunctions xidDataFromXidString:xidString];
     
-    STMDatum *object = [self sharedController].objectsCache[xid];
-    
+    STMDatum *object = (STMDatum *)[self objectForXid:xid entityName:entityName];
+  
     if (object) {
         
-        if (![object.entity.name isEqualToString:entityName]) {
-            
-            errorMessage = [NSString stringWithFormat:@"object with xid %@ have entity name %@, not %@", xidString, object.entity.name, entityName];
-            [self error:error withMessage:errorMessage];
-            return nil;
-            
-        } else {
-            
             STMRecordStatus *recordStatus = [self createRecordStatusAndRemoveObject:object];
             return [self arrayForJSWithObjects:@[recordStatus]];
-            
-        }
-        
-    }
 
-    NSPredicate *predicate = [NSPredicate predicateWithFormat:@"entity.name == %@ && xid == %@", entityName, xid];
-    
-    NSArray *objectsArray = [self objectsForEntityName:entityName
-                                               orderBy:@"id"
-                                             ascending:YES
-                                            fetchLimit:0
-                                           fetchOffset:0
-                                           withFantoms:NO
-                                             predicate:predicate
-                                inManagedObjectContext:[self document].managedObjectContext
-                                                 error:error];
-    
-    if (objectsArray.count == 0) {
+    } else {
         
         errorMessage = [NSString stringWithFormat:@"no object for destroy with xid %@ and entity name %@", xidString, entityName];
         [self error:error withMessage:errorMessage];
         return nil;
 
     }
-    
-    if (objectsArray.count > 1) {
-        
-        errorMessage = [NSString stringWithFormat:@"more than 1 object for destroy with xid %@ and entity name %@", xidString, entityName];
-        [self error:error withMessage:errorMessage];
-        return nil;
-        
-    }
-
-    object = objectsArray.firstObject;
-    
-    STMRecordStatus *recordStatus = [self createRecordStatusAndRemoveObject:object];
-    return [self arrayForJSWithObjects:@[recordStatus]];
     
 }
 
@@ -2149,24 +2112,18 @@
             
             NSData *xid = [STMFunctions xidDataFromXidString:xidString];
             
-            STMDatum *object = [self sharedController].objectsCache[xid];
+            STMDatum *object = (STMDatum *)[self objectForXid:xid entityName:entityName];
             
             if (object) {
                 
                 if (object.isFantom.boolValue) {
-                    
-                    errorMessage = [NSString stringWithFormat:@"object with xid %@ is fantom", xidString];
-                    
-                } else if (![object.entity.name isEqualToString:entityName]) {
-                    
-                    errorMessage = [NSString stringWithFormat:@"object with xid %@ have entity name %@, not %@", xidString, object.entity.name, entityName];
-                    
+                    errorMessage = [NSString stringWithFormat:@"object with xid %@ and entity name %@ is fantom", xidString, entityName];
                 } else {
-                    
                     return [self arrayForJSWithObjects:@[object]];
-                    
                 }
                 
+            } else {
+                errorMessage = [NSString stringWithFormat:@"no object with xid %@ and entity name %@", xidString, entityName];
             }
             
         } else {
