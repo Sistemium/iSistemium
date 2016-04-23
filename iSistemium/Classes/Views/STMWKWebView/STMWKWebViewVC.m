@@ -38,6 +38,7 @@
 @property (nonatomic, strong) NSString *subscribeDataCallbackJSFunction;
 @property (nonatomic, strong) NSString *iSistemiumIOSCallbackJSFunction;
 @property (nonatomic, strong) NSString *iSistemiumIOSErrorCallbackJSFunction;
+@property (nonatomic, strong) NSString *soundCallbackJSFunction;
 
 
 @end
@@ -481,9 +482,12 @@
 
     NSString *messageSound = parameters[@"sound"];
     NSString *messageText = parameters[@"text"];
+    self.soundCallbackJSFunction = parameters[@"callBack"];
 
     float rate = (parameters[@"rate"]) ? [parameters[@"rate"] floatValue] : 0.5;
     float pitch = (parameters[@"pitch"]) ? [parameters[@"pitch"] floatValue] : 1;
+    
+    [STMSoundController sharedController].sender = self;
     
     if (messageSound) {
         
@@ -510,6 +514,8 @@
 
     } else {
         
+        [STMSoundController sharedController].sender = nil;
+
         [self callbackWithError:@"message.body have no text ot sound to play"
                      parameters:parameters];
 
@@ -594,6 +600,13 @@
         
     }];
 
+}
+
+
+#pragma mark - STMSoundCallbackable
+
+- (void)didFinishSpeaking {
+    [self callbackWithData:@[@"didFinishSpeaking"] parameters:nil jsCallbackFunction:self.soundCallbackJSFunction];
 }
 
 
