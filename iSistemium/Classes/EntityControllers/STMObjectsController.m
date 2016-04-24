@@ -992,7 +992,7 @@
         
         NSSet *coreRelationshipNames = [NSSet setWithArray:[self coreEntityRelationships]];
         
-        NSMutableSet *objectRelationshipNames = [NSMutableSet setWithArray:[[objectEntity relationshipsByName] allKeys]];
+        NSMutableSet *objectRelationshipNames = [NSMutableSet setWithArray:objectEntity.relationshipsByName.allKeys];
         
         [objectRelationshipNames minusSet:coreRelationshipNames];
         
@@ -1000,10 +1000,10 @@
         
         for (NSString *relationshipName in objectRelationshipNames) {
             
-            NSRelationshipDescription *relationship = [objectEntity relationshipsByName][relationshipName];
+            NSRelationshipDescription *relationship = objectEntity.relationshipsByName[relationshipName];
             
             if (![relationship isToMany]) {
-                objectRelationships[relationshipName] = [relationship destinationEntity].name;
+                objectRelationships[relationshipName] = relationship.destinationEntity.name;
             }
             
         }
@@ -1897,13 +1897,13 @@
                 
                 resultDic[key] =  value;
                 
-            } else {
-                
-                NSString *message = [NSString stringWithFormat:@"%@ object %@ can't update value %@ for key %@\n", entityName, object.xid, value, key];
-                
-                errorMessage = (errorMessage) ? [errorMessage stringByAppendingString:message] : message;
-                
-                continue;
+//            } else {
+//                
+//                NSString *message = [NSString stringWithFormat:@"%@ object %@ can't update value %@ for key %@\n", entityName, object.xid, value, key];
+//                
+//                errorMessage = (errorMessage) ? [errorMessage stringByAppendingString:message] : message;
+//                
+//                continue;
                 
             }
             
@@ -1911,9 +1911,9 @@
         
     }
     
-    NSArray *ownRelationships = [self singleRelationshipsForEntityName:entityName].allKeys;
+    NSDictionary *ownRelationships = [self singleRelationshipsForEntityName:entityName];
     
-    for (NSString *key in ownRelationships) {
+    for (NSString *key in ownRelationships.allKeys) {
         
         id value = objectData[key];
         
@@ -1923,19 +1923,21 @@
                 
                 NSString *xidString = (NSString *)value;
                 
-                NSManagedObject *destinationObject = [self objectForEntityName:entityName andXidString:xidString];
+                NSString *destinationEntityName = ownRelationships[key];
+                
+                NSManagedObject *destinationObject = [self objectForEntityName:destinationEntityName andXidString:xidString];
                 
                 if (![[object valueForKey:key] isEqual:destinationObject]) {
                     resultDic[key] = value;
                 }
                 
-            } else {
-                
-                NSString *message = [NSString stringWithFormat:@"%@ object %@ relationship value %@ is not a String for key %@, can't get xid\n", entityName, object.xid, value, key];
-                
-                errorMessage = (errorMessage) ? [errorMessage stringByAppendingString:message] : message;
-                
-                continue;
+//            } else {
+//                
+//                NSString *message = [NSString stringWithFormat:@"%@ object %@ relationship value %@ is not a String for key %@, can't get xid\n", entityName, object.xid, value, key];
+//                
+//                errorMessage = (errorMessage) ? [errorMessage stringByAppendingString:message] : message;
+//                
+//                continue;
                 
             }
             
