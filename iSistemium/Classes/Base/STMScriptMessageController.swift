@@ -207,7 +207,7 @@ class STMScriptMessageController: NSObject {
             
             case NSStringFromClass(NSNumber)    :   return NSNumberFormatter().numberFromString(value as! String)!
                 
-            case NSStringFromClass(NSDate)      :   return STMDateFormatter().dateFromString(value as! String)!
+            case NSStringFromClass(NSDate)      :   return STMFunctions.dateFormatter().dateFromString(value as! String)!
                 
             case NSStringFromClass(NSData)      :   return STMFunctions.dataFromString(value as! String)
                 
