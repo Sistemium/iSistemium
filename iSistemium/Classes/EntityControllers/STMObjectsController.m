@@ -1921,15 +1921,15 @@
             
             if ([value isKindOfClass:[NSString class]]) {
                 
-                NSString *xidString = (NSString *)value;
-                
-                NSString *destinationEntityName = ownRelationships[key];
-                
-                NSManagedObject *destinationObject = [self objectForEntityName:destinationEntityName andXidString:xidString];
-                
-                if (![[object valueForKey:key] isEqual:destinationObject]) {
+//                NSString *xidString = (NSString *)value;
+//                
+//                NSString *destinationEntityName = ownRelationships[key];
+//                
+//                NSManagedObject *destinationObject = [self objectForEntityName:destinationEntityName andXidString:xidString];
+//                
+//                if (![[object valueForKey:key] isEqual:destinationObject]) {
                     resultDic[key] = value;
-                }
+//                }
                 
 //            } else {
 //                
