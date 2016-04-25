@@ -419,6 +419,9 @@
 
 + (void)checkUploadedPhotos {
     
+    NSString *logMessage = [NSString stringWithFormat:@"checkUploadedPhotos"];
+    [[STMLogger sharedLogger] saveLogMessageWithText:logMessage type:@"info"];
+    
     NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:NSStringFromClass([STMPhoto class])];
     request.sortDescriptors = @[[NSSortDescriptor sortDescriptorWithKey:@"id" ascending:YES selector:@selector(compare:)]];
     request.predicate = [NSPredicate predicateWithFormat:@"href == %@", nil];
