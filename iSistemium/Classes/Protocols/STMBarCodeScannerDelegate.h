@@ -40,5 +40,7 @@
 - (void)receiveBatteryLevel:(NSNumber *)batteryLevel;
 - (void)receiveVersion:(NSString *)version;
 
+- (void)powerButtonPressedOnBarCodeScanner:(STMBarCodeScanner *)scanner;
+
 
 @end

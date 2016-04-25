@@ -33,9 +33,12 @@
 
 @property (nonatomic, strong) STMBarCodeScanner *iOSModeBarCodeScanner;
 
-@property (nonatomic, strong) NSString *receiveBarCodeJSFunction;
+@property (nonatomic, strong) NSString *scannerScanJSFunction;
+@property (nonatomic, strong) NSString *scannerPowerButtonJSFunction;
+@property (nonatomic, strong) NSString *subscribeDataCallbackJSFunction;
 @property (nonatomic, strong) NSString *iSistemiumIOSCallbackJSFunction;
 @property (nonatomic, strong) NSString *iSistemiumIOSErrorCallbackJSFunction;
+@property (nonatomic, strong) NSString *soundCallbackJSFunction;
 
 
 @end
@@ -104,7 +107,7 @@
 
 - (void)reloadWebView {
     
-//    [self.webView reloadFromOrigin];
+    //    [self.webView reloadFromOrigin];
     
     NSString *wvUrl = [self webViewUrlString];
     
@@ -122,7 +125,7 @@
         }
         
     }];
-
+    
 }
 
 - (void)loadWebView {
@@ -153,20 +156,20 @@
 
 - (void)loadURLString:(NSString *)urlString {
     
-//    urlString = @"http://maxbook.local:3000/#/orders";
+    //    urlString = @"http://maxbook.local:3000/#/orders";
     
     NSURL *url = [NSURL URLWithString:urlString];
     NSMutableURLRequest *request = [[NSMutableURLRequest alloc] initWithURL:url];
     
-//    request.cachePolicy = NSURLRequestReloadIgnoringLocalCacheData;
-//    request.cachePolicy = NSURLRequestReturnCacheDataElseLoad;
+    //    request.cachePolicy = NSURLRequestReloadIgnoringLocalCacheData;
+    //    request.cachePolicy = NSURLRequestReturnCacheDataElseLoad;
     request.cachePolicy = NSURLRequestUseProtocolCachePolicy;
-
-//    NSLog(@"currentDiskUsage %d", [NSURLCache sharedURLCache].currentDiskUsage);
-//    NSLog(@"currentMemoryUsage %d", [NSURLCache sharedURLCache].currentMemoryUsage);
-//    
-//    NSLog(@"cachedResponseForRequest %@", [[NSURLCache sharedURLCache] cachedResponseForRequest:request]);
-//    [[NSURLCache sharedURLCache] removeCachedResponseForRequest:request];
+    
+    //    NSLog(@"currentDiskUsage %d", [NSURLCache sharedURLCache].currentDiskUsage);
+    //    NSLog(@"currentMemoryUsage %d", [NSURLCache sharedURLCache].currentMemoryUsage);
+    //
+    //    NSLog(@"cachedResponseForRequest %@", [[NSURLCache sharedURLCache] cachedResponseForRequest:request]);
+    //    [[NSURLCache sharedURLCache] removeCachedResponseForRequest:request];
     
     [self.webView loadRequest:request];
     
@@ -200,47 +203,47 @@
 #pragma mark - WKNavigationDelegate
 
 - (void)webView:(WKWebView *)webView didCommitNavigation:(WKNavigation *)navigation {
-//    NSLogMethodName;
+    //    NSLogMethodName;
 }
 
 - (void)webView:(WKWebView *)webView didFailNavigation:(WKNavigation *)navigation withError:(NSError *)error {
-//    NSLogMethodName;
+    //    NSLogMethodName;
 }
 
 - (void)webView:(WKWebView *)webView didFailProvisionalNavigation:(WKNavigation *)navigation withError:(NSError *)error {
-//    NSLogMethodName;
+    //    NSLogMethodName;
 }
 
 - (void)webView:(WKWebView *)webView didReceiveAuthenticationChallenge:(NSURLAuthenticationChallenge *)challenge completionHandler:(void (^)(NSURLSessionAuthChallengeDisposition disposition, NSURLCredential *credential))completionHandler {
     
-//    NSLogMethodName;
+    //    NSLogMethodName;
     completionHandler(NSURLSessionAuthChallengeUseCredential, nil);
     
 }
 
 - (void)webView:(WKWebView *)webView didReceiveServerRedirectForProvisionalNavigation:(WKNavigation *)navigation {
-//    NSLogMethodName;
+    //    NSLogMethodName;
 }
 
 - (void)webView:(WKWebView *)webView didStartProvisionalNavigation:(WKNavigation *)navigation {
-//    NSLogMethodName;
+    //    NSLogMethodName;
 }
 
 - (void)webView:(WKWebView *)webView decidePolicyForNavigationResponse:(WKNavigationResponse *)navigationResponse decisionHandler:(void (^)(WKNavigationResponsePolicy))decisionHandler {
     
-//    NSLogMethodName;
+    //    NSLogMethodName;
     decisionHandler(WKNavigationResponsePolicyAllow);
     
 }
 
 - (void)webView:(WKWebView *)webView decidePolicyForNavigationAction:(WKNavigationAction *)navigationAction decisionHandler:(void (^)(WKNavigationActionPolicy))decisionHandler {
     
-//    NSLog(@"---- webView decidePolicyForNavigationAction");
-//    
-//    NSLog(@"scheme %@", navigationAction.request.URL.scheme);
-//    NSLog(@"request %@", navigationAction.request)
-//    NSLog(@"HTTPMethod %@", navigationAction.request.HTTPMethod)
-//    NSLog(@"HTTPBody %@", navigationAction.request.HTTPBody)
+    //    NSLog(@"---- webView decidePolicyForNavigationAction");
+    //
+    //    NSLog(@"scheme %@", navigationAction.request.URL.scheme);
+    //    NSLog(@"request %@", navigationAction.request)
+    //    NSLog(@"HTTPMethod %@", navigationAction.request.HTTPMethod)
+    //    NSLog(@"HTTPBody %@", navigationAction.request.HTTPBody)
     
     decisionHandler(WKNavigationActionPolicyAllow);
     
@@ -295,7 +298,7 @@
         }
         
     }];
-
+    
 }
 
 
@@ -308,7 +311,7 @@
         NSLog(@"%@ %@", message.name, message.body);
         
     } else {
-    
+        
         if ([message.body isKindOfClass:[NSDictionary class]]) {
             
             NSString *requestId = message.body[@"options"][@"requestId"];
@@ -323,7 +326,7 @@
             return;
             
         }
-
+        
     }
     
     if ([message.name isEqualToString:WK_MESSAGE_POST]) {
@@ -331,9 +334,9 @@
         NSLog(@"POST");
         
     } else if ([message.name isEqualToString:WK_MESSAGE_GET]) {
-
+        
         NSLog(@"GET");
-
+        
     } else if ([@[WK_MESSAGE_UPDATE, WK_MESSAGE_UPDATE_ALL] containsObject:message.name]) {
         
         [self handleKindOfUpdateMessage:message];
@@ -343,9 +346,8 @@
         [self handleSoundMessage:message];
         
     } else if ([message.name isEqualToString:WK_MESSAGE_SCANNER_ON]) {
-
-        [self startBarcodeScanning];
-        self.receiveBarCodeJSFunction = message.body;
+        
+        [self handleScannerMessage:message];
         
     } else if ([@[WK_MESSAGE_FIND, WK_MESSAGE_FIND_ALL] containsObject:message.name]) {
         
@@ -367,22 +369,33 @@
     
 }
 
+- (void)handleScannerMessage:(WKScriptMessage *)message {
+    
+    self.scannerScanJSFunction = message.body[@"scanCallback"];
+    self.scannerPowerButtonJSFunction = message.body[@"powerButtonCallback"];
+    
+    [self startBarcodeScanning];
+    
+}
+
 - (void)handleSubscribeMessage:(WKScriptMessage *)message {
     
     NSDictionary *parameters = message.body;
-
+    
     NSLog(@"%@", parameters);
-
+    
     if ([parameters[@"entities"] isKindOfClass:[NSArray class]]) {
+        
+        self.subscribeDataCallbackJSFunction = parameters[@"dataCallback"];
         
         NSArray *entities = parameters[@"entities"];
         
         NSError *error = nil;
-
-        if ([STMObjectsController subscribeViewController:self toEntities:entities error:&error]) {
         
-            [self callbackWithData:@[@"subscribe to entities success"] parameters:parameters];
-
+        if ([STMObjectsController subscribeViewController:self toEntities:entities error:&error]) {
+            
+            [self callbackWithData:@[@"subscribe to entities success"] parameters:parameters jsCallbackFunction:parameters[@"callback"]];
+            
         } else {
             
             [self callbackWithError:error.localizedDescription
@@ -394,7 +407,7 @@
         
         [self callbackWithError:@"message.parameters.entities is not a NSArray class"
                      parameters:parameters];
-
+        
     }
     
 }
@@ -406,16 +419,16 @@
     NSString *action = parameters[@"action"];
     
     if ([action isEqualToString:@"show"]) {
-
+        
         [[STMRootTBC sharedRootVC] showTabBar];
-
+        
         CGFloat tabbarHeight = CGRectGetHeight(self.tabBarController.tabBar.frame);
         UIEdgeInsets insets = self.webView.scrollView.contentInset;
         self.webView.scrollView.contentInset = UIEdgeInsetsMake(insets.top, insets.left, tabbarHeight, insets.right);
-
+        
         UIEdgeInsets scrollIndicatorInsets = self.webView.scrollView.scrollIndicatorInsets;
         self.webView.scrollView.scrollIndicatorInsets = UIEdgeInsetsMake(scrollIndicatorInsets.top, scrollIndicatorInsets.left, tabbarHeight, scrollIndicatorInsets.right);
-
+        
         [self callbackWithData:@[@"tabbar show success"] parameters:parameters];
         
     } else if ([action isEqualToString:@"hide"]) {
@@ -424,22 +437,22 @@
         
         UIEdgeInsets insets = self.webView.scrollView.contentInset;
         self.webView.scrollView.contentInset = UIEdgeInsetsMake(insets.top, insets.left, 0, insets.right);
-
+        
         UIEdgeInsets scrollIndicatorInsets = self.webView.scrollView.scrollIndicatorInsets;
         self.webView.scrollView.scrollIndicatorInsets = UIEdgeInsetsMake(scrollIndicatorInsets.top, scrollIndicatorInsets.left, 0, scrollIndicatorInsets.right);
         
         [self callbackWithData:@[@"tabbar hide success"] parameters:parameters];
-
+        
     } else {
         [self callbackWithError:@"unknown action for tabbar message" parameters:parameters];
     }
-
+    
 }
 
 - (void)handleDestroyMessage:(WKScriptMessage *)message {
     
     NSDictionary *parameters = message.body;
-
+    
     NSError *error = nil;
     NSArray *result = [STMObjectsController destroyObjectFromScriptMessage:message error:&error];
     
@@ -454,24 +467,27 @@
 - (void)handleKindOfUpdateMessage:(WKScriptMessage *)message {
     
     NSDictionary *parameters = message.body;
-
+    
     NSError *error = nil;
     NSArray *result = [STMObjectsController updateObjectsFromScriptMessage:message error:&error];
-
+    
     if (result.count > 0) [self callbackWithData:result parameters:parameters];
     if (error) [self callbackWithError:error.localizedDescription parameters:parameters];
-        
+    
 }
 
 - (void)handleSoundMessage:(WKScriptMessage *)message {
     
     NSDictionary *parameters = message.body;
-
+    
     NSString *messageSound = parameters[@"sound"];
     NSString *messageText = parameters[@"text"];
-
+    self.soundCallbackJSFunction = parameters[@"callBack"];
+    
     float rate = (parameters[@"rate"]) ? [parameters[@"rate"] floatValue] : 0.5;
     float pitch = (parameters[@"pitch"]) ? [parameters[@"pitch"] floatValue] : 1;
+    
+    [STMSoundController sharedController].sender = self;
     
     if (messageSound) {
         
@@ -491,16 +507,18 @@
             (messageText) ? [STMSoundController sayText:messageText withRate:rate pitch:pitch] : nil;
             
         }
-
+        
     } else if (messageText) {
         
         [STMSoundController sayText:messageText withRate:rate pitch:pitch];
-
+        
     } else {
+        
+        [STMSoundController sharedController].sender = nil;
         
         [self callbackWithError:@"message.body have no text ot sound to play"
                      parameters:parameters];
-
+        
     }
     
 }
@@ -510,9 +528,9 @@
     NSDictionary *parameters = message.body;
     
     NSError *error = nil;
-
+    
     NSArray *result = [STMObjectsController arrayOfObjectsRequestedByScriptMessage:message error:&error];
-
+    
     if (!error) {
         
         [self callbackWithData:result
@@ -524,15 +542,15 @@
                      parameters:parameters];
         
     }
-        
+    
 }
 
-- (void)callbackWithData:(NSArray *)data parameters:(NSDictionary *)parameters {
+- (void)callbackWithData:(NSArray *)data parameters:(NSDictionary *)parameters jsCallbackFunction:(NSString *)jsCallbackFunction {
     
 #ifdef DEBUG
     
     NSString *requestId = parameters[@"options"][@"requestId"];
-
+    
     if (requestId) {
         NSLog(@"requestId %@ callbackWithData: %@ objects", requestId, @(data.count));
     } else {
@@ -540,24 +558,27 @@
     }
     
 #endif
-
+    
     NSMutableArray *arguments = @[].mutableCopy;
     
     if (data) [arguments addObject:data];
     if (parameters) [arguments addObject:parameters];
     
-    NSString *jsFunction = [NSString stringWithFormat:@"%@.apply(null,%@)", self.iSistemiumIOSCallbackJSFunction, [STMFunctions jsonStringFromArray:arguments]];
+    NSString *jsFunction = [NSString stringWithFormat:@"%@.apply(null,%@)", jsCallbackFunction, [STMFunctions jsonStringFromArray:arguments]];
     
     [self.webView evaluateJavaScript:jsFunction completionHandler:^(id _Nullable result, NSError * _Nullable error) {
         
     }];
     
 }
+- (void)callbackWithData:(NSArray *)data parameters:(NSDictionary *)parameters {
+    [self callbackWithData:data parameters:parameters jsCallbackFunction:self.iSistemiumIOSCallbackJSFunction];
+}
 
 - (void)callbackWithError:(NSString *)errorDescription parameters:(NSDictionary *)parameters {
     
 #ifdef DEBUG
-
+    
     NSString *requestId = parameters[@"options"][@"requestId"];
     
     if (requestId) {
@@ -567,7 +588,7 @@
     }
     
 #endif
-
+    
     NSMutableArray *arguments = @[].mutableCopy;
     
     [arguments addObject:errorDescription];
@@ -578,20 +599,28 @@
     [self.webView evaluateJavaScript:jsFunction completionHandler:^(id _Nullable result, NSError * _Nullable error) {
         
     }];
+    
+}
 
+
+#pragma mark - STMSoundCallbackable
+
+- (void)didFinishSpeaking {
+    [self callbackWithData:@[@"didFinishSpeaking"] parameters:nil jsCallbackFunction:self.soundCallbackJSFunction];
 }
 
 
 #pragma mark - STMEntitiesSubscribable
 
 - (void)subscribedEntitiesObjectWasReceived:(NSDictionary *)objectDic {
-
+    
     NSArray *result = @[objectDic];
     NSDictionary *parameters = @{@"reason": @"subscription"};
     
     [self callbackWithData:result
-                parameters:parameters];
-
+                parameters:parameters
+        jsCallbackFunction:self.subscribeDataCallbackJSFunction];
+    
 }
 
 
@@ -627,7 +656,7 @@
 }
 
 - (void)scannerIsConnected {
-
+    
 }
 
 - (void)scannerIsDisconnected {
@@ -642,32 +671,32 @@
 }
 
 - (void)barCodeScanner:(STMBarCodeScanner *)scanner receiveBarCodeScan:(STMBarCodeScan *)barCodeScan withType:(STMBarCodeScannedType)type {
-
+    
     if (self.isInActiveTab) {
         
-//        NSMutableArray *arguments = @[].mutableCopy;
-//
-//        NSString *barcode = barCodeScan.code;
-//        if (!barcode) barcode = @"";
-//        [arguments addObject:barcode];
-//        
-//        NSString *typeString = [STMBarCodeController barCodeTypeStringForType:type];
-//        if (!typeString) typeString = @"";
-//        [arguments addObject:typeString];
-//        
-//        NSDictionary *barcodeDic = [STMObjectsController dictionaryForJSWithObject:barCodeScan];
-//        [arguments addObject:barcodeDic];
-//        
-//        NSLog(@"send received barcode %@ with type %@ to WKWebView", barcode, typeString);
-//        
-//        NSString *jsFunction = [NSString stringWithFormat:@"%@.apply(null,%@)", self.receiveBarCodeJSFunction, [STMFunctions jsonStringFromArray:arguments]];
-//        
-//        [self.webView evaluateJavaScript:jsFunction completionHandler:^(id _Nullable result, NSError * _Nullable error) {
-//            
-//        }];
-
+        //        NSMutableArray *arguments = @[].mutableCopy;
+        //
+        //        NSString *barcode = barCodeScan.code;
+        //        if (!barcode) barcode = @"";
+        //        [arguments addObject:barcode];
+        //
+        //        NSString *typeString = [STMBarCodeController barCodeTypeStringForType:type];
+        //        if (!typeString) typeString = @"";
+        //        [arguments addObject:typeString];
+        //
+        //        NSDictionary *barcodeDic = [STMObjectsController dictionaryForJSWithObject:barCodeScan];
+        //        [arguments addObject:barcodeDic];
+        //
+        //        NSLog(@"send received barcode %@ with type %@ to WKWebView", barcode, typeString);
+        //
+        //        NSString *jsFunction = [NSString stringWithFormat:@"%@.apply(null,%@)", self.receiveBarCodeJSFunction, [STMFunctions jsonStringFromArray:arguments]];
+        //
+        //        [self.webView evaluateJavaScript:jsFunction completionHandler:^(id _Nullable result, NSError * _Nullable error) {
+        //
+        //        }];
+        
     }
-
+    
 }
 
 - (void)barCodeScanner:(STMBarCodeScanner *)scanner receiveBarCode:(NSString *)barcode withType:(STMBarCodeScannedType)type {
@@ -675,15 +704,15 @@
     if (self.isInActiveTab) {
         
         if (barcode) {
-        
+            
             NSMutableArray *arguments = @[].mutableCopy;
-
+            
             [arguments addObject:barcode];
-
+            
             NSString *typeString = [STMBarCodeController barCodeTypeStringForType:type];
-
+            
             if (typeString) {
-             
+                
                 [arguments addObject:typeString];
                 
                 if (type == STMBarCodeTypeStockBatch) {
@@ -691,12 +720,12 @@
                     STMStockBatch *stockBatch = [STMBarCodeController stockBatchForBarcode:barcode].firstObject;
                     
                     if (stockBatch) {
-
+                        
                         NSDictionary *stockBatchDic = [STMObjectsController dictionaryForJSWithObject:stockBatch];
                         [arguments addObject:stockBatchDic];
                         
                         NSLog(@"send received barcode %@ with type %@ and stockBatch %@ to WKWebView", barcode, typeString, stockBatchDic);
-
+                        
                     } else {
                         NSLog(@"send received barcode %@ with type %@ to WKWebView", barcode, typeString);
                     }
@@ -704,13 +733,13 @@
                 } else {
                     NSLog(@"send received barcode %@ with type %@ to WKWebView", barcode, typeString);
                 }
-
+                
             } else {
                 NSLog(@"send received barcode %@ to WKWebView", barcode);
             }
-
+            
             [self evaluateReceiveBarCodeJSFunctionWithArguments:arguments];
-
+            
         }
         
     }
@@ -718,13 +747,21 @@
 }
 
 - (void)evaluateReceiveBarCodeJSFunctionWithArguments:(NSArray *)arguments {
-
-    NSString *jsFunction = [NSString stringWithFormat:@"%@.apply(null,%@)", self.receiveBarCodeJSFunction, [STMFunctions jsonStringFromArray:arguments]];
+    
+    NSString *jsFunction = [NSString stringWithFormat:@"%@.apply(null,%@)", self.scannerScanJSFunction, [STMFunctions jsonStringFromArray:arguments]];
     
     [self.webView evaluateJavaScript:jsFunction completionHandler:^(id _Nullable result, NSError * _Nullable error) {
         
     }];
+    
+}
 
+- (void)powerButtonPressedOnBarCodeScanner:(STMBarCodeScanner *)scanner {
+    
+    if (self.isInActiveTab) {
+        [self callbackWithData:@[@"powerButtonPressed"] parameters:nil jsCallbackFunction:self.scannerPowerButtonJSFunction];
+    }
+    
 }
 
 - (void)barCodeScanner:(STMBarCodeScanner *)scanner receiveError:(NSError *)error {
