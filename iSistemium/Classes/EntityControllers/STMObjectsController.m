@@ -1729,7 +1729,9 @@
     
         if (object.xid) {
             
-            NSDictionary *subscribeDic = @{@"entity": entityName, @"xid": [STMFunctions UUIDStringFromUUIDData:(NSData *)object.xid]};
+            NSDictionary *subscribeDic = @{@"entity"    : entityName,
+                                           @"xid"       : [STMFunctions UUIDStringFromUUIDData:(NSData *)object.xid],
+                                           @"data"      : [self dictionaryForJSWithObject:object]};
             
             [vc subscribedEntitiesObjectWasReceived:subscribeDic];
 
