@@ -71,5 +71,7 @@
 + (NSArray *)arrayForJSWithObjects:(NSArray <STMDatum *> *)objects;
 + (NSDictionary *)dictionaryForJSWithObject:(STMDatum *)object;
 
++ (void)requestObjectWithParameters:(NSDictionary *)parameters;
+
 
 @end
