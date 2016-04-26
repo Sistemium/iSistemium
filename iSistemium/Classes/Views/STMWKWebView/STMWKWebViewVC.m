@@ -14,6 +14,7 @@
 #import "STMBarCodeScanner.h"
 #import "STMSoundController.h"
 #import "STMObjectsController.h"
+#import "STMRemoteController.h"
 
 #import "STMRootTBC.h"
 #import "STMStoryboard.h"
@@ -39,6 +40,7 @@
 @property (nonatomic, strong) NSString *iSistemiumIOSCallbackJSFunction;
 @property (nonatomic, strong) NSString *iSistemiumIOSErrorCallbackJSFunction;
 @property (nonatomic, strong) NSString *soundCallbackJSFunction;
+@property (nonatomic, strong) NSString *remoteControlCallbackJSFunction;
 
 
 @end
@@ -365,6 +367,27 @@
         
         [self handleSubscribeMessage:message];
         
+    } else if ([message.name isEqualToString:WK_MESSAGE_REMOTE_CONTROL]) {
+        
+        [self handleRemoteControllMessage:message];
+        
+    }
+    
+}
+
+- (void)handleRemoteControllMessage:(WKScriptMessage *)message {
+    
+    NSDictionary *parameters = message.body;
+    
+    self.remoteControlCallbackJSFunction = parameters[@"callback"];
+
+    NSError *error = nil;
+    [STMRemoteController receiveRemoteCommands:parameters[@"remoteCommands"] error:&error];
+    
+    if (error) {
+        [self callbackWithData:@[@"remoteCommands ok"] parameters:parameters jsCallbackFunction:self.remoteControlCallbackJSFunction];
+    } else {
+        [self callbackWithError:error.localizedDescription parameters:parameters];
     }
     
 }
