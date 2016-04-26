@@ -1398,6 +1398,10 @@
         
         NSString *entityName = parameters[@"entityName"];
         
+        if (![entityName hasPrefix:ISISTEMIUM_PREFIX]) {
+            entityName = [ISISTEMIUM_PREFIX stringByAppendingString:entityName];
+        }
+        
         __block STMEntity *entity = [STMEntityController stcEntities][entityName];
         
         if (!entity.url) {
