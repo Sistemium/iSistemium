@@ -706,9 +706,9 @@
     
         if (session == self.session) {
             
-            if ([session.status isEqualToString:@"finishing"]) {
+            if (session.status == STMSessionFinishing) {
                 [self stopSyncer];
-            } else if ([session.status isEqualToString:@"running"]) {
+            } else if (session.status == STMSessionRunning) {
                 [self startSyncer];
             }
 

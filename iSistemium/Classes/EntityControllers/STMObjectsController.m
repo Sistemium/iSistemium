@@ -179,8 +179,13 @@
         
         STMSession *session = notification.object;
         
+<<<<<<< HEAD
         if (![session.status isEqualToString:@"running"]) {
             //            self.objectsCache = nil;
+=======
+        if (session.status != STMSessionRunning) {
+//            self.objectsCache = nil;
+>>>>>>> preDev
         }
         
     }
@@ -2420,7 +2425,7 @@
         NSString *orderBy = parameters[@"orderBy"];
         BOOL ascending = [[parameters[@"order"] lowercaseString] isEqualToString:@"asc"];
         
-        BOOL sessionIsRunning = [[self.session status] isEqualToString:@"running"];
+        BOOL sessionIsRunning = (self.session.status == STMSessionRunning);
         if (sessionIsRunning && self.document) {
             
             NSError *fetchError;
