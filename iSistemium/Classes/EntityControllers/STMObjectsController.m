@@ -1397,17 +1397,6 @@
         
         BOOL isFantomResolving = [parameters[@"isFantomResolving"] boolValue];
         
-<<<<<<< HEAD
-    }
-    
-    NSURL *url = [NSURL URLWithString:(NSString *)entity.url];
-    
-    STMDatum *fantomObject = fantomDic.allValues.firstObject;
-    
-    NSData *xid = fantomObject.xid;
-    
-    if (!xid) {
-=======
         NSString *entityName = parameters[@"entityName"];
         
         if (![entityName hasPrefix:ISISTEMIUM_PREFIX]) {
@@ -1502,7 +1491,6 @@
                                  parameters:parameters];
             
         }
->>>>>>> preDev
         
     } else {
         
@@ -1510,35 +1498,6 @@
         [[STMLogger sharedLogger] saveLogMessageWithText:logMessage type:@"error"];
         
     }
-<<<<<<< HEAD
-    
-    NSString *xidString = [STMFunctions UUIDStringFromUUIDData:xid];
-    
-    NSURL *urlWithXid = [url URLByAppendingPathComponent:xidString];
-    
-    NSURLRequest *request = [NSURLRequest requestWithURL:urlWithXid];
-    
-    request = [[STMAuthController authController] authenticateRequest:request];
-    
-    if (request) {
-        
-        [NSURLConnection sendAsynchronousRequest:request
-                                           queue:[NSOperationQueue mainQueue]
-                               completionHandler:^(NSURLResponse * _Nullable response, NSData * _Nullable data, NSError * _Nullable connectionError) {
-                                   
-                                   if (!connectionError) {
-                                       
-                                       [self receiveFantomResolveResponse:response withData:data forEntity:entity fantomDic:fantomDic];
-                                       
-                                   } else {
-                                       
-                                       [self didFinishResolveFantom:fantomDic successfully:NO];
-                                       NSLog(@"connectionError: %@", connectionError.localizedDescription);
-                                       
-                                   }
-                                   
-                               }];
-=======
 
 }
 
@@ -1548,7 +1507,6 @@
         
         [self didFinishResolveFantom:parameters successfully:NO];
         NSLog(errorMessage);
->>>>>>> preDev
         
     } else {
         
@@ -1609,30 +1567,19 @@
                 
             } else {
                 
-<<<<<<< HEAD
-                [self didFinishResolveFantom:fantomDic successfully:NO];
-                [[STMLogger sharedLogger] saveLogMessageWithText:errorString type:@"error"];
-=======
                 [self requestObjectErrorMessage:errorString
                               isFantomResolving:isFantomResolving
                                      parameters:parameters];
->>>>>>> preDev
                 
             }
             
         } else {
-<<<<<<< HEAD
-            
-            [self didFinishResolveFantom:fantomDic successfully:NO];
-            NSLog(@"status %@", @(httpResponse.statusCode));
-=======
 
             NSString *errorMessage = [NSString stringWithFormat:@"response status %@ with request parameters %@", @(httpResponse.statusCode), parameters];
             
             [self requestObjectErrorMessage:errorMessage
                           isFantomResolving:isFantomResolving
                                  parameters:parameters];
->>>>>>> preDev
             
         }
         
@@ -1654,15 +1601,9 @@
     
     [objController.fantomsArray removeObject:fantomDic];
     
-<<<<<<< HEAD
-    NSString *entityName = fantomDic.allKeys.firstObject;
-    STMDatum *fantomObject = fantomDic.allValues.firstObject;
-    
-=======
     NSString *entityName = fantomDic[@"entityName"];
     NSData *fantomXid = fantomDic[@"xid"];
 
->>>>>>> preDev
     if (successfully) {
         NSLog(@"success defantomize %@ %@", entityName, fantomXid);
     } else {
