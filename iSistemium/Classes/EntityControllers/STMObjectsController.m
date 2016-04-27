@@ -179,13 +179,9 @@
         
         STMSession *session = notification.object;
         
-<<<<<<< HEAD
-        if (![session.status isEqualToString:@"running"]) {
-            //            self.objectsCache = nil;
-=======
+
         if (session.status != STMSessionRunning) {
 //            self.objectsCache = nil;
->>>>>>> preDev
         }
         
     }
