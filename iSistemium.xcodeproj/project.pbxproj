@@ -2913,7 +2913,7 @@
 				ORGANIZATIONNAME = "Sistemium UAB";
 				TargetAttributes = {
 					2C8EF59A1940859F0021D202 = {
-						DevelopmentTeam = DP58H3X45C;
+						DevelopmentTeam = HZMMGDCLPA;
 						SystemCapabilities = {
 							com.apple.BackgroundModes = {
 								enabled = 1;
