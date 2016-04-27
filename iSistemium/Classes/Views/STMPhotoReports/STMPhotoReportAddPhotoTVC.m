@@ -266,6 +266,8 @@
             break;
         }
     }
+    
+    [self performFetch];
 
 }
 
