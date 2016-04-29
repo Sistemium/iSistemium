@@ -8,7 +8,7 @@
 
 import Foundation
 
-class STMGarbageCollector{
+@objc class STMGarbageCollector:NSObject{
     
     static func removeUnusedImages(){
         do {
@@ -43,4 +43,5 @@ class STMGarbageCollector{
             NSLog(error.description)
         }
     }
+    
 }
