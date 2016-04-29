@@ -1,4 +1,3 @@
-
 //
 //  STMObjectsController.m
 //  iSistemium
@@ -179,13 +178,8 @@
         
         STMSession *session = notification.object;
         
-<<<<<<< HEAD
-        if (![session.status isEqualToString:@"running"]) {
-            //            self.objectsCache = nil;
-=======
         if (session.status != STMSessionRunning) {
-//            self.objectsCache = nil;
->>>>>>> preDev
+            //            self.objectsCache = nil;
         }
         
     }
@@ -1373,7 +1367,7 @@
                             if (![objController.notFoundFantomsArray containsObject:fantomDic]) {
                                 [objController.fantomsArray addObject:fantomDic];
                             }
-
+                            
                         }
                         
                     }
@@ -1428,7 +1422,7 @@
         id xidParameter = parameters[@"xid"];
         
         if (isFantomResolving) {
-        
+            
             NSData *xid = (NSData *)xidParameter;
             
             if (!xid || xid.length == 0) {
@@ -1453,7 +1447,7 @@
                           isFantomResolving:isFantomResolving
                                  parameters:parameters];
             return;
-
+            
         }
         
         NSURL *urlWithXid = [url URLByAppendingPathComponent:xidString];
@@ -1468,24 +1462,24 @@
                                                queue:[NSOperationQueue mainQueue]
                                    completionHandler:^(NSURLResponse * _Nullable response, NSData * _Nullable data, NSError * _Nullable connectionError) {
                                        
-                if (!connectionError) {
-                    
-                    [self receiveRequestObjectResponse:response
-                                              withData:data
-                                             forEntity:entity
-                                            parameters:parameters];
-
-                } else {
-
-                    NSString *errorMessage = [NSString stringWithFormat:@"connectionError: %@", connectionError.localizedDescription];
-
-                    [self requestObjectErrorMessage:errorMessage
-                                  isFantomResolving:isFantomResolving
-                                         parameters:parameters];
-
-                }
-
-            }];
+                                       if (!connectionError) {
+                                           
+                                           [self receiveRequestObjectResponse:response
+                                                                     withData:data
+                                                                    forEntity:entity
+                                                                   parameters:parameters];
+                                           
+                                       } else {
+                                           
+                                           NSString *errorMessage = [NSString stringWithFormat:@"connectionError: %@", connectionError.localizedDescription];
+                                           
+                                           [self requestObjectErrorMessage:errorMessage
+                                                         isFantomResolving:isFantomResolving
+                                                                parameters:parameters];
+                                           
+                                       }
+                                       
+                                   }];
             
         } else {
             
@@ -1503,7 +1497,7 @@
         [[STMLogger sharedLogger] saveLogMessageWithText:logMessage type:@"error"];
         
     }
-
+    
 }
 
 + (void)requestObjectErrorMessage:(NSString *)errorMessage isFantomResolving:(BOOL)isFantomResolving parameters:(NSDictionary *)parameters {
@@ -1524,7 +1518,7 @@
 + (void)receiveRequestObjectResponse:(NSURLResponse *)response withData:(NSData *)data forEntity:(STMEntity *)entity parameters:(NSDictionary *)parameters {
     
     BOOL isFantomResolving = [parameters[@"isFantomResolving"] boolValue];
-
+    
     if ([response isKindOfClass:[NSHTTPURLResponse class]]) {
         
         NSHTTPURLResponse *httpResponse = (NSHTTPURLResponse *)response;
@@ -1551,11 +1545,11 @@
                 [STMObjectsController processingOfDataArray:dataArray roleName:entity.roleName withCompletionHandler:^(BOOL success) {
                     
                     if (isFantomResolving) {
-                     
+                        
                         [self didFinishResolveFantom:parameters successfully:success];
                         
                     } else {
-                    
+                        
                         if (!success) {
                             
                             NSString *errorMessage = [NSString stringWithFormat:@"error processing dataArray %@ with request parameters %@", dataArray, parameters];
@@ -1565,7 +1559,7 @@
                                                  parameters:parameters];
                             
                         }
-
+                        
                     }
                     
                 }];
@@ -1579,7 +1573,7 @@
             }
             
         } else {
-
+            
             NSString *errorMessage = [NSString stringWithFormat:@"response status %@ with request parameters %@", @(httpResponse.statusCode), parameters];
             
             [self requestObjectErrorMessage:errorMessage
@@ -1595,7 +1589,7 @@
         [self requestObjectErrorMessage:errorMessage
                       isFantomResolving:isFantomResolving
                              parameters:parameters];
-
+        
     }
     
 }
@@ -1608,7 +1602,7 @@
     
     NSString *entityName = fantomDic[@"entityName"];
     NSData *fantomXid = fantomDic[@"xid"];
-
+    
     if (successfully) {
         NSLog(@"success defantomize %@ %@", entityName, fantomXid);
     } else {
