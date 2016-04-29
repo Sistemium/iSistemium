@@ -55,6 +55,13 @@
 
     }
     
+    NSNotificationCenter *nc = [NSNotificationCenter defaultCenter];
+    
+    [nc addObserver:self
+           selector:@selector(statusChanged)
+               name:NOTIFICATION_SESSION_STATUS_CHANGED
+             object:[STMSessionManager sharedManager].currentSession];
+    
     NSError *error = NULL;
     AVAudioSession *session = [AVAudioSession sharedInstance];
     [session setCategory:AVAudioSessionCategoryPlayback error:&error];
@@ -68,6 +75,14 @@
     [[UIApplication sharedApplication] setMinimumBackgroundFetchInterval:UIApplicationBackgroundFetchIntervalMinimum];
 
     return YES;
+    
+}
+
+- (void)statusChanged {
+    
+    if ([STMSessionManager sharedManager].currentSession.status == STMSessionRunning) {
+        [STMGarbageCollector removeUnusedImages];
+    }
     
 }
 
