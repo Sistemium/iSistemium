@@ -81,7 +81,7 @@
 - (void)statusChanged {
     
     if ([STMSessionManager sharedManager].currentSession.status == STMSessionRunning) {
-        [STMGarbageCollector removeUnusedImages];
+        [STMGarbageCollector searchUnusedImages];
     }
     
 }

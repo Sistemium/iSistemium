@@ -45,6 +45,8 @@
 
 @property (weak, nonatomic) IBOutlet UIButton *nonloadedPicturesButton;
 
+@property (weak, nonatomic) IBOutlet UIButton *unusedPicturesButton;
+
 @property (weak, nonatomic) IBOutlet UIImageView *uploadImageView;
 @property (weak, nonatomic) IBOutlet UIImageView *downloadImageView;
 @property (weak, nonatomic) IBOutlet UIImageView *lastLocationImageView;
@@ -471,6 +473,18 @@
     
     UIColor *titleColor = [STMPicturesController sharedController].downloadingPictures ? ACTIVE_BLUE_COLOR : [UIColor redColor];
     [self.nonloadedPicturesButton setTitleColor:titleColor forState:UIControlStateNormal];
+    
+}
+
+- (void)updateUnusedPicturesInfo {
+    if ([STMGarbageCollector.unusedImages count] == 0) {
+        self.unusedPicturesButton.hidden = YES;
+    }else{
+        NSString *pluralString = [STMFunctions pluralTypeForCount:[STMGarbageCollector.unusedImages count]];
+        NSString *picturesCount = [NSString stringWithFormat:@"%@UPICTURES", pluralString];
+        NSString *unusedCount = [NSString stringWithFormat:@"%@UNUSED", pluralString];
+        [self.unusedPicturesButton setTitle:[NSString stringWithFormat:NSLocalizedString(unusedCount, nil), (unsigned long)[STMGarbageCollector.unusedImages count], NSLocalizedString(picturesCount, nil)] forState:UIControlStateNormal];
+    }
     
 }
 
@@ -1083,7 +1097,6 @@
         [self updateSyncDatesLabels];
         [self setupNonloadedPicturesButton];
         [self updateNonloadedPicturesInfo];
-
 //        self.downloadAlertWasShown = NO;
     }
 
@@ -1115,6 +1128,7 @@
     [self updateSyncDatesLabels];
     [self setupNonloadedPicturesButton];
     [self updateNonloadedPicturesInfo];
+    [self updateUnusedPicturesInfo];
     
     [self addObservers];
     [self startReachability];
