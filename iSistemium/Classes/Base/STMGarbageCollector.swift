@@ -18,7 +18,8 @@ import Foundation
                 try NSFileManager.defaultManager().removeItemAtPath(STMFunctions.documentsDirectory()+"/"+unusedImage)
             }
             if unusedImages.count > 0 {
-                NSLog("Deleted \(unusedImages.count) images")
+                let logMessage = String(format: "Deleting %i images",unusedImages.count)
+                STMLogger.sharedLogger().saveLogMessageWithText(logMessage, type:"important")
             }
         } catch let error as NSError {
             NSLog(error.description)
