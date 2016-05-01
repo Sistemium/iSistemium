@@ -519,6 +519,19 @@
     }];
 
 }
+- (IBAction)unusedPicturesButtonPressed:(id)sender {
+    [[NSOperationQueue mainQueue] addOperationWithBlock:^{
+        
+        UIActionSheet *actionSheet = [[UIActionSheet alloc] init];
+        actionSheet.tag = 4;
+        actionSheet.title = NSLocalizedString(@"UNUSED PICTURES", nil);
+        actionSheet.delegate = self;
+        actionSheet.destructiveButtonIndex = [actionSheet addButtonWithTitle:NSLocalizedString(@"DELETE", nil)];
+        [actionSheet addButtonWithTitle:NSLocalizedString(@"CLOSE", nil)];
+        [actionSheet showInView:self.view];
+        
+    }];
+}
 
 - (void)checkDownloadingConditions {
     
@@ -664,6 +677,15 @@
 
             }
             break;
+        case 4:
+            if (buttonIndex == 0) {
+                
+                [STMGarbageCollector removeUnusedImages];
+                self.unusedPicturesButton.hidden = YES;
+                
+            }
+            
+            break;
 
         default:
             break;
@@ -693,6 +715,14 @@
             if (buttonIndex == 1) {
                 [self showEnableWWANActionSheet];
             }
+            break;
+            
+        case 4:
+            if (buttonIndex == 0) {
+                [STMGarbageCollector removeUnusedImages];
+                self.unusedPicturesButton.hidden = YES;
+            }
+            
             break;
 
         default:

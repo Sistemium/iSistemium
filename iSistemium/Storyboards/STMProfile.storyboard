@@ -116,6 +116,9 @@
                                 <state key="normal" title="Unused pictures count">
                                     <color key="titleColor" red="0.0" green="0.47843137250000001" blue="1" alpha="1" colorSpace="calibratedRGB"/>
                                 </state>
+                                <connections>
+                                    <action selector="unusedPicturesButtonPressed:" destination="Dwf-nW-GhQ" eventType="touchUpInside" id="lgl-1f-oo8"/>
+                                </connections>
                             </button>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
