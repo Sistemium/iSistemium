@@ -13,16 +13,21 @@ import Foundation
     static var unusedImages = Set<String>()
     
     static func removeUnusedImages(){
-        do {
-            for unusedImage in unusedImages{
-                try NSFileManager.defaultManager().removeItemAtPath(STMFunctions.documentsDirectory()+"/"+unusedImage)
+        let priority = DISPATCH_QUEUE_PRIORITY_DEFAULT
+        dispatch_async(dispatch_get_global_queue(priority, 0)) {
+            do {
+                if unusedImages.count > 0 {
+                    let logMessage = String(format: "Deleting %i images",unusedImages.count)
+                    STMLogger.sharedLogger().saveLogMessageWithText(logMessage, type:"important")
+                }
+                for unusedImage in unusedImages{
+                    try NSFileManager.defaultManager().removeItemAtPath(STMFunctions.documentsDirectory()+"/"+unusedImage)
+                    self.unusedImages.remove(unusedImage)
+                    NSNotificationCenter.defaultCenter().postNotificationName("unusedImageRemoved", object: nil)
+                }
+            } catch let error as NSError {
+                NSLog(error.description)
             }
-            if unusedImages.count > 0 {
-                let logMessage = String(format: "Deleting %i images",unusedImages.count)
-                STMLogger.sharedLogger().saveLogMessageWithText(logMessage, type:"important")
-            }
-        } catch let error as NSError {
-            NSLog(error.description)
         }
     }
     
