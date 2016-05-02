@@ -35,29 +35,51 @@
 }
 
 - (void)sendToCameraRollButtonPressed {
+    UIImageWriteToSavedPhotosAlbum((UIImage*) self.pictureView.image, nil, nil, nil);
     
-    if (!self.sendToCameraRollButton.hidden) {
-        UIImageWriteToSavedPhotosAlbum((UIImage*) self.pictureView.image, nil, nil, nil);
-        PHAuthorizationStatus status = [PHPhotoLibrary authorizationStatus];
+    PHAuthorizationStatus status = [PHPhotoLibrary authorizationStatus];
+    
+    if (status == PHAuthorizationStatusAuthorized) {
+        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"SAVE TO CAMERA ROLL", nil)
+                                                        message:nil
+                                                       delegate:nil
+                                              cancelButtonTitle:NSLocalizedString(@"OK", nil)
+                                              otherButtonTitles:nil];
+        [alert show];
+    }
+    
+    else if (status == PHAuthorizationStatusDenied) {
+        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"IMPOSSIBLE TO SAVE", nil)
+                                                        message:NSLocalizedString(@"GIVE PERMISSIONS", nil)
+                                                       delegate:nil
+                                              cancelButtonTitle:NSLocalizedString(@"OK", nil)
+                                              otherButtonTitles:nil];
+        [alert show];
+    }
+    
+    else if (status == PHAuthorizationStatusNotDetermined) {
         
-        if (status == PHAuthorizationStatusAuthorized) {
-            UIAlertView *alert = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"SAVE TO CAMERA ROLL", nil)
-                                                            message:nil
-                                                           delegate:nil
-                                                  cancelButtonTitle:NSLocalizedString(@"OK", nil)
-                                                  otherButtonTitles:nil];
-            [alert show];
-        }
-        
-        else {
-            UIAlertView *alert = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"IMPOSSIBLE TO SAVE", nil)
-                                                            message:NSLocalizedString(@"GIVE PERMISSIONS", nil)
-                                                           delegate:nil
-                                                  cancelButtonTitle:NSLocalizedString(@"OK", nil)
-                                                  otherButtonTitles:nil];
-            [alert show];
-        }
-        
+        // Access has not been determined.
+        [PHPhotoLibrary requestAuthorization:^(PHAuthorizationStatus status) {
+            
+            if (status == PHAuthorizationStatusAuthorized) {
+                UIAlertView *alert = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"SAVE TO CAMERA ROLL", nil)
+                                                                message:nil
+                                                               delegate:nil
+                                                      cancelButtonTitle:NSLocalizedString(@"OK", nil)
+                                                      otherButtonTitles:nil];
+                [alert show];
+            }
+            
+            else {
+                UIAlertView *alert = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"IMPOSSIBLE TO SAVE", nil)
+                                                                message:NSLocalizedString(@"GIVE PERMISSIONS", nil)
+                                                               delegate:nil
+                                                      cancelButtonTitle:NSLocalizedString(@"OK", nil)
+                                                      otherButtonTitles:nil];
+                [alert show];
+            }
+        }];
     }
     
 }
