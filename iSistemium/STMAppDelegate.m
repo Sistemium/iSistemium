@@ -26,7 +26,7 @@
 #import "STMSocketController.h"
 #import "STMSoundController.h"
 #import "STMClientDataController.h"
-
+#import <AVFoundation/AVFoundation.h>
 
 @implementation STMAppDelegate
 
@@ -54,12 +54,35 @@
         }
 
     }
+    
+    NSNotificationCenter *nc = [NSNotificationCenter defaultCenter];
+    
+    [nc addObserver:self
+           selector:@selector(statusChanged)
+               name:NOTIFICATION_SESSION_STATUS_CHANGED
+             object:[STMSessionManager sharedManager].currentSession];
+    
+    NSError *error = NULL;
+    AVAudioSession *session = [AVAudioSession sharedInstance];
+    [session setCategory:AVAudioSessionCategoryPlayback error:&error];
+    if(error) {
+        // Do some error handling
+    }
+    [session setActive:YES error:&error];
 
     [self setupWindow];
 
     [[UIApplication sharedApplication] setMinimumBackgroundFetchInterval:UIApplicationBackgroundFetchIntervalMinimum];
 
     return YES;
+    
+}
+
+- (void)statusChanged {
+    
+    if ([STMSessionManager sharedManager].currentSession.status == STMSessionRunning) {
+        [STMGarbageCollector searchUnusedImages];
+    }
     
 }
 
@@ -71,7 +94,7 @@
     
     id <STMSession> session = [STMSessionManager sharedManager].currentSession;
     
-    if ([[session status] isEqualToString:@"running"]) {
+    if (session.status == STMSessionRunning) {
         
         [[session syncer] setSyncerState:STMSyncerSendData];
         
@@ -183,7 +206,7 @@
     [self setupWindow];
 
     id <STMSession> session = [STMSessionManager sharedManager].currentSession;
-    if ([[session status] isEqualToString:@"running"]) {
+    if (session.status == STMSessionRunning) {
         [STMMessageController showMessageVCsIfNeeded];
     }
     

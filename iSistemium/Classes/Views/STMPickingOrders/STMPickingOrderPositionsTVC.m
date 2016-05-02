@@ -1155,6 +1155,10 @@
     
     [self updatePickedPositionsButton];
     
+    if (self.iOSModeBarCodeScanner) {
+        self.iOSModeBarCodeScanner.delegate = self;
+    }
+
 }
 
 - (void)viewDidDisappear:(BOOL)animated {
@@ -1164,7 +1168,7 @@
     if ([self isMovingFromParentViewController]) {
         [self stopBarcodeScanning];
     }
-    
+
 }
 
 - (void)didReceiveMemoryWarning {

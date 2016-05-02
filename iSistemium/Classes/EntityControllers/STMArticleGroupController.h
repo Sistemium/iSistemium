@@ -7,7 +7,7 @@
 //
 
 #import "STMController.h"
-#import "STMArticleGroup+custom.h"
+#import "STMArticleGroup.h"
 
 @interface STMArticleGroupController : STMController
 

@@ -31,7 +31,6 @@
 
 @property (nonatomic, strong) STMDocument *document;
 @property (nonatomic, strong) NSFetchedResultsController *photoReportPicturesResultsController;
-@property (nonatomic, strong) STMPhotoReport *selectedPhotoReport;
 @property (nonatomic, strong) STMOutlet *selectedOutlet;
 
 @property (nonatomic, strong) NSArray *outlets;
@@ -85,9 +84,7 @@
         request.predicate = [self campaignPredicate];
         
         _photoReportPicturesResultsController = [[NSFetchedResultsController alloc] initWithFetchRequest:request managedObjectContext:self.document.managedObjectContext sectionNameKeyPath:nil cacheName:nil];
-        
-        //        _photoReportPicturesResultsController.delegate = self;
-        
+
     }
     
     return _photoReportPicturesResultsController;
@@ -101,11 +98,6 @@
     NSPredicate *campaignPredicate = [NSPredicate predicateWithFormat:@"campaign == %@", self.campaign];
     
     [subpredicates addObject:campaignPredicate];
-    
-    //    if (self.searchBar.text && ![self.searchBar.text isEqualToString:@""]) {
-    //        [subpredicates addObject:[NSPredicate predicateWithFormat:@"outlet.name CONTAINS[cd] %@", self.searchBar.text]];
-    //    }
-    
     [subpredicates addObject:[STMPredicate predicateWithNoFantoms]];
     
     NSCompoundPredicate *predicate = [NSCompoundPredicate andPredicateWithSubpredicates:subpredicates];
@@ -140,7 +132,6 @@
         
         _campaign = campaign;
         
-        self.selectedPhotoReport = nil;
         [self fetchPhotoReport];
         
     }
@@ -171,7 +162,7 @@
             for (STMPhotoReport *photoReport in outlet.photoReports) {
                 
                 if (photoReport.campaign) {
-                    [campaigns addObject:photoReport.campaign];
+                    [campaigns addObject:(STMCampaign *)photoReport.campaign];
                 }
                 
             }
@@ -241,11 +232,24 @@
             
             if (SYSTEM_VERSION >= 8.0) {
                 
-                UIView *rootView = [[[UIApplication sharedApplication] keyWindow] rootViewController].view;
-                CGRect originalFrame = [[UIScreen mainScreen] bounds];
+                UIView *rootView = [UIApplication sharedApplication].keyWindow.rootViewController.view;
+                CGRect originalFrame = [UIScreen mainScreen].bounds;
                 CGRect screenFrame = [rootView convertRect:originalFrame fromView:nil];
                 self.cameraOverlayView.frame = screenFrame;
                 
+                CGFloat camHeight = screenFrame.size.width * 4 / 3; // 4/3 — camera aspect ratio
+                
+                CGFloat toolbarHeight = TOOLBAR_HEIGHT;
+                
+                for (UIView *subview in self.cameraOverlayView.subviews)
+                if ([subview isKindOfClass:[UIToolbar class]])
+                toolbarHeight = subview.frame.size.height;
+                
+                CGFloat translationDistance = (screenFrame.size.height - toolbarHeight - camHeight) / 2;
+                
+                CGAffineTransform translate = CGAffineTransformMakeTranslation(0.0, translationDistance);
+                imagePickerController.cameraViewTransform = translate;
+
             }
             
             imagePickerController.cameraOverlayView = self.cameraOverlayView;
@@ -310,12 +314,6 @@
 - (IBAction)photoLibraryButtonPressed:(id)sender {
     
     [self cancelButtonPressed:sender];
-    
-    STMOutlet *outlet = self.selectedOutlet;
-    STMPhotoReport *photoReport = (STMPhotoReport *)[STMObjectsController newObjectForEntityName:NSStringFromClass([STMPhotoReport class]) isFantom:NO];
-    photoReport.outlet = outlet;
-    self.selectedPhotoReport = photoReport;
-    
     [self showImagePickerForSourceType:UIImagePickerControllerSourceTypePhotoLibrary];
     
 }
@@ -364,13 +362,7 @@
     
     STMOutlet *outlet = self.outlets[tag];
     
-    //    STMPhotoReport *photoReport = (STMPhotoReport *)[STMObjectsController newObjectForEntityName:NSStringFromClass([STMPhotoReport class])];
-    //    photoReport.isFantom = @NO;
-    //    photoReport.outlet = outlet;
-    
     self.selectedOutlet = outlet;
-    
-    //    self.selectedPhotoReport = photoReport;
     
     [(UIView *)[sender view] setBackgroundColor:ACTIVE_BLUE_COLOR];
     
@@ -378,19 +370,11 @@
     BOOL photoLibrary = [UIImagePickerController isSourceTypeAvailable:UIImagePickerControllerSourceTypePhotoLibrary];
     
     if (camera) {
-        
-        self.selectedPhotoReport = [self newPhotoReport];
         [self showImagePickerForSourceType:UIImagePickerControllerSourceTypeCamera];
-        
     } else if (photoLibrary) {
-        
-        self.selectedPhotoReport = [self newPhotoReport];
         [self showImagePickerForSourceType:UIImagePickerControllerSourceTypePhotoLibrary];
-        
     } else {
-        
-        //        [STMObjectsController removeObject:self.selectedPhotoReport];
-        
+
     }
     
 }
@@ -398,7 +382,6 @@
 - (STMPhotoReport *)newPhotoReport {
     
     STMPhotoReport *photoReport = (STMPhotoReport *)[STMObjectsController newObjectForEntityName:NSStringFromClass([STMPhotoReport class]) isFantom:NO];
-    
     return photoReport;
     
 }
@@ -445,37 +428,23 @@
     
     CGFloat jpgQuality = [STMPicturesController jpgQuality];
     
-    if (!self.selectedPhotoReport.managedObjectContext) {
-        self.selectedPhotoReport = [self newPhotoReport];
-    }
-    
-    STMPhotoReport *savingPhotoReport = self.selectedPhotoReport;
+    STMPhotoReport *savingPhotoReport = [self newPhotoReport];
     
     [STMPicturesController setImagesFromData:UIImageJPEGRepresentation(image, jpgQuality)
                                   forPicture:savingPhotoReport
                                    andUpload:YES];
     
-    [savingPhotoReport addObserver:self forKeyPath:@"imageThumbnail" options:NSKeyValueObservingOptionNew context:nil];
-    
-    if (![self.selectedPhotoReport.managedObjectContext isEqual:self.campaign.managedObjectContext]) {
-        
-        CLS_LOG(@"photoReport and campaign are placed in a different contexts");
-        CLS_LOG(@"app will crash now");
-        CLS_LOG(@"____________ CONTEXTS ____________");
-        CLS_LOG(@"document.managedObjectContext %@", self.document.managedObjectContext);
-        CLS_LOG(@"document.managedObjectContext.parentContext %@", self.document.managedObjectContext.parentContext);
-        CLS_LOG(@"selectedPhotoReport.managedObjectContext %@", self.selectedPhotoReport.managedObjectContext);
-        CLS_LOG(@"campaign.managedObjectContext %@", self.campaign.managedObjectContext);
-        CLS_LOG(@"____________ OBJECTS ____________");
-        CLS_LOG(@"selectedPhotoReport %@", self.selectedPhotoReport);
-        CLS_LOG(@"campaign %@", self.campaign);
-        
-    }
+    [savingPhotoReport addObserver:self
+                        forKeyPath:@"imageThumbnail"
+                           options:NSKeyValueObservingOptionNew
+                           context:nil];
     
     savingPhotoReport.campaign = self.campaign;
     savingPhotoReport.outlet = self.selectedOutlet;
 
-    [[NSNotificationCenter defaultCenter] postNotificationName:@"photoReportsChanged" object:self.splitViewController userInfo:@{@"campaign": self.campaign}];
+    [[NSNotificationCenter defaultCenter] postNotificationName:@"photoReportsChanged"
+                                                        object:self.splitViewController
+                                                      userInfo:@{@"campaign": self.campaign}];
 
     [[self document] saveDocument:^(BOOL success) {
         if (success) {
@@ -613,11 +582,6 @@
     }];
     
     [self.spinnerView removeFromSuperview];
-    
-    STMPhotoReport *photoReportToRemove = self.selectedPhotoReport;
-    self.selectedPhotoReport = nil;
-    
-    [STMObjectsController removeObject:photoReportToRemove];
     self.imagePickerController = nil;
     
 }
@@ -641,7 +605,9 @@
 
 - (UICollectionReusableView *)collectionView:(UICollectionView *)collectionView viewForSupplementaryElementOfKind:(NSString *)kind atIndexPath:(NSIndexPath *)indexPath {
     
-    UICollectionReusableView *headerView = [collectionView dequeueReusableSupplementaryViewOfKind:UICollectionElementKindSectionHeader withReuseIdentifier:@"outletHeader" forIndexPath:indexPath];
+    UICollectionReusableView *headerView = [collectionView dequeueReusableSupplementaryViewOfKind:UICollectionElementKindSectionHeader
+                                                                              withReuseIdentifier:@"outletHeader"
+                                                                                     forIndexPath:indexPath];
     
     headerView.tag = indexPath.section;
     
@@ -710,11 +676,7 @@
 
 - (BOOL)collectionView:(UICollectionView *)collectionView shouldSelectItemAtIndexPath:(NSIndexPath *)indexPath {
     
-    STMOutlet *outlet = self.outlets[indexPath.section];
-    self.selectedPhotoReport = [self photoReportsInOutlet:outlet].lastObject;
-    
     [self performSegueWithIdentifier:@"showPhotoReport" sender:indexPath];
-    
     return YES;
     
 }
@@ -964,16 +926,6 @@
     
     NSNotificationCenter *nc = [NSNotificationCenter defaultCenter];
     
-    //    [nc addObserver:self
-    //           selector:@selector(keyboardWillShow:)
-    //               name:UIKeyboardWillShowNotification
-    //             object:nil];
-    //
-    //    [nc addObserver:self
-    //           selector:@selector(keyboardWillBeHidden:)
-    //               name:UIKeyboardWillHideNotification
-    //             object:nil];
-    
     [nc addObserver:self
            selector:@selector(photosCountChanged)
                name:@"photosCountChanged"
@@ -1028,21 +980,27 @@
     // Dispose of any resources that can be recreated.
 }
 
+
 #pragma mark - Navigation
 
-// In a storyboard-based application, you will often want to do a little preparation before navigation
 - (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
     
-    if ([segue.identifier isEqualToString:@"showPhotoReport"] && [segue.destinationViewController isKindOfClass:[STMPhotoReportPVC class]]) {
+    if ([segue.identifier isEqualToString:@"showPhotoReport"] &&
+        [segue.destinationViewController isKindOfClass:[STMPhotoReportPVC class]] &&
+        [sender isKindOfClass:[NSIndexPath class]]) {
         
         STMPhotoReportPVC *photoReportPVC = (STMPhotoReportPVC *)segue.destinationViewController;
         
-        photoReportPVC.photoArray = [[self photoReportsInOutlet:self.selectedPhotoReport.outlet] mutableCopy];
-        photoReportPVC.currentIndex = [(NSIndexPath *)sender row];
+        NSIndexPath *indexPath = (NSIndexPath *)sender;
+        STMOutlet *outlet = self.outlets[indexPath.section];
+
+        photoReportPVC.photoArray = [[self photoReportsInOutlet:outlet] mutableCopy];
+        photoReportPVC.currentIndex = indexPath.row;
         photoReportPVC.parentVC = self;
         
     }
     
 }
+
 
 @end

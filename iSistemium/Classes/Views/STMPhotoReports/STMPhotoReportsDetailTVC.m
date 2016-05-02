@@ -470,8 +470,6 @@
         
     } else {
         
-        //        [STMObjectsController removeObject:self.selectedPhotoReport];
-        
     }
 
 }

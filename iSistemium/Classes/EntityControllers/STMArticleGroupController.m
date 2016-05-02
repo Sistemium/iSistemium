@@ -56,8 +56,8 @@
     
     for (STMArticleGroup *articleGroup in articleGroups) {
         
-        [articleGroup removeParents:articleGroup.parents];
-        [articleGroup removeChildren:articleGroup.children];
+        [articleGroup removeParents:(NSSet<STMArticleGroup *> *)articleGroup.parents];
+        [articleGroup removeChildren:(NSSet<STMArticleGroup *> *)articleGroup.children];
         
     }
 

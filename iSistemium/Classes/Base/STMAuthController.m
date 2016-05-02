@@ -10,23 +10,27 @@
 
 #import <AdSupport/AdSupport.h>
 
+#import <JNKeychain/JNKeychain.h>
+
 #import "STMDevDef.h"
 #import "STMFunctions.h"
-#import <Security/Security.h>
-#import "KeychainItemWrapper.h"
 #import "STMSessionManager.h"
 #import "STMLogger.h"
 
 #import "STMSocketController.h"
 
 
-//#define AUTH_URL @"https://sistemium.com/auth.php"
 #define AUTH_URL @"https://api.sistemium.com/pha/auth"
 
 #define ROLES_URL @"https://api.sistemium.com/pha/roles"
-//#define ROLES_URL @"https://api.sistemium.com/pha/v2/roles" // for crash testing
 
 #define TIMEOUT 15.0
+
+#define KC_PHONE_NUMBER @"phoneNumber"
+#define KC_SERVICE_URI @"serviceUri"
+#define KC_USER_ID @"userID"
+#define KC_ACCESS_TOKEN @"accessToken"
+
 
 @interface STMAuthController() <NSURLConnectionDataDelegate, UIAlertViewDelegate>
 
@@ -34,7 +38,7 @@
 @property (nonatomic, strong) NSString *requestID;
 @property (nonatomic, strong) NSString *serviceUri;
 @property (nonatomic, strong) NSString *apiURL;
-@property (nonatomic, strong) KeychainItemWrapper *keychainItem;
+
 
 @end
 
@@ -47,6 +51,8 @@
 @synthesize accessToken = _accessToken;
 @synthesize serviceUri = _serviceUri;
 @synthesize stcTabs = _stcTabs;
+@synthesize iSisDB = _iSisDB;
+
 
 #pragma mark - singletone init
 
@@ -69,9 +75,9 @@
     
     if (self) {
         
-        NSString *keychainPhoneNumber = [self.keychainItem objectForKey:(__bridge id)kSecAttrLabel];
-        [self.phoneNumber isEqualToString:keychainPhoneNumber] ? [self checkAccessToken] : [self.keychainItem resetKeychainItem];
-        
+        NSString *keychainPhoneNumber = [JNKeychain loadValueForKey:KC_PHONE_NUMBER];
+        if ([self.phoneNumber isEqualToString:keychainPhoneNumber]) [self checkAccessToken];
+
     }
     
     return self;
@@ -106,8 +112,8 @@
         NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
         [defaults setObject:phoneNumber forKey:@"phoneNumber"];
         [defaults synchronize];
-
-        [self.keychainItem setObject:phoneNumber forKey:(__bridge id)kSecAttrLabel];
+        
+        [JNKeychain saveValue:phoneNumber forKey:KC_PHONE_NUMBER];
         
         _phoneNumber = phoneNumber;
         
@@ -118,7 +124,7 @@
 - (NSString *)userName {
     
     if (!_userName) {
-
+        
         NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
         id userName = [defaults objectForKey:@"userName"];
         
@@ -126,7 +132,7 @@
             _userName = userName;
             NSLog(@"userName %@", userName);
         }
-
+        
     }
     
     return _userName;
@@ -142,16 +148,16 @@
         [defaults synchronize];
         
         _userName = userName;
-
+        
     }
     
 }
 
 - (void)setControllerState:(STMAuthState)controllerState {
-
+    
     NSLog(@"authControllerState %d", controllerState);
     _controllerState = controllerState;
-
+    
     if (controllerState == STMAuthRequestRoles) {
         
         [self requestRoles];
@@ -160,52 +166,17 @@
         
         NSLog(@"login");
         [self startSession];
-
+        
     }
     
     [[NSNotificationCenter defaultCenter] postNotificationName:@"authControllerStateChanged" object:self];
     
 }
 
-- (KeychainItemWrapper *)keychainItem {
-    
-    if (!_keychainItem) {
-        
-        NSString *bundleIdentifier = [[NSBundle mainBundle] bundleIdentifier];
-        _keychainItem = [[KeychainItemWrapper alloc] initWithIdentifier:bundleIdentifier accessGroup:nil];
-        id accessible = [_keychainItem objectForKey:(__bridge id)kSecAttrAccessible];
-        if (![accessible isEqual: (__bridge id)kSecAttrAccessibleAlways]){
-            
-            [[STMLogger sharedLogger] saveLogMessageWithText:@"STMAuthController.keychainItem not kSecAttrAccessibleAlways" type:@"error"];
-            
-            NSString *phoneNumber = [_keychainItem objectForKey:(__bridge id)kSecAttrLabel];
-            NSString *serviceUri = [_keychainItem objectForKey:(__bridge id)kSecAttrService];
-            NSString *userID = [_keychainItem objectForKey:(__bridge id)(kSecAttrAccount)];
-            NSString *accessToken = [_keychainItem objectForKey:(__bridge id)(kSecValueData)];
-            
-            [_keychainItem resetKeychainItem];
-            
-            [_keychainItem setObject:(__bridge id)kSecAttrAccessibleAlways forKey:(__bridge id)kSecAttrAccessible];
-            
-            [_keychainItem setObject:phoneNumber forKey:(__bridge id)kSecAttrLabel];
-            [_keychainItem setObject:serviceUri forKey:(__bridge id)kSecAttrService];
-            [_keychainItem setObject:userID forKey:(__bridge id)kSecAttrAccount];
-            [_keychainItem setObject:accessToken forKey:(__bridge id)kSecValueData];
-
-        }
-
-    }
-    
-    return _keychainItem;
-    
-}
-
 - (NSString *)serviceUri {
     
     if (!_serviceUri) {
-        
-        _serviceUri = [self.keychainItem objectForKey:(__bridge id)kSecAttrService];
-        
+        _serviceUri = [JNKeychain loadValueForKey:KC_SERVICE_URI];
     }
     
     return _serviceUri;
@@ -216,7 +187,7 @@
     
     if (serviceUri != _serviceUri) {
         
-        [self.keychainItem setObject:serviceUri forKey:(__bridge id)kSecAttrService];
+        [JNKeychain saveValue:serviceUri forKey:KC_SERVICE_URI];
         NSLog(@"serviceUri %@", serviceUri);
         _serviceUri = serviceUri;
         
@@ -227,9 +198,7 @@
 - (NSString *)userID {
     
     if (!_userID) {
-        
-        _userID = [self.keychainItem objectForKey:(__bridge id)(kSecAttrAccount)];
-        
+        _userID = [JNKeychain loadValueForKey:KC_USER_ID];
     }
     
     return _userID;
@@ -240,7 +209,7 @@
     
     if (userID != _userID) {
         
-        [self.keychainItem setObject:userID forKey:(__bridge id)(kSecAttrAccount)];
+        [JNKeychain saveValue:userID forKey:KC_USER_ID];
         NSLog(@"userID %@", userID);
         _userID = userID;
         
@@ -251,9 +220,7 @@
 - (NSString *)accessToken {
     
     if (!_accessToken) {
-        
-        _accessToken = [self.keychainItem objectForKey:(__bridge id)(kSecValueData)];
-        
+        _accessToken = [JNKeychain loadValueForKey:KC_ACCESS_TOKEN];
     }
     
     return _accessToken;
@@ -264,10 +231,10 @@
     
     if (accessToken != _accessToken) {
         
-        [self.keychainItem setObject:accessToken forKey:(__bridge id)(kSecValueData)];
+        [JNKeychain saveValue:accessToken forKey:KC_ACCESS_TOKEN];
         NSLog(@"accessToken %@", accessToken);
         _accessToken = accessToken;
-
+        
         self.lastAuth = [NSDate date];
         self.tokenHash = [STMFunctions MD5FromString:accessToken];
         
@@ -351,11 +318,43 @@
     
 }
 
+- (NSString *)iSisDB {
+    
+    if (!_iSisDB) {
+        
+        NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+        id iSisDB = [defaults objectForKey:@"iSisDB"];
+        
+        if ([iSisDB isKindOfClass:[NSString class]]) {
+            _iSisDB = iSisDB;
+            NSLog(@"iSisDB %@", iSisDB);
+        }
+        
+    }
+    
+    return _iSisDB;
+    
+}
+
+- (void)setISisDB:(NSString *)iSisDB {
+    
+    if (iSisDB != _iSisDB) {
+        
+        NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+        [defaults setObject:iSisDB forKey:@"iSisDB"];
+        [defaults synchronize];
+        
+        _iSisDB = iSisDB;
+        
+    }
+    
+}
+
 
 #pragma mark - instance methods
 
 - (void)checkAccessToken {
-
+    
     BOOL checkValue = YES;
     
     if (!self.userID || [self.userID isEqualToString:@""]) {
@@ -370,40 +369,43 @@
     } else {
         NSLog(@"accessToken %@", self.accessToken);
     }
-
-//    BOOL checkValue = ![self.accessToken isEqualToString:@""] && ![self.userID isEqualToString:@""];
     
-//    checkValue ? NSLog(@"OK for accessToken && userID") : NSLog(@"NOT OK for accessToken || userID");
+    //    BOOL checkValue = ![self.accessToken isEqualToString:@""] && ![self.userID isEqualToString:@""];
     
-//    self.controllerState = checkValue ? STMAuthSuccess : STMAuthEnterPhoneNumber;
+    //    checkValue ? NSLog(@"OK for accessToken && userID") : NSLog(@"NOT OK for accessToken || userID");
+    
+    //    self.controllerState = checkValue ? STMAuthSuccess : STMAuthEnterPhoneNumber;
     self.controllerState = checkValue ? STMAuthRequestRoles : STMAuthEnterPhoneNumber;
-
+    
 }
 
 - (void)logout {
     
     NSLog(@"logout");
-
+    
     self.controllerState = STMAuthEnterPhoneNumber;
-
+    
     [[NSNotificationCenter defaultCenter] removeObserver:self name:@"notAuthorized" object:[STMSessionManager sharedManager].currentSession.syncer];
     [[STMSessionManager sharedManager] stopSessionForUID:self.userID];
-
+    
     self.userID = nil;
     self.accessToken = nil;
     self.stcTabs = nil;
-    [self.keychainItem resetKeychainItem];
-
+    self.iSisDB = nil;
+    [JNKeychain deleteValueForKey:KC_PHONE_NUMBER];
+    
 }
 
 - (void)startSession {
-
+    
     NSLog(@"serviceUri %@", self.serviceUri);
     NSLog(@"apiURL %@", self.apiURL);
-
+    
     NSArray *trackers = @[@"battery", @"location"];
     
     NSDictionary *startSettings = nil;
+    
+    NSString *dataModelName = @"STMDataModel2";
     
 #ifdef DEBUG
     
@@ -411,7 +413,7 @@
         
         startSettings = @{
                           @"restServerURI"                  : self.serviceUri,
-                          @"dataModelName"                  : @"STMDataModel",
+                          @"dataModelName"                  : dataModelName,
                           //                      @"fetchLimit"               : @"50",
                           //                      @"syncInterval"             : @"600",
                           //                      @"uploadLog.type"           : @"",
@@ -430,29 +432,27 @@
                           @"batteryTrackerAutoStart"        : @YES,
                           @"batteryTrackerStartTime"        : @"8.0",
                           @"batteryTrackerFinishTime"       : @"22.0",
-                          @"enableDebtsEditing"             : @YES,
-                          @"enablePartnersEditing"          : @YES,
                           @"http.timeout.foreground"        : @"60",
                           @"jpgQuality"                     : @"0.0",
                           @"blockIfNoLocationPermission"    : @YES
                           };
         
     } else {
-    
+        
         startSettings = @{
                           @"restServerURI"            : self.serviceUri,
-                          @"dataModelName"            : @"STMDataModel",
+                          @"dataModelName"            : dataModelName,
                           };
-
+        
     }
     
 #else
-
+    
     startSettings = @{
                       @"restServerURI"            : self.serviceUri,
-                      @"dataModelName"            : @"STMDataModel",
+                      @"dataModelName"            : dataModelName,
                       };
-
+    
 #endif
     
     if (self.apiURL) {
@@ -464,9 +464,18 @@
         
     }
     
-    [[STMSessionManager sharedManager] startSessionForUID:self.userID authDelegate:self trackers:trackers startSettings:startSettings defaultSettingsFileName:@"settings" documentPrefix:[[NSBundle mainBundle] bundleIdentifier]];
-
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(sessionNotAuthorized) name:@"notAuthorized" object:[STMSessionManager sharedManager].currentSession.syncer];
+    [[STMSessionManager sharedManager] startSessionForUID:self.userID
+                                                   iSisDB:self.iSisDB
+                                             authDelegate:self
+                                                 trackers:trackers
+                                            startSettings:startSettings
+                                  defaultSettingsFileName:@"settings"
+                                           documentPrefix:[[NSBundle mainBundle] bundleIdentifier]];
+    
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(sessionNotAuthorized)
+                                                 name:@"notAuthorized"
+                                               object:[STMSessionManager sharedManager].currentSession.syncer];
     
 }
 
@@ -487,8 +496,8 @@
         resultingRequest = [request mutableCopy];
         [resultingRequest addValue:self.accessToken forHTTPHeaderField:@"Authorization"];
         [resultingRequest setValue:[[ASIdentifierManager sharedManager].advertisingIdentifier UUIDString] forHTTPHeaderField:@"DeviceUUID"];
-
-
+        
+        
     }
     
     return resultingRequest;
@@ -509,13 +518,13 @@
         NSString *urlString = [NSString stringWithFormat:@"%@?mobileNumber=%@", AUTH_URL, phoneNumber];
         NSURLRequest *request = [self requestForURL:urlString];
         NSURLConnection *connection = [[NSURLConnection alloc] initWithRequest:request delegate:self];
-
+        
         if (connection) {
-
+            
             return YES;
             
         } else {
-
+            
             [[NSNotificationCenter defaultCenter] postNotificationName:@"authControllerError"
                                                                 object:self
                                                               userInfo:@{@"error": @"No connection"}];
@@ -523,9 +532,9 @@
             [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:NO];
             
             return NO;
-
+            
         }
-
+        
     } else {
         return NO;
     }
@@ -535,9 +544,9 @@
 - (BOOL)sendSMSCode:(NSString *)SMSCode {
     
     if ([STMFunctions isCorrectSMSCode:SMSCode]) {
-
+        
         [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:YES];
-
+        
         NSString *urlString = [NSString stringWithFormat:@"%@?smsCode=%@&ID=%@", AUTH_URL, SMSCode, self.requestID];
         NSURLRequest *request = [self requestForURL:urlString];
         NSURLConnection *connection = [[NSURLConnection alloc] initWithRequest:request delegate:self];
@@ -555,11 +564,11 @@
             [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:NO];
             
             self.controllerState = STMAuthEnterPhoneNumber;
-
+            
             return NO;
             
         }
-
+        
     } else {
         return NO;
     }
@@ -585,13 +594,13 @@
         return YES;
         
     } else {
-
+        
         [self connectionErrorWhileRequestingRoles];
         
         return NO;
         
     }
-
+    
     return YES;
 }
 
@@ -602,7 +611,7 @@
     [request setHTTPMethod:@"GET"];
     [request setValue:[[UIDevice currentDevice].identifierForVendor UUIDString] forHTTPHeaderField:@"DeviceUUID"];
     request.timeoutInterval = TIMEOUT;
-
+    
     return request;
     
 }
@@ -611,14 +620,14 @@
 #pragma mark - NSURLConnectionDataDelegate
 
 - (void)connection:(NSURLConnection *)connection didFailWithError:(NSError *)error {
-
+    
 #ifdef DEBUG
     NSString *errorMessage = [NSString stringWithFormat:@"connection did fail with error: %@", error];
     NSLog(@"%@", errorMessage);
 #endif
     
     if (self.controllerState == STMAuthRequestRoles) {
-
+        
         [self connectionErrorWhileRequestingRoles];
         
     } else {
@@ -628,15 +637,15 @@
         [[NSNotificationCenter defaultCenter] postNotificationName:@"authControllerError" object:self userInfo:@{@"error": error.localizedDescription}];
         
         [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:NO];
-
+        
     }
-
+    
 }
 
 - (void)connection:(NSURLConnection *)connection didReceiveResponse:(NSURLResponse *)response {
     
     NSInteger statusCode = [(NSHTTPURLResponse *)response statusCode];
-
+    
     switch (statusCode) {
         case 401:
             [self gotUnauthorizedStatus];
@@ -666,7 +675,7 @@
     if (self.controllerState == STMAuthRequestRoles) {
         
         [[NSOperationQueue mainQueue] addOperationWithBlock:^{
-
+            
             UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"ERROR", nil)
                                                                 message:NSLocalizedString(@"U R NOT AUTH", nil)
                                                                delegate:nil
@@ -691,7 +700,7 @@
     } else {
         
         [[NSOperationQueue mainQueue] addOperationWithBlock:^{
-
+            
             UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"ERROR", nil)
                                                                 message:NSLocalizedString(@"CAN NOT GET ROLES", nil)
                                                                delegate:self
@@ -746,8 +755,8 @@
         NSError *error;
         id responseJSON = [NSJSONSerialization JSONObjectWithData:responseData options:NSJSONReadingMutableContainers error:&error];
         
-//        NSLog(@"responseData %@", responseData);
-//        NSLog(@"responseJSON %@", responseJSON);
+        //        NSLog(@"responseData %@", responseData);
+        //        NSLog(@"responseJSON %@", responseJSON);
         
         if ([responseJSON isKindOfClass:[NSDictionary class]]) {
             
@@ -758,7 +767,7 @@
             [self processingResponseJSONError];
             
         }
-
+        
     }
     
 }
@@ -779,11 +788,7 @@
         case STMAuthEnterSMSCode: {
             
             self.serviceUri = responseJSON[@"redirectUri"];
-            
-            //#warning Switch comment line when server give correct apiURL
             self.apiURL = responseJSON[@"apiUrl"];
-            //self.apiURL = [self.serviceUri stringByDeletingLastPathComponent];
-
             self.userID = responseJSON[@"ID"];
             self.userName = responseJSON[@"name"];
             self.accessToken = responseJSON[@"accessToken"];
@@ -805,7 +810,24 @@
             
         case STMAuthRequestRoles: {
             
-            self.stcTabs = responseJSON[@"roles"][@"stcTabs"];
+            self.iSisDB = responseJSON[@"roles"][@"iSisDB"];
+            
+            id stcTabs = responseJSON[@"roles"][@"stcTabs"];
+            
+            if ([stcTabs isKindOfClass:[NSArray class]]) {
+                
+                self.stcTabs = stcTabs;
+                
+            } else if ([stcTabs isKindOfClass:[NSDictionary class]]) {
+                
+                self.stcTabs = @[stcTabs];
+                
+            } else {
+                
+                [[STMLogger sharedLogger] saveLogMessageWithText:@"recieved stcTabs is not an array or dictionary" type:@"error"];
+                
+            }
+            
             self.controllerState = STMAuthSuccess;
             
             break;
@@ -821,17 +843,17 @@
         }
             
     }
-
+    
 }
 
 - (void)processingResponseJSONError {
     
     if (self.controllerState == STMAuthRequestRoles) {
-
+        
         [self connectionErrorWhileRequestingRoles];
         
     } else {
-    
+        
         NSString *errorString = NSLocalizedString(@"RESPONSE IS NOT A DICTIONARY", nil);
         
         if (self.controllerState == STMAuthEnterPhoneNumber) {
@@ -844,15 +866,15 @@
             errorString = NSLocalizedString(@"WRONG SMS CODE", nil);
             self.controllerState = STMAuthEnterSMSCode;
             
-//        } else if (self.controllerState == STMAuthRequestRoles) {
-//            
-//            errorString = [NSLocalizedString(@"ROLES REQUEST ERROR", nil) stringByAppendingString:errorString];
-//            self.controllerState = STMAuthEnterPhoneNumber;
+            //        } else if (self.controllerState == STMAuthRequestRoles) {
+            //            
+            //            errorString = [NSLocalizedString(@"ROLES REQUEST ERROR", nil) stringByAppendingString:errorString];
+            //            self.controllerState = STMAuthEnterPhoneNumber;
             
         }
         
         [[NSNotificationCenter defaultCenter] postNotificationName:@"authControllerError" object:self userInfo:@{@"error": errorString}];
-
+        
     }
     
 }

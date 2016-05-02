@@ -19,5 +19,7 @@
 
 @property (nonatomic ,strong) STMShipmentsSVC *splitVC;
 
+@property (nonatomic, strong) STMShippingLocation *shippingLocation;
+
 
 @end

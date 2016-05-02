@@ -7,6 +7,7 @@
 //
 
 #import "STMPickingOrder.h"
+#import "STMOutlet.h"
 #import "STMPicker.h"
 #import "STMPickingOrderPosition.h"
 

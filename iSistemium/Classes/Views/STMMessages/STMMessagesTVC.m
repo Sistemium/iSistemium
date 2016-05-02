@@ -48,8 +48,11 @@
     
     if (!_resultsController) {
         
-        NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:NSStringFromClass([STMMessage class])];
-        request.sortDescriptors = @[[NSSortDescriptor sortDescriptorWithKey:@"cts" ascending:NO selector:@selector(compare:)]];
+        STMFetchRequest *request = [STMFetchRequest fetchRequestWithEntityName:NSStringFromClass([STMMessage class])];
+        
+        request.sortDescriptors = @[[NSSortDescriptor sortDescriptorWithKey:@"cts"
+                                                                  ascending:NO
+                                                                   selector:@selector(compare:)]];
 
         _resultsController = [[NSFetchedResultsController alloc] initWithFetchRequest:request
                                                                  managedObjectContext:self.document.managedObjectContext
@@ -169,7 +172,7 @@
     cell.pictureView.image = nil;
     
     NSDateFormatter *dateFormatter = [STMFunctions dateMediumTimeMediumFormatter];
-    cell.titleLabel.text = [dateFormatter stringFromDate:message.cts];
+    cell.titleLabel.text = [dateFormatter stringFromDate:(NSDate *)message.cts];
 
     [self fillDetailLabel:cell.detailLabel forMessage:message];
     
@@ -184,7 +187,9 @@
     NSDictionary *attributes = @{NSFontAttributeName: detailLabel.font,
                                  NSForegroundColorAttributeName: detailLabel.textColor};
 
-    NSMutableAttributedString *detailText = [[NSMutableAttributedString alloc] initWithString:message.body attributes:attributes];
+    NSString *messageBody = (message.body) ? message.body : @"";
+
+    NSMutableAttributedString *detailText = [[NSMutableAttributedString alloc] initWithString:messageBody attributes:attributes];
     
     if (message.processing) {
         
@@ -217,7 +222,7 @@
         attributes = @{NSFontAttributeName: font,
                        NSForegroundColorAttributeName: detailLabel.textColor};
         
-        [detailText appendAttributedString:[[NSAttributedString alloc] initWithString:message.commentText attributes:attributes]];
+        [detailText appendAttributedString:[[NSAttributedString alloc] initWithString:(NSString *)message.commentText attributes:attributes]];
 
     }
 
@@ -344,7 +349,7 @@
         
         STMMessagePicture *messagePicture = (STMMessagePicture *)notification.object;
         
-        NSIndexPath *indexPath = [self.resultsController indexPathForObject:messagePicture.message];
+        NSIndexPath *indexPath = [self.resultsController indexPathForObject:(STMMessage *)messagePicture.message];
         if (indexPath) [self.tableView reloadRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationFade];
         
     }

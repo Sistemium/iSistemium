@@ -45,6 +45,8 @@
 
 @property (weak, nonatomic) IBOutlet UIButton *nonloadedPicturesButton;
 
+@property (weak, nonatomic) IBOutlet UIButton *unusedPicturesButton;
+
 @property (weak, nonatomic) IBOutlet UIImageView *uploadImageView;
 @property (weak, nonatomic) IBOutlet UIImageView *downloadImageView;
 @property (weak, nonatomic) IBOutlet UIImageView *lastLocationImageView;
@@ -461,13 +463,28 @@
         self.downloadAlertWasShown = NO;
         self.nonloadedPicturesButton.enabled = NO;
         
+        [STMPicturesController sharedController].downloadingPictures = NO;
+        [UIApplication sharedApplication].idleTimerDisabled = NO;
+
     }
     
     [self.nonloadedPicturesButton setTitle:title forState:UIControlStateNormal];
     self.navigationController.tabBarItem.badgeValue = badgeValue;
     
-    UIColor *titleColor = [STMPicturesController sharedController].downloadQueue.suspended ? [UIColor redColor] : ACTIVE_BLUE_COLOR;
+    UIColor *titleColor = [STMPicturesController sharedController].downloadingPictures ? ACTIVE_BLUE_COLOR : [UIColor redColor];
     [self.nonloadedPicturesButton setTitleColor:titleColor forState:UIControlStateNormal];
+    
+}
+
+- (void)updateUnusedPicturesInfo {
+    if ([STMGarbageCollector.unusedImages count] == 0) {
+        self.unusedPicturesButton.hidden = YES;
+    }else{
+        NSString *pluralString = [STMFunctions pluralTypeForCount:[STMGarbageCollector.unusedImages count]];
+        NSString *picturesCount = [NSString stringWithFormat:@"%@UPICTURES", pluralString];
+        NSString *unusedCount = [NSString stringWithFormat:@"%@UNUSED", pluralString];
+        [self.unusedPicturesButton setTitle:[NSString stringWithFormat:NSLocalizedString(unusedCount, nil), (unsigned long)[STMGarbageCollector.unusedImages count], NSLocalizedString(picturesCount, nil)] forState:UIControlStateNormal];
+    }
     
 }
 
@@ -483,17 +500,17 @@
         actionSheet.title = NSLocalizedString(@"UNLOADED PICTURES", nil);
         actionSheet.delegate = self;
 
-        if ([STMPicturesController sharedController].downloadQueue.suspended) {
+        if ([STMPicturesController sharedController].downloadingPictures) {
         
-            actionSheet.tag = 1;
-            [actionSheet addButtonWithTitle:NSLocalizedString(@"DOWNLOAD NOW", nil)];
-            [actionSheet addButtonWithTitle:NSLocalizedString(@"DOWNLOAD LATER", nil)];
-
-        } else {
-
             actionSheet.tag = 2;
             [actionSheet addButtonWithTitle:NSLocalizedString(@"DOWNLOAD STOP", nil)];
             [actionSheet addButtonWithTitle:NSLocalizedString(@"CLOSE", nil)];
+
+        } else {
+
+            actionSheet.tag = 1;
+            [actionSheet addButtonWithTitle:NSLocalizedString(@"DOWNLOAD NOW", nil)];
+            [actionSheet addButtonWithTitle:NSLocalizedString(@"DOWNLOAD LATER", nil)];
 
         }
 
@@ -501,6 +518,19 @@
         
     }];
 
+}
+- (IBAction)unusedPicturesButtonPressed:(id)sender {
+    [[NSOperationQueue mainQueue] addOperationWithBlock:^{
+        
+        UIActionSheet *actionSheet = [[UIActionSheet alloc] init];
+        actionSheet.tag = 4;
+        actionSheet.title = NSLocalizedString(@"UNUSED PICTURES", nil);
+        actionSheet.delegate = self;
+        actionSheet.destructiveButtonIndex = [actionSheet addButtonWithTitle:NSLocalizedString(@"DELETE", nil)];
+        [actionSheet addButtonWithTitle:NSLocalizedString(@"CLOSE", nil)];
+        [actionSheet showInView:self.view];
+        
+    }];
 }
 
 - (void)checkDownloadingConditions {
@@ -532,14 +562,18 @@
 - (void)startPicturesDownloading {
     
     [STMPicturesController checkPhotos];
-    [STMPicturesController sharedController].downloadQueue.suspended = NO;
-    [self updateNonloadedPicturesInfo];
+    [STMPicturesController sharedController].downloadingPictures = YES;
+    [UIApplication sharedApplication].idleTimerDisabled = YES;
 
+    [self updateNonloadedPicturesInfo];
+    
 }
 
 - (void)stopPicturesDownloading {
     
-    [STMPicturesController sharedController].downloadQueue.suspended = YES;
+    [STMPicturesController sharedController].downloadingPictures = NO;
+    [UIApplication sharedApplication].idleTimerDisabled = NO;
+    
     [self updateNonloadedPicturesInfo];
 
 }
@@ -643,6 +677,15 @@
 
             }
             break;
+        case 4:
+            if (buttonIndex == 0) {
+                
+                [STMGarbageCollector removeUnusedImages];
+                self.unusedPicturesButton.hidden = YES;
+                
+            }
+            
+            break;
 
         default:
             break;
@@ -672,6 +715,14 @@
             if (buttonIndex == 1) {
                 [self showEnableWWANActionSheet];
             }
+            break;
+            
+        case 4:
+            if (buttonIndex == 0) {
+                [STMGarbageCollector removeUnusedImages];
+                self.unusedPicturesButton.hidden = YES;
+            }
+            
             break;
 
         default:
@@ -1070,13 +1121,12 @@
 - (void)sessionStatusChanged {
     
     
-    if ([[[STMSessionManager sharedManager].currentSession status] isEqualToString:@"running"]) {
+    if ([STMSessionManager sharedManager].currentSession.status == STMSessionRunning) {
     
         [self updateCloudImages];
         [self updateSyncDatesLabels];
         [self setupNonloadedPicturesButton];
         [self updateNonloadedPicturesInfo];
-
 //        self.downloadAlertWasShown = NO;
     }
 
@@ -1108,6 +1158,7 @@
     [self updateSyncDatesLabels];
     [self setupNonloadedPicturesButton];
     [self updateNonloadedPicturesInfo];
+    [self updateUnusedPicturesInfo];
     
     [self addObservers];
     [self startReachability];
@@ -1132,6 +1183,18 @@
         [[STMRootTBC sharedRootVC] newAppVersionAvailable:nil];
     }
     
+    if ([STMPicturesController sharedController].downloadingPictures) {
+        [UIApplication sharedApplication].idleTimerDisabled = YES;
+    }
+    
+}
+
+- (void)viewWillDisappear:(BOOL)animated {
+    
+    [super viewWillDisappear:animated];
+    
+    [UIApplication sharedApplication].idleTimerDisabled = NO;
+
 }
 
 - (void)didReceiveMemoryWarning {

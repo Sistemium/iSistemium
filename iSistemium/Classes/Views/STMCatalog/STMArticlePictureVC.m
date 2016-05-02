@@ -8,6 +8,7 @@
 
 #import "STMArticlePictureVC.h"
 #import "STMPicturesController.h"
+#import <Photos/Photos.h>
 
 
 @interface STMArticlePictureVC ()
@@ -15,6 +16,7 @@
 @property (weak, nonatomic) IBOutlet UIImageView *closeButtonView;
 @property (weak, nonatomic) IBOutlet UIImageView *pictureView;
 @property (weak, nonatomic) IBOutlet UILabel *titleLabel;
+@property (weak, nonatomic) IBOutlet UIImageView *sendToCameraRollButton;
 
 @property (nonatomic, strong) STMArticlePicture *picture;
 
@@ -27,28 +29,53 @@
 - (void)closeButtonPressed {
     
     [self.pageVC dismissViewControllerAnimated:YES completion:^{
-        
+
     }];
     
 }
 
-- (void)setupImage {
+- (void)sendToCameraRollButtonPressed {
     
+    if (!self.sendToCameraRollButton.hidden) {
+        UIImageWriteToSavedPhotosAlbum((UIImage*) self.pictureView.image, nil, nil, nil);
+        PHAuthorizationStatus status = [PHPhotoLibrary authorizationStatus];
+        
+        if (status == PHAuthorizationStatusAuthorized) {
+            UIAlertView *alert = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"SAVE TO CAMERA ROLL", nil)
+                                                            message:nil
+                                                           delegate:nil
+                                                  cancelButtonTitle:NSLocalizedString(@"OK", nil)
+                                                  otherButtonTitles:nil];
+            [alert show];
+        }
+        
+        else {
+            UIAlertView *alert = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"IMPOSSIBLE TO SAVE", nil)
+                                                            message:NSLocalizedString(@"GIVE PERMISSIONS", nil)
+                                                           delegate:nil
+                                                  cancelButtonTitle:NSLocalizedString(@"OK", nil)
+                                                  otherButtonTitles:nil];
+            [alert show];
+        }
+        
+    }
+    
+}
+
+- (void)setupImage {
+    self.sendToCameraRollButton.hidden = YES;
     if (self.article.pictures.count > 0) {
         
         NSSortDescriptor *sortDescriptor = [NSSortDescriptor sortDescriptorWithKey:@"deviceCts" ascending:YES];
         STMArticlePicture *picture = [self.article.pictures sortedArrayUsingDescriptors:@[sortDescriptor]][0];
         self.picture = picture;
-        
         if (picture.imagePath) {
-            
             [[self.pictureView viewWithTag:555] removeFromSuperview];
             self.pictureView.image = [UIImage imageWithContentsOfFile:[STMFunctions absolutePathForPath:picture.imagePath]];
-            
             [self removeObservers];
+            self.sendToCameraRollButton.hidden = NO;
             
         } else {
-            
             UIView *view = [[UIView alloc] initWithFrame:self.pictureView.bounds];
             view.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
             view.backgroundColor = [UIColor whiteColor];
@@ -66,9 +93,9 @@
             
             [self addObservers];
             
-            dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_BACKGROUND, 0), ^{
-                [STMPicturesController downloadConnectionForObject:picture];
-            });
+            NSManagedObjectID *pictureID = picture.objectID;
+            
+            [STMPicturesController downloadConnectionForObjectID:pictureID];
 
         }
         
@@ -111,6 +138,10 @@
     self.closeButtonView.userInteractionEnabled = YES;
     UITapGestureRecognizer *tap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(closeButtonPressed)];
     [self.closeButtonView addGestureRecognizer:tap];
+    
+    self.sendToCameraRollButton.userInteractionEnabled = YES;
+    tap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(sendToCameraRollButtonPressed)];
+    [self.sendToCameraRollButton addGestureRecognizer:tap];
     
 }
 

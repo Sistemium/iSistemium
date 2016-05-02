@@ -7,13 +7,13 @@
 //
 
 #import <Foundation/Foundation.h>
-#import "STMBarCode.h"
+#import "STMDatum.h"
 
 @class STMStockBatch;
 
 NS_ASSUME_NONNULL_BEGIN
 
-@interface STMStockBatchBarCode : STMBarCode
+@interface STMStockBatchBarCode : STMDatum
 
 // Insert code here to declare functionality of your managed object subclass
 

@@ -9,14 +9,14 @@
 #import <Foundation/Foundation.h>
 #import <CoreData/CoreData.h>
 
-@class STMComment;
 
 NS_ASSUME_NONNULL_BEGIN
 
 @interface STMDatum : NSManagedObject
 
 - (NSString *)currentChecksum;
-- (NSDictionary *)propertiesForKeys:(NSArray *)keys;
+- (NSDictionary *)propertiesForKeys:(NSArray *)keys withNulls:(BOOL)withNulls;
+- (NSDictionary *)relationshipXidsForKeys:(NSArray *)keys withNulls:(BOOL)withNulls;
 
 
 @end

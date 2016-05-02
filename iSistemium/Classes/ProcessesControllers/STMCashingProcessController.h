@@ -8,7 +8,7 @@
 
 #import "STMController.h"
 #import "STMOutlet.h"
-#import "STMDebt+Cashing.h"
+#import "STMDebt.h"
 #import "STMCashingController.h"
 
 typedef NS_ENUM(NSInteger, STMCashingProcessState) {
@@ -26,7 +26,7 @@ typedef NS_ENUM(NSInteger, STMCashingProcessState) {
 @property (nonatomic) STMCashingProcessState state;
 @property (nonatomic, strong) NSDate *selectedDate;
 @property (nonatomic, strong) NSMutableArray *debtsArray;
-@property (nonatomic, strong) NSMutableDictionary *debtsDictionary;
+@property (nonatomic, strong) NSMutableDictionary <NSData *, NSArray *> *debtsDictionary;
 @property (nonatomic, strong) NSMutableDictionary *commentsDictionary;
 @property (nonatomic, strong) NSDecimalNumber *remainderSumm;
 @property (nonatomic, strong) NSDecimalNumber *cashingSummLimit;

@@ -10,10 +10,15 @@
 
 @interface STMDatePickerVC ()
 @property (weak, nonatomic) IBOutlet UIDatePicker *datePicker;
-
+@property (weak, nonatomic) IBOutlet UIBarButtonItem *closeButton;
+@property (weak, nonatomic) IBOutlet UINavigationBar *navigationBar;
 @end
 
 @implementation STMDatePickerVC
+
+- (IBAction)close:(id)sender {
+    [self dismissViewControllerAnimated:YES completion:nil];
+}
 
 
 - (IBAction)dateValueChanged:(id)sender {
@@ -37,7 +42,8 @@
     
     [super viewDidLoad];
     self.datePicker.date = self.selectedDate;
-
+    _closeButton.title = NSLocalizedString(@"CLOSE", nil);
+    self.navigationBar.topItem.title = NSLocalizedString(@"SELECT DATE", nil);
 }
 
 - (void)didReceiveMemoryWarning

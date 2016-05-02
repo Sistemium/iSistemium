@@ -104,11 +104,11 @@ public final class SocketEngine: NSObject, WebSocketDelegate {
         stopPolling()
     }
     
-    private func checkIfMessageIsBase64Binary(var message: String) {
+    private func checkIfMessageIsBase64Binary(message: String) {
+        var message = message
         if message.hasPrefix("b4") {
             // binary in base64 string
-            message.removeRange(Range<String.Index>(start: message.startIndex,
-                end: message.startIndex.advancedBy(2)))
+            message.removeRange(message.startIndex ..< message.startIndex.advancedBy(2))
             
             if let data = NSData(base64EncodedString: message,
                 options: NSDataBase64DecodingOptions.IgnoreUnknownCharacters) {
@@ -527,7 +527,8 @@ public final class SocketEngine: NSObject, WebSocketDelegate {
         client?.parseBinaryData(data.subdataWithRange(NSMakeRange(1, data.length - 1)))
     }
 
-    private func parseEngineMessage(var message: String, fromPolling: Bool) {
+    private func parseEngineMessage(message: String, fromPolling: Bool) {
+        var message = message
         Logger.log("Got message: %@", type: logType, args: message)
 
         if fromPolling {
@@ -580,14 +581,15 @@ public final class SocketEngine: NSObject, WebSocketDelegate {
             return
         }
 
-        ++pongsMissed
+        pongsMissed += 1
         write("", withType: PacketType.Ping, withData: nil)
     }
 
     /// Send polling message.
     /// Only call on emitQueue
-    private func sendPollMessage(var msg: String, withType type: PacketType,
+    private func sendPollMessage(msg: String, withType type: PacketType,
         datas:[NSData]? = nil) {
+            var msg = msg
             Logger.log("Sending poll: %@ as type: %@", type: logType, args: msg, type.rawValue)
 
             doubleEncodeUTF8(&msg)
@@ -629,7 +631,7 @@ public final class SocketEngine: NSObject, WebSocketDelegate {
 
             dispatch_async(dispatch_get_main_queue()) {
                 self.pingTimer = NSTimer.scheduledTimerWithTimeInterval(pingInterval, target: self,
-                    selector: Selector("sendPing"), userInfo: nil, repeats: true)
+                    selector: #selector(SocketEngine.sendPing), userInfo: nil, repeats: true)
             }
         }
     }

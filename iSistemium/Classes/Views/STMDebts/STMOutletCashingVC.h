@@ -8,6 +8,15 @@
 
 #import "STMDebtsDetailsVC.h"
 
-@interface STMOutletCashingVC : STMDebtsDetailsVC
+@interface STMOutletCashingTV : UITableView
+
+@end
+
+@interface STMOutletCashingVC : STMDebtsDetailsVC <UITableViewDataSource, UITableViewDelegate, NSFetchedResultsControllerDelegate>
+
+@property (weak, nonatomic) IBOutlet STMOutletCashingTV *tableView;
+@property (nonatomic, strong) NSFetchedResultsController *resultsController;
+
+- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath;
 
 @end

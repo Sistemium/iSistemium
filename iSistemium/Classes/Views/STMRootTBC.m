@@ -119,7 +119,7 @@
 
 - (BOOL)newAppVersionAvailable {
     
-    if ([self.session.status isEqualToString:@"running"]) {
+    if (self.session.status == STMSessionRunning) {
 
         [STMClientDataController checkAppVersion];
     
@@ -289,7 +289,10 @@
             
             UIViewController *vc = [storyboard instantiateInitialViewController];
             vc.title = title;
-            vc.tabBarItem.image = [STMFunctions resizeImage:[UIImage imageNamed:imageName] toSize:CGSizeMake(30, 30)];
+            
+            UIImage *image = [UIImage imageNamed:imageName];
+            
+            if (image) vc.tabBarItem.image = [STMFunctions resizeImage:image toSize:CGSizeMake(30, 30)];
             
             if (!self.allTabsVCs[@(index)]) {
             
@@ -362,19 +365,35 @@
     NSArray *nullKeys = [iPhoneTabsJSON allKeysForObject:[NSNull null]];
     [iPhoneTabsJSON removeObjectsForKeys:nullKeys];
     
-    NSPredicate *predicate = [NSPredicate predicateWithFormat:@"name IN %@", iPhoneTabsJSON.allKeys];
+    NSPredicate *predicate = [NSPredicate predicateWithBlock:^BOOL(NSObject *object, NSDictionary *bindings) {
+        if ([object isKindOfClass:[NSDictionary class]]){
+            return [iPhoneTabsJSON.allKeys containsObject: (id _Nonnull) ((NSDictionary*) object)[@"name"] ];
+        }else{
+            return[(NSArray*) object filteredArrayUsingPredicate:[NSPredicate predicateWithFormat:@"name IN %@", iPhoneTabsJSON.allKeys]].count == ((NSArray*) object).count;
+        }
+    }];
     stcTabs = [stcTabs filteredArrayUsingPredicate:predicate];
     
     NSMutableArray *iPhoneStcTabs = [NSMutableArray array];
     
-    for (NSDictionary *stcTab in stcTabs) {
+    for (NSObject *element in stcTabs) {
         
-        if (stcTab[@"name"]) {
-            
-            NSMutableDictionary *tab = [stcTab mutableCopy];
-            tab[@"name"] = iPhoneTabsJSON[(id _Nonnull)stcTab[@"name"]];
+        if ([element isKindOfClass:[NSArray class]]){
+            NSMutableArray *tab = [NSMutableArray array];
+            for (NSDictionary *stcTab in (NSArray*) element){
+                NSMutableDictionary *tabElement = [stcTab mutableCopy];
+                tabElement[@"name"] = iPhoneTabsJSON[(id _Nonnull)stcTab[@"name"]];
+                [tab addObject:tabElement];
+            }
             [iPhoneStcTabs addObject:tab];
-
+        }else{
+            NSDictionary* stcTab = (NSDictionary*) element;
+            if (((NSDictionary*) stcTab)[@"name"]) {
+                NSMutableDictionary *tab = [stcTab mutableCopy];
+                tab[@"name"] = iPhoneTabsJSON[(id _Nonnull)stcTab[@"name"]];
+                [iPhoneStcTabs addObject:tab];
+                
+            }
         }
 
     }
@@ -397,9 +416,8 @@
         
 // temporary tab for coding
 //        [self registerTabWithStoryboardParameters:
-//                                                    @{@"name": @"STMScannerInfo",
-//                                                      @"title": @"Scanner Info",
-//                                                      @"imageName": @"scanner_info.png"}
+//                                                    @{@"name": @"STMScannerTest",
+//                                                      @"title": @"STMScannerTest"}
 //         
 //                                          atIndex:stcTabs.count];
 // end of temporary tab
@@ -677,6 +695,52 @@
 }
 
 
+#pragma mark - show/hide tabbar
+
+- (void)hideTabBar {
+    
+    [UIView beginAnimations:nil context:NULL];
+    [UIView setAnimationDuration:0.5];
+    
+    CGFloat viewHeight = CGRectGetHeight(self.view.frame);
+    
+    for (UIView *view in self.view.subviews) {
+        
+        if([view isKindOfClass:[UITabBar class]]) {
+            [view setFrame:CGRectMake(view.frame.origin.x, viewHeight, view.frame.size.width, view.frame.size.height)];
+        } else {
+            [view setFrame:CGRectMake(view.frame.origin.x, view.frame.origin.y, view.frame.size.width, viewHeight)];
+        }
+        
+    }
+    
+    [UIView commitAnimations];
+    
+}
+
+- (void)showTabBar {
+    
+    [UIView beginAnimations:nil context:NULL];
+    [UIView setAnimationDuration:0.5];
+    
+    CGFloat viewHeight = CGRectGetHeight(self.view.frame);
+    CGFloat tabbarHeight = CGRectGetHeight(self.tabBar.frame);
+
+    for (UIView *view in self.view.subviews) {
+
+        if([view isKindOfClass:[UITabBar class]]) {
+            [view setFrame:CGRectMake(view.frame.origin.x, viewHeight - tabbarHeight, view.frame.size.width, view.frame.size.height)];
+        } else {
+            [view setFrame:CGRectMake(view.frame.origin.x, view.frame.origin.y, view.frame.size.width, viewHeight - tabbarHeight)];
+        }
+        
+    }
+    
+    [UIView commitAnimations];
+    
+}
+
+
 #pragma mark - UITabBarControllerDelegate
 
 - (BOOL)tabBarController:(UITabBarController *)tabBarController shouldSelectViewController:(UIViewController *)viewController {
@@ -853,7 +917,7 @@
 
 - (void)sessionStatusChanged:(NSNotification *)notification {
     
-    if ([self.session.status isEqualToString:@"running"]) {
+    if (self.session.status == STMSessionRunning) {
         [self initAllTabs];
     }
     

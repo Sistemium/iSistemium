@@ -185,6 +185,7 @@
 "RECEIVE DATE" = "Receive date: ";
 "RECEIVE" = "Receive";
 "RECEIVE1" = "Receive";
+"RECEIVE2" = "Received %@ of";
 "0OBJECTS" = "no objects";
 "1OBJECTS" = "object";
 "2OBJECTS" = "objects";
@@ -451,6 +452,9 @@
 "ONE MORE CODE" = "One more code";
 "OPERATION COMPLETE" = "Operation complete";
 "MANUAL LINK BARCODE TO ARTICLE" = "Manual link barcode to article";
+"BY SUMM" ="by summ";
+"OF" = "of";
+"FOR" = "for";
 "0BATCHES" = "no batches";
 "1BATCHES" = "batch";
 "2BATCHES" = "batches";
@@ -463,4 +467,17 @@
 "ALL POSITIONS ARE SUPPLIED" = "All positions are supplied";
 "WRONG VOLUME TO REPEAT" = "Wrong volume to repeat";
 "REMAIN TO PICK" = "Remain to pick: ";
-
+"SELECT DATE" = "Select date";
+"FROM" = "from";
+"LAST SCANNED BARCODE" = "Last scanned barcode:";
+"RELOAD SCANNER DATA" = "Reload data";
+"UNKNOWN LOCATION" = "Unknown location";
+"DELETE ROUTE POINT" = "Delete route point";
+"SAVE TO CAMERA ROLL" = "Image was saved to the camera roll";
+"IMPOSSIBLE TO SAVE" = "Impossible to save image to the camera roll (access to photos is denied)";
+"GIVE PERMISSIONS" = "Change photos permissions in app settings";
+"0UNUSED" = "%lu unused %@";
+"1UNUSED" = "%lu unused %@";
+"2UNUSED" = "%lu unused %@";
+"5UNUSED" = "%lu unused %@";
+"UNUSED PICTURES" = "Unused pictures";

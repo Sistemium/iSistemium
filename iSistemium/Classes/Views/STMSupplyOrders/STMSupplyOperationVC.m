@@ -52,7 +52,7 @@
     }
     
     [self dismissViewControllerAnimated:YES completion:nil];
-
+    
 }
 
 - (IBAction)doneButtonPressed:(id)sender {
@@ -60,7 +60,7 @@
     [self saveData];
     self.parentTVC.repeatLastOperation = NO;
     [self dismissViewControllerAnimated:YES completion:nil];
-
+    
 }
 
 - (void)addStockBatchCode:(NSString *)code {
@@ -70,7 +70,7 @@
         [STMSoundController alertSay:NSLocalizedString(@"THIS STOCK BATCH ALREADY EXIST", nil)];
         
     } else {
-    
+        
         if (self.codesTVC.stockBatchCodes.count == MAX_CODES_PER_BATCH) {
             
             if (self.repeatButton.enabled) {
@@ -89,7 +89,7 @@
             [self updateRepeatButtonTitle];
             
         }
-
+        
     }
     
 }
@@ -102,13 +102,13 @@
                                                 newVolume:self.volumePicker.selectedVolume];
         
     } else if (self.supplyOrderArticleDoc) {
-    
+        
         self.supplyOrderArticleDoc.packageRel = @(self.volumePicker.packageRel);
         
         [STMSupplyOrdersProcessController createOperationForSupplyOrderArticleDoc:self.supplyOrderArticleDoc
                                                                         withCodes:[self.codesTVC.stockBatchCodes valueForKeyPath:@"code"]
                                                                         andVolume:self.volumePicker.selectedVolume];
-
+        
     }
     
 }
@@ -122,9 +122,9 @@
     NSInteger remainingVolume = [self.supplyOrderArticleDoc volumeRemainingToSupply];
     
     BOOL volumeIsGoodForRepeating = (selectedVolume > 0);
-        
+    
     self.doneButton.enabled = volumeIsGoodForRepeating;
-
+    
     if (selectedVolume > remainingVolume / 2) {
         volumeIsGoodForRepeating = NO;
     }
@@ -139,7 +139,7 @@
         NSString *pluralString = [pluralType stringByAppendingString:@"BATCHES"];
         
         NSString *expectedNumberOfBatchesLabelText = [NSString stringWithFormat:@"%@ %@", @(expectedNumberOfBatches), NSLocalizedString(pluralString, nil)];
-
+        
         NSInteger remainder = remainingVolume % selectedVolume;
         
         if (remainder > 0) {
@@ -148,29 +148,29 @@
             
             NSString *remainderString = [STMFunctions volumeStringWithVolume:remainder
                                                                andPackageRel:self.volumePicker.packageRel];
-
+            
             expectedNumberOfBatchesLabelText = [expectedNumberOfBatchesLabelText stringByAppendingString:remainderString];
             
         }
         
         self.expectedNumberOfBatchesLabel.text = expectedNumberOfBatchesLabelText;
-
+        
     } else {
         
         NSString *remainingVolumeString = [STMFunctions volumeStringWithVolume:remainingVolume
-                                                        andPackageRel:self.volumePicker.packageRel];
-
+                                                                 andPackageRel:self.volumePicker.packageRel];
+        
         self.expectedNumberOfBatchesLabel.text = remainingVolumeString;
         
     }
     
     [self updateRepeatButtonTitle];
-
+    
 }
 
 - (void)packageRelSelected {
     [self volumeSelected];
-
+    
 }
 
 
@@ -194,7 +194,7 @@
         } else if (self.initialBarcode) {
             
             [self.codesTVC addStockBatchCode:self.initialBarcode];
-
+            
         }
         
     }
@@ -222,15 +222,15 @@
         }
         
         NSString *repeatParameters = [NSString stringWithFormat:@"(%@, %@)", volumeString, numberOfBarcodesString];
-
+        
         
         NSString *repeatButtonTitle = [NSString stringWithFormat:@"%@ %@", NSLocalizedString(@"SUPPLY REPEAT BUTTON TITLE", nil), repeatParameters];
         self.repeatButton.title = repeatButtonTitle;
-
+        
     } else {
-
+        
         self.repeatButton.title = NSLocalizedString(@"SUPPLY REPEAT BUTTON TITLE", nil);
-
+        
     }
     
 }
@@ -242,7 +242,7 @@
     
     NSString *packageRelString = [NSString stringWithFormat:@"%@: %@", NSLocalizedString(@"PACKAGE REL", nil), [articleDoc operatingPackageRel]];
     articleLabel = [articleLabel stringByAppendingString:packageRelString];
-
+    
     return articleLabel;
     
 }
@@ -255,20 +255,20 @@
     self.volumePicker.owner = self;
     self.volumePicker.showPackageRel = YES;
     self.volumePicker.packageRelIsLocked = (self.supplyOrderArticleDoc.sourceOperations.count > 0);
-
+    
     if (self.supplyOperation && [self.supplyOperation.sourceAgent isKindOfClass:[STMSupplyOrderArticleDoc class]]) {
         
         NSMutableArray *toolbarButtons = [self.toolbar.items mutableCopy];
         
         [toolbarButtons removeObject:self.repeatButton];
         [self.toolbar setItems:toolbarButtons animated:YES];
-
+        
         self.supplyOrderArticleDoc = (STMSupplyOrderArticleDoc *)self.supplyOperation.sourceAgent;
         
         self.articleLabel.text = [self articleLabelForArticleDoc:self.supplyOrderArticleDoc];
-
+        
         self.volumePicker.maxVolume = [self.supplyOrderArticleDoc volumeRemainingToSupply] + self.supplyOperation.volume.integerValue;
-
+        
         self.volumePicker.packageRel = [self.supplyOrderArticleDoc operatingPackageRel].integerValue;
         
         self.volumePicker.selectedVolume = self.supplyOperation.volume.integerValue;
@@ -276,26 +276,26 @@
     } else if (self.supplyOrderArticleDoc) {
         
         self.articleLabel.text = [self articleLabelForArticleDoc:self.supplyOrderArticleDoc];
-
+        
         self.volumePicker.maxVolume = [self.supplyOrderArticleDoc volumeRemainingToSupply];
-
+        
         self.volumePicker.packageRel = [self.supplyOrderArticleDoc operatingPackageRel].integerValue;
         
         self.volumePicker.selectedVolume = (self.supplyOrderArticleDoc.sourceOperations.count > 0) ? [self.supplyOrderArticleDoc lastSourceOperationVolume] : 0;
-
+        
         [self updateRepeatButtonTitle];
-
+        
     }
     
     [self volumeSelected];
-
+    
 }
 
 - (void)viewDidLoad {
     
     [super viewDidLoad];
     [self customInit];
-
+    
 }
 
 - (void)didReceiveMemoryWarning {

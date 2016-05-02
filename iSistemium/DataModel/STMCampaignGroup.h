@@ -7,13 +7,13 @@
 //
 
 #import <Foundation/Foundation.h>
-#import "STMComment.h"
+#import "STMDatum.h"
 
 @class STMCampaign;
 
 NS_ASSUME_NONNULL_BEGIN
 
-@interface STMCampaignGroup : STMComment
+@interface STMCampaignGroup : STMDatum
 
 - (NSString *)displayName;
 

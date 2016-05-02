@@ -18,6 +18,7 @@
 + (STMSessionManager *)sharedManager;
 
 - (id <STMSession>)startSessionForUID:(NSString *)uid
+                               iSisDB:(NSString *)iSisDB
                         authDelegate:(id <STMRequestAuthenticatable>)authDelegate
                             trackers:(NSArray *)trackers
                             startSettings:(NSDictionary *)startSettings

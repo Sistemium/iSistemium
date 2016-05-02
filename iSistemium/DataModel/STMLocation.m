@@ -2,8 +2,8 @@
 //  STMLocation.m
 //  iSistemium
 //
-//  Created by Maxim Grigoriev on 23/08/15.
-//  Copyright (c) 2015 Sistemium UAB. All rights reserved.
+//  Created by Maxim Grigoriev on 08/02/16.
+//  Copyright © 2016 Sistemium UAB. All rights reserved.
 //
 
 #import "STMLocation.h"
@@ -12,21 +12,8 @@
 #import "STMShippingLocation.h"
 #import "STMTrack.h"
 
-
 @implementation STMLocation
 
-@dynamic altitude;
-@dynamic course;
-@dynamic horizontalAccuracy;
-@dynamic latitude;
-@dynamic longitude;
-@dynamic speed;
-@dynamic timestamp;
-@dynamic verticalAccuracy;
-@dynamic lastSeenAt;
-@dynamic photos;
-@dynamic shipmentRoutePoint;
-@dynamic shippings;
-@dynamic track;
+// Insert code here to add functionality to your managed object subclass
 
 @end

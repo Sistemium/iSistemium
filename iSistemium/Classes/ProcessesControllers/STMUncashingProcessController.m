@@ -181,7 +181,7 @@
 
 - (void)checkUncashing {
     
-    if ([self uncashingIsValid]) {
+    if ([self isCashingSelected] && [self uncashingIsValid]) {
         
         [[NSNotificationCenter defaultCenter] postNotificationName:@"uncashingIsValid" object:self];
         
@@ -204,22 +204,7 @@
 //        
 //    } else
         
-    if (self.cashingDictionary.allValues.count == 0) {
-
-        [[NSOperationQueue mainQueue] addOperationWithBlock:^{
-
-            UIAlertView *alert = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"ERROR", nil)
-                                                            message:NSLocalizedString(@"U SHOULD SELECT AT LEAST ONE CASHING", nil)
-                                                           delegate:nil
-                                                  cancelButtonTitle:NSLocalizedString(@"CANCEL", nil)
-                                                  otherButtonTitles:nil];
-            [alert show];
-            
-        }];
-
-        return NO;
-        
-    } else if (!self.uncashingType) {
+ if (!self.uncashingType) {
         
         [[NSOperationQueue mainQueue] addOperationWithBlock:^{
 
@@ -268,6 +253,29 @@
         
         return YES;
         
+    }
+    
+}
+
+- (BOOL)isCashingSelected {
+    
+    if (self.cashingDictionary.allValues.count == 0) {
+        
+        [[NSOperationQueue mainQueue] addOperationWithBlock:^{
+            
+            UIAlertView *alert = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"ERROR", nil)
+                                                            message:NSLocalizedString(@"U SHOULD SELECT AT LEAST ONE CASHING", nil)
+                                                           delegate:nil
+                                                  cancelButtonTitle:NSLocalizedString(@"CANCEL", nil)
+                                                  otherButtonTitles:nil];
+            [alert show];
+            
+        }];
+        
+        return NO;
+        
+    } else{
+        return YES;
     }
     
 }

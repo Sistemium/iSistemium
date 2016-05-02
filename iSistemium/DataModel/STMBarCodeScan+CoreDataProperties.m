@@ -13,6 +13,17 @@
 
 @implementation STMBarCodeScan (CoreDataProperties)
 
+@dynamic commentText;
+@dynamic deviceCts;
+@dynamic deviceTs;
+@dynamic id;
+@dynamic isFantom;
+@dynamic lts;
+@dynamic source;
+@dynamic sqts;
+@dynamic sts;
+@dynamic xid;
+@dynamic code;
 @dynamic destinationEntity;
 @dynamic destinationXid;
 

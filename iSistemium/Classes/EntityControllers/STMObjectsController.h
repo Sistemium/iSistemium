@@ -7,9 +7,14 @@
 //
 
 #import "STMController.h"
+
 #import <CoreData/CoreData.h>
-#import "STMRecordStatus.h"
 #import <Crashlytics/Crashlytics.h>
+#import <WebKit/WebKit.h>
+
+#import "STMRecordStatus.h"
+
+#import "STMEntitiesSubscribable.h"
 
 
 @interface STMObjectsController : STMController
@@ -28,6 +33,9 @@
 + (void)setRelationshipsFromArray:(NSArray *)array withCompletionHandler:(void (^)(BOOL success))completionHandler;
 + (void)setRelationshipFromDictionary:(NSDictionary *)dictionary withCompletionHandler:(void (^)(BOOL success))completionHandler;
 
++ (NSArray <NSString *> *)localDataModelEntityNames;
++ (NSArray *)coreEntityKeys;
++ (NSArray *)coreEntityRelationships;
 + (NSSet *)ownObjectKeysForEntityName:(NSString *)entityName;
 
 + (NSDictionary *)dictionaryForObject:(NSManagedObject *)object;
@@ -37,15 +45,14 @@
 
 + (void)removeObject:(NSManagedObject *)object;
 + (STMRecordStatus *)createRecordStatusAndRemoveObject:(NSManagedObject *)object;
++ (STMRecordStatus *)createRecordStatusAndRemoveObject:(NSManagedObject *)object withComment:(NSString *) commentText;
 
 + (void)dataLoadingFinished;
 
-//+ (NSManagedObject *)newObjectForEntityName:(NSString *)entityName;
 + (NSManagedObject *)newObjectForEntityName:(NSString *)entityName isFantom:(BOOL)isFantom;
 
 + (NSManagedObject *)objectForXid:(NSData *)xidData;
-
-+ (NSArray *)localDataModelEntityNames;
++ (NSManagedObject *)objectForXid:(NSData *)xidData entityName:(NSString *)entityName;
 
 + (NSArray *)objectsForEntityName:(NSString *)entityName;
 
@@ -56,6 +63,15 @@
                       withFantoms:(BOOL)withFantoms
            inManagedObjectContext:(NSManagedObjectContext *)context
                             error:(NSError **)error;
+
++ (BOOL)subscribeViewController:(UIViewController <STMEntitiesSubscribable> *)vc toEntities:(NSArray *)entities error:(NSError **)error;
++ (NSArray *)destroyObjectFromScriptMessage:(WKScriptMessage *)scriptMessage error:(NSError **)error;
++ (NSArray *)updateObjectsFromScriptMessage:(WKScriptMessage *)scriptMessage error:(NSError **)error;
++ (NSArray *)arrayOfObjectsRequestedByScriptMessage:(WKScriptMessage *)scriptMessage error:(NSError **)error;
++ (NSArray *)arrayForJSWithObjects:(NSArray <STMDatum *> *)objects;
++ (NSDictionary *)dictionaryForJSWithObject:(STMDatum *)object;
+
++ (void)requestObjectWithParameters:(NSDictionary *)parameters;
 
 
 @end

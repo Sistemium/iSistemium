@@ -216,6 +216,9 @@
     [self socket:[self sharedInstance].socket sendEvent:event withValue:value];
 }
 
+
+#pragma mark - sync
+
 + (NSArray *)unsyncedObjects {
     return [[self sharedInstance] unsyncedObjectsArray];
 }
@@ -722,6 +725,7 @@
 
 }
 
+
 #pragma mark - instance methods
 
 - (instancetype)init {
@@ -769,7 +773,7 @@
     
     STMSession *currentSession = [STMSessionManager sharedManager].currentSession;
     
-    if ([currentSession.status isEqualToString:@"running"]) {
+    if (currentSession.status == STMSessionRunning) {
         
         NSString *key = @"socketUrl";
         
@@ -801,7 +805,7 @@
     
     if (notification.object == session) {
         
-        if ([session.status isEqualToString:@"running"]) {
+        if (session.status == STMSessionRunning) {
             
             [self performFetches];
             
@@ -970,10 +974,6 @@
     if (self.isAuthorized && [STMSocketController document].managedObjectContext) {
         
         NSArray *fetchedObjects = [self.resultsControllers valueForKeyPath:@"@distinctUnionOfArrays.fetchedObjects"];
-        
-//        NSPredicate *predicate = [NSPredicate predicateWithFormat:@"checksum != currentChecksum"];
-        
-//        fetchedObjects = [fetchedObjects filteredArrayUsingPredicate:predicate];
         
         return fetchedObjects;
         

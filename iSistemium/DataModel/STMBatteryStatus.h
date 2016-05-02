@@ -2,18 +2,21 @@
 //  STMBatteryStatus.h
 //  iSistemium
 //
-//  Created by Maxim Grigoriev on 20/07/15.
-//  Copyright (c) 2015 Sistemium UAB. All rights reserved.
+//  Created by Maxim Grigoriev on 07/02/16.
+//  Copyright © 2016 Sistemium UAB. All rights reserved.
 //
 
 #import <Foundation/Foundation.h>
-#import <CoreData/CoreData.h>
-#import "STMComment.h"
+#import "STMDatum.h"
 
+NS_ASSUME_NONNULL_BEGIN
 
-@interface STMBatteryStatus : STMComment
+@interface STMBatteryStatus : STMDatum
 
-@property (nonatomic, retain) NSDecimalNumber * batteryLevel;
-@property (nonatomic, retain) NSString * batteryState;
+// Insert code here to declare functionality of your managed object subclass
 
 @end
+
+NS_ASSUME_NONNULL_END
+
+#import "STMBatteryStatus+CoreDataProperties.h"

@@ -54,6 +54,7 @@
 @property (nonatomic ,strong) STMSpinnerView *spinner;
 
 @property (nonatomic, strong) UIView *picturesView;
+@property (nonatomic, strong) UIView *downloadPlaceholder;
 
 @property (nonatomic, strong) STMShipmentTVC *shipmentTVC;
 
@@ -186,6 +187,25 @@
     
 }
 
+- (UIView *)downloadPlaceholder {
+
+    if (!_downloadPlaceholder) {
+
+        UIImage *image = [[STMFunctions resizeImage:[UIImage imageNamed:@"Download-100.png"] toSize:THUMB_SIZE] imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate];
+
+        UIImageView *imageView = [[UIImageView alloc] initWithImage:image];
+        imageView.tintColor = [UIColor grayColor];
+
+        UITapGestureRecognizer *tap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(photoButtonPressed:)];
+        imageView.gestureRecognizers = @[tap];
+        imageView.userInteractionEnabled = YES;
+
+        _downloadPlaceholder = imageView;
+
+    }
+    return _downloadPlaceholder;
+    
+}
 
 #pragma mark - resultsController
 
@@ -328,11 +348,24 @@
             
             if (SYSTEM_VERSION >= 8.0) {
                 
-                UIView *rootView = [[[UIApplication sharedApplication] keyWindow] rootViewController].view;
-                CGRect originalFrame = [[UIScreen mainScreen] bounds];
+                UIView *rootView = [UIApplication sharedApplication].keyWindow.rootViewController.view;
+                CGRect originalFrame = [UIScreen mainScreen].bounds;
                 CGRect screenFrame = [rootView convertRect:originalFrame fromView:nil];
                 self.cameraOverlayView.frame = screenFrame;
                 
+                CGFloat camHeight = screenFrame.size.width * 4 / 3; // 4/3 — camera aspect ratio
+                
+                CGFloat toolbarHeight = TOOLBAR_HEIGHT;
+                
+                for (UIView *subview in self.cameraOverlayView.subviews)
+                    if ([subview isKindOfClass:[UIToolbar class]])
+                        toolbarHeight = subview.frame.size.height;
+                
+                CGFloat translationDistance = (screenFrame.size.height - toolbarHeight - camHeight) / 2;
+                
+                CGAffineTransform translate = CGAffineTransformMakeTranslation(0.0, translationDistance);
+                imagePickerController.cameraViewTransform = translate;
+
             }
             
             imagePickerController.cameraOverlayView = self.cameraOverlayView;
@@ -555,7 +588,7 @@
 
 - (CGFloat)heightForRoutePointCell {
     
-    CGFloat diff = [self heightDiffForText:[STMFunctions shortCompanyName:self.point.name]];
+    CGFloat diff = [self heightDiffForText:[STMFunctions shortCompanyName:(NSString *)self.point.name]];
     
     CGFloat height = [self estimatedHeightForRow] + diff;
     
@@ -754,8 +787,12 @@
 
 - (void)fillCell:(UITableViewCell *)cell withRoute:(STMShipmentRoute *)route {
     
-    cell.textLabel.text = [STMFunctions dayWithDayOfWeekFromDate:route.date];
-    cell.detailTextLabel.text = @"";
+    if (route.date) {
+        
+        cell.textLabel.text = [STMFunctions dayWithDayOfWeekFromDate:(NSDate *)route.date];
+        cell.detailTextLabel.text = @"";
+
+    }
 
 }
 
@@ -770,7 +807,7 @@
 
 - (void)fillCell:(UITableViewCell *)cell withRoutePoint:(STMShipmentRoutePoint *)point {
 
-    cell.textLabel.text = [STMFunctions shortCompanyName:point.name];
+    cell.textLabel.text = [STMFunctions shortCompanyName:(NSString *)point.name];
     cell.textLabel.numberOfLines = 0;
     
     cell.detailTextLabel.text = [point shortInfo];
@@ -827,7 +864,7 @@
         buttonCell.titleLabel.textAlignment = NSTextAlignmentCenter;
         
         if (self.point.reachedAtLocation) {
-            buttonCell.detailLabel.text = [[STMFunctions dateMediumTimeMediumFormatter] stringFromDate:self.point.reachedAtLocation.timestamp];
+            buttonCell.detailLabel.text = [[STMFunctions dateMediumTimeMediumFormatter] stringFromDate:(NSDate *)self.point.reachedAtLocation.timestamp];
         } else {
             buttonCell.detailLabel.text = @"";
         }
@@ -939,20 +976,21 @@
         NSArray *photoArray = [[photos sortedArrayUsingDescriptors:@[sortDesriptor]] subarrayWithRange:range];
         
         for (STMPicture *picture in photoArray) {
+
+            UIView *pictureButton = (picture.imageThumbnail) ? [self pictureButtonWithPicture:picture] : self.downloadPlaceholder;
             
-            UIView *pictureButton = [self pictureButtonWithPicture:picture];
+            CGFloat cellImageSize = (picture.imageThumbnail) ? CELL_IMAGES_SIZE : CELL_IMAGES_SIZE - 5;
             
             NSUInteger count = self.picturesView.subviews.count;
-            CGFloat x = (count > 0) ? count * (CELL_IMAGES_SIZE + IMAGE_PADDING) : 0;
+            CGFloat x = (count > 0) ? count * (cellImageSize + IMAGE_PADDING) : 0;
             
-            pictureButton.frame = CGRectMake(x, 0, CELL_IMAGES_SIZE, CELL_IMAGES_SIZE);
+            pictureButton.frame = CGRectMake(x, 0, cellImageSize, cellImageSize);
             
             [self.picturesView addSubview:pictureButton];
             
         }
         
     }
-    
     
     UIView *addButton = [self addPhotoButton];
     
@@ -1133,7 +1171,6 @@
 - (void)controllerDidChangeContent:(NSFetchedResultsController *)controller {
     
 //    [self.tableView reloadData];
-    [self.tableView reloadSections:[NSIndexSet indexSetWithIndex:1] withRowAnimation:UITableViewRowAnimationNone];
     [self.tableView reloadSections:[NSIndexSet indexSetWithIndex:3] withRowAnimation:UITableViewRowAnimationNone];
     
 }
@@ -1605,13 +1642,13 @@
     
     if (!self.point.shippingLocation.location && self.point.address) {
         
-        [[[CLGeocoder alloc] init] geocodeAddressString:self.point.address completionHandler:^(NSArray *placemarks, NSError *error) {
+        [[[CLGeocoder alloc] init] geocodeAddressString:(NSString *)self.point.address completionHandler:^(NSArray *placemarks, NSError *error) {
             
             if (!error) {
                 
                 CLPlacemark *placemark = placemarks.firstObject;
                 
-                [self.point updateShippingLocationWithGeocodedLocation:placemark.location];
+                [self.point updateShippingLocationWithGeocodedLocation:(CLLocation *)placemark.location];
                 
                 [self.tableView reloadData];
                 [self setupNavBar];

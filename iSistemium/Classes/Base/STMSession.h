@@ -16,11 +16,13 @@
 #import "STMBatteryTracker.h"
 #import "STMSyncer.h"
 
+
 @interface STMSession : NSObject <STMSession>
 
 @property (nonatomic, strong) id <STMRequestAuthenticatable> authDelegate;
 @property (nonatomic, strong) NSString *uid;
-@property (nonatomic, strong) NSString *status;
+@property (nonatomic, strong) NSString *iSisDB;
+@property (nonatomic) STMSessionStatus status;
 @property (nonatomic, strong) STMDocument *document;
 @property (nonatomic, strong) STMLogger *logger;
 @property (nonatomic, strong) id <STMSessionManager> manager;
@@ -34,6 +36,7 @@
 
 
 + (STMSession *)initWithUID:(NSString *)uid
+                     iSisDB:(NSString *)iSisDB
               authDelegate:(id <STMRequestAuthenticatable>)authDelegate
                   trackers:(NSArray *)trackers
              startSettings:(NSDictionary *)startSettings

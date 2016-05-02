@@ -196,7 +196,7 @@
             [self.debtsArray addObject:debt];
             
             if ([self.cashingSummLimit doubleValue] > 0) {
-                self.remainderSumm = [self.remainderSumm decimalNumberBySubtracting:debt.calculatedSum];
+                self.remainderSumm = (debt.calculatedSum) ? [self.remainderSumm decimalNumberBySubtracting:(NSDecimalNumber *)debt.calculatedSum] : self.remainderSumm;
             }
             
             [[NSNotificationCenter defaultCenter] postNotificationName:@"debtAdded"

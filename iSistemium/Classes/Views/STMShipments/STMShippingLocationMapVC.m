@@ -35,7 +35,6 @@ typedef NS_ENUM(NSInteger, STMShippingLocationState) {
 @property (weak, nonatomic) IBOutlet MKMapView *mapView;
 @property (weak, nonatomic) IBOutlet UIButton *locationButton;
 
-@property (nonatomic, strong) STMShippingLocation *shippingLocation;
 @property (nonatomic, strong) STMLocation *location;
 
 @property (nonatomic, weak) STMSession *session;
@@ -67,6 +66,9 @@ typedef NS_ENUM(NSInteger, STMShippingLocationState) {
 #pragma mark - setters & getters
 
 - (STMShippingLocation *)shippingLocation {
+    if (_shippingLocation){
+        return _shippingLocation;
+    }
     return self.point.shippingLocation;
 }
 
@@ -738,7 +740,7 @@ typedef NS_ENUM(NSInteger, STMShippingLocationState) {
 
 - (void)customInit {
     
-    if (self.point) {
+    if (self.shippingLocation) {
         
         [self addObservers];
         [self initState];

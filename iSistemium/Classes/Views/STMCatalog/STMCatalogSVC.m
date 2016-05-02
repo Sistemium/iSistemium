@@ -262,7 +262,7 @@ static NSString *showOnlyWithPicturesKey = @"showOnlyWithPictures";
         
         if (priceTypeXid && [priceTypeXid isKindOfClass:[NSData class]]) {
             
-            NSManagedObject *priceType = [STMObjectsController objectForXid:priceTypeXid];
+            NSManagedObject *priceType = [STMObjectsController objectForXid:priceTypeXid entityName:NSStringFromClass([STMPriceType class])];
             
             if ([priceType isKindOfClass:[STMPriceType class]]) _selectedPriceType = (STMPriceType *)priceType;
             
