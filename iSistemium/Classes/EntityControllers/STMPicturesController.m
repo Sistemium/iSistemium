@@ -418,7 +418,7 @@
 }
 
 + (void)checkUploadedPhotos {
-    
+    int counter = 0;
     NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:NSStringFromClass([STMPhoto class])];
     request.sortDescriptors = @[[NSSortDescriptor sortDescriptorWithKey:@"id" ascending:YES selector:@selector(compare:)]];
     request.predicate = [NSPredicate predicateWithFormat:@"href == %@", nil];
@@ -435,6 +435,7 @@
             if (photoData && photoData.length > 0) {
                 
                 [[self sharedController] addUploadOperationForPicture:picture data:photoData];
+                counter++;
                 
             } else {
                 
@@ -447,6 +448,9 @@
         }
         
     }
+    
+    NSString *logMessage = [NSString stringWithFormat:@"Sending %i photos",counter];
+    [[STMLogger sharedLogger] saveLogMessageWithText:logMessage type:@"important"];
     
 }
 

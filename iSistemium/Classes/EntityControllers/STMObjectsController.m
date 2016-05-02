@@ -73,7 +73,7 @@
 - (NSMutableDictionary <NSString *, NSArray <UIViewController <STMEntitiesSubscribable> *> *> *)entitiesToSubscribe {
     
     if (!_entitiesToSubscribe) {
-    
+        
         _entitiesToSubscribe = @{}.mutableCopy;
         
     }
@@ -129,12 +129,12 @@
 }
 
 //- (NSMutableDictionary *)objectsCache {
-//    
+//
 //    if (!_objectsCache) {
 //        _objectsCache = [@{} mutableCopy];
 //    }
 //    return _objectsCache;
-//    
+//
 //}
 
 - (instancetype)init {
@@ -155,12 +155,12 @@
            selector:@selector(sessionStatusChanged:)
                name:NOTIFICATION_SESSION_STATUS_CHANGED
              object:nil];
-
+    
     [nc addObserver:self
            selector:@selector(objectContextDidSave:)
                name:NSManagedObjectContextDidSaveNotification
              object:nil];
-
+    
     [nc addObserver:self
            selector:@selector(documentSavedSuccessfully)
                name:@"documentSavedSuccessfully"
@@ -179,7 +179,7 @@
         STMSession *session = notification.object;
         
         if (session.status != STMSessionRunning) {
-//            self.objectsCache = nil;
+            //            self.objectsCache = nil;
         }
         
     }
@@ -193,7 +193,7 @@
         NSManagedObjectContext *context = (NSManagedObjectContext *)notification.object;
         
         if ([context isEqual:[STMObjectsController document].managedObjectContext]) {
-
+            
             if (self.isInFlushingProcess) {
                 
                 if ([UIApplication sharedApplication].applicationState == UIApplicationStateBackground) {
@@ -234,10 +234,10 @@
 #pragma mark - recieved objects management
 
 + (void)processingOfDataArray:(NSArray *)array roleName:(NSString *)roleName withCompletionHandler:(void (^)(BOOL success))completionHandler {
-
-//    NSDate *start = [NSDate date];
-//    NSString *startString = [[STMFunctions dateFormatter] stringFromDate:start];
-//    NSLog(@"--------------------s %@", startString);
+    
+    //    NSDate *start = [NSDate date];
+    //    NSString *startString = [[STMFunctions dateFormatter] stringFromDate:start];
+    //    NSLog(@"--------------------s %@", startString);
     
     if (roleName) {
         
@@ -257,10 +257,10 @@
         
     }];
     
-//    NSDate *finish = [NSDate date];
-//    NSString *finishString = [[STMFunctions dateFormatter] stringFromDate:finish];
-//    NSLog(@"--------------------f %@", finishString);
-
+    //    NSDate *finish = [NSDate date];
+    //    NSString *finishString = [[STMFunctions dateFormatter] stringFromDate:finish];
+    //    NSLog(@"--------------------f %@", finishString);
+    
 }
 
 + (void)insertObjectsFromArray:(NSArray *)array withCompletionHandler:(void (^)(BOOL success))completionHandler {
@@ -276,24 +276,24 @@
         }];
         
     }
-
+    
     completionHandler(result);
-
+    
 }
 
 + (void)insertObjectFromDictionary:(NSDictionary *)dictionary withCompletionHandler:(void (^)(BOOL success))completionHandler {
-
-// time checking
-//    NSDate *start = [NSDate date];
-// -------------
+    
+    // time checking
+    //    NSDate *start = [NSDate date];
+    // -------------
     
     NSString *name = dictionary[@"name"];
     NSDictionary *properties = dictionary[@"properties"];
-
+    
     NSArray *nameExplode = [name componentsSeparatedByString:@"."];
     NSString *nameTail = (nameExplode.count > 1) ? nameExplode[1] : name;
     NSString *capEntityName = [nameTail stringByReplacingCharactersInRange:NSMakeRange(0,1) withString:[[nameTail substringToIndex:1] capitalizedString]];
-
+    
     NSString *entityName = [ISISTEMIUM_PREFIX stringByAppendingString:capEntityName];
     
     NSArray *dataModelEntityNames = [self localDataModelEntityNames];
@@ -319,18 +319,18 @@
                 object = [STMEntityController entityWithName:internalName];
                 
             }
-
-// time checking
-//            [[self sharedController].timesDic[@"1"] addObject:@([start timeIntervalSinceNow])];
-// -------------
+            
+            // time checking
+            //            [[self sharedController].timesDic[@"1"] addObject:@([start timeIntervalSinceNow])];
+            // -------------
             
             if (!object) {
                 object = (xid) ? [self objectForEntityName:entityName andXidString:xid] : [self newObjectForEntityName:entityName];
             }
             
-// time checking
-//            [[self sharedController].timesDic[@"2"] addObject:@([start timeIntervalSinceNow])];
-// -------------
+            // time checking
+            //            [[self sharedController].timesDic[@"2"] addObject:@([start timeIntervalSinceNow])];
+            // -------------
             
             if (![self isWaitingToSyncForObject:object]) {
                 
@@ -339,16 +339,16 @@
                 
             }
             
-// time checking
-//            [[self sharedController].timesDic[@"3"] addObject:@([start timeIntervalSinceNow])];
-// -------------
+            // time checking
+            //            [[self sharedController].timesDic[@"3"] addObject:@([start timeIntervalSinceNow])];
+            // -------------
             
         } else {
             
             NSLog(@"object %@ with xid %@ have recordStatus.isRemoved == YES", entityName, xid);
             
         }
-            
+        
         completionHandler(YES);
         
     } else {
@@ -363,9 +363,9 @@
 
 + (void)processingOfObject:(NSManagedObject *)object withEntityName:(NSString *)entityName fillWithValues:(NSDictionary *)properties {
     
-// time checking
-//    NSDate *start = [NSDate date];
-// -------------
+    // time checking
+    //    NSDate *start = [NSDate date];
+    // -------------
     
     NSSet *ownObjectKeys = [self ownObjectKeysForEntityName:entityName];
     
@@ -382,7 +382,7 @@
             
             [object setValue:value forKey:key];
             
-//            if ([key isEqualToString:@"href"]) [STMPicturesController hrefProcessingForObject:object];
+            //            if ([key isEqualToString:@"href"]) [STMPicturesController hrefProcessingForObject:object];
             
         } else {
             
@@ -405,12 +405,12 @@
     [self processingOfRelationshipsForObject:object withEntityName:entityName andValues:properties];
     
     [object setValue:[NSDate date] forKey:@"lts"];
-
+    
     [self postprocessingForObject:object withEntityName:entityName];
-
-// time checking
-//    [[self sharedController].timesDic[@"4"] addObject:@([start timeIntervalSinceNow])];
-// -------------
+    
+    // time checking
+    //    [[self sharedController].timesDic[@"4"] addObject:@([start timeIntervalSinceNow])];
+    // -------------
     
     if ([[self sharedController].entitiesToSubscribe.allKeys containsObject:entityName]) {
         if ([object isKindOfClass:[STMDatum class]]) [self sendSubscribedEntityObject:(STMDatum *)object entityName:entityName];
@@ -439,7 +439,7 @@
         value = [STMFunctions dataFromString:[value stringByReplacingOccurrencesOfString:@"-" withString:@""]];
         
     }
-
+    
     return value;
     
 }
@@ -498,14 +498,14 @@
                 }
                 
             }
-
+            
         } else {
             
             if (properties[relationship]) {
                 
                 NSString *logMessage = [NSString stringWithFormat:@"not correct %@ relationship dictionary for %@ %@", relationship, entityName, [object valueForKey:@"xid"]];
                 [[STMLogger sharedLogger] saveLogMessageWithText:logMessage type:@"error"];
-
+                
             }
             
         }
@@ -515,26 +515,26 @@
 }
 
 - (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context {
-
-//    if ([[change valueForKey:NSKeyValueChangeOldKey] isKindOfClass:[NSNull class]]) {
-//        
-//        if ([object isKindOfClass:[NSManagedObject class]]) {
-//            
-//            NSManagedObjectContext *context = [STMObjectsController document].managedObjectContext;
-//            NSManagedObjectContext *parentContext = context.parentContext;
-//            
-//            CLS_LOG(@"context %@", context);
-//            CLS_LOG(@"parentContext %@", parentContext);
-//            CLS_LOG(@"object.context %@", [(NSManagedObject *)object managedObjectContext]);
-//            CLS_LOG(@"object isDeleted %d", [(NSManagedObject *)object isDeleted]);
-//            
-//        }
-//
-//        CLS_LOG(@"applicationState %ld", (long)[UIApplication sharedApplication].applicationState);
-//        CLS_LOG(@"object %@", object);
-//        CLS_LOG(@"change %@", change);
-//        
-//    }
+    
+    //    if ([[change valueForKey:NSKeyValueChangeOldKey] isKindOfClass:[NSNull class]]) {
+    //
+    //        if ([object isKindOfClass:[NSManagedObject class]]) {
+    //
+    //            NSManagedObjectContext *context = [STMObjectsController document].managedObjectContext;
+    //            NSManagedObjectContext *parentContext = context.parentContext;
+    //
+    //            CLS_LOG(@"context %@", context);
+    //            CLS_LOG(@"parentContext %@", parentContext);
+    //            CLS_LOG(@"object.context %@", [(NSManagedObject *)object managedObjectContext]);
+    //            CLS_LOG(@"object isDeleted %d", [(NSManagedObject *)object isDeleted]);
+    //
+    //        }
+    //
+    //        CLS_LOG(@"applicationState %ld", (long)[UIApplication sharedApplication].applicationState);
+    //        CLS_LOG(@"object %@", object);
+    //        CLS_LOG(@"change %@", change);
+    //
+    //    }
     
     [object removeObserver:self forKeyPath:keyPath];
     
@@ -551,22 +551,22 @@
         }
         
     }
-
+    
 }
 
 + (void)postprocessingForObject:(NSManagedObject *)object withEntityName:(NSString *)entityName {
     
     if ([entityName isEqualToString:NSStringFromClass([STMMessage class])]) {
         
-//        [[NSNotificationCenter defaultCenter] postNotificationName:@"gotNewMessage" object:nil];
+        //        [[NSNotificationCenter defaultCenter] postNotificationName:@"gotNewMessage" object:nil];
         
     } else if ([entityName isEqualToString:NSStringFromClass([STMCampaignPicture class])]) {
         
-//        [[NSNotificationCenter defaultCenter] postNotificationName:@"gotNewCampaignPicture" object:nil];
+        //        [[NSNotificationCenter defaultCenter] postNotificationName:@"gotNewCampaignPicture" object:nil];
         
     } else if ([entityName isEqualToString:NSStringFromClass([STMCampaign class])]) {
         
-//        [[NSNotificationCenter defaultCenter] postNotificationName:@"gotNewCampaign" object:nil];
+        //        [[NSNotificationCenter defaultCenter] postNotificationName:@"gotNewCampaign" object:nil];
         
     } else if ([entityName isEqualToString:NSStringFromClass([STMRecordStatus class])]) {
         
@@ -576,7 +576,7 @@
         
         if (affectedObject) {
             
-//            if ([recordStatus.isRead boolValue]) [[NSNotificationCenter defaultCenter] postNotificationName:@"messageIsRead" object:nil];
+            //            if ([recordStatus.isRead boolValue]) [[NSNotificationCenter defaultCenter] postNotificationName:@"messageIsRead" object:nil];
             if ([recordStatus.isRemoved boolValue]) [self removeObject:affectedObject];
             
         }
@@ -594,7 +594,7 @@
         }
         
     }
-
+    
 }
 
 
@@ -613,23 +613,23 @@
         }];
         
     }
-
+    
     completionHandler(result);
     
 }
 
 + (void)setRelationshipFromDictionary:(NSDictionary *)dictionary withCompletionHandler:(void (^)(BOOL success))completionHandler {
     
-// time checking
-//    NSDate *start = [NSDate date];
-// -------------
+    // time checking
+    //    NSDate *start = [NSDate date];
+    // -------------
     
     NSString *name = dictionary[@"name"];
     NSArray *nameExplode = [name componentsSeparatedByString:@"."];
     NSString *entityName = [ISISTEMIUM_PREFIX stringByAppendingString:nameExplode[1]];
-
+    
     NSDictionary *serverDataModel = [[STMEntityController stcEntities] copy];
-
+    
     if ([[serverDataModel allKeys] containsObject:entityName]) {
         
         STMEntity *entityModel = serverDataModel[entityName];
@@ -652,29 +652,29 @@
             NSLog(@"Not ok relationship dictionary %@", dictionary);
             
         }
-
-// time checking
-//        [[self sharedController].timesDic[@"5"] addObject:@([start timeIntervalSinceNow])];
-// -------------
+        
+        // time checking
+        //        [[self sharedController].timesDic[@"5"] addObject:@([start timeIntervalSinceNow])];
+        // -------------
         
         if (ok) {
             
             NSManagedObject *ownerObject = [self objectForEntityName:roleOwnerEntityName andXidString:ownerXid];
             NSManagedObject *destinationObject = [self objectForEntityName:destinationEntityName andXidString:destinationXid];
             
-// time checking
-//            [[self sharedController].timesDic[@"6"] addObject:@([start timeIntervalSinceNow])];
-// -------------
+            // time checking
+            //            [[self sharedController].timesDic[@"6"] addObject:@([start timeIntervalSinceNow])];
+            // -------------
             
             NSSet *destinationSet = [ownerObject valueForKey:roleName];
             
             if ([destinationSet containsObject:destinationObject]) {
-
+                
                 NSLog(@"already have relationship %@ %@ — %@ %@", roleOwnerEntityName, ownerXid, destinationEntityName, destinationXid);
                 
                 
             } else {
-
+                
                 BOOL ownerIsWaitingForSync = [self isWaitingToSyncForObject:ownerObject];
                 BOOL destinationIsWaitingForSync = [self isWaitingToSyncForObject:destinationObject];
                 
@@ -682,7 +682,7 @@
                 NSDate *destinationDeviceTs = [destinationObject valueForKey:@"deviceTs"];
                 
                 [[ownerObject mutableSetValueForKey:roleName] addObject:destinationObject];
-
+                
                 if (!ownerIsWaitingForSync) {
                     [ownerObject setValue:ownerDeviceTs forKey:@"deviceTs"];
                 }
@@ -696,16 +696,16 @@
             
         }
         
-// time checking
-//        [[self sharedController].timesDic[@"7"] addObject:@([start timeIntervalSinceNow])];
-// -------------
+        // time checking
+        //        [[self sharedController].timesDic[@"7"] addObject:@([start timeIntervalSinceNow])];
+        // -------------
         
         completionHandler(YES);
         
     } else {
         
         NSLog(@"dataModel have no relationship's entity with name %@", entityName);
-
+        
         completionHandler(NO);
         
     }
@@ -725,7 +725,7 @@
         NSDate *deviceTs = [object valueForKey:@"deviceTs"];
         
         return (isInSyncList && lts && [lts compare:deviceTs] == NSOrderedAscending);
-
+        
     } else {
         return NO;
     }
@@ -737,8 +737,8 @@
 
 + (NSManagedObject *)objectForXid:(NSData *)xidData {
     
-//    id cachedObject = [self sharedController].objectsCache[xidData];
-//    return (NSManagedObject *)cachedObject;
+    //    id cachedObject = [self sharedController].objectsCache[xidData];
+    //    return (NSManagedObject *)cachedObject;
     
     for (NSString *entityName in [self localDataModelEntityNames]) {
         
@@ -747,9 +747,9 @@
         if (object) return object;
         
     }
-
+    
     return nil;
-
+    
 }
 
 + (NSManagedObject *)objectForXid:(NSData *)xidData entityName:(NSString *)entityName {
@@ -763,7 +763,7 @@
         NSArray *fetchResult = [[self document].managedObjectContext executeFetchRequest:request error:nil];
         
         if (fetchResult.firstObject) return fetchResult.firstObject;
-
+        
     }
     
     return nil;
@@ -777,22 +777,22 @@
     if ([dataModelEntityNames containsObject:entityName]) {
         
         NSData *xidData = [STMFunctions xidDataFromXidString:xid];
-
+        
         NSManagedObject *object = [self objectForXid:xidData entityName:entityName];
         
         if (object) {
             
-//            if (![object.entity.name isEqualToString:entityName]) {
-//                
-//                NSLog(@"No %@ object with xid %@, %@ object fetched instead", entityName, xid, object.entity.name);
-//                object = nil;
-//                
-//            }
+            //            if (![object.entity.name isEqualToString:entityName]) {
+            //
+            //                NSLog(@"No %@ object with xid %@, %@ object fetched instead", entityName, xid, object.entity.name);
+            //                object = nil;
+            //
+            //            }
             
         } else {
             
             object = [self newObjectForEntityName:entityName andXid:xidData];
-        
+            
         }
         
         return object;
@@ -820,7 +820,7 @@
 + (NSManagedObject *)newObjectForEntityName:(NSString *)entityName andXid:(NSData *)xidData isFantom:(BOOL)isFantom {
     
     if ([self document].managedObjectContext) {
-    
+        
         NSManagedObject *object = [STMEntityDescription insertNewObjectForEntityForName:entityName inManagedObjectContext:[self document].managedObjectContext];
         [object setValue:@(isFantom) forKey:@"isFantom"];
         
@@ -830,10 +830,10 @@
             xidData = [object valueForKey:@"xid"];
         }
         
-//        [self sharedController].objectsCache[xidData] = object;
+        //        [self sharedController].objectsCache[xidData] = object;
         
         return object;
-
+        
     } else {
         
         return nil;
@@ -858,9 +858,9 @@
         if (fetchResult) [results addObjectsFromArray:fetchResult];
         
     }
-
+    
     return results;
-
+    
 }
 
 + (void)initObjectsCacheWithCompletionHandler:(void (^)(BOOL success))completionHandler {
@@ -868,28 +868,28 @@
     TICK;
     NSLog(@"initObjectsCache tick");
     
-//    [self sharedController].objectsCache = nil;
-
-//    NSArray *allObjects = [self allObjectsFromContext:[self document].managedObjectContext];
-
-//    for (NSManagedObject *object in allObjects) {
-//        
-//        if ([object isKindOfClass:[STMShippingLocation class]]) {
-//            [self removeObject:object];
-//        }
-//        
-//    }
-//    
-//    allObjects = [self allObjectsFromContext:[self document].managedObjectContext];
+    //    [self sharedController].objectsCache = nil;
+    
+    //    NSArray *allObjects = [self allObjectsFromContext:[self document].managedObjectContext];
+    
+    //    for (NSManagedObject *object in allObjects) {
+    //
+    //        if ([object isKindOfClass:[STMShippingLocation class]]) {
+    //            [self removeObject:object];
+    //        }
+    //
+    //    }
+    //
+    //    allObjects = [self allObjectsFromContext:[self document].managedObjectContext];
     
     NSLog(@"fetch existing objects for initObjectsCache");
     TOCK;
     
-//    NSArray *keys = [allObjects valueForKeyPath:@"xid"];
-//    NSDictionary *objectsCache = [NSDictionary dictionaryWithObjects:allObjects forKeys:keys];
+    //    NSArray *keys = [allObjects valueForKeyPath:@"xid"];
+    //    NSDictionary *objectsCache = [NSDictionary dictionaryWithObjects:allObjects forKeys:keys];
     
-//    [[self sharedController].objectsCache addEntriesFromDictionary:objectsCache];
-
+    //    [[self sharedController].objectsCache addEntriesFromDictionary:objectsCache];
+    
     NSLog(@"finish initObjectsCache");
     TOCK;
     
@@ -907,7 +907,7 @@
     STMEntityDescription *objectEntity = [STMEntityDescription entityForName:entityName inManagedObjectContext:[self document].managedObjectContext];
     
     NSMutableArray *resultSet = @[].mutableCopy;
-
+    
     for (NSString *key in objectEntity.attributesByName.allKeys) {
         
         NSAttributeDescription *attribute = objectEntity.attributesByName[key];
@@ -919,7 +919,7 @@
     }
     
     return resultSet;
-
+    
 }
 
 + (NSSet *)ownObjectKeysForEntityName:(NSString *)entityName {
@@ -928,12 +928,12 @@
     NSMutableSet *objectKeys = entitiesOwnKeys[entityName];
     
     if (!objectKeys) {
-
+        
         STMEntityDescription *objectEntity = [STMEntityDescription entityForName:entityName
                                                           inManagedObjectContext:[self document].managedObjectContext];
         
         NSSet *coreKeys = [NSSet setWithArray:[self coreEntityKeys]];
-
+        
         objectKeys = [NSMutableSet setWithArray:objectEntity.attributesByName.allKeys];
         [objectKeys minusSet:coreKeys];
         
@@ -951,10 +951,10 @@
     NSMutableDictionary *objectRelationships = entitiesOwnRelationships[entityName];
     
     if (!objectRelationships) {
-
+        
         STMEntityDescription *objectEntity = [STMEntityDescription entityForName:entityName
                                                           inManagedObjectContext:[self document].managedObjectContext];
-
+        
         NSSet *coreRelationshipNames = [NSSet setWithArray:[self coreEntityRelationships]];
         
         NSMutableSet *objectRelationshipNames = [NSMutableSet setWithArray:objectEntity.relationshipsByName.allKeys];
@@ -969,12 +969,12 @@
             objectRelationships[relationshipName] = relationship.destinationEntity.name;
             
         }
-    
+        
         entitiesOwnRelationships[entityName] = objectRelationships;
         
     }
-
-//    NSLog(@"objectRelationships %@", objectRelationships);
+    
+    //    NSLog(@"objectRelationships %@", objectRelationships);
     
     return objectRelationships;
     
@@ -986,7 +986,7 @@
     NSMutableDictionary *objectRelationships = entitiesSingleRelationships[entityName];
     
     if (!objectRelationships) {
-
+        
         STMEntityDescription *objectEntity = [STMEntityDescription entityForName:entityName
                                                           inManagedObjectContext:[self document].managedObjectContext];
         
@@ -1007,13 +1007,13 @@
             }
             
         }
-    
+        
         entitiesSingleRelationships[entityName] = objectRelationships;
         
     }
-
+    
     return objectRelationships;
-
+    
 }
 
 + (NSArray <NSString *> *)localDataModelEntityNames {
@@ -1084,9 +1084,9 @@
         
         if (!context) context = [self document].managedObjectContext;
         
-//        if ([object valueForKey:@"xid"]) {
-//            [[self sharedController].objectsCache removeObjectForKey:(id _Nonnull)[object valueForKey:@"xid"]];
-//        }
+        //        if ([object valueForKey:@"xid"]) {
+        //            [[self sharedController].objectsCache removeObjectForKey:(id _Nonnull)[object valueForKey:@"xid"]];
+        //        }
         
         [context performBlock:^{
             
@@ -1096,7 +1096,7 @@
             }];
             
         }];
-
+        
     }
     
 }
@@ -1106,7 +1106,7 @@
 }
 
 + (STMRecordStatus *)createRecordStatusAndRemoveObject:(NSManagedObject *)object withComment:(NSString *)commentText {
-
+    
     STMRecordStatus *recordStatus = [STMRecordStatusController recordStatusForObject:object];
     recordStatus.isRemoved = @YES;
     recordStatus.commentText = commentText;
@@ -1120,7 +1120,7 @@
 + (void)checkObjectsForFlushing {
     
     NSLogMethodName;
-
+    
     [self sharedController].isInFlushingProcess = NO;
     
     if ([UIApplication sharedApplication].applicationState != UIApplicationStateBackground) {
@@ -1129,11 +1129,11 @@
         return;
         
     }
-
+    
     NSDate *startFlushing = [NSDate date];
     
     NSArray *entitiesWithLifeTime = [STMEntityController entitiesWithLifeTime];
-
+    
     NSMutableDictionary *entityDic = [NSMutableDictionary dictionary];
     
     for (STMEntity *entity in entitiesWithLifeTime) {
@@ -1143,7 +1143,7 @@
             NSString *capFirstLetter = [[entity.name substringToIndex:1] capitalizedString];
             NSString *capEntityName = [entity.name stringByReplacingCharactersInRange:NSMakeRange(0,1) withString:capFirstLetter];
             NSString *entityName = [ISISTEMIUM_PREFIX stringByAppendingString:capEntityName];
-         
+            
             entityDic[entityName] = @{@"lifeTime": entity.lifeTime,
                                       @"lifeTimeDateField": entity.lifeTimeDateField ? entity.lifeTimeDateField : @"deviceCts"};
             
@@ -1172,15 +1172,15 @@
         
         NSString *predicateString = [dateField stringByAppendingString:@" < %@"];
         request.predicate = [NSPredicate predicateWithFormat:predicateString, terminatorDate];
-
+        
         NSArray *fetchResult = [context executeFetchRequest:request error:&error];
         
         for (NSManagedObject *object in fetchResult) [self checkObject:object forAddingTo:objectsSet];
-
+        
     }
-
+    
     if (objectsSet.count > 0) {
-
+        
         for (NSManagedObject *object in objectsSet) {
             [self removeObject:object inContext:context];
         }
@@ -1191,9 +1191,9 @@
         [[STMLogger sharedLogger] saveLogMessageWithText:logMessage type:@"info"];
         
         [self sharedController].isInFlushingProcess = YES;
-
+        
         [[self document] saveDocument:^(BOOL success) {
-
+            
         }];
         
         
@@ -1208,9 +1208,9 @@
 + (void)checkObject:(NSManagedObject *)object forAddingTo:(NSMutableSet *)objectsSet {
     
     if ([object isKindOfClass:[STMTrack class]]) {
-    
+        
         STMTrack *track = (STMTrack *)object;
-
+        
         if (![track.objectID isEqual:[self session].locationTracker.currentTrack.objectID]) {
             [objectsSet addObject:object];
         } else {
@@ -1218,11 +1218,11 @@
         }
         
     } else {
-    
+        
         if (![self isWaitingToSyncForObject:object]) {
             
             if ([object isKindOfClass:[STMLocation class]]) {
-        
+                
                 STMLocation *location = (STMLocation *)object;
                 
                 if (location.photos.count == 0 && location.shippings.count == 0 && location.shipmentRoutePoint == nil) {
@@ -1230,27 +1230,27 @@
                 } else {
                     NSLog(@"location %@ linked with (picture|shipping|routePoint), flush declined", location.xid);
                 }
-
-//            } else if ([object isKindOfClass:[STMTrack class]]) {
-//                
-//                STMTrack *track = (STMTrack *)object;
-//                
-//                if (![track.objectID isEqual:[self session].locationTracker.currentTrack.objectID]) {
-//                    [objectsSet addObject:object];
-//                } else {
-//                    NSLog(@"track %@ is in use now, flush declined", track.xid);
-//                }
+                
+                //            } else if ([object isKindOfClass:[STMTrack class]]) {
+                //
+                //                STMTrack *track = (STMTrack *)object;
+                //
+                //                if (![track.objectID isEqual:[self session].locationTracker.currentTrack.objectID]) {
+                //                    [objectsSet addObject:object];
+                //                } else {
+                //                    NSLog(@"track %@ is in use now, flush declined", track.xid);
+                //                }
                 
             } else {
-
+                
                 [objectsSet addObject:object];
-
+                
             }
-
+            
         }
         
     }
-
+    
 }
 
 #pragma mark - finish of recieving objects
@@ -1294,27 +1294,27 @@
 
 + (void)dataLoadingFinished {
     
-//    [self avgTimesCalc];
+    //    [self avgTimesCalc];
     
     [STMPicturesController checkPhotos];
-//    [self checkObjectsForFlushing];
+    //    [self checkObjectsForFlushing];
     
 #ifdef DEBUG
     [self totalNumberOfObjects];
 #else
-
+    
 #endif
     
     [self resolveFantoms];
-
+    
     [[self document] saveDocument:^(BOOL success) {
-
+        
     }];
-
+    
 }
 
 + (void)totalNumberOfObjects {
-
+    
     NSArray *entityNames = [self localDataModelEntityNames];
     
     NSUInteger totalCount = 0;
@@ -1324,12 +1324,12 @@
         NSUInteger count = [self numberOfObjectsForEntityName:entityName];
         NSLog(@"%@ count %d", entityName, count);
         totalCount += count;
-
+        
     }
     
     NSLog(@"fantoms count %d", [self numberOfFantoms]);
     NSLog(@"total count %d", totalCount);
-
+    
 }
 
 
@@ -1346,18 +1346,18 @@
         NSFetchRequest *request = [self isFantomFetchRequestForEntityName:entityName];
         
         if (request) {
-
+            
             NSError *error;
             NSArray *results = [[self document].managedObjectContext executeFetchRequest:request error:&error];
             
             if (results.count > 0) {
                 
                 NSLog(@"%@ %@ fantom(s)", @(results.count), entityName);
-
+                
                 STMEntity *entity = [STMEntityController stcEntities][entityName];
-
+                
                 if (entity.url) {
-
+                    
                     for (STMDatum *fantomObject in results) {
                         
                         if (fantomObject.xid) {
@@ -1367,7 +1367,7 @@
                             if (![objController.notFoundFantomsArray containsObject:fantomDic]) {
                                 [objController.fantomsArray addObject:fantomDic];
                             }
-
+                            
                         }
                         
                     }
@@ -1375,19 +1375,19 @@
                 } else {
                     NSLog(@"have no url for entity name: %@, fantoms will not to be resolved", entityName);
                 }
-
+                
             }
             
         }
         
     }
-
+    
     if (objController.fantomsArray.count > 0) {
         [self requestObjectWithParameters:objController.fantomsArray.firstObject];
     } else {
         [objController.notFoundFantomsArray removeAllObjects];
     }
-
+    
 }
 
 + (void)requestObjectWithParameters:(NSDictionary *)parameters {
@@ -1422,7 +1422,7 @@
         id xidParameter = parameters[@"xid"];
         
         if (isFantomResolving) {
-        
+            
             NSData *xid = (NSData *)xidParameter;
             
             if (!xid || xid.length == 0) {
@@ -1447,7 +1447,7 @@
                           isFantomResolving:isFantomResolving
                                  parameters:parameters];
             return;
-
+            
         }
         
         NSURL *urlWithXid = [url URLByAppendingPathComponent:xidString];
@@ -1462,24 +1462,24 @@
                                                queue:[NSOperationQueue mainQueue]
                                    completionHandler:^(NSURLResponse * _Nullable response, NSData * _Nullable data, NSError * _Nullable connectionError) {
                                        
-                if (!connectionError) {
-                    
-                    [self receiveRequestObjectResponse:response
-                                              withData:data
-                                             forEntity:entity
-                                            parameters:parameters];
-
-                } else {
-
-                    NSString *errorMessage = [NSString stringWithFormat:@"connectionError: %@", connectionError.localizedDescription];
-
-                    [self requestObjectErrorMessage:errorMessage
-                                  isFantomResolving:isFantomResolving
-                                         parameters:parameters];
-
-                }
-
-            }];
+                                       if (!connectionError) {
+                                           
+                                           [self receiveRequestObjectResponse:response
+                                                                     withData:data
+                                                                    forEntity:entity
+                                                                   parameters:parameters];
+                                           
+                                       } else {
+                                           
+                                           NSString *errorMessage = [NSString stringWithFormat:@"connectionError: %@", connectionError.localizedDescription];
+                                           
+                                           [self requestObjectErrorMessage:errorMessage
+                                                         isFantomResolving:isFantomResolving
+                                                                parameters:parameters];
+                                           
+                                       }
+                                       
+                                   }];
             
         } else {
             
@@ -1497,7 +1497,7 @@
         [[STMLogger sharedLogger] saveLogMessageWithText:logMessage type:@"error"];
         
     }
-
+    
 }
 
 + (void)requestObjectErrorMessage:(NSString *)errorMessage isFantomResolving:(BOOL)isFantomResolving parameters:(NSDictionary *)parameters {
@@ -1512,13 +1512,13 @@
         [[STMLogger sharedLogger] saveLogMessageWithText:errorMessage type:@"error"];
         
     }
-
+    
 }
 
 + (void)receiveRequestObjectResponse:(NSURLResponse *)response withData:(NSData *)data forEntity:(STMEntity *)entity parameters:(NSDictionary *)parameters {
     
     BOOL isFantomResolving = [parameters[@"isFantomResolving"] boolValue];
-
+    
     if ([response isKindOfClass:[NSHTTPURLResponse class]]) {
         
         NSHTTPURLResponse *httpResponse = (NSHTTPURLResponse *)response;
@@ -1545,11 +1545,11 @@
                 [STMObjectsController processingOfDataArray:dataArray roleName:entity.roleName withCompletionHandler:^(BOOL success) {
                     
                     if (isFantomResolving) {
-                     
+                        
                         [self didFinishResolveFantom:parameters successfully:success];
                         
                     } else {
-                    
+                        
                         if (!success) {
                             
                             NSString *errorMessage = [NSString stringWithFormat:@"error processing dataArray %@ with request parameters %@", dataArray, parameters];
@@ -1559,7 +1559,7 @@
                                                  parameters:parameters];
                             
                         }
-
+                        
                     }
                     
                 }];
@@ -1573,7 +1573,7 @@
             }
             
         } else {
-
+            
             NSString *errorMessage = [NSString stringWithFormat:@"response status %@ with request parameters %@", @(httpResponse.statusCode), parameters];
             
             [self requestObjectErrorMessage:errorMessage
@@ -1589,9 +1589,9 @@
         [self requestObjectErrorMessage:errorMessage
                       isFantomResolving:isFantomResolving
                              parameters:parameters];
-
+        
     }
-
+    
 }
 
 + (void)didFinishResolveFantom:(NSDictionary *)fantomDic successfully:(BOOL)successfully {
@@ -1602,7 +1602,7 @@
     
     NSString *entityName = fantomDic[@"entityName"];
     NSData *fantomXid = fantomDic[@"xid"];
-
+    
     if (successfully) {
         NSLog(@"success defantomize %@ %@", entityName, fantomXid);
     } else {
@@ -1629,7 +1629,7 @@
         request.predicate = [NSPredicate predicateWithFormat:@"isFantom == YES && xid != nil"];
         
         return request;
-
+        
     } else {
         
         return nil;
@@ -1654,7 +1654,7 @@
             NSString *entityName = [NSString stringWithFormat:@"%@%@", ISISTEMIUM_PREFIX, item];
             
             if ([[self localDataModelEntityNames] containsObject:entityName]) {
-            
+                
                 [entitiesToSubscribe addObject:entityName];
                 
             } else {
@@ -1678,7 +1678,7 @@
     if (result) {
         
         [self flushSubscribedViewController:vc];
-
+        
         for (NSString *entityName in entitiesToSubscribe) {
             
             NSArray *vcArray = [self sharedController].entitiesToSubscribe[entityName];
@@ -1698,7 +1698,7 @@
     } else {
         
         [self error:error withMessage:errorMessage];
-
+        
     }
     
     return result;
@@ -1714,7 +1714,7 @@
         [vcArray removeObject:vc];
         
         [self sharedController].entitiesToSubscribe[entityName] = vcArray;
-
+        
     }
     
 }
@@ -1726,7 +1726,7 @@
     for (UIViewController <STMEntitiesSubscribable> *vc in vcArray) {
         
         entityName = ([entityName hasPrefix:ISISTEMIUM_PREFIX]) ? [entityName substringFromIndex:ISISTEMIUM_PREFIX.length] : entityName;
-    
+        
         if (object.xid) {
             
             NSDictionary *subscribeDic = @{@"entity"    : entityName,
@@ -1734,7 +1734,7 @@
                                            @"data"      : [self dictionaryForJSWithObject:object]};
             
             [vc subscribedEntitiesObjectWasReceived:subscribeDic];
-
+            
         }
         
     }
@@ -1745,7 +1745,7 @@
 #pragma mark - destroy objects from WKWebView
 
 + (NSArray *)destroyObjectFromScriptMessage:(WKScriptMessage *)scriptMessage error:(NSError **)error {
-
+    
     NSString *errorMessage = nil;
     
     if (![scriptMessage.body isKindOfClass:[NSDictionary class]]) {
@@ -1756,7 +1756,7 @@
     }
     
     NSDictionary *parameters = scriptMessage.body;
-
+    
     NSString *entityName = [NSString stringWithFormat:@"%@%@", ISISTEMIUM_PREFIX, parameters[@"entity"]];
     
     if (![[self localDataModelEntityNames] containsObject:entityName]) {
@@ -1772,24 +1772,24 @@
         
         [self error:error withMessage:@"empty xid"];
         return nil;
-
+        
     }
-            
+    
     NSData *xid = [STMFunctions xidDataFromXidString:xidString];
     
     STMDatum *object = (STMDatum *)[self objectForXid:xid entityName:entityName];
-  
+    
     if (object) {
         
-            STMRecordStatus *recordStatus = [self createRecordStatusAndRemoveObject:object];
-            return [self arrayForJSWithObjects:@[recordStatus]];
-
+        STMRecordStatus *recordStatus = [self createRecordStatusAndRemoveObject:object];
+        return [self arrayForJSWithObjects:@[recordStatus]];
+        
     } else {
         
         errorMessage = [NSString stringWithFormat:@"no object for destroy with xid %@ and entity name %@", xidString, entityName];
         [self error:error withMessage:errorMessage];
         return nil;
-
+        
     }
     
 }
@@ -1816,9 +1816,9 @@
         
         [self error:error withMessage:[entityName stringByAppendingString:@": not found in data model"]];
         return nil;
-
+        
     }
-
+    
     if ([scriptMessage.name isEqualToString:WK_MESSAGE_UPDATE]) {
         
         if (![parameters[@"data"] isKindOfClass:[NSDictionary class]]) {
@@ -1832,9 +1832,9 @@
             if (*error) return nil;
             
             [result addObject:updatedData];
-
+            
         }
-
+        
     } else if ([scriptMessage.name isEqualToString:WK_MESSAGE_UPDATE_ALL]) {
         
         if (![parameters[@"data"] isKindOfClass:[NSArray <NSDictionary *> class]]) {
@@ -1880,13 +1880,13 @@
     
     NSString *xidString = objectData[@"id"];
     NSData *xidData = [STMFunctions xidDataFromXidString:xidString];
-
+    
     STMDatum *object = (STMDatum *)[self objectForXid:xidData entityName:entityName];
     
     if (!object) object = (STMDatum *)[self newObjectForEntityName:entityName andXid:xidData isFantom:NO];
-
+    
     [self processingKeysForUpdatingObject:object withObjectData:objectData error:error];
-
+    
     return (*error) ? nil : [self dictionaryForJSWithObject:object];
     
 }
@@ -1918,7 +1918,7 @@
     for (NSString *key in ownRelationships.allKeys) {
         
         NSString *xidString = objectData[key];
-
+        
         if (xidString) {
             
             NSString *destinationEntityName = ownRelationships[key];
@@ -1962,7 +1962,7 @@
                 }
                 
             }
-
+            
         }
         
     }
@@ -1991,13 +1991,13 @@
                 
                 resultDic[key] =  value;
                 
-//            } else {
-//                
-//                NSString *message = [NSString stringWithFormat:@"%@ object %@ can't update value %@ for key %@\n", entityName, object.xid, value, key];
-//                
-//                errorMessage = (errorMessage) ? [errorMessage stringByAppendingString:message] : message;
-//                
-//                continue;
+                //            } else {
+                //
+                //                NSString *message = [NSString stringWithFormat:@"%@ object %@ can't update value %@ for key %@\n", entityName, object.xid, value, key];
+                //
+                //                errorMessage = (errorMessage) ? [errorMessage stringByAppendingString:message] : message;
+                //
+                //                continue;
                 
             }
             
@@ -2015,23 +2015,23 @@
             
             if ([value isKindOfClass:[NSString class]]) {
                 
-//                NSString *xidString = (NSString *)value;
-//                
-//                NSString *destinationEntityName = ownRelationships[key];
-//                
-//                NSManagedObject *destinationObject = [self objectForEntityName:destinationEntityName andXidString:xidString];
-//                
-//                if (![[object valueForKey:key] isEqual:destinationObject]) {
-                    resultDic[key] = value;
-//                }
+                //                NSString *xidString = (NSString *)value;
+                //
+                //                NSString *destinationEntityName = ownRelationships[key];
+                //
+                //                NSManagedObject *destinationObject = [self objectForEntityName:destinationEntityName andXidString:xidString];
+                //
+                //                if (![[object valueForKey:key] isEqual:destinationObject]) {
+                resultDic[key] = value;
+                //                }
                 
-//            } else {
-//                
-//                NSString *message = [NSString stringWithFormat:@"%@ object %@ relationship value %@ is not a String for key %@, can't get xid\n", entityName, object.xid, value, key];
-//                
-//                errorMessage = (errorMessage) ? [errorMessage stringByAppendingString:message] : message;
-//                
-//                continue;
+                //            } else {
+                //
+                //                NSString *message = [NSString stringWithFormat:@"%@ object %@ relationship value %@ is not a String for key %@, can't get xid\n", entityName, object.xid, value, key];
+                //
+                //                errorMessage = (errorMessage) ? [errorMessage stringByAppendingString:message] : message;
+                //
+                //                continue;
                 
             }
             
@@ -2049,7 +2049,7 @@
         return resultDic;
         
     }
-
+    
 }
 
 + (id)normalizeValue:(id)value forKey:(NSString *)key updatingObject:(STMDatum *)object {
@@ -2097,15 +2097,15 @@
         }
         
     } else if ([valueClass isSubclassOfClass:[NSString class]]) {
-
+        
         if (![value isKindOfClass:[NSString class]]) {
-
+            
             if ([value respondsToSelector:@selector(stringValue)]) {
                 value = (NSString *)[value stringValue];
             } else {
                 return nil;
             }
-
+            
         }
         
     } else {
@@ -2125,7 +2125,7 @@
             }
             
         }
-
+        
     }
     
     return value;
@@ -2138,29 +2138,29 @@
 + (NSArray *)arrayOfObjectsRequestedByScriptMessage:(WKScriptMessage *)scriptMessage error:(NSError **)error {
     
     NSArray *result = nil;
-
+    
     if (![scriptMessage.body isKindOfClass:[NSDictionary class]]) {
         
         [self error:error withMessage:@"message.body is not a NSDictionary class"];
         return nil;
         
     }
-
+    
     NSDictionary *parameters = scriptMessage.body;
-
+    
     if ([scriptMessage.name isEqualToString:WK_MESSAGE_FIND]) {
         
         result = [self findObjectInCacheWithParameters:parameters error:error];
-
+        
         if (*error) return nil;
         if (result) return result;
-
+        
     }
     
     NSPredicate *predicate = [STMScriptMessageController predicateForScriptMessage:scriptMessage error:error];
     
     if (*error) return nil;
-
+    
     NSString *entityName = [NSString stringWithFormat:@"%@%@", ISISTEMIUM_PREFIX, parameters[@"entity"]];
     NSDictionary *options = parameters[@"options"];
     NSUInteger pageSize = [options[@"pageSize"] integerValue];
@@ -2181,7 +2181,7 @@
     } else {
         return [self arrayForJSWithObjects:objectsArray];
     }
-
+    
 }
 
 + (void)error:(NSError **)error withMessage:(NSString *)errorMessage {
@@ -2191,13 +2191,13 @@
     if (bundleId && error) *error = [NSError errorWithDomain:(NSString * _Nonnull)bundleId
                                                         code:1
                                                     userInfo:@{NSLocalizedDescriptionKey: errorMessage}];
-
+    
 }
 
 + (NSArray *)findObjectInCacheWithParameters:(NSDictionary *)parameters error:(NSError **)error {
     
     NSString *errorMessage = nil;
-
+    
     NSString *entityName = [NSString stringWithFormat:@"%@%@", ISISTEMIUM_PREFIX, parameters[@"entity"]];
     
     if ([[self localDataModelEntityNames] containsObject:entityName]) {
@@ -2229,15 +2229,15 @@
     } else {
         errorMessage = [entityName stringByAppendingString:@": not found in data model"];
     }
-
+    
     if (errorMessage) [self error:error withMessage:errorMessage];
-
+    
     return nil;
-
+    
 }
 
 + (NSArray *)arrayForJSWithObjects:(NSArray <STMDatum *> *)objects {
-
+    
     NSMutableArray *dataArray = @[].mutableCopy;
     
     for (STMDatum *object in objects) {
@@ -2272,7 +2272,7 @@
 #pragma mark - fetching objects
 
 + (NSArray *)objectsForEntityName:(NSString *)entityName {
-
+    
     return [self objectsForEntityName:entityName
                               orderBy:@"id"
                             ascending:YES
@@ -2284,7 +2284,7 @@
 }
 
 + (NSArray *)objectsForEntityName:(NSString *)entityName orderBy:(NSString *)orderBy ascending:(BOOL)ascending fetchLimit:(NSUInteger)fetchLimit withFantoms:(BOOL)withFantoms inManagedObjectContext:(NSManagedObjectContext *)context error:(NSError **)error {
-
+    
     return [self objectsForEntityName:entityName
                               orderBy:orderBy
                             ascending:ascending
@@ -2293,7 +2293,7 @@
                           withFantoms:withFantoms
                inManagedObjectContext:context
                                 error:error];
-
+    
 }
 
 + (NSArray *)objectsForEntityName:(NSString *)entityName orderBy:(NSString *)orderBy ascending:(BOOL)ascending fetchLimit:(NSUInteger)fetchLimit fetchOffset:(NSUInteger)fetchOffset withFantoms:(BOOL)withFantoms inManagedObjectContext:(NSManagedObjectContext *)context error:(NSError **)error {
@@ -2307,7 +2307,7 @@
                             predicate:nil
                inManagedObjectContext:context
                                 error:error];
-
+    
 }
 
 + (NSArray *)objectsForEntityName:(NSString *)entityName orderBy:(NSString *)orderBy ascending:(BOOL)ascending fetchLimit:(NSUInteger)fetchLimit fetchOffset:(NSUInteger)fetchOffset withFantoms:(BOOL)withFantoms predicate:(NSPredicate *)predicate inManagedObjectContext:(NSManagedObjectContext *)context error:(NSError **)error {
@@ -2361,11 +2361,11 @@
     if (errorMessage) [self error:error withMessage:errorMessage];
     
     return nil;
-
+    
 }
 
 + (NSUInteger)numberOfObjectsForEntityName:(NSString *)entityName {
-
+    
     if ([[self localDataModelEntityNames] containsObject:entityName]) {
         
         NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:entityName];
@@ -2380,7 +2380,7 @@
         return 0;
         
     }
-
+    
 }
 
 + (NSUInteger)numberOfFantoms {
@@ -2392,17 +2392,17 @@
         NSFetchRequest *request = [self isFantomFetchRequestForEntityName:entityName];
         
         if (request) {
-
+            
             NSUInteger result = [[self document].managedObjectContext countForFetchRequest:request error:nil];
             
             resultCount += result;
             
         }
-
+        
     }
     
     return resultCount;
-
+    
 }
 
 
@@ -2432,7 +2432,7 @@
                                                     error:&fetchError];
             
             if (fetchError) {
-
+                
                 errorMessage = fetchError.localizedDescription;
                 
             } else {
@@ -2443,7 +2443,7 @@
                     [jsonObjectsArray addObject:[STMObjectsController dictionaryForObject:object]];
                 
                 return jsonObjectsArray;
-
+                
             }
             
         } else {
@@ -2457,7 +2457,7 @@
         errorMessage = [NSString stringWithFormat:@"requestObjects: parameters is not NSDictionary"];
         
     }
-
+    
     if (errorMessage) [self error:error withMessage:errorMessage];
     
     return nil;
@@ -2476,7 +2476,7 @@
         NSDictionary *propertiesDictionary = [self propertiesDictionaryForObject:(STMDatum *)object];
         
         return @{@"name":name, @"xid":xid, @"properties":propertiesDictionary};
-
+        
     } else {
         return nil;
     }
@@ -2498,8 +2498,8 @@
     [allKeys removeObjectsInArray:notSyncableProperties];
     
     NSMutableDictionary *propertiesDictionary = [NSMutableDictionary dictionaryWithDictionary:[object propertiesForKeys:allKeys withNulls:NO]];
- 
-// STMDatum method relationshipXidsForKeys:withNulls: — should use it in new data protocol version
+    
+    // STMDatum method relationshipXidsForKeys:withNulls: — should use it in new data protocol version
     for (NSString *key in object.entity.relationshipsByName.allKeys) {
         
         NSRelationshipDescription *relationshipDescription = [object.entity.relationshipsByName valueForKey:key];
@@ -2525,7 +2525,7 @@
         }
         
     }
-// STMDatum method relationshipXidsForKeys:withNulls:
+    // STMDatum method relationshipXidsForKeys:withNulls:
     
     return propertiesDictionary;
     
@@ -2546,7 +2546,7 @@
         [[self session].logger saveLogMessageWithText:errorMessage type:@"error"];
         
     } else {
-
+        
         NSManagedObject *syncedObject = [self objectForXid:xidData];
         
         if ([syncedObject isKindOfClass:[STMDatum class]]) {
@@ -2556,7 +2556,7 @@
             if (object) {
                 
                 [object.managedObjectContext performBlockAndWait:^{
-                
+                    
                     if ([object isKindOfClass:[STMRecordStatus class]] && [[(STMRecordStatus *)object valueForKey:@"isRemoved"] boolValue]) {
                         
                         [self removeObject:object];
@@ -2577,7 +2577,7 @@
                     
                     NSString *logMessage = [NSString stringWithFormat:@"successefully sync %@ with xid %@", entityName, xid];
                     NSLog(logMessage);
-
+                    
                 }];
                 
             } else {
@@ -2586,11 +2586,11 @@
                 NSLog(logMessage);
                 
             }
-
+            
         }
         
     }
-
+    
 }
 
 

@@ -8,10 +8,27 @@
 
 import Foundation
 
-class STMGarbageCollector{
+@objc class STMGarbageCollector:NSObject{
+    
+    static var unusedImages = Set<String>()
     
     static func removeUnusedImages(){
         do {
+            for unusedImage in unusedImages{
+                try NSFileManager.defaultManager().removeItemAtPath(STMFunctions.documentsDirectory()+"/"+unusedImage)
+            }
+            if unusedImages.count > 0 {
+                let logMessage = String(format: "Deleting %i images",unusedImages.count)
+                STMLogger.sharedLogger().saveLogMessageWithText(logMessage, type:"important")
+            }
+        } catch let error as NSError {
+            NSLog(error.description)
+        }
+    }
+    
+    static func searchUnusedImages(){
+        do {
+            unusedImages = Set<String>()
             var allImages = Set<String>()
             var usedImages = Set<String>()
             let document = STMSessionManager.sharedManager().currentSession.document
@@ -22,8 +39,8 @@ class STMGarbageCollector{
                     allImages.insert(element)
                 }
             }
-            let photoFetchRequest = STMFetchRequest(entityName: NSStringFromClass(STMPhoto))
-            let photos = try document.managedObjectContext.executeFetchRequest(photoFetchRequest) as! [STMPhoto]
+            let photoFetchRequest = STMFetchRequest(entityName: NSStringFromClass(STMPicture))
+            let photos = try document.managedObjectContext.executeFetchRequest(photoFetchRequest) as! [STMPicture]
             for image in photos{
                 if let path = image.imagePath{
                     usedImages.insert(path)
@@ -32,13 +49,7 @@ class STMGarbageCollector{
                     usedImages.insert(resizedPath)
                 }
             }
-            let unusedImages = allImages.subtract(usedImages)
-            for unusedImage in unusedImages{
-                try NSFileManager.defaultManager().removeItemAtPath(STMFunctions.documentsDirectory()+"/"+unusedImage)
-            }
-            if unusedImages.count > 0 {
-                NSLog("Deleted \(unusedImages.count) images")
-            }
+            unusedImages = allImages.subtract(usedImages)
         } catch let error as NSError {
             NSLog(error.description)
         }
