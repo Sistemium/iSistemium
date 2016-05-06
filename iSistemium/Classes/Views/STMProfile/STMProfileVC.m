@@ -441,6 +441,13 @@
     
 }
 
+- (void)setupUnusedPicturesButton {
+    
+    [self.unusedPicturesButton setTitleColor:ACTIVE_BLUE_COLOR forState:UIControlStateNormal];
+    [self.unusedPicturesButton setTitleColor:[UIColor lightGrayColor] forState:UIControlStateDisabled];
+    
+}
+
 - (void)updateNonloadedPicturesInfo {
 
     self.nonloadedPicturesButton.enabled = ([self syncer].syncerState == STMSyncerIdle);
@@ -477,14 +484,17 @@
 }
 
 - (void)updateUnusedPicturesInfo {
-    if ([STMGarbageCollector.unusedImages count] == 0) {
-        self.unusedPicturesButton.hidden = YES;
-    }else{
-        NSString *pluralString = [STMFunctions pluralTypeForCount:[STMGarbageCollector.unusedImages count]];
-        NSString *picturesCount = [NSString stringWithFormat:@"%@UPICTURES", pluralString];
-        NSString *unusedCount = [NSString stringWithFormat:@"%@UNUSED", pluralString];
-        [self.unusedPicturesButton setTitle:[NSString stringWithFormat:NSLocalizedString(unusedCount, nil), (unsigned long)[STMGarbageCollector.unusedImages count], NSLocalizedString(picturesCount, nil)] forState:UIControlStateNormal];
-    }
+    dispatch_async(dispatch_get_main_queue(), ^{
+        if ([STMGarbageCollector.unusedImages count] == 0) {
+            self.unusedPicturesButton.hidden = YES;
+        }else{
+            NSString *pluralString = [STMFunctions pluralTypeForCount:[STMGarbageCollector.unusedImages count]];
+            NSString *picturesCount = [NSString stringWithFormat:@"%@UPICTURES", pluralString];
+            NSString *unusedCount = [NSString stringWithFormat:@"%@UNUSED", pluralString];
+            [self.unusedPicturesButton setTitle:[NSString stringWithFormat:NSLocalizedString(unusedCount, nil), (unsigned long) [STMGarbageCollector.unusedImages count], NSLocalizedString(picturesCount, nil)] forState:UIControlStateNormal];
+            [self.unusedPicturesButton setTitle:[NSString stringWithFormat:NSLocalizedString(unusedCount, nil), (unsigned long) [STMGarbageCollector.unusedImages count], NSLocalizedString(picturesCount, nil)] forState:UIControlStateDisabled];
+        }
+    });
     
 }
 
@@ -681,7 +691,8 @@
             if (buttonIndex == 0) {
                 
                 [STMGarbageCollector removeUnusedImages];
-                self.unusedPicturesButton.hidden = YES;
+                self.unusedPicturesButton.enabled = NO;
+                [self updateUnusedPicturesInfo];
                 
             }
             
@@ -720,7 +731,8 @@
         case 4:
             if (buttonIndex == 0) {
                 [STMGarbageCollector removeUnusedImages];
-                self.unusedPicturesButton.hidden = YES;
+                self.unusedPicturesButton.enabled = NO;
+                [self updateUnusedPicturesInfo];
             }
             
             break;
@@ -1116,6 +1128,11 @@
                name:NOTIFICATION_SESSION_STATUS_CHANGED
              object:nil];
     
+    [nc addObserver:self
+           selector:@selector(updateUnusedPicturesInfo)
+               name:@"unusedImageRemoved"
+             object:nil];
+    
 }
 
 - (void)sessionStatusChanged {
@@ -1158,6 +1175,7 @@
     [self updateSyncDatesLabels];
     [self setupNonloadedPicturesButton];
     [self updateNonloadedPicturesInfo];
+    [self setupUnusedPicturesButton];
     [self updateUnusedPicturesInfo];
     
     [self addObservers];
