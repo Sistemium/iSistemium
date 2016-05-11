@@ -19,6 +19,8 @@
 		2C13F5301CE314F500A5F129 /* STMMessage+CoreDataProperties.m in Sources */ = {isa = PBXBuildFile; fileRef = 2C13F52A1CE314F500A5F129 /* STMMessage+CoreDataProperties.m */; };
 		2C13F5311CE314F500A5F129 /* STMMessagePicture.m in Sources */ = {isa = PBXBuildFile; fileRef = 2C13F52C1CE314F500A5F129 /* STMMessagePicture.m */; };
 		2C13F5321CE314F500A5F129 /* STMMessagePicture+CoreDataProperties.m in Sources */ = {isa = PBXBuildFile; fileRef = 2C13F52E1CE314F500A5F129 /* STMMessagePicture+CoreDataProperties.m */; };
+		2C13F5391CE316DA00A5F129 /* STMMessages.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 2C13F5371CE316DA00A5F129 /* STMMessages.storyboard */; };
+		2C13F53A1CE316DA00A5F129 /* STMMessageVC.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 2C13F5381CE316DA00A5F129 /* STMMessageVC.storyboard */; };
 		2C1727EF1B9446B000C82ACB /* STMShipmentsSVC.m in Sources */ = {isa = PBXBuildFile; fileRef = 2C1727EE1B9446B000C82ACB /* STMShipmentsSVC.m */; };
 		2C1727FD1B944A9400C82ACB /* STMShipmentsDetailNC.m in Sources */ = {isa = PBXBuildFile; fileRef = 2C1727FA1B944A9400C82ACB /* STMShipmentsDetailNC.m */; };
 		2C1727FE1B944A9400C82ACB /* STMShipmentsMasterNC.m in Sources */ = {isa = PBXBuildFile; fileRef = 2C1727FC1B944A9400C82ACB /* STMShipmentsMasterNC.m */; };
@@ -397,8 +399,6 @@
 		2CC5D1E81C85C70000193CD7 /* STMCatalog.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 2CC5D1CE1C85C70000193CD7 /* STMCatalog.storyboard */; };
 		2CC5D1E91C85C70000193CD7 /* STMDebts.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 2CC5D1CF1C85C70000193CD7 /* STMDebts.storyboard */; };
 		2CC5D1EA1C85C70000193CD7 /* STMInventory.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 2CC5D1D01C85C70000193CD7 /* STMInventory.storyboard */; };
-		2CC5D1EC1C85C70000193CD7 /* STMMessages.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 2CC5D1D21C85C70000193CD7 /* STMMessages.storyboard */; };
-		2CC5D1ED1C85C70000193CD7 /* STMMessageVC.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 2CC5D1D31C85C70000193CD7 /* STMMessageVC.storyboard */; };
 		2CC5D1EE1C85C70000193CD7 /* STMOrders.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 2CC5D1D41C85C70000193CD7 /* STMOrders.storyboard */; };
 		2CC5D1EF1C85C70000193CD7 /* STMPhotoReports.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 2CC5D1D51C85C70000193CD7 /* STMPhotoReports.storyboard */; };
 		2CC5D1F01C85C70000193CD7 /* STMPickingOrders.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 2CC5D1D61C85C70000193CD7 /* STMPickingOrders.storyboard */; };
@@ -605,6 +605,8 @@
 		2C13F52C1CE314F500A5F129 /* STMMessagePicture.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = STMMessagePicture.m; sourceTree = "<group>"; };
 		2C13F52D1CE314F500A5F129 /* STMMessagePicture+CoreDataProperties.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "STMMessagePicture+CoreDataProperties.h"; sourceTree = "<group>"; };
 		2C13F52E1CE314F500A5F129 /* STMMessagePicture+CoreDataProperties.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "STMMessagePicture+CoreDataProperties.m"; sourceTree = "<group>"; };
+		2C13F5371CE316DA00A5F129 /* STMMessages.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = STMMessages.storyboard; sourceTree = "<group>"; };
+		2C13F5381CE316DA00A5F129 /* STMMessageVC.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = STMMessageVC.storyboard; sourceTree = "<group>"; };
 		2C1727ED1B9446B000C82ACB /* STMShipmentsSVC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = STMShipmentsSVC.h; sourceTree = "<group>"; };
 		2C1727EE1B9446B000C82ACB /* STMShipmentsSVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = STMShipmentsSVC.m; sourceTree = "<group>"; };
 		2C1727F91B944A9400C82ACB /* STMShipmentsDetailNC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = STMShipmentsDetailNC.h; sourceTree = "<group>"; };
@@ -1219,8 +1221,6 @@
 		2CC5D1CE1C85C70000193CD7 /* STMCatalog.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = STMCatalog.storyboard; sourceTree = "<group>"; };
 		2CC5D1CF1C85C70000193CD7 /* STMDebts.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = STMDebts.storyboard; sourceTree = "<group>"; };
 		2CC5D1D01C85C70000193CD7 /* STMInventory.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = STMInventory.storyboard; sourceTree = "<group>"; };
-		2CC5D1D21C85C70000193CD7 /* STMMessages.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = STMMessages.storyboard; sourceTree = "<group>"; };
-		2CC5D1D31C85C70000193CD7 /* STMMessageVC.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = STMMessageVC.storyboard; sourceTree = "<group>"; };
 		2CC5D1D41C85C70000193CD7 /* STMOrders.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = STMOrders.storyboard; sourceTree = "<group>"; };
 		2CC5D1D51C85C70000193CD7 /* STMPhotoReports.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = STMPhotoReports.storyboard; sourceTree = "<group>"; };
 		2CC5D1D61C85C70000193CD7 /* STMPickingOrders.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = STMPickingOrders.storyboard; sourceTree = "<group>"; };
@@ -2562,6 +2562,8 @@
 				2C70855A1CC394500002F3FF /* STMAuth.storyboard */,
 				2C70855B1CC394500002F3FF /* STMCustomCells */,
 				2C70856B1CC394500002F3FF /* STMLogs.storyboard */,
+				2C13F5371CE316DA00A5F129 /* STMMessages.storyboard */,
+				2C13F5381CE316DA00A5F129 /* STMMessageVC.storyboard */,
 				2C70856C1CC394500002F3FF /* STMProfile.storyboard */,
 				2C70856D1CC394500002F3FF /* STMScannerInfo.storyboard */,
 				2C70856E1CC394500002F3FF /* STMSettings.storyboard */,
@@ -2849,8 +2851,6 @@
 				2CC5D1CF1C85C70000193CD7 /* STMDebts.storyboard */,
 				6D074DC81CA9AA8200EB5121 /* STMDebts_iphone.storyboard */,
 				2CC5D1D01C85C70000193CD7 /* STMInventory.storyboard */,
-				2CC5D1D21C85C70000193CD7 /* STMMessages.storyboard */,
-				2CC5D1D31C85C70000193CD7 /* STMMessageVC.storyboard */,
 				2CC5D1D41C85C70000193CD7 /* STMOrders.storyboard */,
 				2CC5D1D51C85C70000193CD7 /* STMPhotoReports.storyboard */,
 				2CC5D1D61C85C70000193CD7 /* STMPickingOrders.storyboard */,
@@ -3113,7 +3113,6 @@
 				2CC5D1F91C85C70000193CD7 /* STMUncashing.storyboard in Resources */,
 				2C70861D1CC394500002F3FF /* uncheckmark_filled.png in Resources */,
 				2CC5D1E21C85C70000193CD7 /* STMArticleBarcodes.storyboard in Resources */,
-				2CC5D1EC1C85C70000193CD7 /* STMMessages.storyboard in Resources */,
 				2C1AB2FB1B70AE4400BF5C50 /* 8_circle_filled.png in Resources */,
 				2C7086191CC394500002F3FF /* settings.png in Resources */,
 				2C1AB2EA1B70ADBB00BF5C50 /* 5_circle.png in Resources */,
@@ -3133,6 +3132,7 @@
 				2C7086331CC394500002F3FF /* STMVolumeTVCell.xib in Resources */,
 				2C1AB3161B70B22800BF5C50 /* 5_circle_colored_blue.png in Resources */,
 				2C70862B1CC394500002F3FF /* STMCustom4TVCell.xib in Resources */,
+				2C13F53A1CE316DA00A5F129 /* STMMessageVC.storyboard in Resources */,
 				2C70861A1CC394500002F3FF /* settings3-128.png in Resources */,
 				2C70861B1CC394500002F3FF /* Sync With Cloud.png in Resources */,
 				2C5764391AA8962600B9FD2C /* wine_bottle-512.png in Resources */,
@@ -3194,7 +3194,6 @@
 				2C1AB2E91B70ADBB00BF5C50 /* 6_circle.png in Resources */,
 				2C1AB2ED1B70ADBB00BF5C50 /* 9_circle.png in Resources */,
 				2C761BB31B00824F001DA33E /* Picture-25.png in Resources */,
-				2CC5D1ED1C85C70000193CD7 /* STMMessageVC.storyboard in Resources */,
 				2CF858F11C1AE239004D7BD1 /* truck_checked.png in Resources */,
 				2C1AB3001B70AE4400BF5C50 /* 5_circle_filled.png in Resources */,
 				6D074DC91CA9AA8200EB5121 /* STMUncashing_iphone.storyboard in Resources */,
@@ -3227,6 +3226,7 @@
 				2C8EF5ED194086E10021D202 /* Localizable.strings in Resources */,
 				2C5797F21A43608300EEFBA7 /* purchase_order-128.png in Resources */,
 				2C5763C11AA4752600B9FD2C /* beer_bottle-128.png in Resources */,
+				2C13F5391CE316DA00A5F129 /* STMMessages.storyboard in Resources */,
 				2C7086041CC394500002F3FF /* close-128.png in Resources */,
 				2C29497C1BDCFF800099F24F /* photoReports.png in Resources */,
 				2C8EF5A91940859F0021D202 /* InfoPlist.strings in Resources */,
