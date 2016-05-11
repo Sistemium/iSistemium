@@ -1,32 +1,32 @@
 //
-//  STMLocationTracker+category.m
+//  STMLocationTracker.m
 //  iSistemium
 //
-//  Created by Maxim Grigoriev on 18/04/16.
+//  Created by Maxim Grigoriev on 11/05/16.
 //  Copyright © 2016 Sistemium UAB. All rights reserved.
 //
 
-#import "STMLocationTracker+category.h"
+#import "STMLocationTracker.h"
 
 #import "STMShipmentRouteController.h"
 
 
-@implementation STMLocationTracker (category)
+@implementation STMLocationTracker
 
 - (void)successAuthorization {
     
     if ([self.geotrackerControl isEqualToString:GEOTRACKER_CONTROL_SHIPMENT_ROUTE]) {
         
         NSUInteger startedRoutesCount = [STMShipmentRouteController routesWithProcessing:@"started"].count;
-
+        
         if (startedRoutesCount > 0) {
-
+            
             [self checkAccuracyToStartTracking];
-
+            
         } else {
-
+            
             if (self.tracking) [self stopTracking];
-
+            
         }
         
     } else {
