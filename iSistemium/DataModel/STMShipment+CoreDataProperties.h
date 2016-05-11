@@ -22,6 +22,7 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nullable, nonatomic, retain) NSNumber *id;
 @property (nullable, nonatomic, retain) NSNumber *isFantom;
 @property (nullable, nonatomic, retain) NSNumber *isShipped;
+@property (nullable, nonatomic, retain) NSNumber *isRejected;
 @property (nullable, nonatomic, retain) NSDate *lts;
 @property (nullable, nonatomic, retain) NSString *ndoc;
 @property (nullable, nonatomic, retain) NSNumber *needCashing;

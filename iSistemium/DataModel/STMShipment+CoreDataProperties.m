@@ -20,6 +20,7 @@
 @dynamic id;
 @dynamic isFantom;
 @dynamic isShipped;
+@dynamic isRejected;
 @dynamic lts;
 @dynamic ndoc;
 @dynamic needCashing;

@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<model userDefinedModelVersionIdentifier="" type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="9525" systemVersion="15D21" minimumToolsVersion="Xcode 4.1">
+<model userDefinedModelVersionIdentifier="" type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="10174" systemVersion="15E65" minimumToolsVersion="Xcode 4.1">
     <entity name="STMArticle" representedClassName="STMArticle" syncable="YES">
         <attribute name="barcode" optional="YES" attributeType="String" indexed="YES" syncable="YES"/>
         <attribute name="code" optional="YES" attributeType="String" syncable="YES"/>
@@ -749,6 +749,7 @@
         <attribute name="deviceTs" optional="YES" attributeType="Date" syncable="YES"/>
         <attribute name="id" optional="YES" attributeType="Integer 64" defaultValueString="0" indexed="YES" syncable="YES"/>
         <attribute name="isFantom" optional="YES" attributeType="Boolean" defaultValueString="YES" syncable="YES"/>
+        <attribute name="isRejected" optional="YES" attributeType="Boolean" syncable="YES"/>
         <attribute name="isShipped" optional="YES" attributeType="Boolean" syncable="YES"/>
         <attribute name="lts" optional="YES" attributeType="Date" syncable="YES"/>
         <attribute name="ndoc" optional="YES" attributeType="String" syncable="YES"/>
@@ -1078,7 +1079,7 @@
         <element name="STMSaleOrderPosition" positionX="459" positionY="-1701" width="128" height="298"/>
         <element name="STMSalesman" positionX="-333" positionY="-2061" width="128" height="283"/>
         <element name="STMSetting" positionX="-1010" positionY="-414" width="128" height="253"/>
-        <element name="STMShipment" positionX="-110" positionY="-1669" width="128" height="358"/>
+        <element name="STMShipment" positionX="-110" positionY="-1669" width="128" height="373"/>
         <element name="STMShipmentPosition" positionX="331" positionY="-1368" width="128" height="418"/>
         <element name="STMShipmentRoute" positionX="-648" positionY="45" width="128" height="283"/>
         <element name="STMShipmentRoutePoint" positionX="-828" positionY="53" width="128" height="373"/>
