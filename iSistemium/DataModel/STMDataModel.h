@@ -33,9 +33,6 @@
 #import "STMInventoryBatch.h"
 #import "STMInventoryBatchItem.h"
 
-#import "STMMessage.h"
-#import "STMMessagePicture.h"
-
 #import "STMOutlet.h"
 
 #import "STMPartner.h"

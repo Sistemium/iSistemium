@@ -79,7 +79,7 @@
     
     id <STMSession> session = [STMSessionManager sharedManager].currentSession;
     
-    if ([[session status] isEqualToString:@"running"]) {
+    if (session.status == STMSessionRunning) {
         
         [[session syncer] setSyncerState:STMSyncerSendData];
         
@@ -191,7 +191,7 @@
     [self setupWindow];
 
     id <STMSession> session = [STMSessionManager sharedManager].currentSession;
-    if ([[session status] isEqualToString:@"running"]) {
+    if (session.status == STMSessionRunning) {
         [STMMessageController showMessageVCsIfNeeded];
     }
     

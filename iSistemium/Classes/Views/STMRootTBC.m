@@ -18,24 +18,8 @@
 
     [super initAllTabs];
     
-    [self showUnreadMessageCount];
     [self showUnreadCampaignCount];
     
-}
-
-- (void)showUnreadMessageCount {
-
-    UIViewController *vc = (self.tabs)[@"STMMessages"];
-
-    if (vc) {
-
-        NSInteger unreadCount = [STMMessageController unreadMessagesCount];
-        NSString *badgeValue = (unreadCount > 0) ? [NSString stringWithFormat:@"%lu", (unsigned long)unreadCount] : nil;
-        vc.tabBarItem.badgeValue = badgeValue;
-        [UIApplication sharedApplication].applicationIconBadgeNumber = [badgeValue integerValue];
-
-    }
-
 }
 
 - (void)showUnreadCampaignCount {
@@ -66,21 +50,6 @@
     [super addObservers];
     
     NSNotificationCenter *nc = [NSNotificationCenter defaultCenter];
-
-    //    [nc addObserver:self
-    //           selector:@selector(showUnreadMessageCount)
-    //               name:@"gotNewMessage"
-    //             object:nil];
-    
-    //    [nc addObserver:self
-    //           selector:@selector(showUnreadMessageCount)
-    //               name:@"messageIsRead"
-    //             object:nil];
-    
-    //    [nc addObserver:self
-    //           selector:@selector(showUnreadMessageCount)
-    //               name:@"unreadMessageCountChange"
-    //             object:nil];
     
     [nc addObserver:self
            selector:@selector(showUnreadCampaignCount)
