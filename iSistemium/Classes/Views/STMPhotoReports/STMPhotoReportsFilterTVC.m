@@ -9,6 +9,7 @@
 #import "STMPhotoReportsFilterTVC.h"
 
 #import "STMPhotoReportsSVC.h"
+#import "STMAuthController.h"
 
 
 @interface STMPhotoReportsFilterTVC ()

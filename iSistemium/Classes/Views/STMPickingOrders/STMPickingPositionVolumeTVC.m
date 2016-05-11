@@ -9,6 +9,7 @@
 #import "STMPickingPositionVolumeTVC.h"
 
 #import "STMPickingPositionInfoTVC.h"
+#import "STMSessionManager.h"
 
 
 @interface STMPickingPositionVolumeTVC () <UIPickerViewDataSource, UIPickerViewDelegate>

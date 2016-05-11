@@ -278,7 +278,7 @@
     
     if (!_locationTracker) {
         
-        _locationTracker = [(STMSession *)[STMSessionManager sharedManager].currentSession locationTracker];
+        _locationTracker = (STMLocationTracker *)[(STMSession *)[STMSessionManager sharedManager].currentSession locationTracker];
         
     }
     

@@ -10,7 +10,7 @@
 #import "STMUI.h"
 #import "STMNS.h"
 #import "STMDataModel.h"
-#import "STMSessionManagement.h"
+#import "STMSessionManager.h"
 
 #import <Crashlytics/Answers.h>
 
