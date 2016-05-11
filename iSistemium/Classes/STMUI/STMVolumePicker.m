@@ -1,17 +1,17 @@
 //
-//  STMVolumePicker+category.m
+//  STMVolumePicker.m
 //  iSistemium
 //
-//  Created by Maxim Grigoriev on 18/04/16.
+//  Created by Maxim Grigoriev on 11/05/16.
 //  Copyright © 2016 Sistemium UAB. All rights reserved.
 //
 
-#import "STMVolumePicker+category.h"
+#import "STMVolumePicker.h"
 
 #import "STMArticleController.h"
 
 
-@implementation STMVolumePicker (category)
+@implementation STMVolumePicker
 
 - (NSArray *)currentPackageRels {
     return [STMArticleController packageRels];

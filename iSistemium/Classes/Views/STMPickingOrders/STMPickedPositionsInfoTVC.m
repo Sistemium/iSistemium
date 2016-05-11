@@ -9,6 +9,7 @@
 #import "STMPickedPositionsInfoTVC.h"
 
 #import "STMPickingOrdersProcessController.h"
+#import "STMUI.h"
 
 
 @interface STMPickedPositionsInfoTVC () <UIGestureRecognizerDelegate, STMVolumePickerOwner>
