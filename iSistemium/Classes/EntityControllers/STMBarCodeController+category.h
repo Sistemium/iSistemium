@@ -8,7 +8,7 @@
 
 #import "STMBarCodeController.h"
 
-#import "STMController+category.h"
+#import "STMController.h"
 
 
 @interface STMBarCodeController (category)

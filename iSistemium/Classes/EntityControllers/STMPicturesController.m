@@ -1,27 +1,23 @@
 //
-//  STMPicturesController+category.m
+//  STMPicturesController.m
 //  iSistemium
 //
-//  Created by Maxim Grigoriev on 18/04/16.
+//  Created by Maxim Grigoriev on 11/05/16.
 //  Copyright © 2016 Sistemium UAB. All rights reserved.
 //
 
-#import "STMPicturesController+category.h"
+#import "STMPicturesController.h"
 
 #import "STMDataModel.h"
 
 
-@implementation STMPicturesController (category)
+@implementation STMPicturesController
 
 - (NSArray *)photoEntitiesNames {
     
     return @[NSStringFromClass([STMPhotoReport class]),
              NSStringFromClass([STMUncashingPicture class])];
     
-}
-
-- (NSArray *)instantLoadPicturesEntityNames {
-    return @[NSStringFromClass([STMMessagePicture class])];
 }
 
 

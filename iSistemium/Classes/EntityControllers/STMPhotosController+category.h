@@ -8,7 +8,7 @@
 
 #import "STMPhotosController.h"
 
-#import "STMController+category.h"
+#import "STMController.h"
 
 
 @interface STMPhotosController (category)

@@ -6,7 +6,7 @@
 //  Copyright (c) 2015 Sistemium UAB. All rights reserved.
 //
 
-#import "STMController+category.h"
+#import "STMController.h"
 #import "STMSaleOrder.h"
 
 @interface STMSaleOrderController : STMController
