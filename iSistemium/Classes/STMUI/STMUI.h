@@ -12,6 +12,7 @@
 #import "STMCoreUI.h"
 
 #import "STMVolumePicker.h"
+#import "STMVolumeTVCell.h"
 
 
 #endif /* STMUI_h */

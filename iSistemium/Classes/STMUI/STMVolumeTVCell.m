@@ -1,17 +1,17 @@
 //
-//  STMVolumeTVCell+category.m
+//  STMVolumeTVCell.m
 //  iSistemium
 //
-//  Created by Maxim Grigoriev on 18/04/16.
+//  Created by Maxim Grigoriev on 11/05/16.
 //  Copyright © 2016 Sistemium UAB. All rights reserved.
 //
 
-#import "STMVolumeTVCell+category.h"
+#import "STMVolumeTVCell.h"
 
 #import "STMPositionVolumesVC.h"
 
 
-@implementation STMVolumeTVCell (category)
+@implementation STMVolumeTVCell
 
 - (void)volumeChangedForParentVC {
     
