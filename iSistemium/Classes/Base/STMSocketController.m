@@ -410,10 +410,6 @@
 
 + (void)connectCallbackWithData:(NSArray *)data ack:(SocketAckEmitter *)ack socket:(SocketIOClient *)socket {
     
-    //            [self checkQueuedEvent];
-    
-//    NSLog(@"connectCallback data %@", data);
-//    NSLog(@"connectCallback ack %@", ack);
     NSLog(@"connectCallback socket %@", socket);
     
     [self sharedInstance].isAuthorized = NO;
@@ -427,6 +423,8 @@
                               @"accessToken"    : [STMAuthController authController].accessToken};
     
     [dataDic addEntriesFromDictionary:authDic];
+    
+    NSLog(@"send authorization data %@ with socket %@", dataDic, socket);
     
     NSString *event = [STMSocketController stringValueForEvent:STMSocketEventAuthorization];
     
@@ -1043,7 +1041,9 @@
             
         } else {
 
-            NSLog(@"socket is not authorized, trying to resolve this issue by reconnecting");
+            NSString *logMessage = @"socket is connected but don't receive authorization ack, trying to resolve this issue by reconnecting";
+            [[STMLogger sharedLogger] saveLogMessageWithText:logMessage type:@"error"];
+
             [self reconnectSocket];
             
         }
