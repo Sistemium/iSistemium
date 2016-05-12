@@ -276,6 +276,10 @@
 "SHIPMENT PROCESSED BUTTON STOP TITLE" = "Завершить отгрузку";
 "SHIPMENT PROCESSED BUTTON CANCEL TITLE" = "Отменить отгрузку";
 "SHIPMENT PROCESSED BUTTON EDIT TITLE" = "Редактировать отгрузку";
+"SHIPMENT PROCESSED BUTTON REJECT TITLE" = "Полный возврат";
+"SHIPMENT PROCESSED BUTTON CANCEL REJECT TITLE" = "Отменить полный возврат";
+"REJECT SHIPPING?" = "Произвести полный возврат?";
+"CANCEL REJECT SHIPPING?" = "Отменить полный возврат?";
 "SHOULD CONFIRM ARRIVAL FIRST" = "Необходимо отметить прибытие";
 "START SHIPPING?" = "Начать отгрузку?";
 "CONTINUE SHIPPING?" = "Продолжить отгрузку?";

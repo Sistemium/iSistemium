@@ -133,6 +133,22 @@
 
 }
 
+- (void)rejectShippingWithShipment:(STMShipment *)shipment {
+    
+    shipment.isShipped = @YES;
+    
+    shipment.isRejected = @YES;
+    
+}
+
+- (void)cancelRejectShippingWithShipment:(STMShipment *)shipment {
+    
+    shipment.isShipped = @NO;
+    
+    shipment.isRejected = @NO;
+    
+}
+
 - (void)resetPosition:(STMShipmentPosition *)position {
     
     position.articleFact = nil;
