@@ -8,24 +8,20 @@
 
 #import "STMSession.h"
 
+#import "STMSettingsController.h"
+#import "STMLocationTracker.h"
+
+
 @implementation STMSession
 
-- (void)checkTrackersToStart {
-    
-    if ([self.startTrackers containsObject:@"location"]) {
-        
-        self.locationTracker = [[STMCoreLocationTracker alloc] init];
-        self.trackers[self.locationTracker.group] = self.locationTracker;
-        
-    }
-    
-    if ([self.startTrackers containsObject:@"battery"]) {
-        
-        self.batteryTracker = [[STMCoreBatteryTracker alloc] init];
-        self.trackers[self.batteryTracker.group] = self.batteryTracker;
-        
-    }
-    
+#pragma mark - properties classes definition (may override in subclasses)
+
+- (Class)settingsControllerClass {
+    return [STMSettingsController class];
+}
+
+- (Class)locationTrackerClass {
+    return [STMLocationTracker class];
 }
 
 
