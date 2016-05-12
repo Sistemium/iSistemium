@@ -902,7 +902,6 @@
 - (void)rejectShipping {
     
     //[self popToSelf];
-    self.resultsController.delegate = nil;
     [self.shippingProcessController rejectShippingWithShipment:self.shipment];
     [self.tableView reloadData];
     
@@ -911,7 +910,7 @@
 - (void)cancelRejectShipping {
     
     //[self popToSelf];
-    [self performSelector:@selector(performFetch) withObject:nil afterDelay:0];
+    [self.shippingProcessController cancelRejectShippingWithShipment:self.shipment];
     [self.tableView reloadData];
     
 }
