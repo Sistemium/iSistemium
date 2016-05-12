@@ -28,12 +28,15 @@
 @property (nonatomic, strong) NSIndexPath *finishShippingButtonCellIndexPath;
 @property (nonatomic, strong) NSIndexPath *rejectShippingButtonCellIndexPath;
 @property (nonatomic, strong) NSIndexPath *cancelButtonCellIndexPath;
+@property (nonatomic, strong) NSIndexPath *lastClickedButtonIndexPath;
 
 @property (nonatomic, strong) STMShipmentPosition *selectedPosition;
 
 @property (nonatomic, strong) STMShippingProcessController *shippingProcessController;
 
 @property (nonatomic, strong) NSString *positionCellIdentifier;
+
+
 
 
 @end
@@ -663,6 +666,8 @@
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
 
+    self.lastClickedButtonIndexPath = indexPath;
+    
     if ([indexPath isEqual:self.shippingButtonCellIndexPath]) {
         
         if (!self.point.isReached.boolValue) {
@@ -691,10 +696,14 @@
     
     else if ([indexPath isEqual:self.rejectShippingButtonCellIndexPath]) {
         
-        if (self.shipment.isRejected.boolValue){
-            [self showCancelRjectShippingAlert];
+        if (!self.point.isReached.boolValue) {
+            [self.parentVC showArriveConfirmationAlert];
         }else{
-            [self showRjectShippingAlert];
+            if (self.shipment.isRejected.boolValue){
+                [self showCancelRjectShippingAlert];
+            }else{
+                [self showRjectShippingAlert];
+            }
         }
         
     }
@@ -743,7 +752,8 @@
 - (void)routePointIsReached {
     
     [self reloadStopShippingButtonCell];
-    [self showStartShippingAlert];
+    [self reloadRejectShippingButtonCell];
+    [self tableView:self.tableView didSelectRowAtIndexPath:self.lastClickedButtonIndexPath];
     
 }
 
@@ -901,8 +911,6 @@
 - (void)cancelRejectShipping {
     
     //[self popToSelf];
-    [self.shippingProcessController cancelRejectShippingWithShipment:self.shipment];
-    self.resultsController.delegate = nil;
     [self performSelector:@selector(performFetch) withObject:nil afterDelay:0];
     [self.tableView reloadData];
     
@@ -953,6 +961,14 @@
         [self.tableView reloadRowsAtIndexPaths:@[self.shippingButtonCellIndexPath] withRowAnimation:UITableViewRowAnimationAutomatic];
     }
 
+}
+
+- (void)reloadRejectShippingButtonCell {
+    
+    if (self.rejectShippingButtonCellIndexPath) {
+        [self.tableView reloadRowsAtIndexPaths:@[self.rejectShippingButtonCellIndexPath] withRowAnimation:UITableViewRowAnimationAutomatic];
+    }
+    
 }
 
 - (void)reloadButtonsSections {
