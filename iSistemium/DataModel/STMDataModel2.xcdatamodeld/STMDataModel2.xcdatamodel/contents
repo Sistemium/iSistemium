@@ -582,6 +582,7 @@
         <attribute name="source" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="sqts" optional="YES" attributeType="Date" syncable="YES"/>
         <attribute name="sts" optional="YES" attributeType="Date" syncable="YES"/>
+        <attribute name="thumbnailHref" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="xid" optional="YES" attributeType="Binary" indexed="YES" syncable="YES"/>
     </entity>
     <entity name="STMPrice" representedClassName="STMPrice" syncable="YES">
@@ -1069,7 +1070,7 @@
         <element name="STMPickingOrder" positionX="297" positionY="-2331" width="128" height="283"/>
         <element name="STMPickingOrderPosition" positionX="718" positionY="-2041" width="128" height="298"/>
         <element name="STMPickingOrderPositionPicked" positionX="1431" positionY="-1933" width="128" height="148"/>
-        <element name="STMPicture" positionX="1186" positionY="-157" width="128" height="313"/>
+        <element name="STMPicture" positionX="1186" positionY="-157" width="128" height="328"/>
         <element name="STMPrice" positionX="405" positionY="-88" width="128" height="253"/>
         <element name="STMPriceType" positionX="583" positionY="-82" width="128" height="238"/>
         <element name="STMProductionInfoType" positionX="718" positionY="-981" width="128" height="298"/>

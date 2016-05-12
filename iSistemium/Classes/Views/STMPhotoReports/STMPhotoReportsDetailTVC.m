@@ -15,10 +15,11 @@
 
 #import "STMImagePickerOwnerProtocol.h"
 
+#import "STMAuthController.h"
 #import "STMPicturesController.h"
 #import "STMObjectsController.h"
 #import "STMLocationController.h"
-#import "STMPhotosController+category.h"
+#import "STMPhotosController.h"
 
 
 #define LOCATION_IMAGE_SIZE 25

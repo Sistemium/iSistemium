@@ -1,17 +1,17 @@
 //
-//  STMPhotosController+category.h
+//  STMPhotosController.h
 //  iSistemium
 //
-//  Created by Maxim Grigoriev on 17/04/16.
+//  Created by Maxim Grigoriev on 12/05/16.
 //  Copyright © 2016 Sistemium UAB. All rights reserved.
 //
 
-#import "STMPhotosController.h"
+#import "STMCorePhotosController.h"
 
-#import "STMController.h"
+#import "STMDataModel.h"
 
 
-@interface STMPhotosController (category)
+@interface STMPhotosController : STMCorePhotosController
 
 - (void)addPhotoReportToWaitingLocation:(STMPhotoReport *)photoReport;
 - (void)photoReportWasDeleted:(STMPhotoReport *)photoReport;
