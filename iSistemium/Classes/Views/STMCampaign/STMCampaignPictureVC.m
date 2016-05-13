@@ -9,6 +9,7 @@
 #import "STMCampaignPictureVC.h"
 #import "STMPicturesController.h"
 #import "STMFunctions.h"
+#import <Photos/Photos.h>
 
 
 @interface STMCampaignPictureVC () <UIScrollViewDelegate>
@@ -17,6 +18,7 @@
 @property (nonatomic, strong) UIImageView *imageView;
 @property (nonatomic, strong) UIImage *image;
 @property (nonatomic, strong) UIView *spinnerView;
+@property (weak, nonatomic) IBOutlet UIImageView *sendToCameraRollButton;
 
 @end
 
@@ -42,6 +44,56 @@
     }
     
     return _spinnerView;
+    
+}
+
+- (void)sendToCameraRollButtonPressed {
+    UIImageWriteToSavedPhotosAlbum((UIImage*) self.image, nil, nil, nil);
+    
+    PHAuthorizationStatus status = [PHPhotoLibrary authorizationStatus];
+    
+    if (status == PHAuthorizationStatusAuthorized) {
+        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"SAVE TO CAMERA ROLL", nil)
+                                                        message:nil
+                                                       delegate:nil
+                                              cancelButtonTitle:NSLocalizedString(@"OK", nil)
+                                              otherButtonTitles:nil];
+        [alert show];
+    }
+    
+    else if (status == PHAuthorizationStatusDenied) {
+        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"IMPOSSIBLE TO SAVE", nil)
+                                                        message:NSLocalizedString(@"GIVE PERMISSIONS", nil)
+                                                       delegate:nil
+                                              cancelButtonTitle:NSLocalizedString(@"OK", nil)
+                                              otherButtonTitles:nil];
+        [alert show];
+    }
+    
+    else if (status == PHAuthorizationStatusNotDetermined) {
+        
+        // Access has not been determined.
+        [PHPhotoLibrary requestAuthorization:^(PHAuthorizationStatus status) {
+            
+            if (status == PHAuthorizationStatusAuthorized) {
+                UIAlertView *alert = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"SAVE TO CAMERA ROLL", nil)
+                                                                message:nil
+                                                               delegate:nil
+                                                      cancelButtonTitle:NSLocalizedString(@"OK", nil)
+                                                      otherButtonTitles:nil];
+                [alert show];
+            }
+            
+            else {
+                UIAlertView *alert = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"IMPOSSIBLE TO SAVE", nil)
+                                                                message:NSLocalizedString(@"GIVE PERMISSIONS", nil)
+                                                               delegate:nil
+                                                      cancelButtonTitle:NSLocalizedString(@"OK", nil)
+                                                      otherButtonTitles:nil];
+                [alert show];
+            }
+        }];
+    }
     
 }
 
@@ -78,6 +130,7 @@
 - (void)setupScrollView {
     
     if (self.image) {
+        self.sendToCameraRollButton.hidden = NO;
         
         [self.spinnerView removeFromSuperview];
         [self.imageView removeFromSuperview];
@@ -100,7 +153,7 @@
         [self centerContent];
 
     } else {
-        
+        self.sendToCameraRollButton.hidden = YES;
         [self.view addSubview:self.spinnerView];
         [self addObservers];
 
@@ -202,6 +255,10 @@
     [self checkFrameOrientationForView:self.view];
     
     self.scrollView.delegate = self;
+    
+    self.sendToCameraRollButton.userInteractionEnabled = YES;
+    UITapGestureRecognizer *tap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(sendToCameraRollButtonPressed)];
+    [self.sendToCameraRollButton addGestureRecognizer:tap];
     
 }
 

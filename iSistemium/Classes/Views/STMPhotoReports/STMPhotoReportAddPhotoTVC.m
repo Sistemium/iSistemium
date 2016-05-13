@@ -267,6 +267,8 @@
         }
     }
 
+    [self performFetch];
+
 }
 
 - (void)viewDidLoad {

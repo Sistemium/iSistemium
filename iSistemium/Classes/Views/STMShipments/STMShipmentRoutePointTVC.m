@@ -54,6 +54,7 @@
 @property (nonatomic ,strong) STMSpinnerView *spinner;
 
 @property (nonatomic, strong) UIView *picturesView;
+@property (nonatomic, strong) UIView *downloadPlaceholder;
 
 @property (nonatomic, strong) STMShipmentTVC *shipmentTVC;
 
@@ -186,6 +187,25 @@
     
 }
 
+- (UIView *)downloadPlaceholder {
+
+    if (!_downloadPlaceholder) {
+
+        UIImage *image = [[STMFunctions resizeImage:[UIImage imageNamed:@"Download-100.png"] toSize:THUMB_SIZE] imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate];
+
+        UIImageView *imageView = [[UIImageView alloc] initWithImage:image];
+        imageView.tintColor = [UIColor grayColor];
+
+        UITapGestureRecognizer *tap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(photoButtonPressed:)];
+        imageView.gestureRecognizers = @[tap];
+        imageView.userInteractionEnabled = YES;
+
+        _downloadPlaceholder = imageView;
+
+    }
+    return _downloadPlaceholder;
+    
+}
 
 #pragma mark - resultsController
 
@@ -957,19 +977,20 @@
         
         for (STMPicture *picture in photoArray) {
             
-            UIView *pictureButton = [self pictureButtonWithPicture:picture];
+            UIView *pictureButton = (picture.imageThumbnail) ? [self pictureButtonWithPicture:picture] : self.downloadPlaceholder;
+            
+            CGFloat cellImageSize = (picture.imageThumbnail) ? CELL_IMAGES_SIZE : CELL_IMAGES_SIZE - 5;
             
             NSUInteger count = self.picturesView.subviews.count;
-            CGFloat x = (count > 0) ? count * (CELL_IMAGES_SIZE + IMAGE_PADDING) : 0;
+            CGFloat x = (count > 0) ? count * (cellImageSize + IMAGE_PADDING) : 0;
             
-            pictureButton.frame = CGRectMake(x, 0, CELL_IMAGES_SIZE, CELL_IMAGES_SIZE);
+            pictureButton.frame = CGRectMake(x, 0, cellImageSize, cellImageSize);
             
             [self.picturesView addSubview:pictureButton];
             
         }
         
     }
-    
     
     UIView *addButton = [self addPhotoButton];
     

@@ -8,6 +8,7 @@
 
 #import "STMArticlePictureVC.h"
 #import "STMPicturesController.h"
+#import <Photos/Photos.h>
 
 
 @interface STMArticlePictureVC ()
@@ -15,6 +16,7 @@
 @property (weak, nonatomic) IBOutlet UIImageView *closeButtonView;
 @property (weak, nonatomic) IBOutlet UIImageView *pictureView;
 @property (weak, nonatomic) IBOutlet UILabel *titleLabel;
+@property (weak, nonatomic) IBOutlet UIImageView *sendToCameraRollButton;
 
 @property (nonatomic, strong) STMArticlePicture *picture;
 
@@ -32,8 +34,58 @@
     
 }
 
-- (void)setupImage {
+- (void)sendToCameraRollButtonPressed {
+    UIImageWriteToSavedPhotosAlbum((UIImage*) self.pictureView.image, nil, nil, nil);
     
+    PHAuthorizationStatus status = [PHPhotoLibrary authorizationStatus];
+    
+    if (status == PHAuthorizationStatusAuthorized) {
+        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"SAVE TO CAMERA ROLL", nil)
+                                                        message:nil
+                                                       delegate:nil
+                                              cancelButtonTitle:NSLocalizedString(@"OK", nil)
+                                              otherButtonTitles:nil];
+        [alert show];
+    }
+    
+    else if (status == PHAuthorizationStatusDenied) {
+        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"IMPOSSIBLE TO SAVE", nil)
+                                                        message:NSLocalizedString(@"GIVE PERMISSIONS", nil)
+                                                       delegate:nil
+                                              cancelButtonTitle:NSLocalizedString(@"OK", nil)
+                                              otherButtonTitles:nil];
+        [alert show];
+    }
+    
+    else if (status == PHAuthorizationStatusNotDetermined) {
+        
+        // Access has not been determined.
+        [PHPhotoLibrary requestAuthorization:^(PHAuthorizationStatus status) {
+            
+            if (status == PHAuthorizationStatusAuthorized) {
+                UIAlertView *alert = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"SAVE TO CAMERA ROLL", nil)
+                                                                message:nil
+                                                               delegate:nil
+                                                      cancelButtonTitle:NSLocalizedString(@"OK", nil)
+                                                      otherButtonTitles:nil];
+                [alert show];
+            }
+            
+            else {
+                UIAlertView *alert = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"IMPOSSIBLE TO SAVE", nil)
+                                                                message:NSLocalizedString(@"GIVE PERMISSIONS", nil)
+                                                               delegate:nil
+                                                      cancelButtonTitle:NSLocalizedString(@"OK", nil)
+                                                      otherButtonTitles:nil];
+                [alert show];
+            }
+        }];
+    }
+    
+}
+
+- (void)setupImage {
+    self.sendToCameraRollButton.hidden = YES;
     if (self.article.pictures.count > 0) {
         
         NSSortDescriptor *sortDescriptor = [NSSortDescriptor sortDescriptorWithKey:@"deviceCts" ascending:YES];
@@ -46,6 +98,7 @@
             self.pictureView.image = [UIImage imageWithContentsOfFile:[STMFunctions absolutePathForPath:picture.imagePath]];
             
             [self removeObservers];
+            self.sendToCameraRollButton.hidden = NO;
             
         } else {
             
@@ -111,6 +164,10 @@
     self.closeButtonView.userInteractionEnabled = YES;
     UITapGestureRecognizer *tap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(closeButtonPressed)];
     [self.closeButtonView addGestureRecognizer:tap];
+    
+    self.sendToCameraRollButton.userInteractionEnabled = YES;
+    tap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(sendToCameraRollButtonPressed)];
+    [self.sendToCameraRollButton addGestureRecognizer:tap];
     
 }
 

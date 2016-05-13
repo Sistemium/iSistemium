@@ -7,17 +7,35 @@
 //
 
 #import "STMShippingLocationPictureVC.h"
+#import "STMPicturesController.h"
+#import "STMUI.h"
 
 @interface STMShippingLocationPictureVC () <UIAlertViewDelegate, UIGestureRecognizerDelegate>
 
 @property (weak, nonatomic) IBOutlet UIImageView *photoView;
 @property (weak, nonatomic) IBOutlet UIToolbar *toolbar;
 @property (weak, nonatomic) IBOutlet UIBarButtonItem *deletePhotoButton;
+@property (nonatomic, strong) STMSpinnerView *spinnerView;
+
 
 
 @end
 
 @implementation STMShippingLocationPictureVC
+
+- (STMSpinnerView *)spinnerView {
+    
+    if (!_spinnerView) {
+        
+        _spinnerView = [STMSpinnerView spinnerViewWithFrame:self.view.frame
+                                             indicatorStyle:UIActivityIndicatorViewStyleGray
+                                            backgroundColor: [UIColor clearColor]
+                                                       alfa:1.0];
+        
+    }
+    return _spinnerView;
+    
+}
 
 - (void)setPhoto:(STMShippingLocationPicture *)photo {
     
@@ -44,13 +62,28 @@
 }
 
 - (void)showImage {
-    
+    self.deletePhotoButton.enabled = true;
     self.photoView.contentMode = UIViewContentModeScaleAspectFit;
-    self.photoView.image = self.image;
+    self.photoView.image = [UIImage imageWithContentsOfFile:[STMFunctions absolutePathForPath:self.photo.resizedImagePath]];
+    UITapGestureRecognizer *tap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(photoViewTap)];
+    tap.delegate = self;
+    self.view.gestureRecognizers = @[tap];
+    [self.spinnerView removeFromSuperview];
+    [self removeObservers];
+    
+}
+    
+- (void)addSpinner {
     
     UITapGestureRecognizer *tap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(photoViewTap)];
     tap.delegate = self;
     [self.view addGestureRecognizer:tap];
+    self.deletePhotoButton.enabled = false;
+    [self.view addSubview:self.spinnerView];
+    [self addObservers];
+    NSManagedObjectID *pictureID = self.photo.objectID;
+    self.photo.imageThumbnail = nil;
+    [STMPicturesController downloadConnectionForObjectID:pictureID];
     
 }
 
@@ -91,17 +124,7 @@
 #pragma mark - UIGestureRecognizerDelegate
 
 - (BOOL)gestureRecognizer:(UIGestureRecognizer *)gestureRecognizer shouldReceiveTouch:(UITouch *)touch {
-    
-    if (touch.view != self.view) {
-        
-        return NO;
-        
-    } else {
-        
-        return YES;
-        
-    }
-    
+    return ([touch.view isEqual:self.view] || [touch.view isEqual:self.spinnerView]);
 }
 
 
@@ -133,6 +156,23 @@
 
 #pragma mark - view lifecycle
 
+- (void)addObservers {
+    
+    NSNotificationCenter *nc = [NSNotificationCenter defaultCenter];
+    
+    [nc addObserver:self
+           selector:@selector(showImage)
+               name:@"downloadPicture"
+             object:self.photo];
+    
+}
+
+- (void)removeObservers {
+    
+    [[NSNotificationCenter defaultCenter] removeObserver:self];
+    
+}
+
 - (void)customInit {
     
     [[UIApplication sharedApplication] setStatusBarStyle:UIStatusBarStyleLightContent];
@@ -147,7 +187,10 @@
     
     [self checkFrameOrientationForView:self.view];
     
-    [self showImage];
+    if (self.photo.imagePath) [self showImage];
+    else{
+        [self addSpinner];
+    }
     
 }
 
