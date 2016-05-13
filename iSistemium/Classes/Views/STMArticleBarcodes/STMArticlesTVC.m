@@ -13,7 +13,7 @@
 #import "STMArticleCodesTVC.h"
 
 #import "STMBarCodeScanner.h"
-#import "STMBarCodeController+category.h"
+#import "STMBarCodeController.h"
 #import "STMSoundController.h"
 
 

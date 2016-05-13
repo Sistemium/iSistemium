@@ -1,16 +1,17 @@
 //
-//  STMBarCodeController+category.m
+//  STMBarCodeController.m
 //  iSistemium
 //
-//  Created by Maxim Grigoriev on 17/04/16.
+//  Created by Maxim Grigoriev on 13/05/16.
 //  Copyright © 2016 Sistemium UAB. All rights reserved.
 //
 
-#import "STMBarCodeController+category.h"
+#import "STMBarCodeController.h"
+
 #import "STMObjectsController.h"
 
 
-@implementation STMBarCodeController (category)
+@implementation STMBarCodeController
 
 + (NSArray <STMArticle *> *)articlesForBarcode:(NSString *)barcode {
     

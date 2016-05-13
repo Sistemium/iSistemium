@@ -8,7 +8,7 @@
 
 #import "STMInventoryProcessController.h"
 
-#import "STMBarCodeController+category.h"
+#import "STMBarCodeController.h"
 #import "STMObjectsController.h"
 #import "STMSoundController.h"
 
