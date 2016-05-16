@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<model userDefinedModelVersionIdentifier="" type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="9525" systemVersion="15D21" minimumToolsVersion="Xcode 4.1">
+<model userDefinedModelVersionIdentifier="" type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="10171" systemVersion="15E65" minimumToolsVersion="Xcode 4.1">
     <entity name="STMArticle" representedClassName="STMArticle" syncable="YES">
         <attribute name="barcode" optional="YES" attributeType="String" indexed="YES" syncable="YES"/>
         <attribute name="code" optional="YES" attributeType="String" syncable="YES"/>
@@ -333,6 +333,7 @@
         <attribute name="eTag" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="id" optional="YES" attributeType="Integer 64" defaultValueString="0" indexed="YES" syncable="YES"/>
         <attribute name="isFantom" optional="YES" attributeType="Boolean" defaultValueString="YES" syncable="YES"/>
+        <attribute name="isResolveFantoms" optional="YES" attributeType="Boolean" syncable="YES"/>
         <attribute name="isUploadable" optional="YES" attributeType="Boolean" syncable="YES"/>
         <attribute name="lifeTime" optional="YES" attributeType="Double" defaultValueString="0.0" syncable="YES"/>
         <attribute name="lifeTimeDateField" optional="YES" attributeType="String" syncable="YES"/>
@@ -473,6 +474,7 @@
         <relationship name="debts" optional="YES" toMany="YES" deletionRule="Cascade" destinationEntity="STMDebt" inverseName="outlet" inverseEntity="STMDebt" syncable="YES"/>
         <relationship name="partner" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="STMPartner" inverseName="outlets" inverseEntity="STMPartner" syncable="YES"/>
         <relationship name="photoReports" optional="YES" toMany="YES" deletionRule="Cascade" destinationEntity="STMPhotoReport" inverseName="outlet" inverseEntity="STMPhotoReport" syncable="YES"/>
+        <relationship name="pickingOrders" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="STMPickingOrder" inverseName="outlet" inverseEntity="STMPickingOrder" syncable="YES"/>
         <relationship name="saleOrders" optional="YES" toMany="YES" deletionRule="Cascade" destinationEntity="STMSaleOrder" inverseName="outlet" inverseEntity="STMSaleOrder" syncable="YES"/>
         <relationship name="salesman" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="STMSalesman" inverseName="outlets" inverseEntity="STMSalesman" syncable="YES"/>
         <relationship name="shipments" optional="YES" toMany="YES" deletionRule="Cascade" destinationEntity="STMShipment" inverseName="outlet" inverseEntity="STMShipment" syncable="YES"/>
@@ -533,6 +535,7 @@
         <attribute name="sqts" optional="YES" attributeType="Date" syncable="YES"/>
         <attribute name="sts" optional="YES" attributeType="Date" syncable="YES"/>
         <attribute name="xid" optional="YES" attributeType="Binary" indexed="YES" syncable="YES"/>
+        <relationship name="outlet" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="STMOutlet" inverseName="pickingOrders" inverseEntity="STMOutlet" syncable="YES"/>
         <relationship name="picker" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="STMPicker" inverseName="pickingOrders" inverseEntity="STMPicker" syncable="YES"/>
         <relationship name="pickingOrderPositions" optional="YES" toMany="YES" deletionRule="Cascade" destinationEntity="STMPickingOrderPosition" inverseName="pickingOrder" inverseEntity="STMPickingOrderPosition" syncable="YES"/>
     </entity>
@@ -582,6 +585,7 @@
         <attribute name="source" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="sqts" optional="YES" attributeType="Date" syncable="YES"/>
         <attribute name="sts" optional="YES" attributeType="Date" syncable="YES"/>
+        <attribute name="thumbnailHref" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="xid" optional="YES" attributeType="Binary" indexed="YES" syncable="YES"/>
     </entity>
     <entity name="STMPrice" representedClassName="STMPrice" syncable="YES">
@@ -1053,22 +1057,22 @@
         <element name="STMDatum" positionX="-857" positionY="-1323" width="128" height="163"/>
         <element name="STMDebt" positionX="-38" positionY="36" width="128" height="343"/>
         <element name="STMDriver" positionX="-387" positionY="-1746" width="128" height="253"/>
-        <element name="STMEntity" positionX="844" positionY="711" width="128" height="358"/>
+        <element name="STMEntity" positionX="844" positionY="711" width="128" height="373"/>
         <element name="STMInventoryBatch" positionX="1186" positionY="-1138" width="128" height="313"/>
         <element name="STMInventoryBatchItem" positionX="988" positionY="-1161" width="128" height="238"/>
         <element name="STMLocation" positionX="-468" positionY="464" width="128" height="403"/>
         <element name="STMLogMessage" positionX="-1008" positionY="-684" width="128" height="238"/>
         <element name="STMMessage" positionX="972" positionY="315" width="128" height="343"/>
         <element name="STMMessagePicture" positionX="1186" positionY="225" width="128" height="73"/>
-        <element name="STMOutlet" positionX="-666" positionY="-562" width="128" height="403"/>
+        <element name="STMOutlet" positionX="-666" positionY="-562" width="128" height="418"/>
         <element name="STMPartner" positionX="-270" positionY="-2340" width="128" height="253"/>
         <element name="STMPhoto" positionX="1015" positionY="5" width="128" height="58"/>
         <element name="STMPhotoReport" positionX="925" positionY="-187" width="128" height="88"/>
         <element name="STMPicker" positionX="-110" positionY="-2610" width="128" height="268"/>
-        <element name="STMPickingOrder" positionX="297" positionY="-2331" width="128" height="283"/>
+        <element name="STMPickingOrder" positionX="297" positionY="-2331" width="128" height="298"/>
         <element name="STMPickingOrderPosition" positionX="718" positionY="-2041" width="128" height="298"/>
         <element name="STMPickingOrderPositionPicked" positionX="1431" positionY="-1933" width="128" height="148"/>
-        <element name="STMPicture" positionX="1186" positionY="-157" width="128" height="313"/>
+        <element name="STMPicture" positionX="1186" positionY="-157" width="128" height="330"/>
         <element name="STMPrice" positionX="405" positionY="-88" width="128" height="253"/>
         <element name="STMPriceType" positionX="583" positionY="-82" width="128" height="238"/>
         <element name="STMProductionInfoType" positionX="718" positionY="-981" width="128" height="298"/>
