@@ -276,6 +276,10 @@
 "SHIPMENT PROCESSED BUTTON STOP TITLE" = "Stop shipping";
 "SHIPMENT PROCESSED BUTTON CANCEL TITLE" = "Cancel shipping";
 "SHIPMENT PROCESSED BUTTON EDIT TITLE" = "Edit shipping";
+"SHIPMENT PROCESSED BUTTON REJECT TITLE" = "Reject shipping";
+"SHIPMENT PROCESSED BUTTON CANCEL REJECT TITLE" = "Cancel reject";
+"REJECT SHIPPING?" = "Reject shipping?";
+"CANCEL REJECT SHIPPING?" = "Cancel reject?";
 "SHOULD CONFIRM ARRIVAL FIRST" = "Should confirm arrival first";
 "START SHIPPING?" = "Start shipping?";
 "CONTINUE SHIPPING?" = "Continue shipping?";

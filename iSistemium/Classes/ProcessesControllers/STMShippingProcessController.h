@@ -29,6 +29,8 @@ typedef NS_ENUM(NSInteger, STMShippingProcessState) {
 - (void)startShippingWithShipment:(STMShipment *)shipment;
 - (void)cancelShippingWithShipment:(STMShipment *)shipment;
 - (void)doneShippingWithShipment:(STMShipment *)shipment withCompletionHandler:(void (^)(BOOL success))completionHandler;
+- (void)rejectShippingWithShipment:(STMShipment *)shipment;
+- (void)cancelRejectShippingWithShipment:(STMShipment *)shipment;
 
 - (void)resetPosition:(STMShipmentPosition *)position;
 

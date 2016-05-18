@@ -26,13 +26,17 @@
 
 @property (nonatomic, strong) NSIndexPath *shippingButtonCellIndexPath;
 @property (nonatomic, strong) NSIndexPath *finishShippingButtonCellIndexPath;
+@property (nonatomic, strong) NSIndexPath *rejectShippingButtonCellIndexPath;
 @property (nonatomic, strong) NSIndexPath *cancelButtonCellIndexPath;
+@property (nonatomic, strong) NSIndexPath *lastClickedButtonIndexPath;
 
 @property (nonatomic, strong) STMShipmentPosition *selectedPosition;
 
 @property (nonatomic, strong) STMShippingProcessController *shippingProcessController;
 
 @property (nonatomic, strong) NSString *positionCellIdentifier;
+
+
 
 
 @end
@@ -238,7 +242,7 @@
             break;
             
         case 1:
-            return ([self shippingProcessIsRunning]) ? 3 : 1;
+        return ([self shippingProcessIsRunning]) ? 3 : self.shipment.isShipped.boolValue || self.shipment.isRejected.boolValue ? 1 : 2;
             break;
             
         case 2:
@@ -385,11 +389,19 @@
         case 1:
             switch (indexPath.row) {
                 case 0:
-                    [self fillShippingButtonCell:cell atIndexPath:indexPath];
+                    if (self.shipment.isRejected.boolValue){
+                        [self fillRejectShippingButtonCell:cell atIndexPath:indexPath];
+                    }else{
+                        [self fillShippingButtonCell:cell atIndexPath:indexPath];
+                    }
                     break;
                     
                 case 1:
-                    [self fillFinishShippingButtonCell:cell atIndexPath:indexPath];
+                    if ([self shippingProcessIsRunning]) {
+                        [self fillFinishShippingButtonCell:cell atIndexPath:indexPath];
+                    }else{
+                        [self fillRejectShippingButtonCell:cell atIndexPath:indexPath];
+                    }
                     break;
                     
                 case 2:
@@ -454,7 +466,6 @@
     } else {
         
         if (self.shipment.isShipped.boolValue) {
-            
             cell.titleLabel.text = NSLocalizedString(@"SHIPMENT PROCESSED BUTTON EDIT TITLE", nil);
             
         } else {
@@ -504,6 +515,34 @@
     cell.detailLabel.textAlignment = NSTextAlignmentCenter;
     
     self.finishShippingButtonCellIndexPath = indexPath;
+    
+}
+
+- (void)fillRejectShippingButtonCell:(UITableViewCell <STMTDCell> *)cell atIndexPath:(NSIndexPath *)indexPath {
+    
+    cell.titleLabel.font = [UIFont boldSystemFontOfSize:cell.textLabel.font.pointSize];
+    
+    if (self.shipment.isRejected.boolValue){
+        cell.titleLabel.text = NSLocalizedString(@"SHIPMENT PROCESSED BUTTON CANCEL REJECT TITLE", nil);
+    }else{
+        cell.titleLabel.text = NSLocalizedString(@"SHIPMENT PROCESSED BUTTON REJECT TITLE", nil);
+    }
+    
+    cell.titleLabel.textColor = ACTIVE_BLUE_COLOR;
+    cell.accessoryType = UITableViewCellAccessoryNone;
+    
+    
+    cell.titleLabel.textAlignment = NSTextAlignmentCenter;
+    
+    cell.detailLabel.text = (self.point.isReached.boolValue) ? @"" : NSLocalizedString(@"SHOULD CONFIRM ARRIVAL FIRST", nil);
+    
+    cell.detailLabel.textColor = [UIColor lightGrayColor];
+    cell.detailLabel.textAlignment = NSTextAlignmentCenter;
+    self.finishShippingButtonCellIndexPath = nil;
+    self.rejectShippingButtonCellIndexPath = indexPath;
+    if (self.shippingButtonCellIndexPath == self.rejectShippingButtonCellIndexPath) {
+        self.shippingButtonCellIndexPath = nil;
+    }
     
 }
 
@@ -627,6 +666,8 @@
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
 
+    self.lastClickedButtonIndexPath = indexPath;
+    
     if ([indexPath isEqual:self.shippingButtonCellIndexPath]) {
         
         if (!self.point.isReached.boolValue) {
@@ -650,6 +691,20 @@
     } else if ([indexPath isEqual:self.cancelButtonCellIndexPath]) {
         
         [self showCancelShippingAlert];
+        
+    }
+    
+    else if ([indexPath isEqual:self.rejectShippingButtonCellIndexPath]) {
+        
+        if (!self.point.isReached.boolValue) {
+            [self.parentVC showArriveConfirmationAlert];
+        }else{
+            if (self.shipment.isRejected.boolValue){
+                [self showCancelRjectShippingAlert];
+            }else{
+                [self showRjectShippingAlert];
+            }
+        }
         
     }
     
@@ -697,7 +752,8 @@
 - (void)routePointIsReached {
     
     [self reloadStopShippingButtonCell];
-    [self showStartShippingAlert];
+    [self reloadRejectShippingButtonCell];
+    [self tableView:self.tableView didSelectRowAtIndexPath:self.lastClickedButtonIndexPath];
     
 }
 
@@ -749,6 +805,40 @@
 
     }];
 
+}
+
+- (void)showRjectShippingAlert {
+    
+    [[NSOperationQueue mainQueue] addOperationWithBlock:^{
+        
+        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"REJECT SHIPPING?", nil)
+                                                        message:@""
+                                                       delegate:self
+                                              cancelButtonTitle:NSLocalizedString(@"NO", nil)
+                                              otherButtonTitles:NSLocalizedString(@"YES", nil), nil];
+        
+        alert.tag = 777;
+        [alert show];
+        
+    }];
+    
+}
+
+- (void)showCancelRjectShippingAlert {
+    
+    [[NSOperationQueue mainQueue] addOperationWithBlock:^{
+        
+        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"CANCEL REJECT SHIPPING?", nil)
+                                                        message:@""
+                                                       delegate:self
+                                              cancelButtonTitle:NSLocalizedString(@"NO", nil)
+                                              otherButtonTitles:NSLocalizedString(@"YES", nil), nil];
+        
+        alert.tag = 888;
+        [alert show];
+        
+    }];
+    
 }
 
 - (void)cancelShipping {
@@ -809,6 +899,22 @@
 
 }
 
+- (void)rejectShipping {
+    
+    //[self popToSelf];
+    [self.shippingProcessController rejectShippingWithShipment:self.shipment];
+    [self.tableView reloadData];
+    
+}
+
+- (void)cancelRejectShipping {
+    
+    //[self popToSelf];
+    [self.shippingProcessController cancelRejectShippingWithShipment:self.shipment];
+    [self.tableView reloadData];
+    
+}
+
 - (void)shippingDidDone {
     
     [self performSelector:@selector(performFetch) withObject:nil afterDelay:0];
@@ -854,6 +960,14 @@
         [self.tableView reloadRowsAtIndexPaths:@[self.shippingButtonCellIndexPath] withRowAnimation:UITableViewRowAnimationAutomatic];
     }
 
+}
+
+- (void)reloadRejectShippingButtonCell {
+    
+    if (self.rejectShippingButtonCellIndexPath) {
+        [self.tableView reloadRowsAtIndexPaths:@[self.rejectShippingButtonCellIndexPath] withRowAnimation:UITableViewRowAnimationAutomatic];
+    }
+    
 }
 
 - (void)reloadButtonsSections {
@@ -913,6 +1027,27 @@
                     self.resultsController.delegate = nil;
                     [self.shippingProcessController markUnprocessedPositionsAsDoneForShipment:self.shipment];
                     [self doneShipping];
+                    break;
+                    
+                default:
+                    break;
+            }
+            break;
+            
+        case 777:
+            switch (buttonIndex) {
+                case 1:
+                    [self rejectShipping];
+                    break;
+                    
+                default:
+                    break;
+            }
+            break;
+        case 888:
+            switch (buttonIndex) {
+                case 1:
+                    [self cancelRejectShipping];
                     break;
                     
                 default:
