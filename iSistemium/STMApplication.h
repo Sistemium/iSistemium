@@ -6,8 +6,8 @@
 //  Copyright © 2015 Sistemium UAB. All rights reserved.
 //
 
-#import <UIKit/UIKit.h>
+#import "STMCoreApplication.h"
 
-@interface STMApplication : UIApplication
+@interface STMApplication : STMCoreApplication
 
 @end
