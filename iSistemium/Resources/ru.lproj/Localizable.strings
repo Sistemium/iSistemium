@@ -276,6 +276,10 @@
 "SHIPMENT PROCESSED BUTTON STOP TITLE" = "Завершить отгрузку";
 "SHIPMENT PROCESSED BUTTON CANCEL TITLE" = "Отменить отгрузку";
 "SHIPMENT PROCESSED BUTTON EDIT TITLE" = "Редактировать отгрузку";
+"SHIPMENT PROCESSED BUTTON REJECT TITLE" = "Полный возврат";
+"SHIPMENT PROCESSED BUTTON CANCEL REJECT TITLE" = "Отменить полный возврат";
+"REJECT SHIPPING?" = "Произвести полный возврат?";
+"CANCEL REJECT SHIPPING?" = "Отменить полный возврат?";
 "SHOULD CONFIRM ARRIVAL FIRST" = "Необходимо отметить прибытие";
 "START SHIPPING?" = "Начать отгрузку?";
 "CONTINUE SHIPPING?" = "Продолжить отгрузку?";
@@ -314,7 +318,7 @@
 "UNKNOWN ARTICLE" = "Неизвестный товар";
 "0_VOLUME_TYPE" = "Отгружено";
 "1_VOLUME_TYPE" = "Брак";
-"2_VOLUME_TYPE" = "Излишек";
+"2_VOLUME_TYPE" = "Возврат";
 "3_VOLUME_TYPE" = "Недостача";
 "4_VOLUME_TYPE" = "Пересортица";
 "5_VOLUME_TYPE" = "Бой";
@@ -473,3 +477,11 @@
 "RELOAD SCANNER DATA" = "Обновить";
 "UNKNOWN LOCATION" = "Нет координат";
 "DELETE ROUTE POINT" = "Удалить точку маршрута";
+"SAVE TO CAMERA ROLL" = "Изображение сохранено в фотопленку";
+"IMPOSSIBLE TO SAVE" = "Невозможно сохранить изображение в фотопленку (нет доступа к фотографиям)";
+"GIVE PERMISSIONS" = "Предоставьте положению доступ к фотографиям в настройках";
+"0UNUSED" = "%lu неиспользуемых %@";
+"1UNUSED" = "%lu неиспользуемая %@";
+"2UNUSED" = "%lu неиспользуемые %@";
+"5UNUSED" = "%lu неиспользуемых %@";
+"UNUSED PICTURES" = "Неиспользуемые картинки";

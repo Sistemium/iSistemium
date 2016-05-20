@@ -276,6 +276,10 @@
 "SHIPMENT PROCESSED BUTTON STOP TITLE" = "Stop shipping";
 "SHIPMENT PROCESSED BUTTON CANCEL TITLE" = "Cancel shipping";
 "SHIPMENT PROCESSED BUTTON EDIT TITLE" = "Edit shipping";
+"SHIPMENT PROCESSED BUTTON REJECT TITLE" = "Reject shipping";
+"SHIPMENT PROCESSED BUTTON CANCEL REJECT TITLE" = "Cancel reject";
+"REJECT SHIPPING?" = "Reject shipping?";
+"CANCEL REJECT SHIPPING?" = "Cancel reject?";
 "SHOULD CONFIRM ARRIVAL FIRST" = "Should confirm arrival first";
 "START SHIPPING?" = "Start shipping?";
 "CONTINUE SHIPPING?" = "Continue shipping?";
@@ -473,3 +477,11 @@
 "RELOAD SCANNER DATA" = "Reload data";
 "UNKNOWN LOCATION" = "Unknown location";
 "DELETE ROUTE POINT" = "Delete route point";
+"SAVE TO CAMERA ROLL" = "Image was saved to the camera roll";
+"IMPOSSIBLE TO SAVE" = "Impossible to save image to the camera roll (access to photos is denied)";
+"GIVE PERMISSIONS" = "Change photos permissions in app settings";
+"0UNUSED" = "%lu unused %@";
+"1UNUSED" = "%lu unused %@";
+"2UNUSED" = "%lu unused %@";
+"5UNUSED" = "%lu unused %@";
+"UNUSED PICTURES" = "Unused pictures";
