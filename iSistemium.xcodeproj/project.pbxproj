@@ -341,7 +341,7 @@
 		2C7086381CC394500002F3FF /* STMWebView.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 2C70856F1CC394500002F3FF /* STMWebView.storyboard */; };
 		2C7086391CC394500002F3FF /* STMWKWebView.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 2C7085701CC394500002F3FF /* STMWKWebView.storyboard */; };
 		2C70864A1CC504260002F3FF /* STMWKWebViewNC.m in Sources */ = {isa = PBXBuildFile; fileRef = 2C7086471CC504260002F3FF /* STMWKWebViewNC.m */; };
-		2C70864B1CC504260002F3FF /* STMWKWebViewVC.m in Sources */ = {isa = PBXBuildFile; fileRef = 2C7086491CC504260002F3FF /* STMWKWebViewVC.m */; };
+		2C70864B1CC504260002F3FF /* STMCoreWKWebViewVC.m in Sources */ = {isa = PBXBuildFile; fileRef = 2C7086491CC504260002F3FF /* STMCoreWKWebViewVC.m */; };
 		2C7086541CC505750002F3FF /* iphoneTabs.json in Resources */ = {isa = PBXBuildFile; fileRef = 2C7086521CC505750002F3FF /* iphoneTabs.json */; };
 		2C7086551CC505750002F3FF /* settings.json in Resources */ = {isa = PBXBuildFile; fileRef = 2C7086531CC505750002F3FF /* settings.json */; };
 		2C70865B1CC50FB80002F3FF /* STMRootTBC.m in Sources */ = {isa = PBXBuildFile; fileRef = 2C70865A1CC50FB80002F3FF /* STMRootTBC.m */; };
@@ -1144,8 +1144,8 @@
 		2C70863A1CC398FC0002F3FF /* STMCoreDataModel.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = STMCoreDataModel.h; sourceTree = "<group>"; };
 		2C7086461CC504260002F3FF /* STMWKWebViewNC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = STMWKWebViewNC.h; sourceTree = "<group>"; };
 		2C7086471CC504260002F3FF /* STMWKWebViewNC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = STMWKWebViewNC.m; sourceTree = "<group>"; };
-		2C7086481CC504260002F3FF /* STMWKWebViewVC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = STMWKWebViewVC.h; sourceTree = "<group>"; };
-		2C7086491CC504260002F3FF /* STMWKWebViewVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = STMWKWebViewVC.m; sourceTree = "<group>"; };
+		2C7086481CC504260002F3FF /* STMCoreWKWebViewVC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = STMCoreWKWebViewVC.h; sourceTree = "<group>"; };
+		2C7086491CC504260002F3FF /* STMCoreWKWebViewVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = STMCoreWKWebViewVC.m; sourceTree = "<group>"; };
 		2C7086521CC505750002F3FF /* iphoneTabs.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = iphoneTabs.json; sourceTree = "<group>"; };
 		2C7086531CC505750002F3FF /* settings.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = settings.json; sourceTree = "<group>"; };
 		2C7086591CC50FB80002F3FF /* STMRootTBC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = STMRootTBC.h; sourceTree = "<group>"; };
@@ -2648,8 +2648,8 @@
 			children = (
 				2C7086461CC504260002F3FF /* STMWKWebViewNC.h */,
 				2C7086471CC504260002F3FF /* STMWKWebViewNC.m */,
-				2C7086481CC504260002F3FF /* STMWKWebViewVC.h */,
-				2C7086491CC504260002F3FF /* STMWKWebViewVC.m */,
+				2C7086481CC504260002F3FF /* STMCoreWKWebViewVC.h */,
+				2C7086491CC504260002F3FF /* STMCoreWKWebViewVC.m */,
 			);
 			path = STMWKWebView;
 			sourceTree = "<group>";
@@ -3705,7 +3705,7 @@
 				2CC5D3441C85C73D00193CD7 /* STMPickingOrderPositionPicked+CoreDataProperties.m in Sources */,
 				2C70857E1CC394500002F3FF /* STMCoreSettingsController.m in Sources */,
 				2CC1945B1BE25B28001F8E48 /* STMPhotoReportsDetailTVC.m in Sources */,
-				2C70864B1CC504260002F3FF /* STMWKWebViewVC.m in Sources */,
+				2C70864B1CC504260002F3FF /* STMCoreWKWebViewVC.m in Sources */,
 				2CC5D3031C85C73D00193CD7 /* STMArticleGroup.m in Sources */,
 				2C57649F1AB75A9A00B9FD2C /* STMOrderEditablesVC.m in Sources */,
 				2C7085A81CC394500002F3FF /* STMInsetLabel.m in Sources */,
