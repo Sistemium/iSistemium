@@ -7,13 +7,13 @@
 //
 
 #import <Foundation/Foundation.h>
-#import "STMBarCode.h"
+#import "STMDatum.h"
 
 @class STMArticle;
 
 NS_ASSUME_NONNULL_BEGIN
 
-@interface STMArticleBarCode : STMBarCode
+@interface STMArticleBarCode : STMDatum
 
 // Insert code here to declare functionality of your managed object subclass
 

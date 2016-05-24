@@ -36,7 +36,6 @@
         vc.index = index;
         vc.photo = photo;
 
-        vc.image = [UIImage imageWithContentsOfFile:[STMFunctions absolutePathForPath:photo.resizedImagePath]];
         
         return vc;
         

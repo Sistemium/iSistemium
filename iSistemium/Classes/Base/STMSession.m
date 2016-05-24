@@ -17,13 +17,14 @@
 
 @implementation STMSession
 
-+(STMSession *)initWithUID:(NSString *)uid authDelegate:(id<STMRequestAuthenticatable>)authDelegate trackers:(NSArray *)trackers startSettings:(NSDictionary *)startSettings documentPrefix:(NSString *)prefix {
++(STMSession *)initWithUID:(NSString *)uid iSisDB:(NSString *)iSisDB authDelegate:(id<STMRequestAuthenticatable>)authDelegate trackers:(NSArray *)trackers startSettings:(NSDictionary *)startSettings documentPrefix:(NSString *)prefix {
     
     if (uid) {
         
         STMSession *session = [[STMSession alloc] init];
         session.uid = uid;
-        session.status = @"starting";
+        session.iSisDB = iSisDB;
+        session.status = STMSessionStarting;
         session.startSettings = startSettings;
         session.authDelegate = authDelegate;
         session.startTrackers = trackers;
@@ -55,7 +56,10 @@
             dataModelName = @"STMDataModel";
         }
 
-        session.document = [STMDocument documentWithUID:session.uid dataModelName:dataModelName prefix:prefix];
+        session.document = [STMDocument documentWithUID:session.uid
+                                                 iSisDB:session.iSisDB
+                                          dataModelName:dataModelName
+                                                 prefix:prefix];
 
         return session;
         
@@ -70,7 +74,7 @@
 
 - (void)stopSession {
     
-    self.status = [self.status isEqualToString:@"removing"] ? self.status : @"finishing";
+    self.status = (self.status == STMSessionRemoving) ? self.status : STMSessionFinishing;
 
     self.logger.session = nil;
     
@@ -79,7 +83,7 @@
         [self.document saveDocument:^(BOOL success) {
             
             if (success) {
-                self.status = [self.status isEqualToString:@"removing"] ? self.status : @"stopped";
+                self.status = (self.status == STMSessionRemoving) ? self.status : STMSessionStopped;
                 [self.manager sessionStopped:self];
             } else {
                 NSLog(@"Can not stop session with uid %@", self.uid);
@@ -93,7 +97,7 @@
 
 - (void)dismissSession {
     
-    if ([self.status isEqualToString:@"stopped"]) {
+    if (self.status == STMSessionStopped) {
         
         [self removeObservers];
         
@@ -202,7 +206,7 @@
         self.batteryTracker.session = self;
         self.syncer.authDelegate = self.authDelegate;
         self.syncer.session = self;
-        self.status = @"running";
+        self.status = STMSessionRunning;
 
     }
     
@@ -220,18 +224,47 @@
     
 }
 
-- (void)setStatus:(NSString *)status {
+- (void)setStatus:(STMSessionStatus)status {
     
     if (_status != status) {
         
         _status = status;
-        [[NSNotificationCenter defaultCenter] postNotificationName:NOTIFICATION_SESSION_STATUS_CHANGED object:self];
-        [[STMLogger sharedLogger] saveLogMessageWithText:[NSString stringWithFormat:@"Session #%@ status changed to %@", self.uid, self.status] type:nil];
         
+        NSString *statusString = nil;
+        
+        switch (_status) {
+            case STMSessionIdle: {
+                statusString = @"STMSessionIdle";
+                break;
+            }
+            case STMSessionStarting: {
+                statusString = @"STMSessionStarting";
+                break;
+            }
+            case STMSessionRunning: {
+                statusString = @"STMSessionRunning";
+                break;
+            }
+            case STMSessionFinishing: {
+                statusString = @"STMSessionFinishing";
+                break;
+            }
+            case STMSessionStopped: {
+                statusString = @"STMSessionStopped";
+                break;
+            }
+            case STMSessionRemoving: {
+                statusString = @"STMSessionRemoving";
+                break;
+            }
+        }
+
+        [[NSNotificationCenter defaultCenter] postNotificationName:NOTIFICATION_SESSION_STATUS_CHANGED object:self];
+        [[STMLogger sharedLogger] saveLogMessageWithText:[NSString stringWithFormat:@"Session #%@ status changed to %@", self.uid, statusString] type:nil];
+
     }
     
 }
-
 
 
 @end

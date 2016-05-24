@@ -7,7 +7,6 @@
 //
 
 #import <UIKit/UIKit.h>
-
 #import "STMDataModel.h"
 
 
@@ -15,8 +14,5 @@
 
 @property (nonatomic, strong) STMShippingLocationPicture *photo;
 @property (nonatomic) NSUInteger index;
-
-@property (nonatomic, strong) UIImage *image;
-
 
 @end

@@ -12,6 +12,7 @@
 #import "STMDocument.h"
 #import "STMFunctions.h"
 
+
 @interface STMTracker : NSObject
 
 @property (nonatomic, strong) STMDocument *document;
@@ -28,5 +29,8 @@
 - (void)stopTracking;
 - (void)prepareToDestroy;
 - (void)didReceiveRemoteNotification:(NSNotification *)notification;
+- (BOOL)currentTimeIsInsideOfScheduleLimits;
+- (BOOL)isValidTimeValue:(double)timeValue;
+
 
 @end

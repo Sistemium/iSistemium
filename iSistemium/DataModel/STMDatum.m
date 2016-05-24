@@ -7,10 +7,10 @@
 //
 
 #import "STMDatum.h"
-#import "STMComment.h"
 
 #import "STMDataModel.h"
 #import "STMFunctions.h"
+#import "STMObjectsController.h"
 
 
 @implementation STMDatum
@@ -187,7 +187,7 @@
     [keysArray removeObjectsInArray:excludeProperties];
     keysArray = [keysArray sortedArrayUsingSelector:@selector(caseInsensitiveCompare:)].mutableCopy;
 
-    NSDictionary *properties = [self propertiesForKeys:keysArray];
+    NSDictionary *properties = [self propertiesForKeys:keysArray withNulls:NO];
 
     NSMutableArray *relationshipsToOne = [NSMutableArray array];
     
@@ -198,7 +198,7 @@
     [relationshipsToOne removeObjectsInArray:excludeProperties];
     relationshipsToOne = [relationshipsToOne sortedArrayUsingSelector:@selector(caseInsensitiveCompare:)].mutableCopy;
     
-    NSDictionary *relationships = [self relationshipXidsForKeys:relationshipsToOne];
+    NSDictionary *relationships = [self relationshipXidsForKeys:relationshipsToOne withNulls:NO];
     
     NSMutableArray *checkValues = @[].mutableCopy;
     
@@ -222,20 +222,24 @@
 
 - (NSArray *)excludeProperties {
     
-    return @[@"checksum",
-             @"lts",
-             @"sts",
-             @"sqts",
-             @"deviceTs",
-             @"imagePath",
-             @"resizedImagePath",
-             @"calculatedSum",
-             @"imageThumbnail",
-             @"isFantom"];
+    static NSArray *excludeProperties = nil;
+    static dispatch_once_t onceToken;
+    
+    dispatch_once(&onceToken, ^{
+        
+        NSArray *coreEntityKeys = [STMObjectsController coreEntityKeys];
+        
+        excludeProperties = [coreEntityKeys arrayByAddingObjectsFromArray:@[@"imagePath",
+                                                                            @"resizedImagePath",
+                                                                            @"calculatedSum",
+                                                                            @"imageThumbnail"]];
+    });
 
+    return excludeProperties;
+    
 }
 
-- (NSDictionary *)propertiesForKeys:(NSArray *)keys {
+- (NSDictionary *)propertiesForKeys:(NSArray *)keys withNulls:(BOOL)withNulls {
     
     NSMutableDictionary *propertiesDictionary = [NSMutableDictionary dictionary];
     
@@ -267,6 +271,12 @@
                 
                 propertiesDictionary[key] = [NSString stringWithFormat:@"%@", value];
                 
+            } else {
+                
+                if (withNulls) {
+                    propertiesDictionary[key] = [NSNull null];
+                }
+                
             }
             
         }
@@ -277,7 +287,7 @@
     
 }
 
-- (NSDictionary *)relationshipXidsForKeys:(NSArray *)keys {
+- (NSDictionary *)relationshipXidsForKeys:(NSArray *)keys withNulls:(BOOL)withNulls {
     
     NSMutableDictionary *relationshipsDictionary = [NSMutableDictionary dictionary];
 
@@ -297,6 +307,12 @@
                     relationshipsDictionary[key] = [STMFunctions UUIDStringFromUUIDData:xidData];
                 }
                 
+            } else {
+                
+                if (withNulls) {
+                    relationshipsDictionary[key] = [NSNull null];
+                }
+
             }
             
         }

@@ -2,18 +2,23 @@
 //  STMPhoto.h
 //  iSistemium
 //
-//  Created by Maxim Grigoriev on 30/07/14.
-//  Copyright (c) 2014 Sistemium UAB. All rights reserved.
+//  Created by Maxim Grigoriev on 08/02/16.
+//  Copyright © 2016 Sistemium UAB. All rights reserved.
 //
 
 #import <Foundation/Foundation.h>
-#import <CoreData/CoreData.h>
 #import "STMPicture.h"
 
 @class STMLocation;
 
+NS_ASSUME_NONNULL_BEGIN
+
 @interface STMPhoto : STMPicture
 
-@property (nonatomic, retain) STMLocation *location;
+// Insert code here to declare functionality of your managed object subclass
 
 @end
+
+NS_ASSUME_NONNULL_END
+
+#import "STMPhoto+CoreDataProperties.h"

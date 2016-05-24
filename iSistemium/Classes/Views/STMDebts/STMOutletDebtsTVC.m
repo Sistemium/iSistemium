@@ -9,7 +9,7 @@
 #import "STMOutletDebtsTVC.h"
 #import "STMDocument.h"
 #import "STMSessionManager.h"
-#import "STMDebt+Cashing.h"
+#import "STMDebt.h"
 #import "STMCashing.h"
 #import "STMDebtsCombineVC.h"
 #import "STMConstants.h"
@@ -28,14 +28,12 @@
 
 
 @interface STMOutletDebtsTVC ()    <NSFetchedResultsControllerDelegate,
-                                    UIActionSheetDelegate,
                                     MFMailComposeViewControllerDelegate,
                                     MFMessageComposeViewControllerDelegate>
 
 @property (nonatomic, weak) STMDebtsSVC *splitVC;
 @property (nonatomic, strong) NSFetchedResultsController *resultsController;
 
-@property (nonatomic, strong) STMDebt *selectedDebt;
 
 
 @end
@@ -138,7 +136,7 @@
     
     NSNumberFormatter *numberFormatter = [STMFunctions currencyFormatter];
     
-    NSString *debtSumString = [numberFormatter stringFromNumber:debt.calculatedSum];
+    NSString *debtSumString = [numberFormatter stringFromNumber:(NSDecimalNumber *)debt.calculatedSum];
     
     if (debtSumString) {
 
@@ -195,7 +193,7 @@
             
             [text appendAttributedString:[[NSAttributedString alloc] initWithString:dueDateHeader attributes:attributes]];
             
-            NSNumber *numberOfDays = [STMFunctions daysFromTodayToDate:debt.dateE];
+            NSNumber *numberOfDays = (debt.dateE) ? [STMFunctions daysFromTodayToDate:(NSDate *)debt.dateE] : nil;
 
             NSString *dueDate = nil;
             
@@ -275,6 +273,15 @@
     
 }
 
+- (NSMutableAttributedString *)detailTextLabelForDebt:(STMDebt *)debt withFont:(UIFont *)font {
+    NSNumberFormatter *numberFormatter = [STMFunctions currencyFormatter];
+    NSDateFormatter *dateFormatter = [STMFunctions dateMediumNoTimeFormatter];
+    NSString *debtDate = [dateFormatter stringFromDate:(id _Nonnull)debt.date];
+    NSString *debtSumOriginString = [numberFormatter stringFromNumber:(id _Nonnull)debt.summOrigin];
+    NSMutableAttributedString *text = [[NSMutableAttributedString alloc] initWithString: [NSString stringWithFormat:NSLocalizedString(@"DEBT DETAILS", nil), debt.ndoc, debtDate, debtSumOriginString]];
+    return text;
+}
+
 #pragma mark - Table view data source
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
@@ -298,18 +305,17 @@
 
     cell.textLabel.attributedText = [self textLabelForDebt:debt withFont:cell.textLabel.font];
     
-    NSNumberFormatter *numberFormatter = [STMFunctions currencyFormatter];
-    
-    NSDateFormatter *dateFormatter = [STMFunctions dateMediumNoTimeFormatter];
-    
-    NSString *debtDate = [dateFormatter stringFromDate:debt.date];
-    NSString *debtSumOriginString = [numberFormatter stringFromNumber:debt.summOrigin];
-    
-    cell.detailTextLabel.text = [NSString stringWithFormat:NSLocalizedString(@"DEBT DETAILS", nil), debt.ndoc, debtDate, debtSumOriginString];
+    cell.detailTextLabel.attributedText = [self detailTextLabelForDebt:debt withFont:cell.detailTextLabel.font];
     
     cell.selectionStyle = UITableViewCellSelectionStyleNone;
     
     [self addLongPressToCell:cell];
+    
+//    cell.textLabel.numberOfLines = 2;
+//    cell.textLabel.lineBreakMode = NSLineBreakByWordWrapping;
+//    cell.detailTextLabel.numberOfLines = 2;
+//    cell.detailTextLabel.lineBreakMode = NSLineBreakByWordWrapping;
+//    [cell layoutIfNeeded];
     
     return cell;
     
@@ -345,7 +351,7 @@
             
             NSDecimalNumber *cashingSum = ([STMCashingProcessController sharedInstance].debtsDictionary)[(NSData * _Nonnull)debt.xid][1];
             
-            fillWidth = [[cashingSum decimalNumberByDividingBy:debt.calculatedSum] doubleValue];
+            fillWidth = [[cashingSum decimalNumberByDividingBy:(NSDecimalNumber *)debt.calculatedSum] doubleValue];
             
             cell.accessoryType = UITableViewCellAccessoryCheckmark;
             
@@ -455,7 +461,7 @@
 
 - (void)tableView:(UITableView *)tableView commitEditingStyle:(UITableViewCellEditingStyle)editingStyle forRowAtIndexPath:(NSIndexPath *)indexPath {
     
-    if (editingStyle == UITableViewCellEditingStyleDelete && self.parentVC.enableDebtsEditing) {
+    if (editingStyle == UITableViewCellEditingStyleDelete) {
 
         STMDebt *debt = [self.resultsController objectAtIndexPath:indexPath];
 
@@ -468,6 +474,7 @@
             [splitVC.masterVC.tableView selectRowAtIndexPath:indexPath animated:NO scrollPosition:UITableViewScrollPositionNone];
             
         }
+    
         
     }
     
@@ -604,9 +611,9 @@
     
     NSDateFormatter *dateFormatter = [STMFunctions dateMediumNoTimeFormatter];
     
-    NSString *debtDate = [dateFormatter stringFromDate:self.selectedDebt.date];
-    NSString *debtSumOriginString = [numberFormatter stringFromNumber:self.selectedDebt.summOrigin];
-    NSString *debtSumRemainingString = [numberFormatter stringFromNumber:self.selectedDebt.calculatedSum];
+    NSString *debtDate = [dateFormatter stringFromDate:(NSDate *)self.selectedDebt.date];
+    NSString *debtSumOriginString = [numberFormatter stringFromNumber:(NSDecimalNumber *)self.selectedDebt.summOrigin];
+    NSString *debtSumRemainingString = [numberFormatter stringFromNumber:(NSDecimalNumber *)self.selectedDebt.calculatedSum];
     
     messageBody = [messageBody stringByAppendingString:[NSString stringWithFormat:@"Накладная: %@ \n", self.selectedDebt.ndoc]];
     messageBody = [messageBody stringByAppendingString:[NSString stringWithFormat:@"Дата: %@ \n", debtDate]];

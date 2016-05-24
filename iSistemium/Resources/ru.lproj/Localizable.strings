@@ -138,7 +138,7 @@
 "ADD SUM" = "Добавить сумму";
 "DEDUCTION" = "Вычет";
 "DEDUCTIONS" = "Вычеты";
-"BASIS" = "Обоснование: ";
+"BASIS" = "Основание: ";
 "OUTLET" = "Точка: ";
 "DEBT COMMENT" = "Комментарий: ";
 "CATALOG" = "Каталог";
@@ -185,6 +185,7 @@
 "RECEIVE DATE" = "Данные получены: ";
 "RECEIVE" = "Получено";
 "RECEIVE1" = "Получен";
+"RECEIVE2" = "Получено %@ из";
 "0OBJECTS" = "нет объектов";
 "1OBJECTS" = "объект";
 "2OBJECTS" = "объекта";
@@ -222,7 +223,7 @@
 "SHOW SIBLINGS" = "Показать:";
 "SHOW ACTIONS" = "Действия:";
 "UNLOADED PICTURES" = "Незагруженные картинки";
-"WAITING FOR DOWNLOAD" = "в ожидании загрузки";
+"WAITING FOR DOWNLOAD" = "ожидает загрузки";
 "DOWNLOAD NOW" = "Скачать сейчас";
 "DOWNLOAD LATER" = "Скачаю потом";
 "DOWNLOAD STOP" = "Остановить закачку";
@@ -275,6 +276,10 @@
 "SHIPMENT PROCESSED BUTTON STOP TITLE" = "Завершить отгрузку";
 "SHIPMENT PROCESSED BUTTON CANCEL TITLE" = "Отменить отгрузку";
 "SHIPMENT PROCESSED BUTTON EDIT TITLE" = "Редактировать отгрузку";
+"SHIPMENT PROCESSED BUTTON REJECT TITLE" = "Полный возврат";
+"SHIPMENT PROCESSED BUTTON CANCEL REJECT TITLE" = "Отменить полный возврат";
+"REJECT SHIPPING?" = "Произвести полный возврат?";
+"CANCEL REJECT SHIPPING?" = "Отменить полный возврат?";
 "SHOULD CONFIRM ARRIVAL FIRST" = "Необходимо отметить прибытие";
 "START SHIPPING?" = "Начать отгрузку?";
 "CONTINUE SHIPPING?" = "Продолжить отгрузку?";
@@ -313,7 +318,7 @@
 "UNKNOWN ARTICLE" = "Неизвестный товар";
 "0_VOLUME_TYPE" = "Отгружено";
 "1_VOLUME_TYPE" = "Брак";
-"2_VOLUME_TYPE" = "Излишек";
+"2_VOLUME_TYPE" = "Возврат";
 "3_VOLUME_TYPE" = "Недостача";
 "4_VOLUME_TYPE" = "Пересортица";
 "5_VOLUME_TYPE" = "Бой";
@@ -451,6 +456,9 @@
 "ONE MORE CODE" = "Ещё наклейку";
 "OPERATION COMPLETE" = "Партия принята";
 "MANUAL LINK BARCODE TO ARTICLE" = "Привяжите штрих код к товару вручную";
+"BY SUMM" ="на сумму";
+"OF" = "от";
+"FOR" = "за";
 "0BATCHES" = "нет партий";
 "1BATCHES" = "партия";
 "2BATCHES" = "партии";
@@ -463,4 +471,17 @@
 "ALL POSITIONS ARE SUPPLIED" = "Подтвердите завершение приёмки";
 "WRONG VOLUME TO REPEAT" = "Неверное количество для повтора";
 "REMAIN TO PICK" = "Осталось собрать: ";
-
+"SELECT DATE" = "Выберите дату";
+"FROM" = "из";
+"LAST SCANNED BARCODE" = "Последний штрихкод:";
+"RELOAD SCANNER DATA" = "Обновить";
+"UNKNOWN LOCATION" = "Нет координат";
+"DELETE ROUTE POINT" = "Удалить точку маршрута";
+"SAVE TO CAMERA ROLL" = "Изображение сохранено в фотопленку";
+"IMPOSSIBLE TO SAVE" = "Невозможно сохранить изображение в фотопленку (нет доступа к фотографиям)";
+"GIVE PERMISSIONS" = "Предоставьте положению доступ к фотографиям в настройках";
+"0UNUSED" = "%lu неиспользуемых %@";
+"1UNUSED" = "%lu неиспользуемая %@";
+"2UNUSED" = "%lu неиспользуемые %@";
+"5UNUSED" = "%lu неиспользуемых %@";
+"UNUSED PICTURES" = "Неиспользуемые картинки";

@@ -224,14 +224,14 @@
     
     NSLog(@"Log %@: %@", type, text);
     
-    BOOL sessionIsRunning = [[self.session status] isEqualToString:@"running"];
+    BOOL sessionIsRunning = (self.session.status == STMSessionRunning);
     
     if (sessionIsRunning && self.document) {
         
         STMLogMessage *logMessage = (STMLogMessage *)[STMObjectsController newObjectForEntityName:NSStringFromClass([STMLogMessage class]) isFantom:NO];
         logMessage.text = text;
         logMessage.type = type;
-        logMessage.owner = owner;
+//        logMessage.owner = owner;
         
         [self.document saveDocument:^(BOOL success) {
         }];

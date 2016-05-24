@@ -13,10 +13,22 @@
 @interface STMUncashingHandOverVC : UIViewController
 
 @property (nonatomic, strong) STMUncashingSVC *splitVC;
+@property (nonatomic, strong) NSDecimalNumber *uncashingSum;
+@property (nonatomic, strong) NSString *uncashingType;
+@property (nonatomic, strong) NSString *commentText;
+@property (nonatomic, strong) STMUncashingPlace *currentUncashingPlace;
+@property (nonatomic, strong) UIImage *pictureImage;
+@property (nonatomic) UIImagePickerControllerSourceType selectedSourceType;
+@property (nonatomic, strong) STMImagePickerController *imagePickerController;
+@property (nonatomic, strong) UIView *spinnerView;
+@property (weak, nonatomic) IBOutlet UITextView *commentTextView;
 
 - (void)doneButtonPressed;
 - (void)dismissInfoPopover;
 - (void)confirmButtonPressed;
 - (void)deletePhoto;
+- (void)customInit;
+- (void)showInfoPopover;
+- (void)showImagePickerForSourceType:(UIImagePickerControllerSourceType)imageSourceType;
 
 @end

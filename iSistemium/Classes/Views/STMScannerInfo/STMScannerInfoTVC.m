@@ -24,22 +24,12 @@
 @property (nonatomic, strong) NSIndexPath *rumbleStatusCellIndexPath;
 @property (nonatomic, strong) NSIndexPath *batteryStatusCellIndexPath;
 
-@property (nonatomic) BOOL isRequestingScannerData;
-@property (nonatomic) NSUInteger scannerDataCountdown;
-
 
 @end
 
 
 @implementation STMScannerInfoTVC
 
-
-#warning - method not used
-// ?
-//- (BOOL)isInActiveTab {
-//    return [self.tabBarController.selectedViewController isEqual:self.navigationController];
-//}
-// ?
 
 + (UISwitch *)cellSwitchWithTarget:(STMScannerInfoTVC *)target {
     
@@ -203,17 +193,10 @@
         cell.accessoryView = spinner;
         
     }
-
+    
 }
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
-
-//    if (indexPath.row == 2 && [self.iOSModeBarCodeScanner isDeviceConnected] && !self.isRequestingScannerData) {
-//        
-//        self.scannerDataCountdown = 1;
-//        [self.iOSModeBarCodeScanner getBatteryStatus];
-//        
-//    }
     
 }
 
@@ -246,7 +229,7 @@
     self.iOSModeBarCodeScanner = nil;
     
     [self scannerIsDisconnected];
-
+    
 }
 
 - (void)scannerIsConnected {
@@ -255,29 +238,26 @@
     [self requestScannerData];
     
     [self.tableView reloadData];
-
+    
 }
 
 - (void)requestScannerData {
     
-    self.isRequestingScannerData = YES;
-    self.scannerDataCountdown = 3;
-    
     [self.iOSModeBarCodeScanner getBeepStatus];
     [self.iOSModeBarCodeScanner getRumbleStatus];
     [self.iOSModeBarCodeScanner getBatteryStatus];
-
+    
 }
 
 - (void)scannerIsDisconnected {
-
+    
     self.beepSwitch.enabled = NO;
     self.rumbleSwitch.enabled = NO;
     self.batteryLabel = nil;
-
+    
     [self removeBarcodeImage];
     [self.tableView reloadData];
-
+    
 }
 
 
@@ -288,7 +268,7 @@
 }
 
 - (void)barCodeScanner:(STMBarCodeScanner *)scanner receiveBarCodeScan:(STMBarCodeScan *)barCodeScan withType:(STMBarCodeScannedType)type {
-
+    
 }
 
 - (void)barCodeScanner:(STMBarCodeScanner *)scanner receiveBarCode:(NSString *)barcode withType:(STMBarCodeScannedType)type {
@@ -304,7 +284,7 @@
     if (scanner == self.iOSModeBarCodeScanner) {
         
         [STMSoundController say:NSLocalizedString(@"SCANNER DEVICE ARRIVAL", nil)];
-
+        
         [self scannerIsConnected];
         
     }
@@ -316,7 +296,7 @@
     if (scanner == self.iOSModeBarCodeScanner) {
         
         [STMSoundController say:NSLocalizedString(@"SCANNER DEVICE REMOVAL", nil)];
-
+        
         [self scannerIsDisconnected];
         
     }
@@ -330,19 +310,15 @@
     
     [self.tableView reloadRowsAtIndexPaths:@[self.beepStatusCellIndexPath] withRowAnimation:UITableViewRowAnimationNone];
     
-    [self countdownScannerData];
-    
 }
 
 - (void)receiveScannerRumbleStatus:(BOOL)isRumbleEnable {
     
     self.rumbleSwitch.enabled = YES;
     [self.rumbleSwitch setOn:isRumbleEnable animated:YES];
-
+    
     [self.tableView reloadRowsAtIndexPaths:@[self.rumbleStatusCellIndexPath] withRowAnimation:UITableViewRowAnimationNone];
-
-    [self countdownScannerData];
-
+    
 }
 
 - (void)receiveBatteryLevel:(NSNumber *)batteryLevel {
@@ -352,23 +328,13 @@
         self.batteryLabel = [[STMLabel alloc] initWithFrame:CGRectMake(0, 0, 40, 21)];
         self.batteryLabel.textAlignment = NSTextAlignmentRight;
         self.batteryLabel.adjustsFontSizeToFitWidth = YES;
-
+        
     }
     
     self.batteryLabel.text = [NSString stringWithFormat:@"%@%%", batteryLevel];
     self.batteryLabel.textColor = (batteryLevel.intValue <= 20) ? [UIColor redColor] : [UIColor blackColor];
-
+    
     [self.tableView reloadRowsAtIndexPaths:@[self.batteryStatusCellIndexPath] withRowAnimation:UITableViewRowAnimationNone];
-    
-    [self countdownScannerData];
-
-}
-
-- (void)countdownScannerData {
-    
-    self.scannerDataCountdown--;
-    
-    self.isRequestingScannerData = (self.scannerDataCountdown > 0);
     
 }
 
@@ -394,31 +360,31 @@
     [super customInit];
     
     self.navigationItem.title = self.title;
-        
+    
     [self.tableView registerClass:[UITableViewCell class] forCellReuseIdentifier:self.cellIdentifier];
     
-    [self startBarcodeScanning];
-
 }
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-    // Do any additional setup after loading the view.
 }
 
 - (void)viewWillAppear:(BOOL)animated {
-    
     [super viewWillAppear:animated];
-    
-    if ([self.iOSModeBarCodeScanner isDeviceConnected] && !self.isRequestingScannerData) {
-        
-//        self.scannerDataCountdown = 1;
-//        [self.iOSModeBarCodeScanner getBatteryStatus];
-        
-//        [self requestScannerData];
-        
-    }
+}
 
+- (void)viewDidAppear:(BOOL)animated {
+    
+    [super viewDidAppear:animated];
+    [self startBarcodeScanning];
+    
+}
+
+- (void)viewDidDisappear:(BOOL)animated {
+    
+    [super viewDidDisappear:animated];
+    [self stopBarcodeScanning];
+    
 }
 
 - (void)didReceiveMemoryWarning {

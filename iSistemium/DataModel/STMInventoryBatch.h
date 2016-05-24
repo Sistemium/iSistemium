@@ -7,13 +7,13 @@
 //
 
 #import <Foundation/Foundation.h>
-#import "STMComment.h"
+#import "STMDatum.h"
 
 @class STMArticle, STMInventoryBatchItem, STMStockBatch;
 
 NS_ASSUME_NONNULL_BEGIN
 
-@interface STMInventoryBatch : STMComment
+@interface STMInventoryBatch : STMDatum
 
 - (NSString *)displayProductionInfo;
 - (STMArticle *)operatingArticle;

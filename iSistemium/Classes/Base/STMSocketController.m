@@ -22,6 +22,7 @@
 
 #define SOCKET_URL @"https://socket.sistemium.com/socket.io-client"
 #define CHECK_AUTHORIZATION_DELAY 15
+#define CHECK_SENDING_TIME_INTERVAL 600
 
 
 @interface STMSocketController() <NSFetchedResultsControllerDelegate>
@@ -34,6 +35,7 @@
 @property (nonatomic) BOOL controllersDidChangeContent;
 @property (nonatomic) BOOL isAuthorized;
 @property (nonatomic) BOOL isSendingData;
+@property (nonatomic, strong) NSDate *sendingDate;
 @property (nonatomic) BOOL shouldSendData;
 @property (nonatomic) BOOL isReconnecting;
 
@@ -216,6 +218,9 @@
     [self socket:[self sharedInstance].socket sendEvent:event withValue:value];
 }
 
+
+#pragma mark - sync
+
 + (NSArray *)unsyncedObjects {
     return [[self sharedInstance] unsyncedObjectsArray];
 }
@@ -226,6 +231,8 @@
 
 + (void)sendUnsyncedObjects:(id)sender {
 
+    [self checkSendingTimeInterval];
+    
     if ([STMSocketController syncer].syncerState != STMSyncerReceiveData &&
         [self socketIsAvailable] &&
         ![self sharedInstance].isSendingData) {
@@ -248,8 +255,29 @@
 
 }
 
-+ (BOOL)haveToSyncObjects {
++ (void)checkSendingTimeInterval {
     
+    STMSocketController *sc = [self sharedInstance];
+    
+    if (sc.sendingDate && sc.isSendingData) {
+        
+        NSTimeInterval sendingInterval = [sc.sendingDate timeIntervalSinceNow];
+        
+        if (sendingInterval > CHECK_SENDING_TIME_INTERVAL) {
+
+            NSString *errorMessage = @"exceed sending time interval";
+            [[STMLogger sharedLogger] saveLogMessageWithText:errorMessage type:@"error"];
+            
+            [self sendFinishedWithError:errorMessage];
+            
+        }
+        
+    }
+    
+}
+
++ (BOOL)haveToSyncObjects {
+
     NSArray *unsyncedObjectsArray = [self unsyncedObjects];
 
     NSArray *syncDataArray = [self syncDataArrayFromUnsyncedObjects:unsyncedObjectsArray];
@@ -407,10 +435,6 @@
 
 + (void)connectCallbackWithData:(NSArray *)data ack:(SocketAckEmitter *)ack socket:(SocketIOClient *)socket {
     
-    //            [self checkQueuedEvent];
-    
-//    NSLog(@"connectCallback data %@", data);
-//    NSLog(@"connectCallback ack %@", ack);
     NSLog(@"connectCallback socket %@", socket);
     
     [self sharedInstance].isAuthorized = NO;
@@ -424,6 +448,8 @@
                               @"accessToken"    : [STMAuthController authController].accessToken};
     
     [dataDic addEntriesFromDictionary:authDic];
+    
+    NSLog(@"send authorization data %@ with socket %@", dataDic, socket);
     
     NSString *event = [STMSocketController stringValueForEvent:STMSocketEventAuthorization];
     
@@ -529,29 +555,19 @@
                     
                 } else {
                     
-                    //                NSLog(@"%@ ___ emit: %@, data: %@", socket, eventStringValue, dataDic);
+//                NSLog(@"%@ ___ emit: %@, data: %@", socket, eventStringValue, dataDic);
                     
                     if (event == STMSocketEventData) {
                         
                         [self sharedInstance].isSendingData = YES;
+                        [self sharedInstance].sendingDate = [NSDate date];
                         
                         [socket emitWithAck:eventStringValue withItems:@[dataDic]](0, ^(NSArray *data) {
-                            
                             [self receiveEventDataAckWithData:data];
-                            //                        [self receiveAckWithData:data forEvent:eventStringValue];
-                            
                         });
                         
-                        //                } else if (event == STMSocketEventInfo) {
-                        //
-                        //                    [socket emitWithAck:eventStringValue withItems:@[dataDic]](0, ^(NSArray *data) {
-                        //                        [self receiveAckWithData:data forEvent:eventStringValue];
-                        //                    });
-                        
                     } else {
-                        
                         [socket emit:eventStringValue withItems:@[dataDic]];
-                        
                     }
                     
                 }
@@ -666,7 +682,6 @@
         NSLog(@"error: %@", errorString);
         
         [self sendEvent:STMSocketEventInfo withStringValue:errorString];
-//        [[STMLogger sharedLogger] saveLogMessageWithText:errorString type:@"error"];
         
         if ([[errorString.lowercaseString stringByReplacingOccurrencesOfString:@" " withString:@""] isEqualToString:@"notauthorized"]) {
             [[STMAuthController authController] logout];
@@ -685,11 +700,7 @@
         }
 
     }
-    
-//    NSLog(@"receiveEventDataAckWithData %@", data);
-    
-//    NSTimeInterval delay = [response[@"data"] count] * 0.1;
-    
+
     [[[STMSessionManager sharedManager].currentSession document] saveDocument:^(BOOL success) {
         [self performSelector:@selector(sendFinishedWithError:) withObject:errorString afterDelay:0];
     }];
@@ -700,9 +711,7 @@
     
     if (errorString) {
         
-        [self sharedInstance].isSendingData = NO;
-        [[self syncer] sendFinishedWithError:errorString];
-        [self sharedInstance].syncDataDictionary = nil;
+        [self sendingCleanupWithError:errorString];
 
     } else {
 
@@ -712,15 +721,25 @@
             
         } else {
             
-            [self sharedInstance].isSendingData = NO;
-            [[self syncer] sendFinishedWithError:nil];
-            [self sharedInstance].syncDataDictionary = nil;
+            [self sendingCleanupWithError:nil];
 
         }
 
     }
 
 }
+
++ (void)sendingCleanupWithError:(NSString *)errorString {
+    
+    STMSocketController *sc = [self sharedInstance];
+    
+    sc.isSendingData = NO;
+    [[self syncer] sendFinishedWithError:errorString];
+    sc.syncDataDictionary = nil;
+    sc.sendingDate = nil;
+
+}
+
 
 #pragma mark - instance methods
 
@@ -769,7 +788,7 @@
     
     STMSession *currentSession = [STMSessionManager sharedManager].currentSession;
     
-    if ([currentSession.status isEqualToString:@"running"]) {
+    if (currentSession.status == STMSessionRunning) {
         
         NSString *key = @"socketUrl";
         
@@ -801,7 +820,7 @@
     
     if (notification.object == session) {
         
-        if ([session.status isEqualToString:@"running"]) {
+        if (session.status == STMSessionRunning) {
             
             [self performFetches];
             
@@ -971,10 +990,6 @@
         
         NSArray *fetchedObjects = [self.resultsControllers valueForKeyPath:@"@distinctUnionOfArrays.fetchedObjects"];
         
-//        NSPredicate *predicate = [NSPredicate predicateWithFormat:@"checksum != currentChecksum"];
-        
-//        fetchedObjects = [fetchedObjects filteredArrayUsingPredicate:predicate];
-        
         return fetchedObjects;
         
     } else {
@@ -1043,7 +1058,9 @@
             
         } else {
 
-            NSLog(@"socket is not authorized, trying to resolve this issue by reconnecting");
+            NSString *logMessage = @"socket is connected but don't receive authorization ack, trying to resolve this issue by reconnecting";
+            [[STMLogger sharedLogger] saveLogMessageWithText:logMessage type:@"error"];
+
             [self reconnectSocket];
             
         }

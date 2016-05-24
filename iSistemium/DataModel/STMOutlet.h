@@ -7,13 +7,13 @@
 //
 
 #import <Foundation/Foundation.h>
-#import "STMComment.h"
+#import "STMDatum.h"
 
-@class STMBasketPosition, STMCampaign, STMCashing, STMDebt, STMPartner, STMPhotoReport, STMSaleOrder, STMSalesman, STMShipment;
+@class STMBasketPosition, STMCampaign, STMCashing, STMDebt, STMPartner, STMPhotoReport, STMPickingOrder, STMSaleOrder, STMSalesman, STMShipment;
 
 NS_ASSUME_NONNULL_BEGIN
 
-@interface STMOutlet : STMComment
+@interface STMOutlet : STMDatum
 
 // Insert code here to declare functionality of your managed object subclass
 

@@ -2,18 +2,21 @@
 //  STMClientEntity.h
 //  iSistemium
 //
-//  Created by Maxim Grigoriev on 08/05/15.
-//  Copyright (c) 2015 Sistemium UAB. All rights reserved.
+//  Created by Maxim Grigoriev on 07/02/16.
+//  Copyright © 2016 Sistemium UAB. All rights reserved.
 //
 
 #import <Foundation/Foundation.h>
-#import <CoreData/CoreData.h>
-#import "STMComment.h"
+#import "STMDatum.h"
 
+NS_ASSUME_NONNULL_BEGIN
 
-@interface STMClientEntity : STMComment
+@interface STMClientEntity : STMDatum
 
-@property (nonatomic, retain) NSString * eTag;
-@property (nonatomic, retain) NSString * name;
+// Insert code here to declare functionality of your managed object subclass
 
 @end
+
+NS_ASSUME_NONNULL_END
+
+#import "STMClientEntity+CoreDataProperties.h"

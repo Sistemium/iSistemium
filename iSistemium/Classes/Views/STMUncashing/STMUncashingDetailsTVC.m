@@ -8,7 +8,7 @@
 
 #import "STMUncashingDetailsTVC.h"
 #import "STMDebt.h"
-#import "STMCashing+dayAsString.h"
+#import "STMCashing.h"
 #import "STMConstants.h"
 #import "STMUncashingSVC.h"
 #import "STMSyncer.h"
@@ -19,16 +19,13 @@
 #import "STMUncashingProcessController.h"
 #import "STMAddEtceteraVC.h"
 
-@interface STMUncashingDetailsTVC () <UIPopoverControllerDelegate, UIActionSheetDelegate>
+@interface STMUncashingDetailsTVC () 
 
 @property (nonatomic, weak) STMUncashingSVC *splitVC;
-@property (weak, nonatomic) IBOutlet UIBarButtonItem *infoLabel;
 @property (nonatomic, strong) UIPopoverController *uncashingInfoPopover;
 @property (nonatomic, strong) UIPopoverController *addCashingPopover;
 @property (nonatomic, strong) UIBarButtonItem *addButton;
-
 @property (nonatomic) STMCashingType addCashingType;
-
 
 @end
 
@@ -134,7 +131,7 @@
         
         for (STMCashing *cashing in self.resultsController.fetchedObjects) {
             
-            cashingSum = [cashingSum decimalNumberByAdding:cashing.summ];
+            cashingSum = (cashing.summ) ? [cashingSum decimalNumberByAdding:(NSDecimalNumber * _Nonnull)cashing.summ] : cashingSum;
             
         }
 
@@ -213,7 +210,7 @@
 - (void)showUncashingInfoPopover {
     
     self.uncashingInfoPopover = nil;
-    [self.uncashingInfoPopover presentPopoverFromBarButtonItem:self.infoLabel permittedArrowDirections:UIPopoverArrowDirectionAny animated:YES];
+    [self.uncashingInfoPopover presentPopoverFromBarButtonItem:(id _Nonnull) self.infoLabel permittedArrowDirections:UIPopoverArrowDirectionAny animated:YES];
     
 }
 
@@ -367,7 +364,7 @@
 #pragma mark - table view data source
 
 - (NSString *)tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section {
-    return [STMFunctions shortCompanyName:[super tableView:tableView titleForHeaderInSection:section]];
+    return [STMFunctions shortCompanyName:(NSString *)[super tableView:tableView titleForHeaderInSection:section]];
 }
 
 - (STMTableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
@@ -380,7 +377,7 @@
     
     STMCashing *cashing = [self.resultsController objectAtIndexPath:indexPath];
     
-    NSString *sumString = [[numberFormatter stringFromNumber:cashing.summ] stringByAppendingString:@" "];
+    NSString *sumString = [[numberFormatter stringFromNumber:(NSDecimalNumber * _Nonnull)cashing.summ] stringByAppendingString:@" "];
     
     UIColor *textColor = cashing.uncashing ? [UIColor darkGrayColor] : [UIColor blackColor];
     UIColor *backgroundColor = [UIColor clearColor];
@@ -399,7 +396,7 @@
         font = cell.detailTextLabel.font;
         attributes = @{NSFontAttributeName: font};
         
-        [text appendAttributedString:[[NSAttributedString alloc] initWithString:cashing.commentText attributes:attributes]];
+        [text appendAttributedString:[[NSAttributedString alloc] initWithString:(NSString * _Nonnull)cashing.commentText attributes:attributes]];
         
     }
     
@@ -418,7 +415,7 @@
     
     if (cashing.debt) {
         
-        NSString *debtString = [NSString stringWithFormat:NSLocalizedString(@"DEBT DETAILS", nil), cashing.debt.ndoc, [dateFormatter stringFromDate:cashing.debt.date], cashing.debt.summOrigin];
+        NSString *debtString = [NSString stringWithFormat:NSLocalizedString(@"DEBT DETAILS", nil), cashing.debt.ndoc, [dateFormatter stringFromDate:(NSDate * _Nonnull)cashing.debt.date], cashing.debt.summOrigin];
         
         text = [[NSMutableAttributedString alloc] initWithString:debtString attributes:attributes];
         
@@ -444,14 +441,14 @@
     } else {
         
         if (cashing.ndoc) {
-            text = [[NSMutableAttributedString alloc] initWithString:cashing.ndoc attributes:attributes];
+            text = [[NSMutableAttributedString alloc] initWithString:(NSString *)cashing.ndoc attributes:attributes];
         } else {
             text = [[NSMutableAttributedString alloc] initWithString:NSLocalizedString(@"NO DATA", nil) attributes:attributes];
         }
         
     }
     
-    NSString *dateString = [NSString stringWithFormat:@" / %@", [dateFormatter stringFromDate:cashing.date]];
+    NSString *dateString = [NSString stringWithFormat:@" / %@", [dateFormatter stringFromDate:(NSDate *)cashing.date]];
 
 //    textColor = [UIColor blackColor];
 //    backgroundColor = [UIColor clearColor];

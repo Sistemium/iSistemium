@@ -2,16 +2,16 @@
 //  STMBarCodeScan.h
 //  iSistemium
 //
-//  Created by Maxim Grigoriev on 21/02/16.
+//  Created by Maxim Grigoriev on 22/02/16.
 //  Copyright © 2016 Sistemium UAB. All rights reserved.
 //
 
 #import <Foundation/Foundation.h>
-#import "STMBarCode.h"
+#import "STMDatum.h"
 
 NS_ASSUME_NONNULL_BEGIN
 
-@interface STMBarCodeScan : STMBarCode
+@interface STMBarCodeScan : STMDatum
 
 // Insert code here to declare functionality of your managed object subclass
 

@@ -14,6 +14,7 @@
 @property (nonatomic, strong) NSDecimalNumber *cashingSum;
 
 - (void)selectRowWithUncashing:(STMUncashing *)uncashing;
+- (void)uncashingProcessStart;
 
 @end
 

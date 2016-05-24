@@ -147,12 +147,12 @@
     
     if (notification.object == self.session) {
         
-        if ([self.session.status isEqualToString:@"finishing"]) {
+        if (self.session.status == STMSessionFinishing) {
             
             [self releaseTimers];
             [self stopTracking];
             
-        } else if ([self.session.status isEqualToString:@"running"]) {
+        } else if (self.session.status == STMSessionRunning) {
             
             [self checkTrackerAutoStart];
 
@@ -294,35 +294,31 @@
 
 - (void)checkTimeForTracking {
     
-    double currentTime = [STMFunctions currentTimeInDouble];
-    
     if (!self.trackerAutoStart) return;
     
-    if (self.trackerStartTime < self.trackerFinishTime) {
+    if ([self currentTimeIsInsideOfScheduleLimits]) {
         
-        if (currentTime > self.trackerStartTime && currentTime < self.trackerFinishTime) {
-            if (!self.tracking) {
-                [self startTracking];
-            }
-        } else {
-            if (self.tracking) {
-                [self stopTracking];
-            }
+        if (!self.tracking) {
+            [self startTracking];
         }
         
     } else {
         
-        if (currentTime < self.trackerStartTime && currentTime > self.trackerFinishTime) {
-            if (self.tracking) {
-                [self stopTracking];
-            }
-        } else {
-            if (!self.tracking) {
-                [self startTracking];
-            }
+        if (self.tracking) {
+            [self stopTracking];
         }
-        
+
     }
+
+}
+
+- (BOOL)currentTimeIsInsideOfScheduleLimits {
+    
+    double ct = [STMFunctions currentTimeInDouble];
+    double st = self.trackerStartTime;
+    double ft = self.trackerFinishTime;
+    
+    return (st < ft) ? (ct >= st && ct < ft) : !(ct < st && ct >= ft);
     
 }
 
@@ -333,7 +329,7 @@
     
 //    NSLog(@"%@ startTracking %@", self.group, [NSDate date]);
     
-    if ([[(id <STMSession>)self.session status] isEqualToString:@"running"] && !self.tracking) {
+    if (self.session.status == STMSessionRunning && !self.tracking) {
         
         [[NSNotificationCenter defaultCenter] postNotificationName:[NSString stringWithFormat:@"%@TrackingStart", self.group] object:self];
         self.tracking = YES;

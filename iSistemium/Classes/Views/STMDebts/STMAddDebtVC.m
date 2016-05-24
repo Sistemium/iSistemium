@@ -11,6 +11,7 @@
 #import "STMFunctions.h"
 #import "STMDebtsController.h"
 #import <QuartzCore/QuartzCore.h>
+#import "iSistemium-Swift.h"
 
 @interface STMAddDebtVC () <UITextFieldDelegate>
 
@@ -19,7 +20,6 @@
 @property (weak, nonatomic) IBOutlet UILabel *sumLabel;
 @property (weak, nonatomic) IBOutlet UILabel *commentLabel;
 
-@property (weak, nonatomic) IBOutlet UIButton *dateButton;
 @property (weak, nonatomic) IBOutlet UITextField *ndocTextField;
 @property (weak, nonatomic) IBOutlet UITextField *sumTextField;
 @property (weak, nonatomic) IBOutlet UITextField *commentTextField;
@@ -29,10 +29,6 @@
 
 @property (nonatomic, strong) UIToolbar *keyboardToolbar;
 @property (nonatomic, strong) NSString *initialTextFieldValue;
-
-@property (nonatomic, strong) NSString *debtNdoc;
-@property (nonatomic, strong) NSDecimalNumber *debtSum;
-@property (nonatomic, strong) NSString *commentText;
 
 @end
 
@@ -188,7 +184,9 @@
 //        NSLog(@"self.debtSum %@", self.debtSum);
 
         [STMDebtsController addNewDebtWithSum:self.debtSum ndoc:self.debtNdoc date:self.selectedDate outlet:self.parentVC.outlet comment:self.commentText];
-        [self.parentVC dismissAddDebt];
+        if (![self.parentVC isKindOfClass: STMDebtsPVC_iPhone.class]){
+            [self.parentVC dismissAddDebt];
+        }
 
     }
     
@@ -246,12 +244,12 @@
         } else if ([textField isEqual:self.ndocTextField]) {
             
             self.debtNdoc = textField.text;
-            if (![self checkSumField]) [self okStyleForTextField:self.sumTextField];
+           // if (![self checkSumField]) [self okStyleForTextField:self.sumTextField];
             
         } else if ([textField isEqual:self.commentTextField]) {
             
             self.commentText = textField.text;
-            if (![self checkSumField]) [self okStyleForTextField:self.sumTextField];
+           // if (![self checkSumField]) [self okStyleForTextField:self.sumTextField];
             
         }
     }

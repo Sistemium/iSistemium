@@ -26,7 +26,7 @@
 #import "STMWorkflowEditablesVC.h"
 
 
-@interface STMShipmentRouteTVC () <UIActionSheetDelegate>
+@interface STMShipmentRouteTVC () <UIActionSheetDelegate,UIAlertViewDelegate>
 
 @property (nonatomic, strong) STMShipmentsSVC *splitVC;
 
@@ -175,13 +175,13 @@
             
             [self.waitGeocodingPoints addObject:point];
             
-            [[[CLGeocoder alloc] init] geocodeAddressString:point.address completionHandler:^(NSArray *placemarks, NSError *error) {
+            [[[CLGeocoder alloc] init] geocodeAddressString:(NSString *)point.address completionHandler:^(NSArray *placemarks, NSError *error) {
                 
                 if (!error) {
                     
                     CLPlacemark *placemark = placemarks.firstObject;
                     
-                    [point updateShippingLocationWithGeocodedLocation:placemark.location];
+                    [point updateShippingLocationWithGeocodedLocation:(CLLocation *)placemark.location];
                                         
                     NSIndexPath *indexPath = [NSIndexPath indexPathForRow:[self.resultsController.fetchedObjects indexOfObject:point] inSection:1];
                     if (indexPath) [self.tableView reloadRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationNone];
@@ -354,7 +354,7 @@
     switch (indexPath.row) {
         case 0:
 
-            cell.titleLabel.text = [STMFunctions dayWithDayOfWeekFromDate:self.route.date];
+            if (self.route.date) cell.titleLabel.text = [STMFunctions dayWithDayOfWeekFromDate:(NSDate *)self.route.date];
             cell.detailLabel.attributedText = [self detailTextForLabel:cell.detailLabel];
         break;
             
@@ -415,7 +415,7 @@
         attributes = @{NSFontAttributeName: font,
                        NSForegroundColorAttributeName: detailLabel.textColor};
         
-        [detailText appendAttributedString:[[NSAttributedString alloc] initWithString:self.route.commentText attributes:attributes]];
+        [detailText appendAttributedString:[[NSAttributedString alloc] initWithString:(NSString *)self.route.commentText attributes:attributes]];
         
     }
     
@@ -548,6 +548,37 @@
     
 }
 
+- (void)tableView:(UITableView *)tableView commitEditingStyle:(UITableViewCellEditingStyle)editingStyle forRowAtIndexPath:(NSIndexPath *)indexPath {
+    if (indexPath.section == 1) {
+        if (editingStyle == UITableViewCellEditingStyleDelete) {
+            UIAlertView * alert = [[UIAlertView alloc]initWithTitle:NSLocalizedString(@"DELETE ROUTE POINT", nil) message:NSLocalizedString(@"COMMENT", nil) delegate:self cancelButtonTitle:NSLocalizedString(@"CANCEL", nil) otherButtonTitles:NSLocalizedString(@"DELETE", nil), nil];
+            alert.alertViewStyle= UIAlertViewStylePlainTextInput;
+            alert.tag = [indexPath row];
+            [alert show];
+        }
+    }
+}
+
+#pragma mark - UIAlertViewDelegate
+
+- (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex{
+    if (buttonIndex == 0){
+        [self.tableView setEditing:NO animated:NO];
+    }
+    else if (buttonIndex == 1){
+        STMShipmentRoutePoint *point = [self.resultsController objectAtIndexPath:[NSIndexPath indexPathForRow:alertView.tag inSection:0]];
+        UITextField *textField = [alertView textFieldAtIndex:0];
+        [STMObjectsController createRecordStatusAndRemoveObject:point withComment:textField.text];
+    }
+}
+
+- (BOOL)alertViewShouldEnableFirstOtherButton:(UIAlertView *)alertView{
+    UITextField *textField = [alertView textFieldAtIndex:0];
+    if (textField.text.length == 0){
+        return NO;
+    }
+    return YES;
+}
 
 #pragma mark - UIActionSheetDelegate
 

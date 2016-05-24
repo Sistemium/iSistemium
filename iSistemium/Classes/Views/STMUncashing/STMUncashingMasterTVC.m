@@ -210,7 +210,7 @@
         
         for (STMCashing *cashing in self.cashingSumResultsController.fetchedObjects) {
             
-            cashSum = [cashSum decimalNumberByAdding:cashing.summ];
+            cashSum = (cashing.summ) ? [cashSum decimalNumberByAdding:(NSDecimalNumber *)cashing.summ] : cashSum;
             
         }
 
@@ -219,10 +219,12 @@
         dateFormatter.timeStyle = NSDateFormatterNoStyle;
         cell.textLabel.text = [dateFormatter stringFromDate:[NSDate date]];
 
-        [cell setSelected:YES];
-        [tableView selectRowAtIndexPath:[NSIndexPath indexPathForRow:0 inSection:0]
-                                    animated:YES
-                              scrollPosition:UITableViewScrollPositionNone];
+        if (self.splitVC){
+            [cell setSelected:YES];
+            [tableView selectRowAtIndexPath:[NSIndexPath indexPathForRow:0 inSection:0]
+                                   animated:YES
+                             scrollPosition:UITableViewScrollPositionNone];
+        }
         
         self.splitVC.detailVC.uncashing = nil;
         
@@ -231,7 +233,7 @@
         id <NSFetchedResultsSectionInfo> sectionInfo = [self.resultsController sections][indexPath.section-1];
         STMUncashing *uncashing = sectionInfo.objects[indexPath.row];
 
-        cell.textLabel.text = [dateFormatter stringFromDate:uncashing.date];
+        cell.textLabel.text = [dateFormatter stringFromDate:(NSDate *)uncashing.date];
         
     }
     

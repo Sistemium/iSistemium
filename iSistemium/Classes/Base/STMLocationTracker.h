@@ -8,7 +8,7 @@
 
 #import "STMTracker.h"
 #import "STMLocation.h"
-#import "STMTrack+dayAsString.h"
+#import "STMTrack.h"
 
 @interface STMLocationTracker : STMTracker
 
@@ -19,6 +19,8 @@
 @property (nonatomic, strong) STMTrack *currentTrack;
 
 - (void)getLocation;
+
+- (void)checkinWithAccuracy:(NSNumber *)checkinAccuracy;
 
 - (NSString *)locationServiceStatus;
 

@@ -7,13 +7,13 @@
 //
 
 #import <Foundation/Foundation.h>
-#import "STMComment.h"
+#import "STMDatum.h"
 
-@class STMPicker, STMPickingOrderPosition;
+@class STMOutlet, STMPicker, STMPickingOrderPosition;
 
 NS_ASSUME_NONNULL_BEGIN
 
-@interface STMPickingOrder : STMComment
+@interface STMPickingOrder : STMDatum
 
 - (NSString *)positionsCountString;
 

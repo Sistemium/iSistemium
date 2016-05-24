@@ -21,7 +21,7 @@
 
 @interface STMDebtsDetailsPVC () <UIPageViewControllerDataSource, UIPageViewControllerDelegate, UIPopoverControllerDelegate>
 
-@property (weak, nonatomic) IBOutlet UISegmentedControl *segmentedControl;
+
 //@property (nonatomic, strong) UIPopoverController *popover;
 
 @property (nonatomic, strong) STMDocument *document;
@@ -29,10 +29,7 @@
 @property (nonatomic) NSUInteger currentIndex;
 @property (nonatomic) NSUInteger nextIndex;
 
-@property (nonatomic, strong) UIBarButtonItem *addDebtButton;
-@property (nonatomic, strong) UIBarButtonItem *editDebtsButton;
 @property (nonatomic, strong) UIPopoverController *addDebtPopover;
-@property (nonatomic, strong) STMBarButtonItemDone *cashingButton;
 
 @end
 
@@ -101,7 +98,9 @@
 //        }
         
 //        [self editButtonForVC:self.viewControllers[0]];
-        [self buttonsForVC:self.viewControllers[0]];
+        if (self.viewControllers.count > 0){
+            [self buttonsForVC:self.viewControllers[0]];
+        }
 
 //        [self.popover dismissPopoverAnimated:YES];
 
@@ -229,16 +228,8 @@
         
         if (self.outlet) {
             
-            if (self.enableDebtsEditing) {
-            
-                UIBarButtonItem *flexibleSpace = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFlexibleSpace target:nil action:nil];
-                self.toolbarItems = @[self.editDebtsButton, flexibleSpace, self.addDebtButton];
-
-            } else {
-                
-                self.toolbarItems = nil;
-                
-            }
+            UIBarButtonItem *flexibleSpace = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFlexibleSpace target:nil action:nil];
+            [self setToolbarItems:@[self.editDebtsButton, flexibleSpace, self.addDebtButton] animated:YES];
             
             self.navigationItem.rightBarButtonItem = self.cashingButton;
             
@@ -501,9 +492,9 @@
     [self addObservers];
 
     NSDictionary *settings = [[STMSessionManager sharedManager].currentSession.settingsController currentSettingsForGroup:@"appSettings"];
-    self.enableDebtsEditing = [[settings valueForKey:@"enableDebtsEditing"] boolValue];
+    BOOL toolbarHidden = ![[settings valueForKey:@"enableDebtsEditing"] boolValue];
     
-    self.navigationController.toolbarHidden = !self.enableDebtsEditing;
+    self.navigationController.toolbarHidden = toolbarHidden;
     
     [self setToolbarItems:nil];
     [self.addDebtButton setTitle:NSLocalizedString(@"ADD DEBT", nil)];

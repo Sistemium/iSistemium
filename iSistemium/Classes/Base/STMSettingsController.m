@@ -298,7 +298,7 @@
     NSArray *groupSettings = [[self currentSettings] filteredArrayUsingPredicate:predicate];
     
     for (STMSetting *setting in groupSettings) {
-        [settingsDictionary setValue:setting.value forKey:setting.name];
+        if (setting.name) settingsDictionary[(NSString *)setting.name] = setting.value;
     }
     
 //    NSLog(@"settings for %@: %@", group, settingsDictionary);
