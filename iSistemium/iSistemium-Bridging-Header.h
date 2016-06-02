@@ -27,3 +27,4 @@
 #import "STMLocationController.h"
 #import "STMCampaignGroupTVC.h"
 #import "STMPhotoReportsFilterTVC.h"
+#import "STMPhotoReportsDetailTVC.h"
