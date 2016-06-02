@@ -15,7 +15,12 @@ class STMCampaignGroupTVC_iphone:STMCampaignGroupTVC{
     }
     
     override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
-        (segue.destinationViewController as! STMPhotoReportsFilterTVC).title = sender as? String
+        switch segue.identifier! {
+        case "showFilterTVC":
+            (segue.destinationViewController as! STMPhotoReportsFilterTVC).title = sender as? String
+        default:
+            break
+        }
     }
     
 }

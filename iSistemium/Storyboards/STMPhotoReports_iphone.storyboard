@@ -6,7 +6,7 @@
         <capability name="Constraints to layout margins" minToolsVersion="6.0"/>
     </dependencies>
     <scenes>
-        <!--Campaign GroupTVC iphone-->
+        <!--Campains-->
         <scene sceneID="QVX-L0-21y">
             <objects>
                 <tableViewController id="kwO-4l-lzn" customClass="STMCampaignGroupTVC_iphone" customModule="iSistemium" customModuleProvider="target" sceneMemberID="viewController">
@@ -29,7 +29,13 @@
                             <outlet property="delegate" destination="kwO-4l-lzn" id="R4M-5S-kYG"/>
                         </connections>
                     </tableView>
-                    <navigationItem key="navigationItem" id="KDp-l1-ueA"/>
+                    <navigationItem key="navigationItem" title="Campains" id="KDp-l1-ueA">
+                        <barButtonItem key="rightBarButtonItem" title="Show all" id="PaM-yM-KgC">
+                            <connections>
+                                <segue destination="7Jg-gw-aLi" kind="show" identifier="showAllReports" id="8nQ-9I-qj4"/>
+                            </connections>
+                        </barButtonItem>
+                    </navigationItem>
                     <connections>
                         <segue destination="C3e-tJ-dgw" kind="show" identifier="showFilterTVC" id="QDs-g9-bPH"/>
                     </connections>
@@ -37,6 +43,35 @@
                 <placeholder placeholderIdentifier="IBFirstResponder" id="GKl-jF-HEb" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="436" y="-601"/>
+        </scene>
+        <!--Reports-->
+        <scene sceneID="9fM-W3-fPn">
+            <objects>
+                <tableViewController id="7Jg-gw-aLi" customClass="STMPhotoReportsDetailTVC" sceneMemberID="viewController">
+                    <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="grouped" separatorStyle="default" rowHeight="44" sectionHeaderHeight="18" sectionFooterHeight="18" id="wKP-gu-3yZ">
+                        <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <color key="backgroundColor" cocoaTouchSystemColor="groupTableViewBackgroundColor"/>
+                        <prototypes>
+                            <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" reuseIdentifier="photoReportCell" id="N3y-Xu-IoV">
+                                <rect key="frame" x="0.0" y="113.5" width="600" height="44"/>
+                                <autoresizingMask key="autoresizingMask"/>
+                                <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="N3y-Xu-IoV" id="YML-Ms-EKP">
+                                    <rect key="frame" x="0.0" y="0.0" width="600" height="43.5"/>
+                                    <autoresizingMask key="autoresizingMask"/>
+                                </tableViewCellContentView>
+                            </tableViewCell>
+                        </prototypes>
+                        <connections>
+                            <outlet property="dataSource" destination="7Jg-gw-aLi" id="EeW-Hc-gtF"/>
+                            <outlet property="delegate" destination="7Jg-gw-aLi" id="ewl-V7-4P7"/>
+                        </connections>
+                    </tableView>
+                    <navigationItem key="navigationItem" title="Reports" id="CaL-Du-6CF"/>
+                </tableViewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="A4V-cM-vn5" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="436" y="208"/>
         </scene>
         <!--Photo Reports FilterTVC iphone-->
         <scene sceneID="Aoo-DI-klY">
@@ -163,15 +198,15 @@
         <scene sceneID="pt5-Ha-qwW">
             <objects>
                 <tableViewController id="4ar-DS-8Cw" sceneMemberID="viewController">
-                    <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="static" style="plain" separatorStyle="default" rowHeight="44" sectionHeaderHeight="28" sectionFooterHeight="28" id="nsi-AM-bP2">
+                    <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" scrollEnabled="NO" dataMode="static" style="grouped" separatorStyle="default" rowHeight="44" sectionHeaderHeight="18" sectionFooterHeight="18" id="nsi-AM-bP2">
                         <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
-                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                        <color key="backgroundColor" cocoaTouchSystemColor="groupTableViewBackgroundColor"/>
                         <sections>
                             <tableViewSection id="kFJ-iz-Q82">
                                 <cells>
                                     <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" textLabel="eS3-Ke-vfP" style="IBUITableViewCellStyleDefault" id="gbs-E2-ah6">
-                                        <rect key="frame" x="0.0" y="64" width="600" height="44"/>
+                                        <rect key="frame" x="0.0" y="99" width="600" height="44"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="gbs-E2-ah6" id="tSe-dY-thd">
                                             <rect key="frame" x="0.0" y="0.0" width="600" height="43.5"/>
@@ -188,7 +223,7 @@
                                         </tableViewCellContentView>
                                     </tableViewCell>
                                     <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" textLabel="TGs-91-3NW" style="IBUITableViewCellStyleDefault" id="D7T-2g-wYI">
-                                        <rect key="frame" x="0.0" y="108" width="600" height="44"/>
+                                        <rect key="frame" x="0.0" y="143" width="600" height="44"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="D7T-2g-wYI" id="Uad-W6-fKt">
                                             <rect key="frame" x="0.0" y="0.0" width="600" height="43.5"/>
