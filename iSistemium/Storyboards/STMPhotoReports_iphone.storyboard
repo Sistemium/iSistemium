@@ -31,7 +31,7 @@
                     </tableView>
                     <toolbarItems>
                         <barButtonItem style="plain" systemItem="flexibleSpace" id="MyY-Rq-Z0y"/>
-                        <barButtonItem title="SHOW ALL" id="PaM-yM-KgC">
+                        <barButtonItem title="SHOW ALL PHOTOREPORTS" id="PaM-yM-KgC">
                             <connections>
                                 <segue destination="7Jg-gw-aLi" kind="show" identifier="showAllReports" id="8nQ-9I-qj4"/>
                             </connections>
@@ -174,8 +174,8 @@
                                                     <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
                                                     <nil key="highlightedColor"/>
                                                 </label>
-                                                <label opaque="NO" multipleTouchEnabled="YES" contentMode="left" text="Campaign" textAlignment="right" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="cUg-Pp-gPE">
-                                                    <rect key="frame" x="491.5" y="12" width="73.5" height="19.5"/>
+                                                <label opaque="NO" multipleTouchEnabled="YES" contentMode="left" text="BY CAMPAIGNS" textAlignment="right" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="cUg-Pp-gPE">
+                                                    <rect key="frame" x="449" y="12" width="116" height="19.5"/>
                                                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                                     <fontDescription key="fontDescription" type="system" pointSize="16"/>
                                                     <color key="textColor" red="0.55686274509803924" green="0.55686274509803924" blue="0.57647058823529407" alpha="1" colorSpace="calibratedRGB"/>
@@ -184,7 +184,7 @@
                                             </subviews>
                                         </tableViewCellContentView>
                                         <connections>
-                                            <segue destination="4ar-DS-8Cw" kind="show" id="3Wo-T8-s92"/>
+                                            <segue destination="4ar-DS-8Cw" kind="show" identifier="selectGrouping" id="3Wo-T8-s92"/>
                                         </connections>
                                     </tableViewCell>
                                 </cells>
@@ -196,14 +196,23 @@
                         </connections>
                     </tableView>
                     <toolbarItems>
-                        <barButtonItem systemItem="cancel" id="5Kp-nn-INp"/>
+                        <barButtonItem systemItem="cancel" id="5Kp-nn-INp">
+                            <connections>
+                                <action selector="cancelButton:" destination="9HA-8g-Hcz" id="kRh-T3-ofe"/>
+                            </connections>
+                        </barButtonItem>
                         <barButtonItem style="plain" systemItem="flexibleSpace" id="oZe-nr-pG5"/>
-                        <barButtonItem style="done" systemItem="done" id="Fef-pN-7e2"/>
+                        <barButtonItem style="done" systemItem="done" id="Fef-pN-7e2">
+                            <connections>
+                                <action selector="doneButton:" destination="9HA-8g-Hcz" id="uLD-ZR-84c"/>
+                            </connections>
+                        </barButtonItem>
                     </toolbarItems>
                     <navigationItem key="navigationItem" title="SETTINGS" id="9mi-wd-gXz"/>
                     <connections>
                         <outlet property="groupingLabel" destination="Ht7-Nl-h52" id="Ej7-ta-3RJ"/>
                         <outlet property="onlyPhotosLabel" destination="e3D-FF-Fvp" id="glY-CK-93Q"/>
+                        <outlet property="onlyPhotosSwitcher" destination="Npf-ia-yp0" id="Vno-Pi-nSa"/>
                     </connections>
                 </tableViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="I1J-2J-wS4" userLabel="First Responder" sceneMemberID="firstResponder"/>
@@ -221,15 +230,15 @@
                         <sections>
                             <tableViewSection id="kFJ-iz-Q82">
                                 <cells>
-                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" textLabel="eS3-Ke-vfP" style="IBUITableViewCellStyleDefault" id="gbs-E2-ah6">
+                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="default" accessoryType="checkmark" indentationWidth="10" textLabel="eS3-Ke-vfP" style="IBUITableViewCellStyleDefault" id="gbs-E2-ah6">
                                         <rect key="frame" x="0.0" y="99" width="600" height="44"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="gbs-E2-ah6" id="tSe-dY-thd">
-                                            <rect key="frame" x="0.0" y="0.0" width="600" height="43.5"/>
+                                            <rect key="frame" x="0.0" y="0.0" width="561" height="43.5"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <subviews>
                                                 <label opaque="NO" multipleTouchEnabled="YES" contentMode="left" text="BY CAMPAIGNS" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="eS3-Ke-vfP">
-                                                    <rect key="frame" x="15" y="0.0" width="570" height="43.5"/>
+                                                    <rect key="frame" x="15" y="0.0" width="546" height="43.5"/>
                                                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                                     <fontDescription key="fontDescription" type="system" pointSize="16"/>
                                                     <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
@@ -264,9 +273,17 @@
                         </connections>
                     </tableView>
                     <toolbarItems>
-                        <barButtonItem systemItem="cancel" id="UYo-q0-3ew"/>
+                        <barButtonItem systemItem="cancel" id="UYo-q0-3ew">
+                            <connections>
+                                <action selector="cancelButton:" destination="4ar-DS-8Cw" id="qQP-xV-cDE"/>
+                            </connections>
+                        </barButtonItem>
                         <barButtonItem style="plain" systemItem="flexibleSpace" id="UcW-UP-1Wi"/>
-                        <barButtonItem style="done" systemItem="done" id="AU8-hm-Ac0"/>
+                        <barButtonItem style="done" systemItem="done" id="AU8-hm-Ac0">
+                            <connections>
+                                <action selector="doneButton:" destination="4ar-DS-8Cw" id="2gW-OD-kcr"/>
+                            </connections>
+                        </barButtonItem>
                     </toolbarItems>
                     <navigationItem key="navigationItem" title="GROUPING" id="pc2-Q0-cEg"/>
                     <connections>

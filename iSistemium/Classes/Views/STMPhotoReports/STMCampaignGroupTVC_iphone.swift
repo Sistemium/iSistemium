@@ -26,15 +26,16 @@ class STMCampaignGroupTVC_iphone:STMCampaignGroupTVC, UIPopoverPresentationContr
     }
     
     override func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
-        self.performSegueWithIdentifier("showFilterTVC", sender: (self.resultsController.objectAtIndexPath(indexPath) as! STMCampaignGroup).displayName())
+        self.performSegueWithIdentifier("showFilterTVC", sender: (self.resultsController.objectAtIndexPath(indexPath)))
     }
     
     override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
         switch segue.identifier! {
         case "showFilterTVC":
-            (segue.destinationViewController as! STMPhotoReportsFilterTVC).title = sender as? String
+            (segue.destinationViewController as! STMPhotoReportsFilterTVC).title = (sender as! STMCampaignGroup).displayName()
+            let campaignGroup = (sender as! STMCampaignGroup)
+            (segue.destinationViewController as! STMPhotoReportsFilterTVC).selectedCampaignGroup = campaignGroup;
         case "showSettings":
-            segue.destinationViewController.modalPresentationStyle = .Popover
             segue.destinationViewController.popoverPresentationController?.delegate = self
         default:
             break

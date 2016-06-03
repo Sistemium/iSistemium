@@ -62,15 +62,12 @@
 }
 
 - (BOOL)showDataOnlyWithPhotos {
+        
+    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+    BOOL showDataOnlyWithPhotos = [defaults boolForKey:self.showDataOnlyWithPhotosDefaultsKey];
     
-    if (!_showDataOnlyWithPhotos) {
-        
-        NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
-        BOOL showDataOnlyWithPhotos = [defaults boolForKey:self.showDataOnlyWithPhotosDefaultsKey];
-        
-        _showDataOnlyWithPhotos = showDataOnlyWithPhotos;
-        
-    }
+    _showDataOnlyWithPhotos = showDataOnlyWithPhotos;
+    
     return _showDataOnlyWithPhotos;
     
 }

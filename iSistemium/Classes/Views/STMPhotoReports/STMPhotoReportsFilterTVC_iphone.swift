@@ -14,7 +14,6 @@ class STMPhotoReportsFilterTVC_iphone:STMPhotoReportsFilterTVC,UIPopoverPresenta
     override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
         switch segue.identifier! {
         case "showSettings":
-            segue.destinationViewController.modalPresentationStyle = .Popover
             segue.destinationViewController.popoverPresentationController?.delegate = self
         default:
             break

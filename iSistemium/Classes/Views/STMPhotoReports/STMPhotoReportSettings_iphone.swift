@@ -8,6 +8,7 @@
 
 import UIKit
 
+@available(iOS 8.0, *)
 class STMPhotoReportSettings_iphone:UITableViewController{
     
     override func viewDidLoad() {
@@ -38,6 +39,36 @@ class STMPhotoReportSettings_iphone:UITableViewController{
     @IBOutlet weak var outletLabel: UILabel!{
         didSet{
             outletLabel.text = NSLocalizedString(outletLabel.text!, comment: "")
+        }
+    }
+    
+    @IBOutlet weak var onlyPhotosSwitcher: UISwitch!{
+        didSet{
+            let userID = STMAuthController().userID
+            let key = "showDataOnlyWithPhotos_\(userID)"
+            let defaults = NSUserDefaults.standardUserDefaults()
+            let showDataOnlyWithPhotos = defaults.boolForKey(key)
+            onlyPhotosSwitcher.on = showDataOnlyWithPhotos
+        }
+    }
+    
+    @IBAction func cancelButton(sender: UIBarButtonItem) {
+        self.dismissViewControllerAnimated(true, completion: nil)
+    }
+    
+    @IBAction func doneButton(sender: UIBarButtonItem) {
+        if onlyPhotosSwitcher != nil{
+            let userID = STMAuthController().userID
+            let key = "showDataOnlyWithPhotos_\(userID)"
+            let defaults = NSUserDefaults.standardUserDefaults()
+            defaults.setBool(onlyPhotosSwitcher.on, forKey: key)
+            defaults.synchronize()
+            if let filter = self.navigationController?.popoverPresentationController?.delegate as? STMPhotoReportsFilterTVC_iphone{
+                filter.performFetch()
+            }
+            self.dismissViewControllerAnimated(true, completion: nil)
+        }else{
+            (self.navigationController?.viewControllers[0] as! STMPhotoReportSettings_iphone).doneButton(sender)
         }
     }
 }
