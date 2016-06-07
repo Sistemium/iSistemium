@@ -403,8 +403,10 @@
         }
     }
     [self processingOfRelationshipsForObject:object withEntityName:entityName andValues:properties];
-    
-    [object setValue:[NSDate date] forKey:@"lts"];
+
+    NSDate *currentTime = [NSDate date];
+    [object setValue:currentTime forKey:@"deviceTs"];
+    [object setValue:currentTime forKey:@"lts"];
     
     [self postprocessingForObject:object withEntityName:entityName];
     
@@ -467,10 +469,12 @@
                     
                     if (!waitingForSync) {
                         
+//probably don't need it — toMany relationships is checked in STMDatum updateLTS
                         [destinationObject addObserver:[self sharedController]
                                             forKeyPath:@"deviceTs"
                                                options:(NSKeyValueObservingOptionNew|NSKeyValueObservingOptionOld)
                                                context:nil];
+//_______________________________________________________________________________
                         
                     }
                     
@@ -488,10 +492,12 @@
                     
                     if (!waitingForSync) {
                         
+//probably don't need it — toMany relationships is checked in STMDatum updateLTS
                         [destinationObject addObserver:[self sharedController]
                                             forKeyPath:@"deviceTs"
                                                options:(NSKeyValueObservingOptionNew|NSKeyValueObservingOptionOld)
                                                context:nil];
+//_______________________________________________________________________________
                         
                     }
                     
@@ -692,7 +698,6 @@
                 }
                 
             }
-            
             
         }
         
