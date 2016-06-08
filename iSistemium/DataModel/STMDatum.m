@@ -74,9 +74,10 @@
     NSDictionary *changedValues = self.changedValues;
     
     BOOL ltsIsChanged = [changedValues.allKeys containsObject:@"lts"];
-    BOOL deviceTsIsChanged = [changedValues.allKeys containsObject:@"deviceTs"];
+//    BOOL deviceTsIsChanged = [changedValues.allKeys containsObject:@"deviceTs"];
     
-    if (ltsIsChanged && deviceTsIsChanged) return;
+//    if (ltsIsChanged && deviceTsIsChanged) return;
+    if (ltsIsChanged) return;
     
     NSArray *excludeProperties = [self excludeProperties];
     

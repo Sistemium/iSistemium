@@ -242,13 +242,19 @@
     if (roleName) {
         
         [self setRelationshipsFromArray:array withCompletionHandler:^(BOOL success) {
+
             completionHandler(success);
+//            [[self document] saveDocument:^(BOOL success) {}];
+
         }];
         
     } else {
         
         [self insertObjectsFromArray:array withCompletionHandler:^(BOOL success) {
+
             completionHandler(success);
+//            [[self document] saveDocument:^(BOOL success) {}];
+
         }];
         
     }
@@ -405,7 +411,7 @@
     [self processingOfRelationshipsForObject:object withEntityName:entityName andValues:properties];
 
     NSDate *currentTime = [NSDate date];
-    [object setValue:currentTime forKey:@"deviceTs"];
+//    [object setValue:currentTime forKey:@"deviceTs"];
     [object setValue:currentTime forKey:@"lts"];
     
     [self postprocessingForObject:object withEntityName:entityName];
