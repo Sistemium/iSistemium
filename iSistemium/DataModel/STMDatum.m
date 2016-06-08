@@ -98,9 +98,12 @@
         
         NSDate *currentDate = [NSDate date];
         
-        //            self.deviceTs = currentDate;
+        self.deviceTs = currentDate;
         
-        [self setPrimitiveValue:currentDate forKey:@"deviceTs"];
+//        NSString *deviceTsKey = @"deviceTs";
+//        [self willChangeValueForKey:deviceTsKey];
+//        [self setPrimitiveValue:currentDate forKey:deviceTsKey];
+//        [self didChangeValueForKey:deviceTsKey];
         
         //            self.sqts = (self.lts) ? self.deviceTs : self.deviceCts;
         
