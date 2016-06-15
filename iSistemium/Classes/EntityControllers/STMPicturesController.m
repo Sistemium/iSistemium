@@ -430,7 +430,15 @@
         
         if (!picture.hasChanges) {
             
-            NSData *photoData = [NSData dataWithContentsOfFile:[STMFunctions absolutePathForPath:picture.imagePath]];
+            NSError *error = nil;
+            NSData *photoData = [NSData dataWithContentsOfFile:[STMFunctions absolutePathForPath:picture.imagePath] options:0 error:&error];
+            
+            if (error) {
+                
+                NSString *logMessage = [NSString stringWithFormat:@"checkUploadedPhotos dataWithContentsOfFile error: %@", error.localizedDescription];
+                [[STMLogger sharedLogger] saveLogMessageWithText:logMessage type:@"error"];
+
+            }
             
             if (photoData && photoData.length > 0) {
                 
@@ -441,7 +449,7 @@
                 
                 NSString *logMessage = [NSString stringWithFormat:@"attempt to upload picture %@, photoData %@, length %lu — object will be deleted", picture, photoData, (unsigned long)photoData.length];
                 [[STMLogger sharedLogger] saveLogMessageWithText:logMessage type:@"error"];
-                [self deletePicture:picture];
+//                [self deletePicture:picture];
                 
             }
 
