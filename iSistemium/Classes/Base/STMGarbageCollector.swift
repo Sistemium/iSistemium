@@ -20,6 +20,7 @@ import Foundation
                     let logMessage = String(format: "Deleting %i images",unusedImages.count)
                     STMLogger.sharedLogger().saveLogMessageWithText(logMessage, type:"important")
                 }
+                recheckUnusedImages()
                 for unusedImage in unusedImages{
                     try NSFileManager.defaultManager().removeItemAtPath(STMFunctions.documentsDirectory()+"/"+unusedImage)
                     self.unusedImages.remove(unusedImage)
@@ -28,6 +29,26 @@ import Foundation
             } catch let error as NSError {
                 NSLog(error.description)
             }
+        }
+    }
+    
+    private static func recheckUnusedImages(){
+        do {
+            var usedImages = Set<String>()
+            let document = STMSessionManager.sharedManager().currentSession.document
+            let photoFetchRequest = STMFetchRequest(entityName: NSStringFromClass(STMPicture))
+            let photos = try document.managedObjectContext.executeFetchRequest(photoFetchRequest) as! [STMPicture]
+            for image in photos{
+                if let path = image.imagePath{
+                    usedImages.insert(path)
+                }
+                if let resizedPath = image.resizedImagePath{
+                    usedImages.insert(resizedPath)
+                }
+            }
+            unusedImages = unusedImages.subtract(usedImages)
+        } catch let error as NSError {
+            NSLog(error.description)
         }
     }
     
