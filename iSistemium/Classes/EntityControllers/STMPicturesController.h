@@ -27,7 +27,7 @@
 + (void)downloadConnectionForObjectID:(NSManagedObjectID *)objectID;
 
 + (void)setImagesFromData:(NSData *)data forPicture:(STMPicture *)picture andUpload:(BOOL)shouldUpload;
-+ (void)saveImageFile:(NSString *)fileName forPicture:(STMPicture *)picture fromImageData:(NSData *)data;
++ (BOOL)saveImageFile:(NSString *)fileName forPicture:(STMPicture *)picture fromImageData:(NSData *)data;
 
 + (void)removeImageFilesForPicture:(STMPicture *)picture;
 

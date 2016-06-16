@@ -430,7 +430,15 @@
         
         if (!picture.hasChanges) {
             
-            NSData *photoData = [NSData dataWithContentsOfFile:[STMFunctions absolutePathForPath:picture.imagePath]];
+            NSError *error = nil;
+            NSData *photoData = [NSData dataWithContentsOfFile:[STMFunctions absolutePathForPath:picture.imagePath] options:0 error:&error];
+            
+            if (error) {
+                
+                NSString *logMessage = [NSString stringWithFormat:@"checkUploadedPhotos dataWithContentsOfFile error: %@", error.localizedDescription];
+                [[STMLogger sharedLogger] saveLogMessageWithText:logMessage type:@"error"];
+
+            }
             
             if (photoData && photoData.length > 0) {
                 
@@ -441,7 +449,7 @@
                 
                 NSString *logMessage = [NSString stringWithFormat:@"attempt to upload picture %@, photoData %@, length %lu — object will be deleted", picture, photoData, (unsigned long)photoData.length];
                 [[STMLogger sharedLogger] saveLogMessageWithText:logMessage type:@"error"];
-                [self deletePicture:picture];
+//                [self deletePicture:picture];
                 
             }
 
@@ -532,7 +540,7 @@
     
 }
 
-+ (void)saveImageFile:(NSString *)fileName forPicture:(STMPicture *)picture fromImageData:(NSData *)data {
++ (BOOL)saveImageFile:(NSString *)fileName forPicture:(STMPicture *)picture fromImageData:(NSData *)data {
     
     UIImage *image = [UIImage imageWithData:data];
     CGFloat maxDimension = MAX(image.size.height, image.size.width);
@@ -545,26 +553,48 @@
     }
     
     NSString *imagePath = [STMFunctions absolutePathForPath:fileName];
-    [data writeToFile:imagePath atomically:YES];
+    
+    NSError *error = nil;
+    BOOL result = [data writeToFile:imagePath options:NSDataWritingAtomic error:&error];
+    
+    if (error) {
+        
+        NSString *logMessage = [NSString stringWithFormat:@"saveImageFile %@ writeToFile %@ error: %@", fileName, imagePath, error.localizedDescription];
+        [[STMLogger sharedLogger] saveLogMessageWithText:logMessage type:@"error"];
+
+    }
     
     dispatch_async(dispatch_get_main_queue(), ^{
         picture.imagePath = fileName;
     });
 
+    return result;
+    
 }
 
-+ (void)saveResizedImageFile:(NSString *)resizedFileName forPicture:(STMPicture *)picture fromImageData:(NSData *)data {
++ (BOOL)saveResizedImageFile:(NSString *)resizedFileName forPicture:(STMPicture *)picture fromImageData:(NSData *)data {
 
     NSString *resizedImagePath = [STMFunctions absolutePathForPath:resizedFileName];
     
     UIImage *resizedImage = [STMFunctions resizeImage:[UIImage imageWithData:data] toSize:CGSizeMake(1024, 1024) allowRetina:NO];
     NSData *resizedImageData = nil;
     resizedImageData = UIImageJPEGRepresentation(resizedImage, [self jpgQuality]);
-    [resizedImageData writeToFile:resizedImagePath atomically:YES];
+
+    NSError *error = nil;
+    BOOL result = [resizedImageData writeToFile:resizedImagePath options:NSDataWritingAtomic error:&error];
     
+    if (error) {
+        
+        NSString *logMessage = [NSString stringWithFormat:@"saveResizedImageFile %@ writeToFile %@ error: %@", resizedFileName, resizedImagePath, error.localizedDescription];
+        [[STMLogger sharedLogger] saveLogMessageWithText:logMessage type:@"error"];
+        
+    }
+
     dispatch_async(dispatch_get_main_queue(), ^{
         picture.resizedImagePath = resizedFileName;
     });
+    
+    return result;
 
 }
 

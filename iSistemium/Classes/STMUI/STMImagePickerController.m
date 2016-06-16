@@ -35,32 +35,8 @@
             self.showsCameraControls = NO;
             
             UIView *cameraOverlayView = [[NSBundle mainBundle] loadNibNamed:@"STMCameraOverlayView" owner:self options:nil].firstObject;
-            
-            cameraOverlayView.backgroundColor = [UIColor clearColor];
-            cameraOverlayView.autoresizesSubviews = YES;
-            cameraOverlayView.autoresizingMask = (UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight);
-            
-            if ([[[UIDevice currentDevice] systemVersion] floatValue] >= 8.0) {
-                
-                UIView *rootView = [UIApplication sharedApplication].keyWindow.rootViewController.view;
-                CGRect originalFrame = [UIScreen mainScreen].bounds;
-                CGRect screenFrame = [rootView convertRect:originalFrame fromView:nil];
-                cameraOverlayView.frame = screenFrame;
-                
-                CGFloat camHeight = screenFrame.size.width * 4 / 3; // 4/3 — camera aspect ratio
-                
-                CGFloat toolbarHeight = TOOLBAR_HEIGHT;
-                
-                for (UIView *subview in self.cameraOverlayView.subviews)
-                    if ([subview isKindOfClass:[UIToolbar class]])
-                        toolbarHeight = subview.frame.size.height;
-                
-                CGFloat translationDistance = (screenFrame.size.height - toolbarHeight - camHeight) / 2;
-                
-                CGAffineTransform translate = CGAffineTransformMakeTranslation(0.0, translationDistance);
-                self.cameraViewTransform = translate;
 
-            }
+            [self setFrameForCameraOverlayView:cameraOverlayView];
             
             self.cameraOverlayView = cameraOverlayView;
             
@@ -71,10 +47,44 @@
     
 }
 
+- (void)setFrameForCameraOverlayView:(UIView *)cameraOverlayView {
+    
+    cameraOverlayView.backgroundColor = [UIColor clearColor];
+    cameraOverlayView.autoresizesSubviews = YES;
+    cameraOverlayView.autoresizingMask = (UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight);
+    
+    if (SYSTEM_VERSION >= 8.0) {
+        
+        UIView *rootView = [UIApplication sharedApplication].keyWindow.rootViewController.view;
+        CGRect originalFrame = [UIScreen mainScreen].bounds;
+        CGRect screenFrame = [rootView convertRect:originalFrame fromView:nil];
+        cameraOverlayView.frame = screenFrame;
+        
+        if (IPHONE) {
+            
+            CGFloat camHeight = screenFrame.size.width * 4 / 3; // 4/3 — camera aspect ratio
+            
+            CGFloat toolbarHeight = TOOLBAR_HEIGHT;
+            
+            for (UIView *subview in self.cameraOverlayView.subviews)
+                if ([subview isKindOfClass:[UIToolbar class]])
+                    toolbarHeight = subview.frame.size.height;
+            
+            CGFloat translationDistance = (screenFrame.size.height - toolbarHeight - camHeight) / 2;
+            
+            CGAffineTransform translate = CGAffineTransformMakeTranslation(0.0, translationDistance);
+            self.cameraViewTransform = translate;
+
+        }
+        
+    }
+
+}
+
 - (BOOL)shouldAutorotate {
     
     return (IPHONE && SYSTEM_VERSION >= 8.0) ? NO : [super shouldAutorotate];
-        
+    
 }
 
 
@@ -139,15 +149,7 @@
     [picker dismissViewControllerAnimated:NO completion:^{
         [self.ownerVC imagePickerWasDissmised:picker];
     }];
-    
-//    [self.spinnerView removeFromSuperview];
-//    
-//    STMPhotoReport *photoReportToRemove = self.selectedPhotoReport;
-//    self.selectedPhotoReport = nil;
-//    
-//    [STMObjectsController removeObject:photoReportToRemove];
-//    self.imagePickerController = nil;
-    
+
 }
 
 

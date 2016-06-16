@@ -24,7 +24,5 @@
 
 - (NSString *)locationServiceStatus;
 
-- (BOOL)currentTimeIsInsideOfScheduleLimits;
-
 
 @end
