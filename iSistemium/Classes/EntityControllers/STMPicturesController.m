@@ -281,10 +281,15 @@
             if (pathComponents.count == 0) {
                 
                 if (picture.href) {
+                    
                     [self hrefProcessingForObject:picture];
+                    
                 } else {
-                    NSLog(@"picture %@ has no both imagePath and href, will be deleted", picture.xid);
+                    
+                    NSString *logMessage = [NSString stringWithFormat:@"checkingPicturesPaths picture %@ has no both imagePath and href, will be deleted", picture.xid];
+                    [[STMLogger sharedLogger] saveLogMessageWithText:logMessage type:@"error"];
                     [self deletePicture:picture];
+                    
                 }
                 
             } else {
@@ -338,15 +343,17 @@
 
         if (picture.href) {
             
-            NSLog(@"have href, flush picture and download data again");
-            
+            NSString *logMessage = [NSString stringWithFormat:@"imagePathsConvertingFromAbsoluteToRelativeForPicture no newImagePath and have href for picture %@, flush picture and download data again", picture.xid];
+            [[STMLogger sharedLogger] saveLogMessageWithText:logMessage type:@"error"];
+
             [self removeImageFilesForPicture:picture];
             [self hrefProcessingForObject:picture];
             
         } else {
-
-            NSLog(@"no href, delete picture");
             
+            NSString *logMessage = [NSString stringWithFormat:@"imagePathsConvertingFromAbsoluteToRelativeForPicture no newImagePath and no href for picture %@, will be deleted", picture.xid];
+            [[STMLogger sharedLogger] saveLogMessageWithText:logMessage type:@"error"];
+
             [self deletePicture:picture];
             
         }
@@ -398,7 +405,7 @@
                     
                 } else {
                 
-                    NSString *logMessage = [NSString stringWithFormat:@"attempt to set images for picture %@, photoData %@, length %lu", picture, photoData, (unsigned long)photoData.length];
+                    NSString *logMessage = [NSString stringWithFormat:@"checkBrokenPhotos attempt to set images for picture %@, photoData %@, length %lu, have no photoData and have no href, will be deleted", picture, photoData, (unsigned long)photoData.length];
                     [[STMLogger sharedLogger] saveLogMessageWithText:logMessage type:@"error"];
                     
                     [self deletePicture:picture];
@@ -856,11 +863,13 @@
         
         if (success) {
             
-            NSLog(@"file %@ was successefully removed", [filePath lastPathComponent]);
-            
+            NSString *logMessage = [NSString stringWithFormat:@"file %@ was successefully removed", [filePath lastPathComponent]];
+            [[STMLogger sharedLogger] saveLogMessageWithText:logMessage type:@"info"];
+
         } else {
             
-            NSLog(@"removeItemAtPath error: %@ ",[error localizedDescription]);
+            NSString *logMessage = [NSString stringWithFormat:@"removeItemAtPath error: %@ ",[error localizedDescription]];
+            [[STMLogger sharedLogger] saveLogMessageWithText:logMessage type:@"error"];
             
         }
 
