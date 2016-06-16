@@ -211,6 +211,7 @@
                     <navigationItem key="navigationItem" title="SETTINGS" id="9mi-wd-gXz"/>
                     <connections>
                         <outlet property="groupingLabel" destination="Ht7-Nl-h52" id="Ej7-ta-3RJ"/>
+                        <outlet property="groupingTypeLabel" destination="cUg-Pp-gPE" id="dde-qv-jdP"/>
                         <outlet property="onlyPhotosLabel" destination="e3D-FF-Fvp" id="glY-CK-93Q"/>
                         <outlet property="onlyPhotosSwitcher" destination="Npf-ia-yp0" id="Vno-Pi-nSa"/>
                     </connections>
@@ -287,8 +288,8 @@
                     </toolbarItems>
                     <navigationItem key="navigationItem" title="GROUPING" id="pc2-Q0-cEg"/>
                     <connections>
-                        <outlet property="campaignLabel" destination="eS3-Ke-vfP" id="GiD-P6-yRJ"/>
-                        <outlet property="outletLabel" destination="TGs-91-3NW" id="PpN-Vr-Ymu"/>
+                        <outlet property="byCampaignCell" destination="gbs-E2-ah6" id="I3C-ci-cHz"/>
+                        <outlet property="byOutletCell" destination="D7T-2g-wYI" id="Q0H-FY-k4z"/>
                     </connections>
                 </tableViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="vo0-MD-vKB" userLabel="First Responder" sceneMemberID="firstResponder"/>
@@ -344,6 +345,6 @@
         <image name="Settings-25.png" width="25" height="25"/>
     </resources>
     <inferredMetricsTieBreakers>
-        <segue reference="KH3-Ad-Vdz"/>
+        <segue reference="KAA-xW-bzR"/>
     </inferredMetricsTieBreakers>
 </document>
