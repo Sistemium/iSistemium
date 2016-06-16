@@ -854,7 +854,7 @@
 
 - (void)documentSavedSuccessfully:(NSNotification *)notification {
     
-    NSLogMethodName;
+//    NSLogMethodName;
 
     if (self.controllersDidChangeContent && [notification.object isKindOfClass:[STMDocument class]]) {
         
