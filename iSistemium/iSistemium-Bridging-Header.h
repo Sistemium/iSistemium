@@ -28,3 +28,4 @@
 #import "STMCampaignGroupTVC.h"
 #import "STMPhotoReportsFilterTVC.h"
 #import "STMPhotoReportsDetailTVC.h"
+#import "STMPhotoReportAddPhotoTVC.h"
