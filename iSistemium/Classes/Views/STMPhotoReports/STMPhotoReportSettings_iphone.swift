@@ -75,7 +75,10 @@ class STMPhotoReportSettings_iphone:UITableViewController{
             defaults.setInteger(groupingType ?? 0, forKey: "currentGrouping_\(STMAuthController().userID)")
             defaults.synchronize()
             if let filter = self.navigationController?.popoverPresentationController?.delegate as? STMPhotoReportsFilterTVC_iphone{
-                filter.performFetch()
+                filter.photoReportGroupingChanged()
+            }
+            if let detail = self.navigationController?.popoverPresentationController?.delegate as? STMPhotoReportsDetailTVC_iphone{
+                detail.currentGrouping = groupingType == 1 ? .Outlet : .Campaign
             }
             self.dismissViewControllerAnimated(true, completion: nil)
         }else{

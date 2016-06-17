@@ -28,9 +28,11 @@ class STMPhotoReportsFilterTVC_iphone:STMPhotoReportsFilterTVC,UIPopoverPresenta
         case "showPhotoReportByOutlet":
             (segue.destinationViewController as! STMPhotoReportsDetailTVC_iphone).selectedOutlet = sender as! STMOutlet
             (segue.destinationViewController as! STMPhotoReportsDetailTVC_iphone).selectedCampaignGroup = self.selectedCampaignGroup
+            (segue.destinationViewController as! STMPhotoReportsDetailTVC_iphone).filterTVC = self
         case "showPhotoReportByCampaign":
             (segue.destinationViewController as! STMPhotoReportsDetailTVC_iphone).selectedCampaign = sender as! STMCampaign
             (segue.destinationViewController as! STMPhotoReportsDetailTVC_iphone).selectedCampaignGroup = self.selectedCampaignGroup
+            (segue.destinationViewController as! STMPhotoReportsDetailTVC_iphone).filterTVC = self
         default:
             break
         }
@@ -49,38 +51,9 @@ class STMPhotoReportsFilterTVC_iphone:STMPhotoReportsFilterTVC,UIPopoverPresenta
         }
     }
     
-//    - (void)tableView:(UITableView *)tableView didSelectOutletAtIndexPath:(nonnull NSIndexPath *)indexPath {
-//    
-//    STMOutlet *outlet = [self.resultsController objectAtIndexPath:indexPath];
-//    
-//    if ([outlet isEqual:self.splitVC.detailVC.selectedOutlet]) {
-//    
-//    self.splitVC.detailVC.selectedOutlet = nil;
-//    [tableView deselectRowAtIndexPath:indexPath animated:YES];
-//    
-//    } else {
-//    
-//    self.splitVC.detailVC.selectedOutlet = outlet;
-//    
-//    }
-//    
-//    }
-//
-//    - (void)tableView:(UITableView *)tableView didSelectCampaignAtIndexPath:(nonnull NSIndexPath *)indexPath {
-//    
-//    STMCampaign *campaign = [self.resultsController objectAtIndexPath:indexPath];
-//    
-//    if ([campaign isEqual:self.splitVC.detailVC.selectedCampaign]) {
-//    
-//    self.splitVC.detailVC.selectedCampaign = nil;
-//    [tableView deselectRowAtIndexPath:indexPath animated:YES];
-//    selectedCampaignGroup
-//    } else {
-//    
-//    self.splitVC.detailVC.selectedCampaign = campaign;
-//    
-//    }
-//    
-//    }
+    override func viewWillAppear(animated: Bool) {
+        super.viewWillAppear(animated)
+        self.performFetch()
+    }
     
 }

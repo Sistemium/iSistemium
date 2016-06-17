@@ -8,7 +8,8 @@
 
 import UIKit
 
-class STMPhotoReportsDetailTVC_iphone:STMPhotoReportsDetailTVC{
+@available(iOS 8.0, *)
+class STMPhotoReportsDetailTVC_iphone:STMPhotoReportsDetailTVC,UIPopoverPresentationControllerDelegate{
     
     override func viewWillAppear(animated: Bool) {
         super.viewWillAppear(true)
@@ -27,8 +28,14 @@ class STMPhotoReportsDetailTVC_iphone:STMPhotoReportsDetailTVC{
         switch segue.identifier {
         case "cameraButtonPressed"?:
             (segue.destinationViewController as! STMPhotoReportAddPhotoTVC).parentVC = self
+        case "showSettings"?:
+            segue.destinationViewController.popoverPresentationController?.delegate = self
         default:
             break
         }
+    }
+    
+    func adaptivePresentationStyleForPresentationController(controller: UIPresentationController) -> UIModalPresentationStyle {
+        return .None
     }
 }
