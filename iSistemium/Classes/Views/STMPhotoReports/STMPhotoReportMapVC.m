@@ -96,6 +96,7 @@
     
     self.mapView.delegate = self;
     [self showPhotoReportPin];
+    self.closeButton.title = NSLocalizedString(@"CLOSE", nil);
     
 }
 
