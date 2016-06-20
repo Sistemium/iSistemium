@@ -2576,9 +2576,9 @@
                         
                         NSDate *deviceTs = [STMSocketController deviceTsForSyncedObjectXid:xidData];
                         object.lts = deviceTs;
-                        [object willChangeValueForKey:@"lts"];
-                        [object setPrimitiveValue:deviceTs forKey:@"lts"];
-                        [object didChangeValueForKey:@"lts"];
+//                        [object willChangeValueForKey:@"lts"];
+//                        [object setPrimitiveValue:deviceTs forKey:@"lts"];
+//                        [object didChangeValueForKey:@"lts"];
                         
                     }
                     
