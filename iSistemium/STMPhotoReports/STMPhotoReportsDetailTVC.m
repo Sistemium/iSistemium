@@ -14,7 +14,6 @@
 #import "STMPhotoReportAddPhotoTVC.h"
 
 #import "STMImagePickerOwnerProtocol.h"
-
 #import "STMAuthController.h"
 #import "STMPicturesController.h"
 #import "STMObjectsController.h"
@@ -390,10 +389,19 @@
 
     switch (self.currentGrouping) {
         case STMPhotoReportGroupingCampaign: {
-            cell.detailLabel.text = photoReport.outlet.name;
+            if (IPHONE){
+                cell.detailLabel.numberOfLines = 0;
+                cell.detailLabel.text = [NSString stringWithFormat:@"%@\r%@", photoReport.outlet.partner.name,photoReport.outlet.shortName];
+                self.tableView.rowHeight = UITableViewAutomaticDimension;
+                self.tableView.estimatedRowHeight = 20;
+            }else{
+                cell.detailLabel.numberOfLines = 1;
+                cell.detailLabel.text = photoReport.outlet.name;
+            }
             break;
         }
         case STMPhotoReportGroupingOutlet: {
+            cell.detailLabel.numberOfLines = 1;
             cell.detailLabel.text = photoReport.campaign.name;
             break;
         }
@@ -405,14 +413,15 @@
     if (photoReport.location) {
         
         UIButton *button = [UIButton buttonWithType:UIButtonTypeCustom];
-        button.frame = CGRectMake(0.0, 0.0, self.locationImage.size.width, self.locationImage.size.height);
-        [button setBackgroundImage:self.locationImage forState:UIControlStateNormal];
-        
+        if (IPHONE){
+            button.frame = CGRectMake(0, 0, self.locationImage.size.width*2, self.locationImage.size.height*2);
+        }else{
+            button.frame = CGRectMake(0, 0, self.locationImage.size.width, self.locationImage.size.height);
+        }
+        [button setImage:self.locationImage forState:UIControlStateNormal];
         [button addTarget:self action:@selector(locationButtonTapped:event:) forControlEvents:UIControlEventTouchUpInside];
         button.backgroundColor = [UIColor clearColor];
-        
         cell.accessoryView = button;
-        
     } else {
         
         cell.accessoryView = nil;
@@ -485,11 +494,19 @@
         STMImagePickerController *imagePickerController = [[STMImagePickerController alloc] initWithSourceType:imageSourceType];
         imagePickerController.ownerVC = self;
         
-        [self.splitViewController presentViewController:imagePickerController animated:YES completion:^{
-            
-            [self.view addSubview:self.spinner];
-            
-        }];
+        if (self.splitViewController != nil){
+            [self.splitViewController presentViewController:imagePickerController animated:YES completion:^{
+                
+                [self.view addSubview:self.spinner];
+                
+            }];
+        }else{
+            [self.navigationController presentViewController:imagePickerController animated:YES completion:^{
+                
+                [self.view addSubview:self.spinner];
+                
+            }];
+        }
         
     }
     

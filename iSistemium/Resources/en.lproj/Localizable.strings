@@ -485,3 +485,7 @@
 "2UNUSED" = "%lu unused %@";
 "5UNUSED" = "%lu unused %@";
 "UNUSED PICTURES" = "Unused pictures";
+"SHOW ALL PHOTOREPORTS" = "Show all photoreports";
+"GROUPING" = "Grouping";
+"BY CAMPAIGNS" = "by campaigns";
+"BY OUTLETS" = "by outlets";

@@ -485,3 +485,7 @@
 "2UNUSED" = "%lu неиспользуемые %@";
 "5UNUSED" = "%lu неиспользуемых %@";
 "UNUSED PICTURES" = "Неиспользуемые картинки";
+"SHOW ALL PHOTOREPORTS" = "Показать все фотоотчёты";
+"GROUPING" = "Группировать";
+"BY CAMPAIGNS" = "по акциям";
+"BY OUTLETS" = "по точкам";

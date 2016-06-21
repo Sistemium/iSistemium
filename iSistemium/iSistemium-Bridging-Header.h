@@ -27,3 +27,7 @@
 #import "STMUncashingInfoVC.h"
 #import "STMAddEtceteraVC.h"
 #import "STMLocationController.h"
+#import "STMCampaignGroupTVC.h"
+#import "STMPhotoReportsFilterTVC.h"
+#import "STMPhotoReportsDetailTVC.h"
+#import "STMPhotoReportAddPhotoTVC.h"
