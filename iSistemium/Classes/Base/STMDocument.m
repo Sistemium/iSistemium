@@ -175,7 +175,9 @@
 
 + (STMDocument *)documentWithUID:(NSString *)uid iSisDB:(NSString *)iSisDB dataModelName:(NSString *)dataModelName prefix:(NSString *)prefix {
 
-    NSURL *documentDirectoryUrl = [[[NSFileManager defaultManager] URLsForDirectory:NSDocumentDirectory inDomains:NSUserDomainMask] lastObject];
+    NSArray <NSURL *> *urls = [[NSFileManager defaultManager] URLsForDirectory:NSDocumentDirectory inDomains:NSUserDomainMask];
+    
+    NSURL *documentDirectoryUrl = urls.lastObject;
     NSString *documentID = (iSisDB) ? iSisDB : uid;
 
 //    from now we delete old document with STMDataModel data model and use new STMDataModel2
