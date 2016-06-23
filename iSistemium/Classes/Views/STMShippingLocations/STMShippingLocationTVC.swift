@@ -339,29 +339,7 @@ class STMShippingLocationTVC:STMVariableCellsHeightTVC,UIImagePickerControllerDe
                     
                     NSBundle.mainBundle().loadNibNamed("STMCameraOverlayView", owner: self, options: nil)
                     
-                    self.cameraOverlayView.backgroundColor = UIColor.clearColor()
-                    self.cameraOverlayView.autoresizesSubviews = true
-                    self.cameraOverlayView.autoresizingMask = [.FlexibleWidth , .FlexibleHeight]
-                    
-                    let rootView = UIApplication.sharedApplication().keyWindow!.rootViewController!.view;
-                    let originalFrame = UIScreen.mainScreen().bounds
-                    let screenFrame = rootView.convertRect(originalFrame, fromView:nil)
-                    self.cameraOverlayView.frame = screenFrame;
-                    
-                    let camHeight = screenFrame.size.width * 4 / 3 // 4/3 — camera aspect ratio
-                    
-                    var toolbarHeight: CGFloat = CGFloat(TOOLBAR_HEIGHT)
-                    
-                    for subview in self.cameraOverlayView.subviews {
-                        if subview.isKindOfClass(UIToolbar) {
-                            toolbarHeight = subview.frame.size.height
-                        }
-                    }
-                    
-                    let translationDistance: CGFloat = (screenFrame.size.height - toolbarHeight - camHeight) / 2;
-                    let translate: CGAffineTransform = CGAffineTransformMakeTranslation(0.0, translationDistance);
-                    _imagePickerController!.cameraViewTransform = translate;
-
+                    _imagePickerController?.setFrameForCameraOverlayView(self.cameraOverlayView)
                     
                     _imagePickerController!.cameraOverlayView = self.cameraOverlayView;
                     
