@@ -433,7 +433,9 @@
 }
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
-    [self performSegueWithIdentifier:@"showPhotoReport" sender:indexPath];
+    [[NSOperationQueue mainQueue] addOperationWithBlock:^{
+        [self performSegueWithIdentifier:@"showPhotoReport" sender:indexPath];
+    }];
 }
 
 - (void)locationButtonTapped:(id)sender event:(id)event {
