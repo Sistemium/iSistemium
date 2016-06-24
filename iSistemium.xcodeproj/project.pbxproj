@@ -1608,7 +1608,7 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
-		2C13F5181CE3134000A5F129 /* STMMessages */ = {
+		2C13F5181CE3134000A5F129 /* ☯ STMMessages */ = {
 			isa = PBXGroup;
 			children = (
 				2C13F5191CE3134000A5F129 /* STMMessagesNC.h */,
@@ -1618,6 +1618,7 @@
 				2C13F51D1CE3134000A5F129 /* STMMessageVC.h */,
 				2C13F51E1CE3134000A5F129 /* STMMessageVC.m */,
 			);
+			name = "☯ STMMessages";
 			path = STMMessages;
 			sourceTree = "<group>";
 		};
@@ -2111,38 +2112,38 @@
 			path = STMOrders;
 			sourceTree = "<group>";
 		};
-		2C7084101CC393600002F3FF /* iSisCore */ = {
+		2C7084101CC393600002F3FF /* ☯ iSisCore */ = {
 			isa = PBXGroup;
 			children = (
-				2C7084111CC394500002F3FF /* Classes */,
-				2C7084D81CC394500002F3FF /* DataModel */,
-				2C7085161CC394500002F3FF /* Frameworks */,
+				2C7084111CC394500002F3FF /* ☯ Classes */,
+				2C7084D81CC394500002F3FF /* ☯ DataModel */,
+				2C7085161CC394500002F3FF /* ☯ Frameworks */,
 				2C7085281CC394500002F3FF /* iSistemiumCore-Bridging-Header.h */,
 				2C94BFBB1CEEFA2D004476D8 /* STMCoreAppDelegate.h */,
 				2C94BFBC1CEEFA2D004476D8 /* STMCoreAppDelegate.m */,
 				2C94BFBD1CEEFA2D004476D8 /* STMCoreApplication.h */,
 				2C94BFBE1CEEFA2D004476D8 /* STMCoreApplication.m */,
-				2C7085291CC394500002F3FF /* Resources */,
-				2C7085591CC394500002F3FF /* Storyboards */,
+				2C7085291CC394500002F3FF /* ☯ Resources */,
+				2C7085591CC394500002F3FF /* ☯ Storyboards */,
 			);
-			name = iSisCore;
+			name = "☯ iSisCore";
 			sourceTree = "<group>";
 		};
-		2C7084111CC394500002F3FF /* Classes */ = {
+		2C7084111CC394500002F3FF /* ☯ Classes */ = {
 			isa = PBXGroup;
 			children = (
-				2C7084121CC394500002F3FF /* Base */,
-				2C70843C1CC394500002F3FF /* EntityControllers */,
-				2C7084511CC394500002F3FF /* Protocols */,
-				2C70845A1CC394500002F3FF /* STMNS */,
-				2C7084621CC394500002F3FF /* STMUI */,
-				2C7084A91CC394500002F3FF /* Views */,
+				2C7084121CC394500002F3FF /* ☯ Base */,
+				2C70843C1CC394500002F3FF /* ☯ EntityControllers */,
+				2C7084511CC394500002F3FF /* ☯ Protocols */,
+				2C70845A1CC394500002F3FF /* ☯ STMNS */,
+				2C7084621CC394500002F3FF /* ☯ STMUI */,
+				2C7084A91CC394500002F3FF /* ☯ Views */,
 			);
-			name = Classes;
+			name = "☯ Classes";
 			path = ../../iSistemiumCore/iSistemiumCore/Classes;
 			sourceTree = "<group>";
 		};
-		2C7084121CC394500002F3FF /* Base */ = {
+		2C7084121CC394500002F3FF /* ☯ Base */ = {
 			isa = PBXGroup;
 			children = (
 				2C7084151CC394500002F3FF /* STMBarCodeScanner.h */,
@@ -2190,10 +2191,11 @@
 				2C7084381CC394500002F3FF /* STMSyncer.h */,
 				2C7084391CC394500002F3FF /* STMSyncer.m */,
 			);
+			name = "☯ Base";
 			path = Base;
 			sourceTree = "<group>";
 		};
-		2C70843C1CC394500002F3FF /* EntityControllers */ = {
+		2C70843C1CC394500002F3FF /* ☯ EntityControllers */ = {
 			isa = PBXGroup;
 			children = (
 				2C70843D1CC394500002F3FF /* STMCoreBarCodeController.h */,
@@ -2221,10 +2223,11 @@
 				2C13F5151CE3132300A5F129 /* STMWorkflowController.h */,
 				2C13F5161CE3132300A5F129 /* STMWorkflowController.m */,
 			);
+			name = "☯ EntityControllers";
 			path = EntityControllers;
 			sourceTree = "<group>";
 		};
-		2C7084511CC394500002F3FF /* Protocols */ = {
+		2C7084511CC394500002F3FF /* ☯ Protocols */ = {
 			isa = PBXGroup;
 			children = (
 				2C7084521CC394500002F3FF /* STMBarCodeScannerDelegate.h */,
@@ -2238,10 +2241,11 @@
 				2C7084591CC394500002F3FF /* STMVolumePickerOwner.h */,
 				2C13F5101CE312B300A5F129 /* STMWorkflowable.h */,
 			);
+			name = "☯ Protocols";
 			path = Protocols;
 			sourceTree = "<group>";
 		};
-		2C70845A1CC394500002F3FF /* STMNS */ = {
+		2C70845A1CC394500002F3FF /* ☯ STMNS */ = {
 			isa = PBXGroup;
 			children = (
 				2C40F7931CF204EE00231E01 /* STMCoreNS.h */,
@@ -2252,10 +2256,11 @@
 				2C7084601CC394500002F3FF /* STMPredicate.h */,
 				2C7084611CC394500002F3FF /* STMPredicate.m */,
 			);
+			name = "☯ STMNS";
 			path = STMNS;
 			sourceTree = "<group>";
 		};
-		2C7084621CC394500002F3FF /* STMUI */ = {
+		2C7084621CC394500002F3FF /* ☯ STMUI */ = {
 			isa = PBXGroup;
 			children = (
 				2C13F5431CE31CC300A5F129 /* STMCoreUI.h */,
@@ -2263,7 +2268,7 @@
 				2C7084641CC394500002F3FF /* STMActionPopoverNC.m */,
 				2C7084651CC394500002F3FF /* STMBarButtonItem.h */,
 				2C7084661CC394500002F3FF /* STMBarButtonItem.m */,
-				2C7084671CC394500002F3FF /* STMCustomTVCells */,
+				2C7084671CC394500002F3FF /* ☯ STMCustomTVCells */,
 				2C7084861CC394500002F3FF /* STMDatePicker.swift */,
 				2C7084871CC394500002F3FF /* STMFetchedResultsControllerTVC.h */,
 				2C7084881CC394500002F3FF /* STMFetchedResultsControllerTVC.m */,
@@ -2299,10 +2304,11 @@
 				2C7084A71CC394500002F3FF /* UIViewController+custom.h */,
 				2C7084A81CC394500002F3FF /* UIViewController+custom.m */,
 			);
+			name = "☯ STMUI";
 			path = STMUI;
 			sourceTree = "<group>";
 		};
-		2C7084671CC394500002F3FF /* STMCustomTVCells */ = {
+		2C7084671CC394500002F3FF /* ☯ STMCustomTVCells */ = {
 			isa = PBXGroup;
 			children = (
 				2C7084681CC394500002F3FF /* STMCustom10TVCell.h */,
@@ -2336,10 +2342,11 @@
 				2C7084841CC394500002F3FF /* STMCoreVolumeTVCell.h */,
 				2C7084851CC394500002F3FF /* STMCoreVolumeTVCell.m */,
 			);
+			name = "☯ STMCustomTVCells";
 			path = STMCustomTVCells;
 			sourceTree = "<group>";
 		};
-		2C7084A91CC394500002F3FF /* Views */ = {
+		2C7084A91CC394500002F3FF /* ☯ Views */ = {
 			isa = PBXGroup;
 			children = (
 				2C7084BF1CC394500002F3FF /* STMCoreRootTBC.h */,
@@ -2348,19 +2355,20 @@
 				2C7084CE1CC394500002F3FF /* STMTabBarButtonTVC.m */,
 				2C13F5221CE3137400A5F129 /* STMWorkflowEditablesVC.h */,
 				2C13F5231CE3137400A5F129 /* STMWorkflowEditablesVC.m */,
-				2C7084AA1CC394500002F3FF /* STMAuth */,
-				2C7084B31CC394500002F3FF /* STMLogs */,
-				2C13F5181CE3134000A5F129 /* STMMessages */,
-				2C7084BA1CC394500002F3FF /* STMProfile */,
-				2C7084C11CC394500002F3FF /* STMScannerInfo */,
-				2C7084C61CC394500002F3FF /* STMSettings */,
-				2C7084CF1CC394500002F3FF /* STMWebView */,
-				2C7086451CC503F00002F3FF /* STMWKWebView */,
+				2C7084AA1CC394500002F3FF /* ☯ STMAuth */,
+				2C7084B31CC394500002F3FF /* ☯ STMLogs */,
+				2C13F5181CE3134000A5F129 /* ☯ STMMessages */,
+				2C7084BA1CC394500002F3FF /* ☯ STMProfile */,
+				2C7084C11CC394500002F3FF /* ☯ STMScannerInfo */,
+				2C7084C61CC394500002F3FF /* ☯ STMSettings */,
+				2C7084CF1CC394500002F3FF /* ☯ STMWebView */,
+				2C7086451CC503F00002F3FF /* ☯ STMWKWebView */,
 			);
+			name = "☯ Views";
 			path = Views;
 			sourceTree = "<group>";
 		};
-		2C7084AA1CC394500002F3FF /* STMAuth */ = {
+		2C7084AA1CC394500002F3FF /* ☯ STMAuth */ = {
 			isa = PBXGroup;
 			children = (
 				2C7084AB1CC394500002F3FF /* STMAuthNC.h */,
@@ -2372,10 +2380,11 @@
 				2C7084B11CC394500002F3FF /* STMAuthVC.h */,
 				2C7084B21CC394500002F3FF /* STMAuthVC.m */,
 			);
+			name = "☯ STMAuth";
 			path = STMAuth;
 			sourceTree = "<group>";
 		};
-		2C7084B31CC394500002F3FF /* STMLogs */ = {
+		2C7084B31CC394500002F3FF /* ☯ STMLogs */ = {
 			isa = PBXGroup;
 			children = (
 				2C7084B41CC394500002F3FF /* STMLogMessagesDetailTVC.h */,
@@ -2385,10 +2394,11 @@
 				2C7084B81CC394500002F3FF /* STMLogMessagesSVC.h */,
 				2C7084B91CC394500002F3FF /* STMLogMessagesSVC.m */,
 			);
+			name = "☯ STMLogs";
 			path = STMLogs;
 			sourceTree = "<group>";
 		};
-		2C7084BA1CC394500002F3FF /* STMProfile */ = {
+		2C7084BA1CC394500002F3FF /* ☯ STMProfile */ = {
 			isa = PBXGroup;
 			children = (
 				2C7084BB1CC394500002F3FF /* STMProfileNC.h */,
@@ -2396,10 +2406,11 @@
 				2C7084BD1CC394500002F3FF /* STMProfileVC.h */,
 				2C7084BE1CC394500002F3FF /* STMProfileVC.m */,
 			);
+			name = "☯ STMProfile";
 			path = STMProfile;
 			sourceTree = "<group>";
 		};
-		2C7084C11CC394500002F3FF /* STMScannerInfo */ = {
+		2C7084C11CC394500002F3FF /* ☯ STMScannerInfo */ = {
 			isa = PBXGroup;
 			children = (
 				2C7084C21CC394500002F3FF /* STMScannerInfoNC.h */,
@@ -2407,10 +2418,11 @@
 				2C7084C41CC394500002F3FF /* STMScannerInfoVC.h */,
 				2C7084C51CC394500002F3FF /* STMScannerInfoVC.m */,
 			);
+			name = "☯ STMScannerInfo";
 			path = STMScannerInfo;
 			sourceTree = "<group>";
 		};
-		2C7084C61CC394500002F3FF /* STMSettings */ = {
+		2C7084C61CC394500002F3FF /* ☯ STMSettings */ = {
 			isa = PBXGroup;
 			children = (
 				2C7084C71CC394500002F3FF /* STMSettingControlsTVC.h */,
@@ -2420,10 +2432,11 @@
 				2C7084CB1CC394500002F3FF /* STMSettingsTVC.h */,
 				2C7084CC1CC394500002F3FF /* STMSettingsTVC.m */,
 			);
+			name = "☯ STMSettings";
 			path = STMSettings;
 			sourceTree = "<group>";
 		};
-		2C7084CF1CC394500002F3FF /* STMWebView */ = {
+		2C7084CF1CC394500002F3FF /* ☯ STMWebView */ = {
 			isa = PBXGroup;
 			children = (
 				2C7084D01CC394500002F3FF /* STMWebViewNC.h */,
@@ -2431,10 +2444,11 @@
 				2C7084D21CC394500002F3FF /* STMWebViewVC.h */,
 				2C7084D31CC394500002F3FF /* STMWebViewVC.m */,
 			);
+			name = "☯ STMWebView";
 			path = STMWebView;
 			sourceTree = "<group>";
 		};
-		2C7084D81CC394500002F3FF /* DataModel */ = {
+		2C7084D81CC394500002F3FF /* ☯ DataModel */ = {
 			isa = PBXGroup;
 			children = (
 				2C7084D91CC394500002F3FF /* iSistemiumCore.xcdatamodel */,
@@ -2504,20 +2518,20 @@
 				2C7085111CC394500002F3FF /* STMWorkflow.h */,
 				2C7085121CC394500002F3FF /* STMWorkflow.m */,
 			);
-			name = DataModel;
+			name = "☯ DataModel";
 			path = ../../iSistemiumCore/iSistemiumCore/DataModel;
 			sourceTree = "<group>";
 		};
-		2C7085161CC394500002F3FF /* Frameworks */ = {
+		2C7085161CC394500002F3FF /* ☯ Frameworks */ = {
 			isa = PBXGroup;
 			children = (
-				2C7085171CC394500002F3FF /* SocketIOClientSwift */,
+				2C7085171CC394500002F3FF /* ☯ SocketIOClientSwift */,
 			);
-			name = Frameworks;
+			name = "☯ Frameworks";
 			path = ../../iSistemiumCore/iSistemiumCore/Frameworks;
 			sourceTree = "<group>";
 		};
-		2C7085171CC394500002F3FF /* SocketIOClientSwift */ = {
+		2C7085171CC394500002F3FF /* ☯ SocketIOClientSwift */ = {
 			isa = PBXGroup;
 			children = (
 				2C7085181CC394500002F3FF /* SocketAckEmitter.swift */,
@@ -2537,20 +2551,21 @@
 				2C7085261CC394500002F3FF /* SwiftRegex.swift */,
 				2C7085271CC394500002F3FF /* WebSocket.swift */,
 			);
+			name = "☯ SocketIOClientSwift";
 			path = SocketIOClientSwift;
 			sourceTree = "<group>";
 		};
-		2C7085291CC394500002F3FF /* Resources */ = {
+		2C7085291CC394500002F3FF /* ☯ Resources */ = {
 			isa = PBXGroup;
 			children = (
-				2C70852A1CC394500002F3FF /* Images */,
+				2C70852A1CC394500002F3FF /* ☯ Images */,
 				2C7085551CC394500002F3FF /* settings_schema.json */,
 			);
-			name = Resources;
+			name = "☯ Resources";
 			path = ../../iSistemiumCore/iSistemiumCore/Resources;
 			sourceTree = "<group>";
 		};
-		2C70852A1CC394500002F3FF /* Images */ = {
+		2C70852A1CC394500002F3FF /* ☯ Images */ = {
 			isa = PBXGroup;
 			children = (
 				2C70852B1CC394500002F3FF /* 3colors-colorless.png */,
@@ -2594,14 +2609,15 @@
 				2C7085511CC394500002F3FF /* Up4-25.png */,
 				2C7085521CC394500002F3FF /* Upload To Cloud-100.png */,
 			);
+			name = "☯ Images";
 			path = Images;
 			sourceTree = "<group>";
 		};
-		2C7085591CC394500002F3FF /* Storyboards */ = {
+		2C7085591CC394500002F3FF /* ☯ Storyboards */ = {
 			isa = PBXGroup;
 			children = (
 				2C70855A1CC394500002F3FF /* STMAuth.storyboard */,
-				2C70855B1CC394500002F3FF /* STMCustomCells */,
+				2C70855B1CC394500002F3FF /* ☯ STMCustomCells */,
 				2C70856B1CC394500002F3FF /* STMLogs.storyboard */,
 				2C13F5371CE316DA00A5F129 /* STMMessages.storyboard */,
 				2C13F5381CE316DA00A5F129 /* STMMessageVC.storyboard */,
@@ -2611,11 +2627,11 @@
 				2C70856F1CC394500002F3FF /* STMWebView.storyboard */,
 				2C7085701CC394500002F3FF /* STMWKWebView.storyboard */,
 			);
-			name = Storyboards;
+			name = "☯ Storyboards";
 			path = ../../iSistemiumCore/iSistemiumCore/Storyboards;
 			sourceTree = "<group>";
 		};
-		2C70855B1CC394500002F3FF /* STMCustomCells */ = {
+		2C70855B1CC394500002F3FF /* ☯ STMCustomCells */ = {
 			isa = PBXGroup;
 			children = (
 				2C70855C1CC394500002F3FF /* STMCustom10TVCell.xib */,
@@ -2634,10 +2650,11 @@
 				2C7085691CC394500002F3FF /* STMVolumeControlsTVCell.xib */,
 				2C70856A1CC394500002F3FF /* STMCoreVolumeTVCell.xib */,
 			);
+			name = "☯ STMCustomCells";
 			path = STMCustomCells;
 			sourceTree = "<group>";
 		};
-		2C7086451CC503F00002F3FF /* STMWKWebView */ = {
+		2C7086451CC503F00002F3FF /* ☯ STMWKWebView */ = {
 			isa = PBXGroup;
 			children = (
 				2C7086461CC504260002F3FF /* STMWKWebViewNC.h */,
@@ -2645,6 +2662,7 @@
 				2C7086481CC504260002F3FF /* STMCoreWKWebViewVC.h */,
 				2C7086491CC504260002F3FF /* STMCoreWKWebViewVC.m */,
 			);
+			name = "☯ STMWKWebView";
 			path = STMWKWebView;
 			sourceTree = "<group>";
 		};
@@ -2740,7 +2758,7 @@
 		2C8EF5A41940859F0021D202 /* iSistemium */ = {
 			isa = PBXGroup;
 			children = (
-				2C7084101CC393600002F3FF /* iSisCore */,
+				2C7084101CC393600002F3FF /* ☯ iSisCore */,
 				2C8EF5D3194085B70021D202 /* Classes */,
 				2C53B8AF1940A0A3002298A5 /* DataModel */,
 				2C8EF5E0194086450021D202 /* Resources */,
