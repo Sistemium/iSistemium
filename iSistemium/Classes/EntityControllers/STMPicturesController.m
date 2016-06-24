@@ -562,7 +562,9 @@
     NSString *imagePath = [STMFunctions absolutePathForPath:fileName];
     
     NSError *error = nil;
-    BOOL result = [data writeToFile:imagePath options:NSDataWritingAtomic error:&error];
+    BOOL result = [data writeToFile:imagePath
+                            options:(NSDataWritingAtomic|NSDataWritingFileProtectionNone)
+                              error:&error];
     
     if (error) {
         
@@ -588,7 +590,9 @@
     resizedImageData = UIImageJPEGRepresentation(resizedImage, [self jpgQuality]);
 
     NSError *error = nil;
-    BOOL result = [resizedImageData writeToFile:resizedImagePath options:NSDataWritingAtomic error:&error];
+    BOOL result = [resizedImageData writeToFile:resizedImagePath
+                                        options:(NSDataWritingAtomic|NSDataWritingFileProtectionNone)
+                                          error:&error];
     
     if (error) {
         
