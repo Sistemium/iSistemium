@@ -391,27 +391,37 @@
         
         if (picture.imagePath) {
             
-            NSData *photoData = [NSData dataWithContentsOfFile:[STMFunctions absolutePathForPath:picture.imagePath]];
-            
-            if (photoData && photoData.length > 0) {
+            NSError *error = nil;
+            NSData *photoData = [NSData dataWithContentsOfFile:[STMFunctions absolutePathForPath:picture.imagePath] options:0 error:&error];
+
+            if (error) {
                 
-                [self setImagesFromData:photoData forPicture:picture andUpload:NO];
-                
+                NSString *logMessage = [NSString stringWithFormat:@"checkBrokenPhotos dataWithContentsOfFile %@ error: %@", picture.imagePath, error.localizedDescription];
+                [[STMLogger sharedLogger] saveLogMessageWithText:logMessage type:@"error"];
+
             } else {
-                
-                if (picture.href) {
+            
+                if (photoData && photoData.length > 0) {
                     
-                    [self hrefProcessingForObject:picture];
+                    [self setImagesFromData:photoData forPicture:picture andUpload:NO];
                     
                 } else {
-                
-                    NSString *logMessage = [NSString stringWithFormat:@"checkBrokenPhotos attempt to set images for picture %@, photoData %@, length %lu, have no photoData and have no href, will be deleted", picture, photoData, (unsigned long)photoData.length];
-                    [[STMLogger sharedLogger] saveLogMessageWithText:logMessage type:@"error"];
                     
-                    [self deletePicture:picture];
-
+                    if (picture.href) {
+                        
+                        [self hrefProcessingForObject:picture];
+                        
+                    } else {
+                        
+                        NSString *logMessage = [NSString stringWithFormat:@"checkBrokenPhotos attempt to set images for picture %@, photoData %@, length %lu, have no photoData and have no href, will be deleted", picture, photoData, (unsigned long)photoData.length];
+                        [[STMLogger sharedLogger] saveLogMessageWithText:logMessage type:@"error"];
+                        
+                        [self deletePicture:picture];
+                        
+                    }
+                    
                 }
-                
+
             }
             
         } else {
@@ -425,7 +435,9 @@
 }
 
 + (void)checkUploadedPhotos {
+    
     int counter = 0;
+    
     NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:NSStringFromClass([STMPhoto class])];
     request.sortDescriptors = @[[NSSortDescriptor sortDescriptorWithKey:@"id" ascending:YES selector:@selector(compare:)]];
     request.predicate = [NSPredicate predicateWithFormat:@"href == %@", nil];
@@ -435,7 +447,7 @@
     
     for (STMPicture *picture in result) {
         
-        if (!picture.hasChanges) {
+        if (!picture.hasChanges && picture.imagePath) {
             
             NSError *error = nil;
             NSData *photoData = [NSData dataWithContentsOfFile:[STMFunctions absolutePathForPath:picture.imagePath] options:0 error:&error];
@@ -445,21 +457,24 @@
                 NSString *logMessage = [NSString stringWithFormat:@"checkUploadedPhotos dataWithContentsOfFile error: %@", error.localizedDescription];
                 [[STMLogger sharedLogger] saveLogMessageWithText:logMessage type:@"error"];
 
+            } else {
+            
+                if (photoData && photoData.length > 0) {
+                    
+                    [[self sharedController] addUploadOperationForPicture:picture data:photoData];
+                    counter++;
+                    
+                } else {
+                    
+                    NSString *logMessage = [NSString stringWithFormat:@"attempt to upload picture %@, photoData %@, length %lu — object will be deleted", picture, photoData, (unsigned long)photoData.length];
+                    [[STMLogger sharedLogger] saveLogMessageWithText:logMessage type:@"error"];
+
+                    [self deletePicture:picture];
+                    
+                }
+
             }
             
-            if (photoData && photoData.length > 0) {
-                
-                [[self sharedController] addUploadOperationForPicture:picture data:photoData];
-                counter++;
-                
-            } else {
-                
-                NSString *logMessage = [NSString stringWithFormat:@"attempt to upload picture %@, photoData %@, length %lu — object will be deleted", picture, photoData, (unsigned long)photoData.length];
-                [[STMLogger sharedLogger] saveLogMessageWithText:logMessage type:@"error"];
-//                [self deletePicture:picture];
-                
-            }
-
         }
         
     }
@@ -528,9 +543,18 @@
     
     if (fileName) {
         
-        [self saveImageFile:fileName forPicture:weakPicture fromImageData:weakData];
-        [self saveResizedImageFile:[@"resized_" stringByAppendingString:fileName] forPicture:weakPicture fromImageData:weakData];
+        BOOL result = YES;
+        
+        result = (result && [self saveImageFile:fileName forPicture:weakPicture fromImageData:weakData]);
+        result = (result && [self saveResizedImageFile:[@"resized_" stringByAppendingString:fileName] forPicture:weakPicture fromImageData:weakData]);
         [self setThumbnailForPicture:weakPicture fromImageData:weakData];
+        
+        if (!result) {
+            
+            NSString *logMessage = [NSString stringWithFormat:@"have problem while save image files %@", fileName];
+            [[STMLogger sharedLogger] saveLogMessageWithText:logMessage type:@"error"];
+
+        }
         
         dispatch_async(dispatch_get_main_queue(), ^{
             
@@ -571,11 +595,13 @@
         NSString *logMessage = [NSString stringWithFormat:@"saveImageFile %@ writeToFile %@ error: %@", fileName, imagePath, error.localizedDescription];
         [[STMLogger sharedLogger] saveLogMessageWithText:logMessage type:@"error"];
 
+    } else {
+        
+        dispatch_async(dispatch_get_main_queue(), ^{
+            picture.imagePath = fileName;
+        });
+
     }
-    
-    dispatch_async(dispatch_get_main_queue(), ^{
-        picture.imagePath = fileName;
-    });
 
     return result;
     
@@ -599,11 +625,13 @@
         NSString *logMessage = [NSString stringWithFormat:@"saveResizedImageFile %@ writeToFile %@ error: %@", resizedFileName, resizedImagePath, error.localizedDescription];
         [[STMLogger sharedLogger] saveLogMessageWithText:logMessage type:@"error"];
         
-    }
+    } else {
 
-    dispatch_async(dispatch_get_main_queue(), ^{
-        picture.resizedImagePath = resizedFileName;
-    });
+        dispatch_async(dispatch_get_main_queue(), ^{
+            picture.resizedImagePath = resizedFileName;
+        });
+
+    }
     
     return result;
 
