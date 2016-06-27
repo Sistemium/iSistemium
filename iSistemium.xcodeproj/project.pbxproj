@@ -3069,8 +3069,7 @@
 				6D9A19351D19505300164A27 /* STMPhotoReportVC.h */,
 				6D9A19361D19505300164A27 /* STMPhotoReportVC.m */,
 			);
-			name = STMPhotoReports;
-			path = ../../STMPhotoReports;
+			path = STMPhotoReports;
 			sourceTree = "<group>";
 		};
 		6DF12A2E1C3AB80300E94C3E /* STMShippingLocations */ = {
@@ -3976,6 +3975,7 @@
 				IPHONEOS_DEPLOYMENT_TARGET = 7.1;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				ONLY_ACTIVE_ARCH = NO;
+				OTHER_SWIFT_FLAGS = "-Xfrontend -debug-time-function-bodies";
 				PRODUCT_BUNDLE_IDENTIFIER = "com.sistemium.$(PRODUCT_NAME:rfc1034identifier)";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "";
@@ -4008,6 +4008,7 @@
 				IPHONEOS_DEPLOYMENT_TARGET = 7.1;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				ONLY_ACTIVE_ARCH = NO;
+				OTHER_SWIFT_FLAGS = "-Xfrontend -debug-time-function-bodies";
 				PRODUCT_BUNDLE_IDENTIFIER = "com.sistemium.$(PRODUCT_NAME:rfc1034identifier)";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "";
