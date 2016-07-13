@@ -19,6 +19,10 @@
     [STMAuthController authController];
 }
 
+- (STMCoreSessionManager *)sessionManager {
+    return [STMSessionManager sharedManager];
+}
+
 - (void)setupWindow {
     
     if (!self.window) {
