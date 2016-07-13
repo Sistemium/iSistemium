@@ -2,7 +2,7 @@
 //  STMArticle+CoreDataProperties.h
 //  iSistemium
 //
-//  Created by Maxim Grigoriev on 08/02/16.
+//  Created by Maxim Grigoriev on 06/07/16.
 //  Copyright © 2016 Sistemium UAB. All rights reserved.
 //
 //  Choose "Create NSManagedObject Subclass…" from the Core Data editor menu
@@ -53,6 +53,8 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nullable, nonatomic, retain) STMStock *stock;
 @property (nullable, nonatomic, retain) NSSet<STMStockBatch *> *stockBatches;
 @property (nullable, nonatomic, retain) NSSet<STMSupplyOrderArticleDoc *> *supplyOrderArticleDocs;
+@property (nullable, nonatomic, retain) STMArticle *sameArticle;
+@property (nullable, nonatomic, retain) NSSet<STMArticle *> *sameArticles;
 
 @end
 
@@ -132,6 +134,11 @@ NS_ASSUME_NONNULL_BEGIN
 - (void)removeSupplyOrderArticleDocsObject:(STMSupplyOrderArticleDoc *)value;
 - (void)addSupplyOrderArticleDocs:(NSSet<STMSupplyOrderArticleDoc *> *)values;
 - (void)removeSupplyOrderArticleDocs:(NSSet<STMSupplyOrderArticleDoc *> *)values;
+
+- (void)addSameArticlesObject:(STMArticle *)value;
+- (void)removeSameArticlesObject:(STMArticle *)value;
+- (void)addSameArticles:(NSSet<STMArticle *> *)values;
+- (void)removeSameArticles:(NSSet<STMArticle *> *)values;
 
 @end
 

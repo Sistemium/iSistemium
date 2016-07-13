@@ -8,6 +8,8 @@
 
 #import "STMDocument.h"
 #import "STMObjectsController.h"
+#import "STMFunctions.h"
+
 
 #define SAVING_QUEUE_THRESHOLD 15
 
@@ -175,9 +177,7 @@
 
 + (STMDocument *)documentWithUID:(NSString *)uid iSisDB:(NSString *)iSisDB dataModelName:(NSString *)dataModelName prefix:(NSString *)prefix {
 
-    NSArray <NSURL *> *urls = [[NSFileManager defaultManager] URLsForDirectory:NSDocumentDirectory inDomains:NSUserDomainMask];
-    
-    NSURL *documentDirectoryUrl = urls.lastObject;
+    NSURL *documentDirectoryUrl = [STMFunctions documentsDirectoryURL];
     NSString *documentID = (iSisDB) ? iSisDB : uid;
 
 //    from now we delete old document with STMDataModel data model and use new STMDataModel2
