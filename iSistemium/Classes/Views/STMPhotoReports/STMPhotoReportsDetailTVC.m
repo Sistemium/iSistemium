@@ -601,6 +601,14 @@
     
 }
 
+- (BOOL)shouldWaitForLocation {
+    return YES;
+}
+
+- (void)imagePickerControllerDidCancel:(UIImagePickerController *)picker {
+    
+}
+
 
 #pragma mark - Segues
 

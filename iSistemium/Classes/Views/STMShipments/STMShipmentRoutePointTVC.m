@@ -1543,7 +1543,7 @@
         
         CLLocation *currentLocation = notification.userInfo[@"currentLocation"];
 
-        STMLocation *location = [STMLocationController locationObjectFromCLLocation:currentLocation];
+        STMLocation *location = (STMLocation *)[STMLocationController locationObjectFromCLLocation:currentLocation];
 
         self.point.reachedAtLocation = location;
         

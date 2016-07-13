@@ -1,18 +1,19 @@
 //
-//  STMLocation+category.h
+//  STMLocation+CoreDataProperties.h
 //  iSistemium
 //
-//  Created by Maxim Grigoriev on 18/04/16.
+//  Created by Maxim Grigoriev on 13/07/16.
 //  Copyright © 2016 Sistemium UAB. All rights reserved.
+//
+//  Choose "Create NSManagedObject Subclass…" from the Core Data editor menu
+//  to delete and recreate this implementation file for your updated model.
 //
 
 #import "STMLocation.h"
 
-@class STMShipmentRoutePoint, STMShippingLocation, STMTrack;
-
 NS_ASSUME_NONNULL_BEGIN
 
-@interface STMLocation (category)
+@interface STMLocation (CoreDataProperties)
 
 @property (nullable, nonatomic, retain) STMShipmentRoutePoint *shipmentRoutePoint;
 @property (nullable, nonatomic, retain) NSSet<STMShippingLocation *> *shippings;
@@ -20,7 +21,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 @end
 
-@interface STMLocation (CoreDataGeneratedAccessorsPulp)
+@interface STMLocation (CoreDataGeneratedAccessors)
 
 - (void)addShippingsObject:(STMShippingLocation *)value;
 - (void)removeShippingsObject:(STMShippingLocation *)value;

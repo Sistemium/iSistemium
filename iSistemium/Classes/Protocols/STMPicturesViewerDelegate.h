@@ -13,7 +13,7 @@
 
 @required
 
-- (void)photoWasDeleted:(STMPhoto *)photo;
+- (void)photoWasDeleted:(STMCorePhoto *)photo;
 
 @end
 

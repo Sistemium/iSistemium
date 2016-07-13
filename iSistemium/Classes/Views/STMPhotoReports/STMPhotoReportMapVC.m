@@ -32,7 +32,7 @@
     
     if (self.photoReport.location) {
         
-        STMMapAnnotation *pin = [STMMapAnnotation createAnnotationForLocation:self.photoReport.location
+        STMMapAnnotation *pin = [STMMapAnnotation createAnnotationForLocation:(STMLocation *)self.photoReport.location
                                                                     withTitle:self.photoReport.campaign.name
                                                                   andSubtitle:self.photoReport.outlet.name];
         

@@ -23,7 +23,7 @@ class STMShippingLocationTVC:STMVariableCellsHeightTVC,UIImagePickerControllerDe
                     if error == nil{
                         if let firstPlacemark = placemarks?[0] {
                             
-                            let location: STMLocation = STMLocationController.locationObjectFromCLLocation(firstPlacemark.location)
+                            let location: STMLocation = STMLocationController.locationObjectFromCLLocation(firstPlacemark.location) as! STMLocation
                             location.source = "geocoder"
                             self.shippingLocation?.isLocationConfirmed = false
                             self.shippingLocation?.location = location
@@ -373,7 +373,7 @@ class STMShippingLocationTVC:STMVariableCellsHeightTVC,UIImagePickerControllerDe
     
     }
     
-    func photoWasDeleted(photo:STMPhoto) {
+    func photoWasDeleted(photo:STMCorePhoto) {
         tableView.reloadData()
     }
     

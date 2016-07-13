@@ -18,7 +18,7 @@
 
 @implementation STMPhotoVC
 
-- (void)setPhoto:(STMPhoto *)photo {
+- (void)setPhoto:(STMCorePhoto *)photo {
     
     if (photo != _photo) {
         _photo = photo;

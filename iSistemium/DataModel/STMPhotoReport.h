@@ -6,14 +6,13 @@
 //  Copyright © 2016 Sistemium UAB. All rights reserved.
 //
 
-#import <Foundation/Foundation.h>
-#import "STMPhoto.h"
+#import "STMCorePhoto.h"
 
 @class STMCampaign, STMOutlet, STMSalesman;
 
 NS_ASSUME_NONNULL_BEGIN
 
-@interface STMPhotoReport : STMPhoto
+@interface STMPhotoReport : STMCorePhoto
 
 // Insert code here to declare functionality of your managed object subclass
 

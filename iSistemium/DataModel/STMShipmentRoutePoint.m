@@ -84,7 +84,7 @@
         
     }
     
-    STMLocation *locationObject = [STMLocationController locationObjectFromCLLocation:location];
+    STMLocation *locationObject = (STMLocation *)[STMLocationController locationObjectFromCLLocation:location];
     
     if (source) locationObject.source = source;
     

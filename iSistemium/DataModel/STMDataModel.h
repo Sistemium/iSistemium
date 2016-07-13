@@ -11,8 +11,6 @@
 
 #import "STMCoreDataModel.h"
 
-#import "STMLocation+category.h"
-
 #import "STMArticle.h"
 #import "STMArticleBarCode.h"
 #import "STMArticleDoc.h"
@@ -32,6 +30,8 @@
 
 #import "STMInventoryBatch.h"
 #import "STMInventoryBatchItem.h"
+
+#import "STMLocation.h"
 
 #import "STMOutlet.h"
 

@@ -7,11 +7,11 @@
 //
 
 #import <UIKit/UIKit.h>
-#import "STMPhoto.h"
+#import "STMCorePhoto.h"
 
 @interface STMPhotoVC : UIViewController
 
-@property (nonatomic, strong) STMPhoto *photo;
+@property (nonatomic, strong) STMCorePhoto *photo;
 @property (nonatomic) NSUInteger index;
 
 @property (nonatomic, strong) UIImage *image;

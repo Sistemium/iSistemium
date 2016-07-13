@@ -8,11 +8,7 @@
 
 #import "STMCampaignsTVC.h"
 
-#import "STMCampaign.h"
-#import "STMCampaignGroup.h"
-#import "STMOutlet.h"
-#import "STMPhotoReport.h"
-#import "STMPhoto.h"
+#import "STMDataModel.h"
 
 #import "STMRecordStatusController.h"
 #import "STMCampaignController.h"

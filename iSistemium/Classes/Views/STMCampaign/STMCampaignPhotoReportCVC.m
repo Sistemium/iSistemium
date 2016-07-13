@@ -435,7 +435,7 @@
 
 - (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context {
     
-    if ([object isKindOfClass:[STMPhoto class]]) {
+    if ([object isKindOfClass:[STMCorePhoto class]]) {
         
         [self fetchPhotoReport];
         [self.spinnerView removeFromSuperview];
@@ -460,7 +460,7 @@
         CLLocation *currentLocation = (notification.userInfo)[@"currentLocation"];
         NSLog(@"currentLocation %@", currentLocation);
         
-        STMLocation *location = [STMLocationController locationObjectFromCLLocation:currentLocation];
+        STMLocation *location = (STMLocation *)[STMLocationController locationObjectFromCLLocation:currentLocation];
         
         [self setLocationForWaitingLocationPhotos:location];
         
@@ -473,7 +473,7 @@
     self.isPhotoLocationProcessing = YES;
     NSArray *photos = self.waitingLocationPhotos.copy;
     
-    for (STMPhoto *photo in photos) {
+    for (STMCorePhoto *photo in photos) {
         
         photo.location = location;
         
