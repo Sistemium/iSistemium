@@ -10,6 +10,7 @@
 
 #import "STMSettingsController.h"
 #import "STMLocationTracker.h"
+#import "STMDataModel.h"
 
 
 @implementation STMSession
@@ -22,6 +23,10 @@
 
 - (Class)locationTrackerClass {
     return [STMLocationTracker class];
+}
+
+- (Class)locationClass {
+    return [STMLocation class];
 }
 
 
