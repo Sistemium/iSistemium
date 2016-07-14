@@ -24,6 +24,7 @@
         <relationship name="articleDocs" optional="YES" toMany="YES" deletionRule="Cascade" destinationEntity="STMArticleDoc" inverseName="article" inverseEntity="STMArticleDoc" syncable="YES"/>
         <relationship name="articleGroup" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="STMArticleGroup" inverseName="articles" inverseEntity="STMArticleGroup" syncable="YES"/>
         <relationship name="articleProductionInfo" optional="YES" toMany="YES" deletionRule="Cascade" destinationEntity="STMArticleProductionInfo" inverseName="article" inverseEntity="STMArticleProductionInfo" syncable="YES"/>
+        <relationship name="articleSame" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="STMArticle" inverseName="sameArticles" inverseEntity="STMArticle" syncable="YES"/>
         <relationship name="barCodes" optional="YES" toMany="YES" deletionRule="Cascade" destinationEntity="STMArticleBarCode" inverseName="article" inverseEntity="STMArticleBarCode" syncable="YES"/>
         <relationship name="basketPositions" optional="YES" toMany="YES" deletionRule="Cascade" destinationEntity="STMBasketPosition" inverseName="article" inverseEntity="STMBasketPosition" syncable="YES"/>
         <relationship name="campaigns" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="STMCampaign" inverseName="articles" inverseEntity="STMCampaign" syncable="YES"/>
@@ -35,8 +36,7 @@
         <relationship name="prices" optional="YES" toMany="YES" deletionRule="Cascade" destinationEntity="STMPrice" inverseName="article" inverseEntity="STMPrice" syncable="YES"/>
         <relationship name="productionInfoType" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="STMProductionInfoType" inverseName="articles" inverseEntity="STMProductionInfoType" syncable="YES"/>
         <relationship name="saleOrderPositions" optional="YES" toMany="YES" deletionRule="Cascade" destinationEntity="STMSaleOrderPosition" inverseName="article" inverseEntity="STMSaleOrderPosition" syncable="YES"/>
-        <relationship name="sameArticle" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="STMArticle" inverseName="sameArticles" inverseEntity="STMArticle" syncable="YES"/>
-        <relationship name="sameArticles" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="STMArticle" inverseName="sameArticle" inverseEntity="STMArticle" syncable="YES"/>
+        <relationship name="sameArticles" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="STMArticle" inverseName="articleSame" inverseEntity="STMArticle" syncable="YES"/>
         <relationship name="shipmentPositions" optional="YES" toMany="YES" deletionRule="Cascade" destinationEntity="STMShipmentPosition" inverseName="article" inverseEntity="STMShipmentPosition" syncable="YES"/>
         <relationship name="stock" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="STMStock" inverseName="article" inverseEntity="STMStock" syncable="YES"/>
         <relationship name="stockBatches" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="STMStockBatch" inverseName="article" inverseEntity="STMStockBatch" syncable="YES"/>

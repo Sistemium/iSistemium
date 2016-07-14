@@ -2,7 +2,7 @@
 //  STMArticle+CoreDataProperties.h
 //  iSistemium
 //
-//  Created by Maxim Grigoriev on 06/07/16.
+//  Created by Maxim Grigoriev on 14/07/16.
 //  Copyright © 2016 Sistemium UAB. All rights reserved.
 //
 //  Choose "Create NSManagedObject Subclass…" from the Core Data editor menu
@@ -49,12 +49,12 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nullable, nonatomic, retain) NSSet<STMPrice *> *prices;
 @property (nullable, nonatomic, retain) STMProductionInfoType *productionInfoType;
 @property (nullable, nonatomic, retain) NSSet<STMSaleOrderPosition *> *saleOrderPositions;
+@property (nullable, nonatomic, retain) STMArticle *articleSame;
+@property (nullable, nonatomic, retain) NSSet<STMArticle *> *sameArticles;
 @property (nullable, nonatomic, retain) NSSet<STMShipmentPosition *> *shipmentPositions;
 @property (nullable, nonatomic, retain) STMStock *stock;
 @property (nullable, nonatomic, retain) NSSet<STMStockBatch *> *stockBatches;
 @property (nullable, nonatomic, retain) NSSet<STMSupplyOrderArticleDoc *> *supplyOrderArticleDocs;
-@property (nullable, nonatomic, retain) STMArticle *sameArticle;
-@property (nullable, nonatomic, retain) NSSet<STMArticle *> *sameArticles;
 
 @end
 
@@ -120,6 +120,11 @@ NS_ASSUME_NONNULL_BEGIN
 - (void)addSaleOrderPositions:(NSSet<STMSaleOrderPosition *> *)values;
 - (void)removeSaleOrderPositions:(NSSet<STMSaleOrderPosition *> *)values;
 
+- (void)addSameArticlesObject:(STMArticle *)value;
+- (void)removeSameArticlesObject:(STMArticle *)value;
+- (void)addSameArticles:(NSSet<STMArticle *> *)values;
+- (void)removeSameArticles:(NSSet<STMArticle *> *)values;
+
 - (void)addShipmentPositionsObject:(STMShipmentPosition *)value;
 - (void)removeShipmentPositionsObject:(STMShipmentPosition *)value;
 - (void)addShipmentPositions:(NSSet<STMShipmentPosition *> *)values;
@@ -134,11 +139,6 @@ NS_ASSUME_NONNULL_BEGIN
 - (void)removeSupplyOrderArticleDocsObject:(STMSupplyOrderArticleDoc *)value;
 - (void)addSupplyOrderArticleDocs:(NSSet<STMSupplyOrderArticleDoc *> *)values;
 - (void)removeSupplyOrderArticleDocs:(NSSet<STMSupplyOrderArticleDoc *> *)values;
-
-- (void)addSameArticlesObject:(STMArticle *)value;
-- (void)removeSameArticlesObject:(STMArticle *)value;
-- (void)addSameArticles:(NSSet<STMArticle *> *)values;
-- (void)removeSameArticles:(NSSet<STMArticle *> *)values;
 
 @end
 
