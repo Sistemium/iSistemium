@@ -17,12 +17,6 @@
            "data":
            [
                 {
-                    "name": "socketUrl",
-                    "value": "",
-                    "control": "textField"
-                },
-
-                {
                     "name": "enableDebtsEditing",
                     "value": false,
                     "control": "switch"
@@ -270,16 +264,16 @@
           "max": 3600,
           "step": 60
         },
-        {
-          "name": "restServerURI",
-          "value": "",
-          "control": "textField"
-        },
-        {
-           "name": "API.url",
+           {
+           "name": "socketUrl",
            "value": "",
            "control": "textField"
-        },
+           },
+           {
+           "name": "entityResource",
+           "value": "",
+           "control": "textField"
+           },
         {
             "name": "xmlNamespace",
             "value": "https://github.com/sys-team/ASA.chest",

@@ -54,7 +54,8 @@
         NSArray *timeValueSuffixes = @[@"TrackerStartTime",
                                        @"TrackerFinishTime"];
         
-        NSArray *stringValue = @[@"uploadLog.type",
+        NSArray *stringValue = @[@"entityResource",
+                                 @"uploadLog.type",
                                  @"genericPriceType",
                                  @"geotrackerControl"];
         
