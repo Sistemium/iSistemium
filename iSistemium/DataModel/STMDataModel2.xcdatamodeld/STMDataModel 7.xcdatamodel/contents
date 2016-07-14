@@ -685,6 +685,7 @@
         <attribute name="isRemoved" optional="YES" attributeType="Boolean" syncable="YES"/>
         <attribute name="isTemporary" optional="YES" attributeType="Boolean" syncable="YES"/>
         <attribute name="lts" optional="YES" attributeType="Date" syncable="YES"/>
+        <attribute name="name" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="objectXid" optional="YES" attributeType="Binary" syncable="YES"/>
         <attribute name="ownerXid" optional="YES" attributeType="Binary" indexed="YES" syncable="YES"/>
         <attribute name="source" optional="YES" attributeType="String" syncable="YES"/>
@@ -1101,7 +1102,7 @@
         <element name="STMPriceType" positionX="583" positionY="-82" width="128" height="238"/>
         <element name="STMProductionInfoType" positionX="718" positionY="-981" width="128" height="298"/>
         <element name="STMQualityClass" positionX="1098" positionY="-1489" width="128" height="268"/>
-        <element name="STMRecordStatus" positionX="-693" positionY="-954" width="128" height="268"/>
+        <element name="STMRecordStatus" positionX="-693" positionY="-954" width="128" height="285"/>
         <element name="STMSaleOrder" positionX="178" positionY="-1693" width="128" height="328"/>
         <element name="STMSaleOrderPosition" positionX="459" positionY="-1701" width="128" height="298"/>
         <element name="STMSalesman" positionX="-333" positionY="-2061" width="128" height="283"/>
