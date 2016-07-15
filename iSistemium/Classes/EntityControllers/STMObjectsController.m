@@ -589,7 +589,16 @@
         if (affectedObject) {
             
             //            if ([recordStatus.isRead boolValue]) [[NSNotificationCenter defaultCenter] postNotificationName:@"messageIsRead" object:nil];
-            if ([recordStatus.isRemoved boolValue]) [self removeObject:affectedObject];
+            
+            if (recordStatus.isRemoved.boolValue) {
+                
+                [self removeObject:affectedObject];
+                
+                if ([affectedObject isKindOfClass:[STMClientEntity class]]) {
+                    [[self syncer] receiveEntities:@[[(STMClientEntity *)affectedObject name]]];
+                }
+                
+            }
             
         }
         

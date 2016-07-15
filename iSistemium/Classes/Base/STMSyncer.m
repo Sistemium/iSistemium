@@ -573,7 +573,7 @@
     if ([entitiesNames isKindOfClass:[NSArray class]]) {
 
         NSArray *localDataModelEntityNames = [STMObjectsController localDataModelEntityNames];
-        NSMutableArray *existingNames = [@[] mutableCopy];
+        NSMutableArray *existingNames = @[].mutableCopy;
         
         for (NSString *entityName in entitiesNames) {
             
@@ -824,7 +824,7 @@
         
     } else {
     
-        self.syncerState = (self.syncerState == STMSyncerSendData) ? STMSyncerReceiveData : STMSyncerIdle;
+        self.syncerState = (self.syncerState == STMSyncerSendData || self.receivingEntitiesNames) ? STMSyncerReceiveData : STMSyncerIdle;
 
     }
     
@@ -1197,7 +1197,7 @@
     
     if ([request valueForHTTPHeaderField:@"Authorization"]) {
         
-        request.timeoutInterval = [self timeout];
+        request.timeoutInterval = 120/*[self timeout]*/;
         request.HTTPShouldHandleCookies = NO;
         [request setHTTPMethod:@"GET"];
         
@@ -1587,7 +1587,7 @@
     if (errorString) {
         
         self.syncing = NO;
-        self.syncerState = STMSyncerIdle;
+        self.syncerState = (self.receivingEntitiesNames) ? STMSyncerReceiveData : STMSyncerIdle;
         
     } else {
         
