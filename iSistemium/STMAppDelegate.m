@@ -238,18 +238,30 @@
     
     __block UIBackgroundTaskIdentifier bgTask;
     
+    __block BOOL handlerCompleted = NO;
+    
     bgTask = [application beginBackgroundTaskWithExpirationHandler: ^{
         
         NSLog(@"endBackgroundTaskWithExpirationHandler %d", (unsigned int) bgTask);
         [application endBackgroundTask: bgTask];
-        handler(UIBackgroundFetchResultFailed);
+
+        if (!handlerCompleted) {
+            handler(UIBackgroundFetchResultFailed);
+        }
         
     }];
     
     NSLog(@"startBackgroundTaskWithExpirationHandler %d", (unsigned int) bgTask);
     NSLog(@"BackgroundTimeRemaining %d", (unsigned int)[application backgroundTimeRemaining]);
 
-    [self routeNotificationUserInfo:userInfo completionHandler:handler];
+//    [self routeNotificationUserInfo:userInfo completionHandler:handler];
+
+    [self routeNotificationUserInfo:userInfo completionHandler:^(UIBackgroundFetchResult result) {
+        
+        handlerCompleted = YES;
+        handler(result);
+        
+    }];
 
 //    [self showTestLocalNotification];
 
@@ -257,6 +269,8 @@
 
 - (void)routeNotificationUserInfo:(NSDictionary *)userInfo completionHandler:(void (^)(UIBackgroundFetchResult result)) handler {
     
+    __block BOOL handlerCompleted = NO;
+
     NSNotificationCenter *nc = [NSNotificationCenter defaultCenter];
     UIApplication *app = [UIApplication sharedApplication];
 
@@ -274,7 +288,19 @@
 //        [nc postNotificationName:@"syncerDidReceiveRemoteNotification" object:app userInfo:userInfo];
 
         if ([userInfo[@"syncer"] isEqualToString:@"upload"]) {
-            [[[STMSessionManager sharedManager].currentSession syncer] setSyncerState:STMSyncerSendDataOnce fetchCompletionHandler:handler];
+
+            [[STMSessionManager sharedManager].currentSession.syncer setSyncerState:STMSyncerSendDataOnce
+                                                             fetchCompletionHandler:^(UIBackgroundFetchResult result) {
+                
+                if (!handlerCompleted) {
+                    
+                    handlerCompleted = YES;
+                    handler(result);
+                    
+                }
+                
+            }];
+
         }
 
         meaningfulUserInfo = YES;
@@ -284,8 +310,18 @@
     if (!meaningfulUserInfo) {
         
         [nc postNotificationName:@"applicationDidReceiveRemoteNotification" object:app userInfo:userInfo];
-        [[[STMSessionManager sharedManager].currentSession syncer] setSyncerState:STMSyncerSendData fetchCompletionHandler:handler];
-        
+
+        [[STMSessionManager sharedManager].currentSession.syncer setSyncerState:STMSyncerSendData fetchCompletionHandler:^(UIBackgroundFetchResult result) {
+            
+            if (!handlerCompleted) {
+                
+                handlerCompleted = YES;
+                handler(result);
+                
+            }
+            
+        }];
+
     }
 
 }
