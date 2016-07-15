@@ -820,11 +820,25 @@
     if (self.timerTicked) {
         
         self.timerTicked = NO;
+        self.receivingEntitiesNames = nil;
         self.syncerState = STMSyncerReceiveData;
         
     } else {
-    
-        self.syncerState = (self.syncerState == STMSyncerSendData || self.receivingEntitiesNames) ? STMSyncerReceiveData : STMSyncerIdle;
+
+        if (self.syncerState == STMSyncerSendData) {
+            
+            self.receivingEntitiesNames = nil;
+            self.syncerState = STMSyncerReceiveData;
+            
+        } else {
+            
+            if (self.receivingEntitiesNames) {
+                self.syncerState = STMSyncerReceiveData;
+            } else {
+                self.syncerState = STMSyncerIdle;
+            }
+            
+        }
 
     }
     
