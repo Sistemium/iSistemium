@@ -155,8 +155,12 @@
 
 - (void)setControllerState:(STMAuthState)controllerState {
     
-    NSLog(@"authControllerState %d", controllerState);
+//    NSLog(@"authControllerState %d", controllerState);
     _controllerState = controllerState;
+    
+    NSString *logMessage = [NSString stringWithFormat:@"authController state %@", [self authControllerStateString]];
+    [[STMLogger sharedLogger] saveLogMessageWithText:logMessage
+                                                type:@"important"];
     
     if (controllerState == STMAuthRequestRoles) {
         
@@ -164,12 +168,40 @@
         
     } else if (controllerState == STMAuthSuccess) {
         
-        NSLog(@"login");
+        [[STMLogger sharedLogger] saveLogMessageWithText:@"login success"
+                                                    type:@"important"];
         [self startSession];
         
     }
     
     [[NSNotificationCenter defaultCenter] postNotificationName:@"authControllerStateChanged" object:self];
+    
+}
+
+- (NSString *)authControllerStateString {
+    
+    switch (self.controllerState) {
+        case STMAuthEnterPhoneNumber: {
+            return @"STMAuthEnterPhoneNumber";
+            break;
+        }
+        case STMAuthEnterSMSCode: {
+            return @"STMAuthEnterSMSCode";
+            break;
+        }
+        case STMAuthNewSMSCode: {
+            return @"STMAuthNewSMSCode";
+            break;
+        }
+        case STMAuthRequestRoles: {
+            return @"STMAuthRequestRoles";
+            break;
+        }
+        case STMAuthSuccess: {
+            return @"STMAuthSuccess";
+            break;
+        }
+    }
     
 }
 
@@ -358,23 +390,25 @@
     BOOL checkValue = YES;
     
     if (!self.userID || [self.userID isEqualToString:@""]) {
-        NSLog(@"No userID");
+        
+        [[STMLogger sharedLogger] saveLogMessageWithText:@"No userID or userID is empty string"
+                                                    type:@"error"];
         checkValue = NO;
+        
     } else {
         NSLog(@"userID %@", self.userID);
     }
+
     if (!self.accessToken || [self.accessToken isEqualToString:@""]) {
-        NSLog(@"No accessToken");
+        
+        [[STMLogger sharedLogger] saveLogMessageWithText:@"No accessToken or accessToken is empty string"
+                                                    type:@"error"];
         checkValue = NO;
+        
     } else {
         NSLog(@"accessToken %@", self.accessToken);
     }
     
-    //    BOOL checkValue = ![self.accessToken isEqualToString:@""] && ![self.userID isEqualToString:@""];
-    
-    //    checkValue ? NSLog(@"OK for accessToken && userID") : NSLog(@"NOT OK for accessToken || userID");
-    
-    //    self.controllerState = checkValue ? STMAuthSuccess : STMAuthEnterPhoneNumber;
     self.controllerState = checkValue ? STMAuthRequestRoles : STMAuthEnterPhoneNumber;
     
 }
