@@ -712,6 +712,8 @@
             
         case 1:
             if (buttonIndex == 1) {
+                [[STMLogger sharedLogger] saveLogMessageWithText:@"user press logout button and confirm action"
+                                                            type:@"important"];
                 [[STMAuthController authController] logout];
             }
             break;

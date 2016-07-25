@@ -381,7 +381,8 @@
 
 - (void)logout {
     
-    NSLog(@"logout");
+    [[STMLogger sharedLogger] saveLogMessageWithText:@"logout"
+                                                type:@"important"];
     
     self.controllerState = STMAuthEnterPhoneNumber;
     
@@ -481,6 +482,9 @@
 
 - (void)sessionNotAuthorized {
     
+    [[STMLogger sharedLogger] saveLogMessageWithText:@"sessionNotAuthorized"
+                                                type:@"error"];
+
     [self logout];
     
 }
@@ -647,8 +651,13 @@
     NSInteger statusCode = [(NSHTTPURLResponse *)response statusCode];
     
     switch (statusCode) {
-        case 401:
+        case 401: {
+
+            [[STMLogger sharedLogger] saveLogMessageWithText:@"receive status 401"
+                                                        type:@"error"];
             [self gotUnauthorizedStatus];
+            
+        }
             break;
             
         default:
@@ -726,6 +735,8 @@
             switch (buttonIndex) {
                     
                 case 0:
+                    [[STMLogger sharedLogger] saveLogMessageWithText:@"can not get roles, user cancel to repeat attempt"
+                                                                type:@"error"];
                     [self logout];
                     break;
                     

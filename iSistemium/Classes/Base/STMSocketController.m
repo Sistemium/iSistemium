@@ -644,6 +644,9 @@
             
         } else {
             
+            [[STMLogger sharedLogger] saveLogMessageWithText:@"socket receiveAuthorizationAck with dataDic.isAuthorized.boolValue == NO"
+                                                        type:@"error"];
+            
             NSLog(@"socket not authorized");
             [self sharedInstance].isAuthorized = NO;
             [[STMAuthController authController] logout];
@@ -652,6 +655,9 @@
         
     } else {
         
+        [[STMLogger sharedLogger] saveLogMessageWithText:@"socket receiveAuthorizationAck with data.firstObject is not a NSDictionary"
+                                                    type:@"error"];
+
         NSLog(@"socket not authorized");
         [self sharedInstance].isAuthorized = NO;
         [[STMAuthController authController] logout];
@@ -681,10 +687,17 @@
     
         NSLog(@"error: %@", errorString);
         
+        [[STMLogger sharedLogger] saveLogMessageWithText:@"socket receiveEventDataAckWithData got errorString"
+                                                    type:@"error"];
+        [[STMLogger sharedLogger] saveLogMessageWithText:errorString
+                                                    type:@"error"];
+
         [self sendEvent:STMSocketEventInfo withStringValue:errorString];
         
         if ([[errorString.lowercaseString stringByReplacingOccurrencesOfString:@" " withString:@""] isEqualToString:@"notauthorized"]) {
+            
             [[STMAuthController authController] logout];
+            
         }
 
     } else {

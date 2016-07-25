@@ -993,14 +993,16 @@
             
         } else {
             
-            [self.session.logger saveLogMessageWithText:@"Syncer: no authorization header" type:@"error"];
+            [self.session.logger saveLogMessageWithText:@"Syncer: no authorization header"
+                                                   type:@"error"];
             [self notAuthorized];
             
         }
 
     } else {
         
-        [self.session.logger saveLogMessageWithText:@"Syncer: no API.url" type:@"error"];
+        [self.session.logger saveLogMessageWithText:@"Syncer: no API.url"
+                                               type:@"error"];
         
         self.syncing = NO;
         self.syncerState = STMSyncerReceiveData;
@@ -1237,7 +1239,8 @@
         
     } else {
         
-        [self.session.logger saveLogMessageWithText:@"Syncer: no authorization header" type:@"error"];
+        [self.session.logger saveLogMessageWithText:@"Syncer: no authorization header" 
+                                               type:@"error"];
         [self notAuthorized];
         
     }
@@ -1397,6 +1400,8 @@
                 break;
 
             case 401:
+                [[STMLogger sharedLogger] saveLogMessageWithText:@"receive status 401"
+                                                            type:@"error"];
                 [self notAuthorized];
                 break;
 
@@ -1548,7 +1553,8 @@
         
     } else {
         
-        [self.session.logger saveLogMessageWithText:errorString type:@"error"];
+        [self.session.logger saveLogMessageWithText:errorString 
+                                               type:@"error"];
         
         if ([errorString isEqualToString:@"Not authorized"]) {
             
