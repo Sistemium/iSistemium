@@ -239,7 +239,7 @@
         
         if (appDownloadUrlSetting) {
             
-            NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+            STMUserDefaults *defaults = [STMUserDefaults standardUserDefaults];
             [defaults setObject:@YES forKey:@"newAppVersionAvailable"];
             [defaults setObject:availableVersion forKey:@"availableVersion"];
             [defaults setObject:appDownloadUrlSetting.value forKey:@"appDownloadUrl"];
@@ -255,7 +255,7 @@
         
     } else {
         
-        NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+        STMUserDefaults *defaults = [STMUserDefaults standardUserDefaults];
         [defaults setObject:@NO forKey:@"newAppVersionAvailable"];
         [defaults removeObjectForKey:@"availableVersion"];
         [defaults removeObjectForKey:@"appDownloadUrl"];

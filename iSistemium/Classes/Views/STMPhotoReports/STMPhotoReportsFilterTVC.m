@@ -65,7 +65,7 @@
     
     if (!_showDataOnlyWithPhotos) {
         
-        NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+        STMUserDefaults *defaults = [STMUserDefaults standardUserDefaults];
         BOOL showDataOnlyWithPhotos = [defaults boolForKey:self.showDataOnlyWithPhotosDefaultsKey];
         
         _showDataOnlyWithPhotos = showDataOnlyWithPhotos;
@@ -79,7 +79,7 @@
     
     if (_showDataOnlyWithPhotos != showDataOnlyWithPhotos) {
         
-        NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+        STMUserDefaults *defaults = [STMUserDefaults standardUserDefaults];
         [defaults setBool:showDataOnlyWithPhotos forKey:self.showDataOnlyWithPhotosDefaultsKey];
         [defaults synchronize];
         

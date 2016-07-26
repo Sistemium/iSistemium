@@ -1648,7 +1648,7 @@
 
 - (void)saveSendDate {
     
-    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+    STMUserDefaults *defaults = [STMUserDefaults standardUserDefaults];
     
     NSString *key = [@"sendDate" stringByAppendingString:self.session.uid];
     NSString *sendDateString = [[STMFunctions dateShortTimeShortFormatter] stringFromDate:[NSDate date]];
@@ -1660,7 +1660,7 @@
 
 - (void)saveReceiveDate {
     
-    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+    STMUserDefaults *defaults = [STMUserDefaults standardUserDefaults];
     
     NSString *key = [@"receiveDate" stringByAppendingString:self.session.uid];
 

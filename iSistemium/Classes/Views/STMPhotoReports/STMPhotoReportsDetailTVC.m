@@ -699,7 +699,7 @@
 
 - (void)setupGroupSwitcher {
     
-    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+    STMUserDefaults *defaults = [STMUserDefaults standardUserDefaults];
     NSString *key = [@"currentGrouping_" stringByAppendingString:[STMAuthController authController].userID];
     
     self.currentGrouping = [defaults integerForKey:key];
@@ -710,7 +710,7 @@
 
 - (void)updateGroupSwitcher {
     
-    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+    STMUserDefaults *defaults = [STMUserDefaults standardUserDefaults];
     NSString *key = [@"currentGrouping_" stringByAppendingString:[STMAuthController authController].userID];
     [defaults setInteger:self.currentGrouping forKey:key];
     [defaults synchronize];

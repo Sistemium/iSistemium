@@ -78,7 +78,7 @@
     
     if (!_orderedStcTabs) {
         
-        NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+        STMUserDefaults *defaults = [STMUserDefaults standardUserDefaults];
         NSData *data = [defaults objectForKey:[self orderedStcTabsKey]];
         NSDictionary *orderedStcTabs = [NSKeyedUnarchiver unarchiveObjectWithData:data];
         
@@ -123,7 +123,7 @@
 
         [STMClientDataController checkAppVersion];
     
-        NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+        STMUserDefaults *defaults = [STMUserDefaults standardUserDefaults];
         return [[defaults objectForKey:@"newAppVersionAvailable"] boolValue];
 
     } else {
@@ -255,7 +255,7 @@
     NSUInteger siblingIndex = [siblings indexOfObject:vc];
     self.orderedStcTabs[@(index)] = @(siblingIndex);
     
-    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+    STMUserDefaults *defaults = [STMUserDefaults standardUserDefaults];
     NSData *data = [NSKeyedArchiver archivedDataWithRootObject:self.orderedStcTabs.copy];
     [defaults setValue:data forKey:[self orderedStcTabsKey]];
     [defaults synchronize];
@@ -983,7 +983,7 @@
 
     if (!self.updateAlertIsShowing) {
 
-        NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+        STMUserDefaults *defaults = [STMUserDefaults standardUserDefaults];
         
         NSNumber *appVersion = [defaults objectForKey:@"availableVersion"];
         self.appDownloadUrl = [defaults objectForKey:@"appDownloadUrl"];

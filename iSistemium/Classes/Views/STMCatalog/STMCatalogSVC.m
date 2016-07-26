@@ -178,7 +178,7 @@ static NSString *showOnlyWithPicturesKey = @"showOnlyWithPictures";
 
     if (!_showOnlyNonZeroStock) {
         
-        NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+        STMUserDefaults *defaults = [STMUserDefaults standardUserDefaults];
         id showOnlyNonZeroStock = [defaults objectForKey:showOnlyNonZeroStockKey];
 
         if (!showOnlyNonZeroStock) {
@@ -201,7 +201,7 @@ static NSString *showOnlyWithPicturesKey = @"showOnlyWithPictures";
         
         _showOnlyNonZeroStock = showOnlyNonZeroStock;
         
-        NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+        STMUserDefaults *defaults = [STMUserDefaults standardUserDefaults];
         [defaults setObject:@(showOnlyNonZeroStock) forKey:showOnlyNonZeroStockKey];
         [defaults synchronize];
 
@@ -216,7 +216,7 @@ static NSString *showOnlyWithPicturesKey = @"showOnlyWithPictures";
  
     if (!_showOnlyWithPictures) {
     
-        NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+        STMUserDefaults *defaults = [STMUserDefaults standardUserDefaults];
         id showOnlyWithPictures = [defaults objectForKey:showOnlyWithPicturesKey];
         
         if (!showOnlyWithPictures) {
@@ -240,7 +240,7 @@ static NSString *showOnlyWithPicturesKey = @"showOnlyWithPictures";
         
         _showOnlyWithPictures = showOnlyWithPictures;
         
-        NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+        STMUserDefaults *defaults = [STMUserDefaults standardUserDefaults];
         [defaults setObject:@(showOnlyWithPictures) forKey:showOnlyWithPicturesKey];
         [defaults synchronize];
         
@@ -257,7 +257,7 @@ static NSString *showOnlyWithPicturesKey = @"showOnlyWithPictures";
     
     if (!_selectedPriceType) {
         
-        NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+        STMUserDefaults *defaults = [STMUserDefaults standardUserDefaults];
         id priceTypeXid = [defaults objectForKey:defaultPriceTypeKey];
         
         if (priceTypeXid && [priceTypeXid isKindOfClass:[NSData class]]) {
@@ -334,7 +334,7 @@ static NSString *showOnlyWithPicturesKey = @"showOnlyWithPictures";
         
         _selectedPriceType = selectedPriceType;
         
-        NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+        STMUserDefaults *defaults = [STMUserDefaults standardUserDefaults];
         [defaults setObject:_selectedPriceType.xid forKey:defaultPriceTypeKey];
         [defaults synchronize];
         
