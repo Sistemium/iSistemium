@@ -223,6 +223,8 @@
 
 - (void)applicationWillTerminate:(UIApplication *)application {
     
+    [[STMUserDefaults standardUserDefaults] synchronize];
+    
     NSString *logMessage = [NSString stringWithFormat:@"applicationWillTerminate"];
     NSLog(logMessage);
     [[STMLogger sharedLogger] saveLogMessageDictionary:@{@"text": logMessage, @"type": @"error"}];
