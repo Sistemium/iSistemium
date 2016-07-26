@@ -92,18 +92,31 @@
             
             if (error) {
                 
-                NSString *logMessage = [NSString stringWithFormat:@"can't load defaults from url %@", self.defaultsUrl];
+                NSString *logMessage = [NSString stringWithFormat:@"can't load defaults from url %@, flush userDefaults", self.defaultsUrl];
                 [[STMLogger sharedLogger] saveLogMessageWithText:logMessage
                                                          numType:STMLogMessageTypeError];
                 [[STMLogger sharedLogger] saveLogMessageWithText:error.localizedDescription
                                                          numType:STMLogMessageTypeError];
                 
-                self.defaultsDic = @{}.mutableCopy;
-                [self synchronize];
+                [self flushUserDefaults];
 
             } else {
                 
-                self.defaultsDic = (NSMutableDictionary*)[NSKeyedUnarchiver unarchiveObjectWithData:defaultsData];
+                id unarchiveObject = [NSKeyedUnarchiver unarchiveObjectWithData:defaultsData];
+                
+                if ([unarchiveObject isKindOfClass:[NSDictionary class]]) {
+                
+                    self.defaultsDic = (NSMutableDictionary*)unarchiveObject;
+
+                } else {
+                    
+                    NSString *logMessage = [NSString stringWithFormat:@"load userDefaults from file: unarchiveObject is not NSDictionary class, flush userDefaults"];
+                    [[STMLogger sharedLogger] saveLogMessageWithText:logMessage
+                                                             numType:STMLogMessageTypeError];
+                    
+                    [self flushUserDefaults];
+
+                }
                 
             }
             
@@ -116,6 +129,13 @@
         
     }
     
+}
+
+- (void)flushUserDefaults {
+
+    self.defaultsDic = @{}.mutableCopy;
+    [self synchronize];
+
 }
 
 - (BOOL)synchronize {
