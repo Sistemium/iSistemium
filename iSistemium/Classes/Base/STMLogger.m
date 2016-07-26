@@ -237,7 +237,17 @@
         }];
         
     } else {
-        [self saveLogMessageDictionary:@{@"text": [NSString stringWithFormat:@"%@", text], @"type": [NSString stringWithFormat:@"%@", type]}];
+        
+        NSDictionary *logMessageDic = @{@"text"        : [NSString stringWithFormat:@"%@", text],
+                                        @"type"        : [NSString stringWithFormat:@"%@", type],
+                                        @"deviceCts"   : [NSDate date]};
+        
+        [self performSelector:@selector(saveLogMessageDictionary:)
+                   withObject:logMessageDic];
+        
+//        [self saveLogMessageDictionary:@{@"text"        : [NSString stringWithFormat:@"%@", text],
+//                                         @"type"        : [NSString stringWithFormat:@"%@", type],
+//                                         @"deviceCts"   : [NSDate date]}];
     }
 
 }
@@ -246,14 +256,15 @@
 
     NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
     
-    NSDictionary *loggerDefaults = [defaults dictionaryForKey:[self loggerKey]];
-    NSMutableDictionary *loggerDefaultsMutable = [NSMutableDictionary dictionaryWithDictionary:loggerDefaults];
-    NSString *insertKey = [@(loggerDefaultsMutable.allValues.count) stringValue];
+    NSArray *loggerDefaults = [defaults arrayForKey:[self loggerKey]];
+    NSMutableArray *loggerDefaultsMutable = loggerDefaults.mutableCopy;
 
-    NSMutableDictionary *logMessageDicMutable = [NSMutableDictionary dictionaryWithDictionary:logMessageDic];
-    logMessageDicMutable[@"deviceCts"] = [NSDate date];
+//    NSString *insertKey = @(loggerDefaultsMutable.allValues.count).stringValue;
+
+//    NSMutableDictionary *logMessageDicMutable = logMessageDic.mutableCopy;
+//    logMessageDicMutable[@"deviceCts"] = [NSDate date];
     
-    loggerDefaultsMutable[insertKey] = logMessageDicMutable;
+    [loggerDefaultsMutable addObject:logMessageDic];
     
     [defaults setObject:loggerDefaultsMutable forKey:[self loggerKey]];
     [defaults synchronize];
@@ -266,13 +277,14 @@
     
     NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
     
-    NSDictionary *loggerDefaults = [defaults dictionaryForKey:[self loggerKey]];
+    NSArray *loggerDefaults = [defaults arrayForKey:[self loggerKey]];
 
-    for (NSDictionary *logMessageDic in [loggerDefaults allValues]) {
+    for (NSDictionary *logMessageDic in loggerDefaults) {
         
-        STMLogMessage *logMessage = (STMLogMessage *)[STMObjectsController newObjectForEntityName:NSStringFromClass([STMLogMessage class]) isFantom:NO];
+        STMLogMessage *logMessage = (STMLogMessage *)[STMObjectsController newObjectForEntityName:NSStringFromClass([STMLogMessage class])
+                                                                                         isFantom:NO];
         
-        for (NSString *key in [logMessageDic allKeys]) {
+        for (NSString *key in logMessageDic.allKeys) {
             [logMessage setValue:logMessageDic[key] forKey:key];
         }
         
