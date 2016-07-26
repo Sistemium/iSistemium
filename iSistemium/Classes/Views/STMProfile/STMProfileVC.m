@@ -901,6 +901,8 @@
             [self showLocationDisabledAlert];
         }
 
+    } else {
+        [self showLocationDisabledAlert];
     }
 
 }
