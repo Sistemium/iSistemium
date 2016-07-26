@@ -74,9 +74,9 @@
     self = [super init];
     
     if (self) {
-        
-        NSString *keychainPhoneNumber = [STMKeychain loadValueForKey:KC_PHONE_NUMBER];
-        if ([self.phoneNumber isEqualToString:keychainPhoneNumber]) [self checkAccessToken];
+
+        self.controllerState = STMAuthStarted;
+        [self checkPhoneNumber];
 
     }
     
@@ -174,13 +174,18 @@
         
     }
     
-    [[NSNotificationCenter defaultCenter] postNotificationName:@"authControllerStateChanged" object:self];
+    [[NSNotificationCenter defaultCenter] postNotificationName:@"authControllerStateChanged"
+                                                        object:self];
     
 }
 
 - (NSString *)authControllerStateString {
     
     switch (self.controllerState) {
+        case STMAuthStarted: {
+            return @"STMAuthStarted";
+            break;
+        }
         case STMAuthEnterPhoneNumber: {
             return @"STMAuthEnterPhoneNumber";
             break;
@@ -385,14 +390,41 @@
 
 #pragma mark - instance methods
 
-- (void)checkAccessToken {
+- (void)checkPhoneNumber {
     
+    [[STMLogger sharedLogger] saveLogMessageWithText:@"checkPhoneNumber"
+                                             numType:STMLogMessageTypeImportant];
+    
+    NSString *keychainPhoneNumber = [STMKeychain loadValueForKey:KC_PHONE_NUMBER];
+    
+    if ([self.phoneNumber isEqualToString:keychainPhoneNumber]) {
+        
+        [self checkAccessToken];
+        
+    } else {
+        
+        NSString *logMessage = [NSString stringWithFormat:@"keychainPhoneNumber %@ != userDefaultsPhoneNumber %@", keychainPhoneNumber, self.phoneNumber];
+        
+        [[STMLogger sharedLogger] saveLogMessageWithText:logMessage
+                                                 numType:STMLogMessageTypeError];
+        
+        self.controllerState = STMAuthEnterPhoneNumber;
+        
+    }
+
+}
+
+- (void)checkAccessToken {
+
+    [[STMLogger sharedLogger] saveLogMessageWithText:@"checkAccessToken"
+                                             numType:STMLogMessageTypeImportant];
+
     BOOL checkValue = YES;
     
     if (!self.userID || [self.userID isEqualToString:@""]) {
         
         [[STMLogger sharedLogger] saveLogMessageWithText:@"No userID or userID is empty string"
-                                                    type:@"error"];
+                                                 numType:STMLogMessageTypeError];
         checkValue = NO;
         
     } else {
@@ -402,7 +434,7 @@
     if (!self.accessToken || [self.accessToken isEqualToString:@""]) {
         
         [[STMLogger sharedLogger] saveLogMessageWithText:@"No accessToken or accessToken is empty string"
-                                                    type:@"error"];
+                                                 numType:STMLogMessageTypeError];
         checkValue = NO;
         
     } else {
@@ -416,7 +448,7 @@
 - (void)logout {
     
     [[STMLogger sharedLogger] saveLogMessageWithText:@"logout"
-                                                type:@"important"];
+                                             numType:STMLogMessageTypeImportant];
     
     self.controllerState = STMAuthEnterPhoneNumber;
     
@@ -672,7 +704,9 @@
         
         self.controllerState = STMAuthEnterPhoneNumber;
         
-        [[NSNotificationCenter defaultCenter] postNotificationName:@"authControllerError" object:self userInfo:@{@"error": error.localizedDescription}];
+        [[NSNotificationCenter defaultCenter] postNotificationName:@"authControllerError"
+                                                            object:self
+                                                          userInfo:@{@"error": error.localizedDescription}];
         
         [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:NO];
         
@@ -918,7 +952,9 @@
             
         }
         
-        [[NSNotificationCenter defaultCenter] postNotificationName:@"authControllerError" object:self userInfo:@{@"error": errorString}];
+        [[NSNotificationCenter defaultCenter] postNotificationName:@"authControllerError"
+                                                            object:self
+                                                          userInfo:@{@"error": errorString}];
         
     }
     
