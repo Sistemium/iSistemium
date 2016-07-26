@@ -170,7 +170,34 @@
 }
 
 - (NSArray *)availableTypes {
-    return @[@"error", @"warning", @"info", @"debug", @"important"];
+    return @[@"important", @"error", @"warning", @"info", @"debug"];
+}
+
+- (NSString *)stringTypeForNumType:(STMLogMessageType)numType {
+    
+    switch (numType) {
+        case STMLogMessageTypeImportant: {
+            return @"important";
+            break;
+        }
+        case STMLogMessageTypeError: {
+            return @"error";
+            break;
+        }
+        case STMLogMessageTypeWarning: {
+            return @"warning";
+            break;
+        }
+        case STMLogMessageTypeInfo: {
+            return @"info";
+            break;
+        }
+        case STMLogMessageTypeDebug: {
+            return @"debug";
+            break;
+        }
+    }
+    
 }
 
 - (NSArray *)syncingTypesForSettingType:(NSString *)settingType {
@@ -210,6 +237,16 @@
     
 }
 
+- (void)saveLogMessageWithText:(NSString *)text
+                       numType:(STMLogMessageType)numType{
+    
+    NSString *stringType = [self stringTypeForNumType:numType];
+    
+    [self saveLogMessageWithText:text
+                            type:stringType];
+    
+}
+
 - (void)saveLogMessageWithText:(NSString *)text {
     [self saveLogMessageWithText:text type:@"info"];
 }
@@ -228,7 +265,8 @@
     
     if (sessionIsRunning && self.document) {
         
-        STMLogMessage *logMessage = (STMLogMessage *)[STMObjectsController newObjectForEntityName:NSStringFromClass([STMLogMessage class]) isFantom:NO];
+        STMLogMessage *logMessage = (STMLogMessage *)[STMObjectsController newObjectForEntityName:NSStringFromClass([STMLogMessage class])
+                                                                                         isFantom:NO];
         logMessage.text = text;
         logMessage.type = type;
 //        logMessage.owner = owner;
@@ -257,7 +295,7 @@
     NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
     
     NSArray *loggerDefaults = [defaults arrayForKey:[self loggerKey]];
-    NSMutableArray *loggerDefaultsMutable = loggerDefaults.mutableCopy;
+    NSMutableArray *loggerDefaultsMutable = (loggerDefaults) ? loggerDefaults.mutableCopy : @[].mutableCopy;
 
 //    NSString *insertKey = @(loggerDefaultsMutable.allValues.count).stringValue;
 
