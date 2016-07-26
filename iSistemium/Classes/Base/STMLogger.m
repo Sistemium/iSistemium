@@ -281,11 +281,9 @@
                                         @"deviceCts"   : [NSDate date]};
         
         [self performSelector:@selector(saveLogMessageDictionary:)
-                   withObject:logMessageDic];
+                   withObject:logMessageDic
+                   afterDelay:0];
         
-//        [self saveLogMessageDictionary:@{@"text"        : [NSString stringWithFormat:@"%@", text],
-//                                         @"type"        : [NSString stringWithFormat:@"%@", type],
-//                                         @"deviceCts"   : [NSDate date]}];
     }
 
 }
@@ -296,11 +294,6 @@
     
     NSArray *loggerDefaults = [defaults arrayForKey:[self loggerKey]];
     NSMutableArray *loggerDefaultsMutable = (loggerDefaults) ? loggerDefaults.mutableCopy : @[].mutableCopy;
-
-//    NSString *insertKey = @(loggerDefaultsMutable.allValues.count).stringValue;
-
-//    NSMutableDictionary *logMessageDicMutable = logMessageDic.mutableCopy;
-//    logMessageDicMutable[@"deviceCts"] = [NSDate date];
     
     [loggerDefaultsMutable addObject:logMessageDic];
     
