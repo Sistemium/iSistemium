@@ -257,7 +257,7 @@
     
     STMUserDefaults *defaults = [STMUserDefaults standardUserDefaults];
     NSData *data = [NSKeyedArchiver archivedDataWithRootObject:self.orderedStcTabs.copy];
-    [defaults setValue:data forKey:[self orderedStcTabsKey]];
+    [defaults setObject:data forKey:[self orderedStcTabsKey]];
     [defaults synchronize];
     
     (self.currentTabsVCs)[index] = vc;

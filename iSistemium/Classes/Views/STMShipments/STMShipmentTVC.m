@@ -97,7 +97,7 @@
         } else {
             
             _sortOrder = STMShipmentPositionSortOrdAsc;
-            [defaults setValue:@(_sortOrder) forKey:@"STMShipmentPositionSort"];
+            [defaults setObject:@(_sortOrder) forKey:@"STMShipmentPositionSort"];
             [defaults synchronize];
             
         }
@@ -112,7 +112,7 @@
     _sortOrder = sortOrder;
     
     STMUserDefaults *defaults = [STMUserDefaults standardUserDefaults];
-    [defaults setValue:@(_sortOrder) forKey:@"STMShipmentPositionSort"];
+    [defaults setObject:@(_sortOrder) forKey:@"STMShipmentPositionSort"];
     [defaults synchronize];
     
     [self setupSortSettingsButton];
