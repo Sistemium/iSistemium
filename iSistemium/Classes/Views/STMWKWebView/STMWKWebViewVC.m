@@ -256,6 +256,8 @@
     
     NSLog(@"------ didFinishNavigation %@", webView.URL);
     
+    self.wasLoadingOnce = YES;
+
     NSString *authCheck = [self webViewAuthCheckJS];
     
     (authCheck) ? [self authCheckWithJS:authCheck] : [self.spinnerView removeFromSuperview];
