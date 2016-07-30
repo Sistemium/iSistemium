@@ -30,6 +30,7 @@
 @property (weak, nonatomic) IBOutlet UIView *localView;
 @property (nonatomic, strong) WKWebView *webView;
 @property (nonatomic) BOOL isAuthorizing;
+@property (nonatomic) BOOL wasLoadingOnce;
 @property (nonatomic, strong) STMSpinnerView *spinnerView;
 
 @property (nonatomic, strong) STMBarCodeScanner *iOSModeBarCodeScanner;
@@ -816,9 +817,52 @@
 }
 
 
+#pragma mark - white screen of death
+
+- (void)applicationWillEnterForegroundNotification:(NSNotification *)notification {
+    [self checkWebViewIsAlive];
+}
+
+- (void)checkWebViewIsAlive {
+    
+    if (!self.wasLoadingOnce) return;
+    
+    NSString *checkJS = @"window.document.body.childNodes.length";
+    
+    [self.webView evaluateJavaScript:checkJS completionHandler:^(id result, NSError *error) {
+        
+        if (error) {
+            
+            NSString *errorString = [NSString stringWithFormat:@"checkWebViewIsAlive error : %@\n", error.localizedDescription];
+            errorString = [errorString stringByAppendingString:@"reload webView"];
+            [[STMLogger sharedLogger] saveLogMessageWithText:errorString type:@"error"];
+            
+            [self reloadWebView];
+            
+        } else {
+            
+            NSLog(@"checkWebViewIsAlive OK");
+            
+        }
+        
+    }];
+    
+}
+
+
 #pragma mark - view lifecycle
 
+- (void)addObservers {
+    
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(applicationWillEnterForegroundNotification:)
+                                                 name:UIApplicationWillEnterForegroundNotification
+                                               object:nil];
+    
+}
+
 - (void)customInit {
+    [self addObservers];
     [self webViewInit];
 }
 
@@ -831,11 +875,19 @@
 
 - (void)didReceiveMemoryWarning {
     
-    if ([STMFunctions shouldHandleMemoryWarningFromVC:self]) {
-        [STMFunctions nilifyViewForVC:self];
-    }
+//    if ([STMFunctions shouldHandleMemoryWarningFromVC:self]) {
+//        [STMFunctions nilifyViewForVC:self];
+//    }
     
     [super didReceiveMemoryWarning];
+    
+}
+
+- (void)viewWillAppear:(BOOL)animated {
+    
+    [super viewWillAppear:animated];
+    
+    [self checkWebViewIsAlive];
     
 }
 
