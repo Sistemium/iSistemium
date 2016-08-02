@@ -192,6 +192,19 @@
     
 }
 
++ (NSArray *)nonuploadedPictures {
+    
+    NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:NSStringFromClass([STMPhoto class])];
+    request.sortDescriptors = @[[NSSortDescriptor sortDescriptorWithKey:@"id" ascending:YES selector:@selector(compare:)]];
+    request.predicate = [NSPredicate predicateWithFormat:@"href == %@", nil];
+    
+    NSError *error;
+    NSArray *result = [[STMPicturesController document].managedObjectContext executeFetchRequest:request error:&error];
+    
+    
+    return result;
+}
+
 - (NSUInteger)nonloadedPicturesCount {
     
     NSUInteger nonloadedPicturesCount = [self nonloadedPictures].count;
@@ -205,6 +218,14 @@
         self.downloadingPictures = NO;
     
     }
+    
+    return nonloadedPicturesCount;
+    
+}
+
+- (NSUInteger)nonuploadedPicturesCount {
+    
+    NSUInteger nonloadedPicturesCount = [STMPicturesController nonuploadedPictures].count;
     
     return nonloadedPicturesCount;
     
@@ -438,14 +459,7 @@
     
     int counter = 0;
     
-    NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:NSStringFromClass([STMPhoto class])];
-    request.sortDescriptors = @[[NSSortDescriptor sortDescriptorWithKey:@"id" ascending:YES selector:@selector(compare:)]];
-    request.predicate = [NSPredicate predicateWithFormat:@"href == %@", nil];
-    
-    NSError *error;
-    NSArray *result = [[self document].managedObjectContext executeFetchRequest:request error:&error];
-    
-    for (STMPicture *picture in result) {
+    for (STMPicture *picture in [self nonuploadedPictures]) {
         
         if (!picture.hasChanges && picture.imagePath) {
             
