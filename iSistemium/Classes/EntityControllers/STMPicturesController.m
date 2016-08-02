@@ -476,6 +476,7 @@
                 if (photoData && photoData.length > 0) {
                     
                     [[self sharedController] addUploadOperationForPicture:picture data:photoData];
+                    [[NSNotificationCenter defaultCenter] postNotificationName:@"nonuploadedPicturesCountDidChange" object:self];
                     counter++;
                     
                 } else {
@@ -865,6 +866,8 @@
         } else {
             
             NSLog(@"connectionError %@", error.localizedDescription);
+            
+            [[NSNotificationCenter defaultCenter] postNotificationName:@"nonuploadedPicturesCountDidChange" object:self];
             
         }
         

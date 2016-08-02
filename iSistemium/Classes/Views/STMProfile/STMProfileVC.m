@@ -508,10 +508,6 @@
     
 }
 
-- (void)updateNonuploadedPicturesInfo {
-    
-}
-
 - (void)updateUnusedPicturesInfo {
     dispatch_async(dispatch_get_main_queue(), ^{
         if ([STMGarbageCollector.unusedImages count] == 0) {
@@ -528,6 +524,10 @@
 }
 
 - (void)nonloadedPicturesCountDidChange {
+    [self updateNonloadedPicturesInfo];
+}
+
+- (void)nonuploadedPicturesCountDidChange {
     [self updateNonloadedPicturesInfo];
 }
 
@@ -1157,6 +1157,11 @@
     [nc addObserver:self
            selector:@selector(nonloadedPicturesCountDidChange)
                name:@"nonloadedPicturesCountDidChange"
+             object:[STMPicturesController sharedController]];
+    
+    [nc addObserver:self
+           selector:@selector(nonuploadedPicturesCountDidChange)
+               name:@"nonuploadedPicturesCountDidChange"
              object:[STMPicturesController sharedController]];
     
     [nc addObserver:self
