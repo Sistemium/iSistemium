@@ -453,7 +453,7 @@
 - (void)updateNonloadedPicturesInfo {
     
     if ([[STMPicturesController sharedController] nonuploadedPicturesCount] > 0) {
-        self.nonloadedPicturesButton.enabled = ([self syncer].syncerState == STMSyncerIdle);
+        self.nonloadedPicturesButton.enabled = ([self syncer].syncerState == STMSyncerIdle) && ![STMPicturesController sharedController].uploadingPictures;
         
         NSUInteger nonuploadedPicturesCount = [[STMPicturesController sharedController] nonuploadedPicturesCount];
         
@@ -469,7 +469,7 @@
         [self.nonloadedPicturesButton setTitle:title forState:UIControlStateNormal];
         self.navigationController.tabBarItem.badgeValue = badgeValue;
         
-        UIColor *titleColor = [STMPicturesController sharedController].downloadingPictures ? ACTIVE_BLUE_COLOR : [UIColor redColor];
+        UIColor *titleColor = [STMPicturesController sharedController].uploadingPictures ? [UIColor lightGrayColor] : [UIColor redColor];
         [self.nonloadedPicturesButton setTitleColor:titleColor forState:UIControlStateNormal];
     }else{
     
@@ -735,7 +735,8 @@
             break;
 
         case 5:
-            [STMPicturesController checkUploadedPhotos];
+            [STMPicturesController checkPhotos];
+            [self updateNonloadedPicturesInfo];
             break;
         default:
             break;

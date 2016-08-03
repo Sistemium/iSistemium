@@ -27,7 +27,7 @@
 
 @property (nonatomic, strong) STMSession *session;
 @property (nonatomic, strong) NSMutableDictionary *settings;
-
+@property (nonatomic) NSInteger *uploadingPicturesCount;
 @property (nonatomic, strong) NSFetchedResultsController *nonloadedPicturesResultsController;
 
 
@@ -85,11 +85,11 @@
     if ([STMAuthController authController].controllerState != STMAuthSuccess) {
         
         self.downloadingPictures = NO;
-        
+        self.uploadingPictures = NO;
         self.uploadQueue.suspended = YES;
         [self.uploadQueue cancelAllOperations];
         self.uploadQueue = nil;
-        
+        self.uploadingPicturesCount = 0;
         self.hrefDictionary = nil;
         self.session = nil;
         self.settings = nil;
@@ -112,6 +112,16 @@
         _downloadingPictures = downloadingPictures;
 
         (_downloadingPictures) ? [self startDownloadingPictures] : [self stopDownloadingPictures];
+        
+    }
+    
+}
+
+- (void)setUPloadingPictures:(BOOL)uploadingPictures {
+    
+    if (_uploadingPictures != uploadingPictures) {
+        
+        _uploadingPictures = uploadingPictures;
         
     }
     
@@ -490,6 +500,12 @@
 
             }
             
+        }else{
+            if (picture.imagePath == nil && picture.href == nil && picture.imageThumbnail == nil){
+                NSString *logMessage = [NSString stringWithFormat:@"attempt to upload picture %@, imagePath %@ — object will be deleted", picture, picture.imagePath];
+                [[STMLogger sharedLogger] saveLogMessageWithText:logMessage type:@"error"];
+                [self deletePicture:picture];
+            }
         }
         
     }
@@ -498,7 +514,7 @@
         NSString *logMessage = [NSString stringWithFormat:@"Sending %i photos",counter];
         [[STMLogger sharedLogger] saveLogMessageWithText:logMessage type:@"important"];
     }
-    
+
 }
 
 
@@ -801,6 +817,9 @@
 
 - (void)addUploadOperationForPicture:(STMPicture *)picture data:(NSData *)data {
     
+    self.uploadingPicturesCount+=1;
+    [STMPicturesController sharedController].uploadingPictures = YES;
+    
     NSDictionary *appSettings = [self.session.settingsController currentSettingsForGroup:@"appSettings"];
     NSString *url = [[appSettings valueForKey:@"IMS.url"] stringByAppendingString:@"?folder="];
     
@@ -823,7 +842,6 @@
     [request setHTTPBody:data];
     
     [NSURLConnection sendAsynchronousRequest:request queue:[NSOperationQueue mainQueue] completionHandler:^(NSURLResponse *response, NSData *data, NSError *error) {
-        
         if (!error) {
             
             NSInteger statusCode = [(NSHTTPURLResponse *)response statusCode];
@@ -846,6 +864,10 @@
                         NSString *info = [[NSString alloc] initWithData:picturesJson encoding:NSUTF8StringEncoding];
                         picture.picturesInfo = [info stringByReplacingOccurrencesOfString:@"\\/" withString:@"/"];
                         
+                        NSDate *currentDate = [NSDate date];
+                    
+                        picture.deviceTs = currentDate;
+                        
                         NSLog(picture.picturesInfo)
                         
                         __block STMSession *session = [STMSessionManager sharedManager].currentSession;
@@ -862,10 +884,19 @@
                 NSLog(@"Request error, statusCode: %d", statusCode);
                 
             }
+            self.uploadingPicturesCount-=1;
+            if (self.uploadingPicturesCount == 0) {
+                [STMPicturesController sharedController].uploadingPictures = NO;
+            }
             
         } else {
             
             NSLog(@"connectionError %@", error.localizedDescription);
+            
+            self.uploadingPicturesCount-=1;
+            if (self.uploadingPicturesCount == 0) {
+                [STMPicturesController sharedController].uploadingPictures = NO;
+            }
             
             [[NSNotificationCenter defaultCenter] postNotificationName:@"nonuploadedPicturesCountDidChange" object:self];
             

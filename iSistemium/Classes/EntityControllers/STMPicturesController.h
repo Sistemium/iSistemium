@@ -12,6 +12,7 @@
 @interface STMPicturesController : STMController
 
 @property (nonatomic) BOOL downloadingPictures;
+@property (nonatomic) BOOL uploadingPictures;
 
 + (STMPicturesController *)sharedController;
 
