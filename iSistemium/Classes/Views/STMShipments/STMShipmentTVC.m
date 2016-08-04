@@ -88,7 +88,7 @@
     if (!_sortOrder) {
         
         STMUserDefaults *defaults = [STMUserDefaults standardUserDefaults];
-        NSNumber *sortOrder = [defaults valueForKey:@"STMShipmentPositionSort"];
+        NSNumber *sortOrder = [defaults objectForKey:@"STMShipmentPositionSort"];
         
         if (sortOrder) {
             
