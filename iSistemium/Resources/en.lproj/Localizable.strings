@@ -485,3 +485,6 @@
 "2UNUSED" = "%lu unused %@";
 "5UNUSED" = "%lu unused %@";
 "UNUSED PICTURES" = "Unused pictures";
+"WAITING FOR UPLOAD" = "waiting for upload";
+"UNUPLOADED PICTURES" = "Unuploaded pictures";
+"UPLOAD NOW" = "Upload now";

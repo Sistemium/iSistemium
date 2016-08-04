@@ -485,3 +485,6 @@
 "2UNUSED" = "%lu неиспользуемые %@";
 "5UNUSED" = "%lu неиспользуемых %@";
 "UNUSED PICTURES" = "Неиспользуемые картинки";
+"WAITING FOR UPLOAD" = "ожидает отправки";
+"UNUPLOADED PICTURES" = "Неотправленные картинки";
+"UPLOAD NOW" = "Отправить сейчас";

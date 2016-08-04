@@ -451,37 +451,60 @@
 }
 
 - (void)updateNonloadedPicturesInfo {
-
-    self.nonloadedPicturesButton.enabled = ([self syncer].syncerState == STMSyncerIdle);
     
-    NSUInteger unloadedPicturesCount = [[STMPicturesController sharedController] nonloadedPicturesCount];
-    
-    NSString *title = @"";
-    NSString *badgeValue = nil;
-    
-    if (unloadedPicturesCount > 0) {
+    if ([[STMPicturesController sharedController] nonuploadedPicturesCount] > 0) {
+        self.nonloadedPicturesButton.enabled = ([self syncer].syncerState == STMSyncerIdle) && ![STMPicturesController sharedController].uploadingPictures;
         
-        NSString *pluralString = [STMFunctions pluralTypeForCount:unloadedPicturesCount];
+        NSUInteger nonuploadedPicturesCount = [[STMPicturesController sharedController] nonuploadedPicturesCount];
+        
+        NSString *title = @"";
+        NSString *badgeValue = nil;
+            
+        NSString *pluralString = [STMFunctions pluralTypeForCount:nonuploadedPicturesCount];
         NSString *picturesCount = [NSString stringWithFormat:@"%@UPICTURES", pluralString];
-        title = [NSString stringWithFormat:@"%lu %@ %@", (unsigned long)unloadedPicturesCount, NSLocalizedString(picturesCount, nil), NSLocalizedString(@"WAITING FOR DOWNLOAD", nil)];
+        title = [NSString stringWithFormat:@"%lu %@ %@", (unsigned long)nonuploadedPicturesCount, NSLocalizedString(picturesCount, nil), NSLocalizedString(@"WAITING FOR UPLOAD", nil)];
         
-        badgeValue = [NSString stringWithFormat:@"%lu", (unsigned long)unloadedPicturesCount];
+        badgeValue = [NSString stringWithFormat:@"%lu", (unsigned long)nonuploadedPicturesCount];
         
-    } else {
+        [self.nonloadedPicturesButton setTitle:title forState:UIControlStateNormal];
+        self.navigationController.tabBarItem.badgeValue = badgeValue;
         
-        self.downloadAlertWasShown = NO;
-        self.nonloadedPicturesButton.enabled = NO;
+        UIColor *titleColor = [STMPicturesController sharedController].uploadingPictures ? [UIColor lightGrayColor] : [UIColor redColor];
+        [self.nonloadedPicturesButton setTitleColor:titleColor forState:UIControlStateNormal];
+    }else{
+    
+        self.nonloadedPicturesButton.enabled = ([self syncer].syncerState == STMSyncerIdle);
         
-        [STMPicturesController sharedController].downloadingPictures = NO;
-        [UIApplication sharedApplication].idleTimerDisabled = NO;
+        NSUInteger unloadedPicturesCount = [[STMPicturesController sharedController] nonloadedPicturesCount];
+        
+        NSString *title = @"";
+        NSString *badgeValue = nil;
+        
+        if (unloadedPicturesCount > 0) {
+            
+            NSString *pluralString = [STMFunctions pluralTypeForCount:unloadedPicturesCount];
+            NSString *picturesCount = [NSString stringWithFormat:@"%@UPICTURES", pluralString];
+            title = [NSString stringWithFormat:@"%lu %@ %@", (unsigned long)unloadedPicturesCount, NSLocalizedString(picturesCount, nil), NSLocalizedString(@"WAITING FOR DOWNLOAD", nil)];
+            
+            badgeValue = [NSString stringWithFormat:@"%lu", (unsigned long)unloadedPicturesCount];
+            
+        } else {
+            
+            self.downloadAlertWasShown = NO;
+            self.nonloadedPicturesButton.enabled = NO;
+            
+            [STMPicturesController sharedController].downloadingPictures = NO;
+            [UIApplication sharedApplication].idleTimerDisabled = NO;
 
+        }
+        
+        [self.nonloadedPicturesButton setTitle:title forState:UIControlStateNormal];
+        self.navigationController.tabBarItem.badgeValue = badgeValue;
+        
+        UIColor *titleColor = [STMPicturesController sharedController].downloadingPictures ? ACTIVE_BLUE_COLOR : [UIColor redColor];
+        [self.nonloadedPicturesButton setTitleColor:titleColor forState:UIControlStateNormal];
+        
     }
-    
-    [self.nonloadedPicturesButton setTitle:title forState:UIControlStateNormal];
-    self.navigationController.tabBarItem.badgeValue = badgeValue;
-    
-    UIColor *titleColor = [STMPicturesController sharedController].downloadingPictures ? ACTIVE_BLUE_COLOR : [UIColor redColor];
-    [self.nonloadedPicturesButton setTitleColor:titleColor forState:UIControlStateNormal];
     
 }
 
@@ -504,26 +527,37 @@
     [self updateNonloadedPicturesInfo];
 }
 
+- (void)nonuploadedPicturesCountDidChange {
+    [self updateNonloadedPicturesInfo];
+}
+
 - (IBAction)nonloadedPicturesButtonPressed:(id)sender {
 
     [[NSOperationQueue mainQueue] addOperationWithBlock:^{
 
         UIActionSheet *actionSheet = [[UIActionSheet alloc] init];
-        actionSheet.title = NSLocalizedString(@"UNLOADED PICTURES", nil);
+        actionSheet.title = NSLocalizedString(@"UNUPLOADED PICTURES", nil);
         actionSheet.delegate = self;
-
-        if ([STMPicturesController sharedController].downloadingPictures) {
         
-            actionSheet.tag = 2;
-            [actionSheet addButtonWithTitle:NSLocalizedString(@"DOWNLOAD STOP", nil)];
-            [actionSheet addButtonWithTitle:NSLocalizedString(@"CLOSE", nil)];
+        if ([[STMPicturesController sharedController] nonuploadedPicturesCount] > 0){
+                actionSheet.tag = 5;
+                [actionSheet addButtonWithTitle:NSLocalizedString(@"UPLOAD NOW", nil)];
+                [actionSheet addButtonWithTitle:NSLocalizedString(@"CLOSE", nil)];
+        }else{
+        
+            if ([STMPicturesController sharedController].downloadingPictures) {
+            
+                actionSheet.tag = 2;
+                [actionSheet addButtonWithTitle:NSLocalizedString(@"DOWNLOAD STOP", nil)];
+                [actionSheet addButtonWithTitle:NSLocalizedString(@"CLOSE", nil)];
 
-        } else {
+            } else {
 
-            actionSheet.tag = 1;
-            [actionSheet addButtonWithTitle:NSLocalizedString(@"DOWNLOAD NOW", nil)];
-            [actionSheet addButtonWithTitle:NSLocalizedString(@"DOWNLOAD LATER", nil)];
+                actionSheet.tag = 1;
+                [actionSheet addButtonWithTitle:NSLocalizedString(@"DOWNLOAD NOW", nil)];
+                [actionSheet addButtonWithTitle:NSLocalizedString(@"DOWNLOAD LATER", nil)];
 
+            }
         }
 
         [actionSheet showInView:self.view];
@@ -689,6 +723,7 @@
 
             }
             break;
+            
         case 4:
             if (buttonIndex == 0) {
                 
@@ -697,9 +732,12 @@
                 [self updateUnusedPicturesInfo];
                 
             }
-            
             break;
 
+        case 5:
+            [STMPicturesController checkPhotos];
+            [self updateNonloadedPicturesInfo];
+            break;
         default:
             break;
     }
@@ -1120,6 +1158,11 @@
     [nc addObserver:self
            selector:@selector(nonloadedPicturesCountDidChange)
                name:@"nonloadedPicturesCountDidChange"
+             object:[STMPicturesController sharedController]];
+    
+    [nc addObserver:self
+           selector:@selector(nonuploadedPicturesCountDidChange)
+               name:@"nonuploadedPicturesCountDidChange"
              object:[STMPicturesController sharedController]];
     
     [nc addObserver:self

@@ -12,10 +12,12 @@
 @interface STMPicturesController : STMController
 
 @property (nonatomic) BOOL downloadingPictures;
+@property (nonatomic) BOOL uploadingPictures;
 
 + (STMPicturesController *)sharedController;
 
 - (NSUInteger)nonloadedPicturesCount;
+- (NSUInteger)nonuploadedPicturesCount;
 
 + (CGFloat)jpgQuality;
 

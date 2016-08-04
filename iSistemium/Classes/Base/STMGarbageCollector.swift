@@ -16,6 +16,7 @@ import Foundation
         let priority = DISPATCH_QUEUE_PRIORITY_DEFAULT
         dispatch_async(dispatch_get_global_queue(priority, 0)) {
             do {
+                searchUnusedImages()
                 if unusedImages.count > 0 {
                     let logMessage = String(format: "Deleting %i images",unusedImages.count)
                     STMLogger.sharedLogger().saveLogMessageWithText(logMessage, type:"important")
