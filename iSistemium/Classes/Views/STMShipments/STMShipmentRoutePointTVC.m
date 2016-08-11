@@ -54,7 +54,6 @@
 @property (nonatomic ,strong) STMSpinnerView *spinner;
 
 @property (nonatomic, strong) UIView *picturesView;
-@property (nonatomic, strong) UIView *downloadPlaceholder;
 
 @property (nonatomic, strong) STMShipmentTVC *shipmentTVC;
 
@@ -192,22 +191,17 @@
 }
 
 - (UIView *)downloadPlaceholder {
+    
+    UIImage *image = [[STMFunctions resizeImage:[UIImage imageNamed:@"Download-100.png"] toSize:THUMB_SIZE] imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate];
 
-    if (!_downloadPlaceholder) {
+    UIImageView *imageView = [[UIImageView alloc] initWithImage:image];
+    imageView.tintColor = [UIColor grayColor];
 
-        UIImage *image = [[STMFunctions resizeImage:[UIImage imageNamed:@"Download-100.png"] toSize:THUMB_SIZE] imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate];
+    UITapGestureRecognizer *tap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(photoButtonPressed:)];
+    imageView.gestureRecognizers = @[tap];
+    imageView.userInteractionEnabled = YES;
 
-        UIImageView *imageView = [[UIImageView alloc] initWithImage:image];
-        imageView.tintColor = [UIColor grayColor];
-
-        UITapGestureRecognizer *tap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(photoButtonPressed:)];
-        imageView.gestureRecognizers = @[tap];
-        imageView.userInteractionEnabled = YES;
-
-        _downloadPlaceholder = imageView;
-
-    }
-    return _downloadPlaceholder;
+    return imageView;
     
 }
 
