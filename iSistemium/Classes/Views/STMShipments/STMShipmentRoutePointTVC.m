@@ -1689,7 +1689,9 @@
 - (void)viewWillAppear:(BOOL)animated {
     
     [super viewWillAppear:animated];
-
+    
+    [self.tableView reloadData];
+    
     [self setupNavBar];
 
     if ([self.splitVC isMasterNCForViewController:self]) [self highlightSelectedShipment];
