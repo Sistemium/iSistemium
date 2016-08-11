@@ -163,6 +163,10 @@
     return @"arrivalButtonCell";
 }
 
+- (NSString *)picturesViewCellIdentifier {
+    return @"picturesViewCell";
+}
+
 - (NSSet *)unprocessedShipments {
     
     NSPredicate *predicate = [NSPredicate predicateWithFormat:@"isShipped.boolValue != YES"];
@@ -644,7 +648,7 @@
                     break;
                     
                 case 1:
-                    cell = [tableView dequeueReusableCellWithIdentifier:self.cellIdentifier forIndexPath:indexPath];
+                    cell = [tableView dequeueReusableCellWithIdentifier:self.picturesViewCellIdentifier forIndexPath:indexPath];
                     break;
                     
                 default:
@@ -1673,6 +1677,7 @@
     [self.tableView registerNib:custom7TVCellNib forCellReuseIdentifier:self.shippingLocationCellIdentifier];
     [self.tableView registerNib:custom7TVCellNib forCellReuseIdentifier:self.arrivalButtonCellIdentifier];
     [self.tableView registerNib:custom7TVCellNib forCellReuseIdentifier:self.cellIdentifier];
+    [self.tableView registerNib:custom7TVCellNib forCellReuseIdentifier:self.picturesViewCellIdentifier];
     
     [self addObservers];
     [self performFetch];
