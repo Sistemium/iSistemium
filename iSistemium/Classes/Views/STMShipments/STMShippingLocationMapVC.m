@@ -739,19 +739,13 @@ typedef NS_ENUM(NSInteger, STMShippingLocationState) {
 }
 
 - (void)customInit {
-    
-    if (self.shippingLocation) {
-        
-        [self addObservers];
-        [self initState];
-        [self setupLocationButton];
-        self.mapView.delegate = self;
-        self.mapView.showsUserLocation = YES;
-        [self centeringMap];
-        [self addLongPressGesture];
-
-    }
-    
+    [self addObservers];
+    [self initState];
+    [self setupLocationButton];
+    self.mapView.delegate = self;
+    self.mapView.showsUserLocation = YES;
+    [self centeringMap];
+    [self addLongPressGesture];
 }
 
 - (void)viewDidLoad {
