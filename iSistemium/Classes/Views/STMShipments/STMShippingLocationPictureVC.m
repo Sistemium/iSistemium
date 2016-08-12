@@ -82,7 +82,6 @@
     [self.view addSubview:self.spinnerView];
     [self addObservers];
     NSManagedObjectID *pictureID = self.photo.objectID;
-    self.photo.imageThumbnail = nil;
     [STMPicturesController downloadConnectionForObjectID:pictureID];
     
 }
