@@ -2933,6 +2933,9 @@
 							com.apple.DataProtection = {
 								enabled = 1;
 							};
+							com.apple.Push = {
+								enabled = 1;
+							};
 						};
 					};
 					2C8EF5BB1940859F0021D202 = {
