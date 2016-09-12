@@ -54,7 +54,6 @@
 @property (nonatomic ,strong) STMSpinnerView *spinner;
 
 @property (nonatomic, strong) UIView *picturesView;
-@property (nonatomic, strong) UIView *downloadPlaceholder;
 
 @property (nonatomic, strong) STMShipmentTVC *shipmentTVC;
 
@@ -163,6 +162,10 @@
     return @"arrivalButtonCell";
 }
 
+- (NSString *)picturesViewCellIdentifier {
+    return @"picturesViewCell";
+}
+
 - (NSSet *)unprocessedShipments {
     
     NSPredicate *predicate = [NSPredicate predicateWithFormat:@"isShipped.boolValue != YES"];
@@ -188,22 +191,17 @@
 }
 
 - (UIView *)downloadPlaceholder {
+    
+    UIImage *image = [[STMFunctions resizeImage:[UIImage imageNamed:@"Download-100.png"] toSize:THUMB_SIZE] imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate];
 
-    if (!_downloadPlaceholder) {
+    UIImageView *imageView = [[UIImageView alloc] initWithImage:image];
+    imageView.tintColor = [UIColor grayColor];
 
-        UIImage *image = [[STMFunctions resizeImage:[UIImage imageNamed:@"Download-100.png"] toSize:THUMB_SIZE] imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate];
+    UITapGestureRecognizer *tap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(photoButtonPressed:)];
+    imageView.gestureRecognizers = @[tap];
+    imageView.userInteractionEnabled = YES;
 
-        UIImageView *imageView = [[UIImageView alloc] initWithImage:image];
-        imageView.tintColor = [UIColor grayColor];
-
-        UITapGestureRecognizer *tap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(photoButtonPressed:)];
-        imageView.gestureRecognizers = @[tap];
-        imageView.userInteractionEnabled = YES;
-
-        _downloadPlaceholder = imageView;
-
-    }
-    return _downloadPlaceholder;
+    return imageView;
     
 }
 
@@ -644,7 +642,7 @@
                     break;
                     
                 case 1:
-                    cell = [tableView dequeueReusableCellWithIdentifier:self.cellIdentifier forIndexPath:indexPath];
+                    cell = [tableView dequeueReusableCellWithIdentifier:self.picturesViewCellIdentifier forIndexPath:indexPath];
                     break;
                     
                 default:
@@ -1673,6 +1671,7 @@
     [self.tableView registerNib:custom7TVCellNib forCellReuseIdentifier:self.shippingLocationCellIdentifier];
     [self.tableView registerNib:custom7TVCellNib forCellReuseIdentifier:self.arrivalButtonCellIdentifier];
     [self.tableView registerNib:custom7TVCellNib forCellReuseIdentifier:self.cellIdentifier];
+    [self.tableView registerNib:custom7TVCellNib forCellReuseIdentifier:self.picturesViewCellIdentifier];
     
     [self addObservers];
     [self performFetch];
@@ -1690,7 +1689,9 @@
 - (void)viewWillAppear:(BOOL)animated {
     
     [super viewWillAppear:animated];
-
+    
+    [self.tableView reloadData];
+    
     [self setupNavBar];
 
     if ([self.splitVC isMasterNCForViewController:self]) [self highlightSelectedShipment];
