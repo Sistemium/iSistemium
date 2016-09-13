@@ -11,8 +11,6 @@
 #import "STMFunctions.h"
 
 
-#define SAVING_QUEUE_THRESHOLD 15
-
 @interface STMDocument()
 
 @property (nonatomic, strong) NSString *dataModelName;
@@ -128,17 +126,6 @@
 
 }
 
-- (void)downloadPicture:(NSNotification *)notification {
-    
-    if (++self.savingQueue > SAVING_QUEUE_THRESHOLD) {
-        self.savingQueue = 0;
-        [self saveDocument: ^(BOOL success) {
-            NSLog(@"STMDocument save success on downloadPicture");
-        }];
-    }
-    
-}
-
 - (void)addObservers {
     
     NSNotificationCenter *nc = [NSNotificationCenter defaultCenter];
@@ -147,12 +134,6 @@
            selector:@selector(applicationDidEnterBackground)
                name:UIApplicationDidEnterBackgroundNotification
              object:nil];
-    
-    [nc addObserver:self
-           selector: @selector(downloadPicture:)
-               name:@"downloadPicture"
-             object: nil];
-    
 }
 
 - (void)removeObservers {

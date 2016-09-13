@@ -77,7 +77,12 @@
            selector:@selector(authStateChanged)
                name:@"authControllerStateChanged"
              object:[STMAuthController authController]];
-
+    
+    [nc addObserver:self
+           selector:@selector(saveDocument)
+               name:@"downloadPicture"
+             object:nil];
+    
 }
 
 - (void)authStateChanged {
@@ -750,7 +755,7 @@
     
     if (href) {
         
-        if ([object valueForKey:@"imageThumbnail"]) {
+        if ([object valueForKey:@"imageThumbnail"] && [object valueForKey:@"resizedImagePath"]) {
 
             [self didProcessHref:href];
             
@@ -782,6 +787,7 @@
 
                     if ([object isKindOfClass:[STMPicture class]]) {
                        [[self class] setImagesFromData:data forPicture:(STMPicture *)object andUpload:NO];
+                        
                     }
                    
                 }
@@ -955,6 +961,12 @@
 
     }
     
+}
+
+- (void)saveDocument{
+    [self.session.document saveDocument:^(BOOL success) {
+        
+    }];
 }
 
 

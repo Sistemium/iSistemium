@@ -166,8 +166,6 @@ class STMShippingLocationTVC:STMVariableCellsHeightTVC,UIImagePickerControllerDe
                     let photoArray = (shippingLocation!.shippingLocationPictures! as NSSet).sortedArrayUsingDescriptors([sortDesriptor] )[range.toRange()!]
                     
                     for picture in photoArray {
-//                        print("!!!!!!!!!!!!!!!")
-//                        print(picture.thumbnailHref)
                         if let pictureData = (picture as! STMPicture).imageThumbnail{
                             let pictureButton = self.pictureButtonWithPicture(pictureData)
                             
