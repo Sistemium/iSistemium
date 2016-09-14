@@ -971,9 +971,6 @@
             request.HTTPShouldHandleCookies = NO;
             [request setHTTPMethod:@"POST"];
             [request setValue:@"application/json" forHTTPHeaderField:@"Content-type"];
-//            [request setValue:[[ASIdentifierManager sharedManager].advertisingIdentifier UUIDString] forHTTPHeaderField:@"DeviceUUID"];
-            
-//            NSLog(@"request %@", request.allHTTPHeaderFields);
 
             request.HTTPBody = sendData;
             
@@ -1029,9 +1026,6 @@
         [request setHTTPMethod:@"GET"];
         
         [request addValue:[NSString stringWithFormat:@"%d", self.fetchLimit] forHTTPHeaderField:@"page-size"];
-//        [request setValue:[[ASIdentifierManager sharedManager].advertisingIdentifier UUIDString] forHTTPHeaderField:@"DeviceUUID"];
-
-//        NSLog(@"request %@", request.allHTTPHeaderFields);
 
         [NSURLConnection sendAsynchronousRequest:request queue:[NSOperationQueue mainQueue] completionHandler:^(NSURLResponse *response, NSData *data, NSError *connectionError) {
             
@@ -1219,9 +1213,6 @@
         
         [request addValue:[NSString stringWithFormat:@"%d", self.fetchLimit] forHTTPHeaderField:@"page-size"];
         [request addValue:eTag forHTTPHeaderField:@"If-none-match"];
-//        [request setValue:[[ASIdentifierManager sharedManager].advertisingIdentifier UUIDString] forHTTPHeaderField:@"DeviceUUID"];
-        
-//        NSLog(@"request %@", request.allHTTPHeaderFields);
 
         NSURLConnection *connection = [[NSURLConnection alloc] initWithRequest:request delegate:self];
         
