@@ -182,7 +182,7 @@
     
     [self.resultsController performFetch:nil];
     
-    self.title = NSLocalizedString(@"CAMPAIGNS", nil);
+    self.navigationItem.title = NSLocalizedString(@"CAMPAIGNS", nil);
     
 }
 
