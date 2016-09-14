@@ -203,7 +203,7 @@
 "VERSION" = "версия";
 "LOCATIONS ON" = "Геолокация разрешена";
 "LOCATIONS OFF" = "Геолокация запрещена";
-"LOCATIONS BACKGROUND OFF" = "Фоновая геолокация запрещена";
+"LOCATIONS BACKGROUND OFF" = "Геолокация при использовании";
 "LAST LOCATION" = "Последняя геометка: ";
 "NO LAST LOCATION" = "Нет геометок";
 "ACCURACY IS NOT SUFFICIENT" = "Недостаточная точность геолокации";
