@@ -61,7 +61,6 @@
 }
 
 - (BOOL)showDataOnlyWithPhotos {
-<<<<<<< HEAD
     
     if (!_showDataOnlyWithPhotos) {
         
@@ -69,13 +68,8 @@
         BOOL showDataOnlyWithPhotos = [defaults boolForKey:self.showDataOnlyWithPhotosDefaultsKey];
         
         _showDataOnlyWithPhotos = showDataOnlyWithPhotos;
-=======
->>>>>>> photoReports_iphone
-        
-    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
-    BOOL showDataOnlyWithPhotos = [defaults boolForKey:self.showDataOnlyWithPhotosDefaultsKey];
-    
-    _showDataOnlyWithPhotos = showDataOnlyWithPhotos;
+
+    }
     
     return _showDataOnlyWithPhotos;
     

@@ -485,13 +485,10 @@
 "2UNUSED" = "%lu неиспользуемые %@";
 "5UNUSED" = "%lu неиспользуемых %@";
 "UNUSED PICTURES" = "Неиспользуемые картинки";
-<<<<<<< HEAD
 "WAITING FOR UPLOAD" = "ожидает отправки";
 "UNUPLOADED PICTURES" = "Неотправленные картинки";
 "UPLOAD NOW" = "Отправить сейчас";
-=======
 "SHOW ALL PHOTOREPORTS" = "Показать все фотоотчёты";
 "GROUPING" = "Группировать";
 "BY CAMPAIGNS" = "по акциям";
 "BY OUTLETS" = "по точкам";
->>>>>>> photoReports_iphone
