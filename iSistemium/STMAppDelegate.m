@@ -26,7 +26,9 @@
 #import "STMSocketController.h"
 #import "STMSoundController.h"
 #import "STMClientDataController.h"
+
 #import <AVFoundation/AVFoundation.h>
+
 
 @implementation STMAppDelegate
 
@@ -541,12 +543,18 @@
     
     [Fabric with:@[CrashlyticsKit]];
     
-    [[Crashlytics sharedInstance] setObjectValue:[[UIDevice currentDevice] name] forKey:@"deviceName"];
-    [[Crashlytics sharedInstance] setObjectValue:[STMFunctions devicePlatform] forKey:@"devicePlatform"];
-    [[Crashlytics sharedInstance] setObjectValue:[STMClientDataController deviceUUID] forKey:@"deviceUUID"];
-    [[Crashlytics sharedInstance] setObjectValue:[STMAuthController authController].userID forKey:@"userID"];
-    [[Crashlytics sharedInstance] setObjectValue:[STMAuthController authController].userName forKey:@"userName"];
-    [[Crashlytics sharedInstance] setObjectValue:[STMAuthController authController].phoneNumber forKey:@"phoneNumber"];
+    [[Crashlytics sharedInstance] setObjectValue:[[UIDevice currentDevice] name]
+                                          forKey:@"deviceName"];
+    [[Crashlytics sharedInstance] setObjectValue:[STMFunctions devicePlatform]
+                                          forKey:@"devicePlatform"];
+    [[Crashlytics sharedInstance] setObjectValue:[STMFunctions UUIDStringFromUUIDData:[STMClientDataController deviceUUID]].uppercaseString
+                                          forKey:@"deviceUUID"];
+    [[Crashlytics sharedInstance] setObjectValue:[STMAuthController authController].userID
+                                          forKey:@"userID"];
+    [[Crashlytics sharedInstance] setObjectValue:[STMAuthController authController].userName
+                                          forKey:@"userName"];
+    [[Crashlytics sharedInstance] setObjectValue:[STMAuthController authController].phoneNumber
+                                          forKey:@"phoneNumber"];
     
 }
 
