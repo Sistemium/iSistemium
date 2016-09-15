@@ -488,3 +488,10 @@
 "WAITING FOR UPLOAD" = "ожидает отправки";
 "UNUPLOADED PICTURES" = "Неотправленные картинки";
 "UPLOAD NOW" = "Отправить сейчас";
+<<<<<<< HEAD
+=======
+"SHOW ALL PHOTOREPORTS" = "Показать все фотоотчёты";
+"GROUPING" = "Группировать";
+"BY CAMPAIGNS" = "по акциям";
+"BY OUTLETS" = "по точкам";
+>>>>>>> dev

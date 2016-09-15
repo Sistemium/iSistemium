@@ -559,8 +559,13 @@
 		6D074DE61CA9AB9600EB5121 /* STMUncashingHandOverVC_iPhone.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6D074DE11CA9AB9600EB5121 /* STMUncashingHandOverVC_iPhone.swift */; };
 		6D074DE71CA9AB9600EB5121 /* STMUncashingInfoVC_iPhone.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6D074DE21CA9AB9600EB5121 /* STMUncashingInfoVC_iPhone.swift */; };
 		6D074DE81CA9AB9600EB5121 /* STMUncashingTVC_iPhone.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6D074DE31CA9AB9600EB5121 /* STMUncashingTVC_iPhone.swift */; };
+		6D08F44B1D0038BA00564723 /* STMPhotoReportSettings_iphone.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6D08F44A1D0038BA00564723 /* STMPhotoReportSettings_iphone.swift */; };
+		6D08F44D1D003BBC00564723 /* STMPhotoReportsFilterTVC_iphone.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6D08F44C1D003BBC00564723 /* STMPhotoReportsFilterTVC_iphone.swift */; };
+		6D08F44F1D00733B00564723 /* STMPhotoReportsDetailTVC_iphone.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6D08F44E1D00733B00564723 /* STMPhotoReportsDetailTVC_iphone.swift */; };
 		6D2D518A1CC8FC2D0076765C /* Upload-100.png in Resources */ = {isa = PBXBuildFile; fileRef = 6D2D51891CC8FC2D0076765C /* Upload-100.png */; };
 		6D69FA4C1CC6624900A3BCB2 /* STMGarbageCollector.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6D69FA4B1CC6624900A3BCB2 /* STMGarbageCollector.swift */; };
+		6D833A391CFEF5A0002B6605 /* STMPhotoReports_iphone.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 6D833A381CFEF5A0002B6605 /* STMPhotoReports_iphone.storyboard */; };
+		6D833A3B1CFF176E002B6605 /* STMCampaignGroupTVC_iphone.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6D833A3A1CFF176E002B6605 /* STMCampaignGroupTVC_iphone.swift */; };
 		6DE2B48B1C3E7F4F001F1DE1 /* STMShippingLocationTVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6DE2B48A1C3E7F4F001F1DE1 /* STMShippingLocationTVC.swift */; };
 		6DF12A301C3ABA8E00E94C3E /* STMShippingLocationsTVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6DF12A2F1C3ABA8E00E94C3E /* STMShippingLocationsTVC.swift */; };
 		6DF6B1621CBE624000F911F3 /* Download-100.png in Resources */ = {isa = PBXBuildFile; fileRef = 6DF6B1611CBE624000F911F3 /* Download-100.png */; };
@@ -1518,9 +1523,14 @@
 		6D074DE11CA9AB9600EB5121 /* STMUncashingHandOverVC_iPhone.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = STMUncashingHandOverVC_iPhone.swift; sourceTree = "<group>"; };
 		6D074DE21CA9AB9600EB5121 /* STMUncashingInfoVC_iPhone.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = STMUncashingInfoVC_iPhone.swift; sourceTree = "<group>"; };
 		6D074DE31CA9AB9600EB5121 /* STMUncashingTVC_iPhone.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = STMUncashingTVC_iPhone.swift; sourceTree = "<group>"; };
+		6D08F44A1D0038BA00564723 /* STMPhotoReportSettings_iphone.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = STMPhotoReportSettings_iphone.swift; sourceTree = "<group>"; };
+		6D08F44C1D003BBC00564723 /* STMPhotoReportsFilterTVC_iphone.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = STMPhotoReportsFilterTVC_iphone.swift; sourceTree = "<group>"; };
+		6D08F44E1D00733B00564723 /* STMPhotoReportsDetailTVC_iphone.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = STMPhotoReportsDetailTVC_iphone.swift; sourceTree = "<group>"; };
 		6D21B5D21CE33BD200032F47 /* STMDataModel 5.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "STMDataModel 5.xcdatamodel"; sourceTree = "<group>"; };
 		6D2D51891CC8FC2D0076765C /* Upload-100.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Upload-100.png"; sourceTree = "<group>"; };
 		6D69FA4B1CC6624900A3BCB2 /* STMGarbageCollector.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = STMGarbageCollector.swift; sourceTree = "<group>"; };
+		6D833A381CFEF5A0002B6605 /* STMPhotoReports_iphone.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = STMPhotoReports_iphone.storyboard; sourceTree = "<group>"; };
+		6D833A3A1CFF176E002B6605 /* STMCampaignGroupTVC_iphone.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = STMCampaignGroupTVC_iphone.swift; sourceTree = "<group>"; };
 		6DA2037C1CC108310092EFEF /* STMDataModel 2.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "STMDataModel 2.xcdatamodel"; sourceTree = "<group>"; };
 		6DE2B48A1C3E7F4F001F1DE1 /* STMShippingLocationTVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = STMShippingLocationTVC.swift; sourceTree = "<group>"; };
 		6DF12A2F1C3ABA8E00E94C3E /* STMShippingLocationsTVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = STMShippingLocationsTVC.swift; sourceTree = "<group>"; };
@@ -1824,6 +1834,7 @@
 		2C2949731BDCFB640099F24F /* STMPhotoReports */ = {
 			isa = PBXGroup;
 			children = (
+				6D833A3C1CFF181C002B6605 /* Iphone */,
 				2C2949761BDCFBF30099F24F /* STMPhotoReportsSVC.h */,
 				2C2949771BDCFBF30099F24F /* STMPhotoReportsSVC.m */,
 				2CC194481BDFB88D001F8E48 /* STMCampaignGroupTVC.h */,
@@ -2750,6 +2761,7 @@
 				2CC5D1D31C85C70000193CD7 /* STMMessageVC.storyboard */,
 				2CC5D1D41C85C70000193CD7 /* STMOrders.storyboard */,
 				2CC5D1D51C85C70000193CD7 /* STMPhotoReports.storyboard */,
+				6D833A381CFEF5A0002B6605 /* STMPhotoReports_iphone.storyboard */,
 				2CC5D1D61C85C70000193CD7 /* STMPickingOrders.storyboard */,
 				2CC5D1D71C85C70000193CD7 /* STMProfile.storyboard */,
 				2CC5D1D81C85C70000193CD7 /* STMScannerInfo.storyboard */,
@@ -2877,6 +2889,17 @@
 				6D074DE31CA9AB9600EB5121 /* STMUncashingTVC_iPhone.swift */,
 			);
 			path = iPhone;
+			sourceTree = "<group>";
+		};
+		6D833A3C1CFF181C002B6605 /* Iphone */ = {
+			isa = PBXGroup;
+			children = (
+				6D833A3A1CFF176E002B6605 /* STMCampaignGroupTVC_iphone.swift */,
+				6D08F44A1D0038BA00564723 /* STMPhotoReportSettings_iphone.swift */,
+				6D08F44C1D003BBC00564723 /* STMPhotoReportsFilterTVC_iphone.swift */,
+				6D08F44E1D00733B00564723 /* STMPhotoReportsDetailTVC_iphone.swift */,
+			);
+			name = Iphone;
 			sourceTree = "<group>";
 		};
 		6DF12A2E1C3AB80300E94C3E /* STMShippingLocations */ = {
@@ -3051,6 +3074,7 @@
 				2C1AB2931B6F925100BF5C50 /* reordering.png in Resources */,
 				2CEAC15E1B3BF78200AD068E /* truck_filled.png in Resources */,
 				2C1AB2E51B70ADBB00BF5C50 /* 3_circle.png in Resources */,
+				6D833A391CFEF5A0002B6605 /* STMPhotoReports_iphone.storyboard in Resources */,
 				2C1AB30D1B70B22800BF5C50 /* 0_circle_colored_blue.png in Resources */,
 				D94AC56A198BC68A00D8CD63 /* christmas_gift-128.png in Resources */,
 				6D074DCA1CA9AA8200EB5121 /* STMDebts_iphone.storyboard in Resources */,
@@ -3250,6 +3274,7 @@
 				2C57641E1AA5E1E500B9FD2C /* STMDebtsDetailsPVC.m in Sources */,
 				2C42ECC21B159AD100B5C91A /* STMCatalogSettingsTVC.m in Sources */,
 				2C2968F919A0C3950038B122 /* STMUncashingDetailsTVC.m in Sources */,
+				6D08F44B1D0038BA00564723 /* STMPhotoReportSettings_iphone.swift in Sources */,
 				6D074DE41CA9AB9600EB5121 /* STMAddEtceteraVC_iPhone.swift in Sources */,
 				2CC1944A1BDFB88D001F8E48 /* STMCampaignGroupTVC.m in Sources */,
 				2CEE30581BEF40F0009B229F /* STMBarCodeScanNC.m in Sources */,
@@ -3373,6 +3398,7 @@
 				2C42ECB41B0B66C000B5C91A /* STMWebViewNC.m in Sources */,
 				2CC5D4801C85C7F300193CD7 /* STMDatePicker.swift in Sources */,
 				2CC5D3F31C85C79600193CD7 /* STMEntityController.m in Sources */,
+				6D08F44D1D003BBC00564723 /* STMPhotoReportsFilterTVC_iphone.swift in Sources */,
 				2CC5D3711C85C73D00193CD7 /* STMSupplyOrderArticleDoc.m in Sources */,
 				2C5764191AA5E1E500B9FD2C /* STMAddPartnerVC.m in Sources */,
 				2C453EF71D86EE6000A43956 /* SocketStringReader.swift in Sources */,
@@ -3562,6 +3588,7 @@
 				2CC5D4001C85C79600193CD7 /* STMUncashingController.m in Sources */,
 				2CCD06E81B5B9EF8002591C4 /* STMRegradeArticleVC.m in Sources */,
 				2CC5D34F1C85C73D00193CD7 /* STMRecordStatus.m in Sources */,
+				6D833A3B1CFF176E002B6605 /* STMCampaignGroupTVC_iphone.swift in Sources */,
 				2C3CED691C1C47A000291AAD /* STMSupplyOrdersMasterNC.m in Sources */,
 				2CC5D3A91C85C78100193CD7 /* STMExtendNSLog.m in Sources */,
 				2CC5D3FA1C85C79600193CD7 /* STMPicturesController.m in Sources */,
@@ -3585,6 +3612,7 @@
 				2CC5D33D1C85C73D00193CD7 /* STMPicker.m in Sources */,
 				2C42ECAE1B0B1A3300B5C91A /* STMTabBarButtonTVC.m in Sources */,
 				2CC5D32B1C85C73D00193CD7 /* STMInventoryBatchItem.m in Sources */,
+				6D08F44F1D00733B00564723 /* STMPhotoReportsDetailTVC_iphone.swift in Sources */,
 				2C5764221AA5E1E500B9FD2C /* STMOutletDebtsTVC.m in Sources */,
 				2C5764661AAB1C7C00B9FD2C /* STMOrdersMasterTVC.m in Sources */,
 				2CC5D4831C85C7F300193CD7 /* STMInfoTableViewCell.m in Sources */,

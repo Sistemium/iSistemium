@@ -26,7 +26,9 @@
 #import "STMSocketController.h"
 #import "STMSoundController.h"
 #import "STMClientDataController.h"
+
 #import <AVFoundation/AVFoundation.h>
+
 
 @implementation STMAppDelegate
 
@@ -34,7 +36,7 @@
     
     [self startCrashlytics];
 
-    NSLog(@"deviceUUID %@", [STMClientDataController deviceUUID]);
+    NSLog(@"deviceUUID %@", [STMClientDataController deviceUUIDString]);
     
     NSString *logMessage = [NSString stringWithFormat:@"application didFinishLaunchingWithOptions"];
     [[STMLogger sharedLogger] saveLogMessageWithText:logMessage type:@"info"];
@@ -234,7 +236,7 @@
 }
 
 
-- (void)application:(UIApplication *)application didReceiveRemoteNotification:(NSDictionary *)userInfo fetchCompletionHandler:(void (^)(UIBackgroundFetchResult result)) handler {
+- (void)application:(UIApplication *)application didReceiveRemoteNotification:(NSDictionary *)userInfo fetchCompletionHandler:(void (^)(UIBackgroundFetchResult result))handler {
     
     NSLog(@"application didReceiveRemoteNotification userInfo: %@", userInfo);
     
@@ -248,7 +250,12 @@
         [application endBackgroundTask: bgTask];
 
         if (!handlerCompleted) {
-            handler(UIBackgroundFetchResultFailed);
+            
+            NSString *methodName = [NSString stringWithFormat:@"%@ in beginBackgroundTaskWithExpirationHandler:", NSStringFromSelector(_cmd)];
+            [self tryCatchFetchResultHandler:handler
+                                  withResult:UIBackgroundFetchResultFailed
+                                  methodName:methodName];
+            
         }
         
     }];
@@ -261,7 +268,11 @@
     [self routeNotificationUserInfo:userInfo completionHandler:^(UIBackgroundFetchResult result) {
         
         handlerCompleted = YES;
-        handler(result);
+
+        NSString *methodName = [NSString stringWithFormat:@"%@ in routeNotificationUserInfo:completionHandler:", NSStringFromSelector(_cmd)];
+        [self tryCatchFetchResultHandler:handler
+                              withResult:result
+                              methodName:methodName];
         
     }];
 
@@ -269,7 +280,7 @@
 
 }
 
-- (void)routeNotificationUserInfo:(NSDictionary *)userInfo completionHandler:(void (^)(UIBackgroundFetchResult result)) handler {
+- (void)routeNotificationUserInfo:(NSDictionary *)userInfo completionHandler:(void (^)(UIBackgroundFetchResult result))handler {
     
     __block BOOL handlerCompleted = NO;
 
@@ -297,7 +308,11 @@
                 if (!handlerCompleted) {
                     
                     handlerCompleted = YES;
-                    handler(result);
+                    
+                    NSString *methodName = [NSString stringWithFormat:@"%@ in setSyncerState:fetchCompletionHandler:1", NSStringFromSelector(_cmd)];
+                    [self tryCatchFetchResultHandler:handler
+                                          withResult:result
+                                          methodName:methodName];
                     
                 }
                 
@@ -318,8 +333,12 @@
             if (!handlerCompleted) {
                 
                 handlerCompleted = YES;
-                handler(result);
-                
+
+                NSString *methodName = [NSString stringWithFormat:@"%@ in setSyncerState:fetchCompletionHandler:2", NSStringFromSelector(_cmd)];
+                [self tryCatchFetchResultHandler:handler
+                                      withResult:result
+                                      methodName:methodName];
+
             }
             
         }];
@@ -339,7 +358,11 @@
         
         NSLog(@"endBackgroundTaskWithExpirationHandler %d", (unsigned int) bgTask);
         [application endBackgroundTask: bgTask];
-        completionHandler(UIBackgroundFetchResultFailed);
+        
+        NSString *methodName = [NSString stringWithFormat:@"%@ in beginBackgroundTaskWithExpirationHandler:", NSStringFromSelector(_cmd)];
+        [self tryCatchFetchResultHandler:completionHandler
+                              withResult:UIBackgroundFetchResultFailed
+                              methodName:methodName];
         
     }];
     
@@ -349,6 +372,23 @@
     [[NSNotificationCenter defaultCenter] postNotificationName:@"applicationPerformFetchWithCompletionHandler" object:application];
     
     [[[STMSessionManager sharedManager].currentSession syncer] setSyncerState:STMSyncerSendData fetchCompletionHandler:completionHandler];
+
+}
+
+- (void)tryCatchFetchResultHandler:(void (^)(UIBackgroundFetchResult result))handler withResult:(UIBackgroundFetchResult)result methodName:(NSString *)methodName {
+    
+    NSLogMethodName;
+    
+    @try {
+        
+        handler(result);
+        
+    } @catch (NSException *exception) {
+        
+        NSString *logMessage = [NSString stringWithFormat:@"tryCatchFetchResultHandler\n%@\nException: %@\nStack trace: %@", methodName, exception.description, exception.callStackSymbols];
+        [[STMLogger sharedLogger] saveLogMessageWithText:logMessage numType:STMLogMessageTypeError];
+        
+    }
 
 }
 
@@ -503,12 +543,18 @@
     
     [Fabric with:@[CrashlyticsKit]];
     
-    [[Crashlytics sharedInstance] setObjectValue:[[UIDevice currentDevice] name] forKey:@"deviceName"];
-    [[Crashlytics sharedInstance] setObjectValue:[STMFunctions devicePlatform] forKey:@"devicePlatform"];
-    [[Crashlytics sharedInstance] setObjectValue:[ASIdentifierManager sharedManager].advertisingIdentifier forKey:@"advertisingIdentifier"];
-    [[Crashlytics sharedInstance] setObjectValue:[STMAuthController authController].userID forKey:@"userID"];
-    [[Crashlytics sharedInstance] setObjectValue:[STMAuthController authController].userName forKey:@"userName"];
-    [[Crashlytics sharedInstance] setObjectValue:[STMAuthController authController].phoneNumber forKey:@"phoneNumber"];
+    [[Crashlytics sharedInstance] setObjectValue:[[UIDevice currentDevice] name]
+                                          forKey:@"deviceName"];
+    [[Crashlytics sharedInstance] setObjectValue:[STMFunctions devicePlatform]
+                                          forKey:@"devicePlatform"];
+    [[Crashlytics sharedInstance] setObjectValue:[STMClientDataController deviceUUIDString]
+                                          forKey:@"deviceUUID"];
+    [[Crashlytics sharedInstance] setObjectValue:[STMAuthController authController].userID
+                                          forKey:@"userID"];
+    [[Crashlytics sharedInstance] setObjectValue:[STMAuthController authController].userName
+                                          forKey:@"userName"];
+    [[Crashlytics sharedInstance] setObjectValue:[STMAuthController authController].phoneNumber
+                                          forKey:@"phoneNumber"];
     
 }
 

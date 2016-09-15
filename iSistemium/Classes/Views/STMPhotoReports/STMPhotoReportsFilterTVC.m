@@ -1,4 +1,4 @@
-//
+
 //  STMPhotoReportsFilterTVC.m
 //  iSistemium
 //
@@ -19,7 +19,6 @@
 @property (nonatomic, strong) NSString *showDataOnlyWithPhotosDefaultsKey;
 
 @property (nonatomic, strong) NSManagedObject *selectedObject;
-
 
 @end
 
@@ -69,8 +68,9 @@
         BOOL showDataOnlyWithPhotos = [defaults boolForKey:self.showDataOnlyWithPhotosDefaultsKey];
         
         _showDataOnlyWithPhotos = showDataOnlyWithPhotos;
-        
+
     }
+    
     return _showDataOnlyWithPhotos;
     
 }
@@ -103,11 +103,17 @@
     
 }
 
+- (STMPhotoReportGrouping) currentGrouping {
+    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+    NSString *key = [@"currentGrouping_" stringByAppendingString:[STMAuthController authController].userID];
+    return [defaults integerForKey:key];
+}
+
 - (NSFetchedResultsController *)resultsController {
     
     if (!_resultsController) {
-        
-        switch (self.splitVC.detailVC.currentGrouping) {
+    
+        switch (self.currentGrouping) {
             case STMPhotoReportGroupingCampaign: {
                 _resultsController = [self outletResultsController];
                 break;
@@ -245,7 +251,7 @@
     
     if ([cell isKindOfClass:[STMCustom7TVCell class]]) {
 
-        switch (self.splitVC.detailVC.currentGrouping) {
+        switch (self.currentGrouping) {
             case STMPhotoReportGroupingCampaign: {
                 [self fillOutletCell:(STMCustom7TVCell *)cell atIndexPath:indexPath];
                 break;
@@ -338,7 +344,7 @@
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(nonnull NSIndexPath *)indexPath {
     
-    switch (self.splitVC.detailVC.currentGrouping) {
+    switch (self.currentGrouping) {
         case STMPhotoReportGroupingCampaign: {
             [self tableView:tableView didSelectOutletAtIndexPath:indexPath];
             break;

@@ -17,5 +17,6 @@
     "STMWebView"            : "STMWebView",
     "STMWKWebView"          : "STMWKWebView",
     "STMShippingLocations"  : "STMShippingLocations",
-    "STMScannerInfo"        : "STMScannerInfo"
+    "STMScannerInfo"        : "STMScannerInfo",
+    "STMPhotoReports"       : "STMPhotoReports_iphone"
 }

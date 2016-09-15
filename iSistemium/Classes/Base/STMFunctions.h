@@ -23,6 +23,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 + (NSData *)dataFromString:(NSString *)string;
 + (nullable NSData *)xidDataFromXidString:(nullable NSString  *)xidString;
++ (NSData *)UUIDDataFromNSUUID:(NSUUID *)nsuuid;
 + (NSString *)UUIDStringFromUUIDData:(NSData *)UUIDData;
 + (NSString *)hexStringFromData:(NSData *)data;
 
