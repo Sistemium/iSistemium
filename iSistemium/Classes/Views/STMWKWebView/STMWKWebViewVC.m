@@ -628,6 +628,31 @@
     
 }
 
+int counter = 0;
+
+- (void) evaluateJavaScriptAndWait:(NSString *)javascript {
+    
+    [self.webView evaluateJavaScript:javascript completionHandler:^(NSString *result, NSError *error){
+    
+        // TODO: check if it's in background otherwise do not wait
+        
+        if (error || SYSTEM_VERSION < 10.0) {
+            return;
+        }
+        
+        int counterWas = ++counter;
+        int count = 0;
+        
+        while(count++ < 50 && counter == counterWas) {
+            [[NSRunLoop currentRunLoop] runUntilDate:[NSDate dateWithTimeIntervalSinceNow:0.1]];
+        }
+        
+        //NSLog(@"evaluateJavaScriptAndWait finish %d", counter);
+        
+    }];
+    
+}
+
 
 #pragma mark - STMSoundCallbackable
 
@@ -776,10 +801,7 @@
     
     NSString *jsFunction = [NSString stringWithFormat:@"%@.apply(null,%@)", self.scannerScanJSFunction, [STMFunctions jsonStringFromArray:arguments]];
     
-    [self.webView evaluateJavaScript:jsFunction completionHandler:^(id _Nullable result, NSError * _Nullable error) {
-        
-    }];
-    
+    [self evaluateJavaScriptAndWait: jsFunction];
 }
 
 - (void)powerButtonPressedOnBarCodeScanner:(STMBarCodeScanner *)scanner {
