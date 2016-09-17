@@ -632,6 +632,8 @@ int counter = 0;
 
 - (void) evaluateJavaScriptAndWait:(NSString *)javascript {
     
+    counter++;
+    
     [self.webView evaluateJavaScript:javascript completionHandler:^(NSString *result, NSError *error){
     
         // TODO: check if it's in background otherwise do not wait
@@ -640,7 +642,7 @@ int counter = 0;
             return;
         }
         
-        int counterWas = ++counter;
+        int counterWas = counter;
         int count = 0;
         
         while(count++ < 50 && counter == counterWas) {
