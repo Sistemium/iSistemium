@@ -635,10 +635,8 @@ int counter = 0;
     counter++;
     
     [self.webView evaluateJavaScript:javascript completionHandler:^(NSString *result, NSError *error){
-    
-        // TODO: check if it's in background otherwise do not wait
-        
-        if (error || SYSTEM_VERSION < 10.0) {
+            
+        if (error || SYSTEM_VERSION < 10.0 || [UIApplication sharedApplication].applicationState == UIApplicationStateActive) {
             return;
         }
         
