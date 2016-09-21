@@ -12,6 +12,10 @@
 
 #import "STMConstants.h"
 
+#import <AVFoundation/AVFoundation.h>
+
+#import "STMLogger.h"
+
 
 @interface STMImagePickerController () <UINavigationControllerDelegate, UIImagePickerControllerDelegate>
 
@@ -203,7 +207,20 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-    // Do any additional setup after loading the view.
+    
+    AVAuthorizationStatus status = [AVCaptureDevice authorizationStatusForMediaType:AVMediaTypeVideo];
+    if(status == AVAuthorizationStatusAuthorized) {
+        [[STMLogger sharedLogger] saveLogMessageWithText:@"Camera permission: authorized" type:@"important"];
+    }
+    else if(status == AVAuthorizationStatusDenied){
+        [[STMLogger sharedLogger] saveLogMessageWithText:@"Camera permission: denied" type:@"important"];
+    }
+    else if(status == AVAuthorizationStatusRestricted){
+        [[STMLogger sharedLogger] saveLogMessageWithText:@"Camera permission: restricted" type:@"important"];
+    }
+    else if(status == AVAuthorizationStatusNotDetermined){
+        [[STMLogger sharedLogger] saveLogMessageWithText:@"Camera permission: not determined" type:@"important"];
+    }
 }
 
 - (void)didReceiveMemoryWarning {
