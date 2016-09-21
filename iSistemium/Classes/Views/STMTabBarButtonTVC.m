@@ -25,7 +25,7 @@
 - (BOOL)hasSiblings {
     
     if (!_hasSiblings) {
-        _hasSiblings = (self.siblings) ? YES : NO;
+        _hasSiblings = self.siblings.count > 0;
     }
     return _hasSiblings;
     
@@ -34,7 +34,7 @@
 - (BOOL)hasActions {
     
     if (!_hasActions) {
-        _hasActions = (self.actions) ? YES : NO;
+        _hasActions = self.actions.count > 0;
     }
     return _hasActions;
     
