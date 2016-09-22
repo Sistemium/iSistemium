@@ -424,29 +424,11 @@
 #pragma mark - camera buttons
 
 - (IBAction)cameraButtonPressed:(id)sender {
-    
-//    NSLog(@"cameraButtonPressed");
-    
-    UIView *view = [[UIView alloc] initWithFrame:self.imagePickerController.cameraOverlayView.frame];
-    view.backgroundColor = [UIColor grayColor];
-    view.alpha = 0.75;
-    UIActivityIndicatorView *spinner = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleWhiteLarge];
-    spinner.center = view.center;
-    [spinner startAnimating];
-    [view addSubview:spinner];
-    
-    [self.imagePickerController.cameraOverlayView addSubview:view];
-    
-    [self.imagePickerController takePicture];
-    
+    return [self.imagePickerController cameraButtonPressed:sender];
 }
 
 - (IBAction)cancelButtonPressed:(id)sender {
-    
-//    NSLog(@"cancelButtonPressed");
-    
-    [self imagePickerControllerDidCancel:self.imagePickerController];
-    
+    return [self.imagePickerController cancelButtonPressed:sender];
 }
 
 - (IBAction)photoLibraryButtonPressed:(id)sender {
@@ -646,6 +628,7 @@
     
     if ([UIImagePickerController isSourceTypeAvailable:imageSourceType]) {
         
+        self.imagePickerController = nil;
         self.selectedSourceType = imageSourceType;
 
         [self.splitViewController presentViewController:self.imagePickerController animated:YES completion:^{
