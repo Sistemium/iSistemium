@@ -161,6 +161,12 @@
 
 - (IBAction)cameraButtonPressed:(id)sender {
     
+    AVAuthorizationStatus status = [AVCaptureDevice authorizationStatusForMediaType:AVMediaTypeVideo];
+
+    if (status != AVAuthorizationStatusAuthorized) {
+        return [self checkAuthorizationStatus];
+    }
+    
     UIView *view = [[UIView alloc] initWithFrame:self.cameraOverlayView.frame];
     view.backgroundColor = [UIColor grayColor];
     view.alpha = 0.75;
