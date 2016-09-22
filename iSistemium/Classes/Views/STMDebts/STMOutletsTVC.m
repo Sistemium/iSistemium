@@ -190,18 +190,24 @@
 
 - (void)debtSummChanged:(NSNotification *)notification {
     
-    
-    STMOutlet *outlet = notification.userInfo[@"outlet"];
-    
-    [self reloadRowWithOutlet:outlet];
+    [self.document.managedObjectContext performBlock:^{
+        
+        NSData *outletXid = notification.userInfo[@"outletXid"];
+        [self reloadRowWithOutletXid:outletXid];
+        
+    }];
     
 }
 
 - (void)cashingIsProcessedChanged:(NSNotification *)notification {
 
-    STMOutlet *outlet = notification.userInfo[@"outlet"];
-    [self reloadRowWithOutlet:outlet];
+    [self.document.managedObjectContext performBlock:^{
+    
+        NSData *outletXid = notification.userInfo[@"outletXid"];
+        [self reloadRowWithOutletXid:outletXid];
 
+    }];
+    
 }
 
 - (void)settingsChanged:(NSNotification *)notification {
@@ -214,6 +220,18 @@
         
     }
     
+}
+
+- (void)reloadRowWithOutletXid:(NSData *)outletXid {
+    
+    if (outletXid) {
+        
+        NSPredicate *predicate = [NSPredicate predicateWithFormat:@"xid == %@", outletXid];
+        STMOutlet *outlet = [self.resultsController.fetchedObjects filteredArrayUsingPredicate:predicate].firstObject;
+        if (outlet) [self reloadRowWithOutlet:outlet];
+
+    }
+
 }
 
 - (void)reloadRowWithOutlet:(STMOutlet *)outlet {
