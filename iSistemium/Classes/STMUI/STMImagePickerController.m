@@ -301,7 +301,10 @@
 - (void)viewDidLoad {
     
     [super viewDidLoad];
-    [self checkAuthorizationStatus];
+    
+    if (self.sourceType == UIImagePickerControllerSourceTypeCamera) {
+        [self checkAuthorizationStatus];
+    }
 
 }
 
