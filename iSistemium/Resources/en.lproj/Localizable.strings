@@ -492,3 +492,6 @@
 "GROUPING" = "Grouping";
 "BY CAMPAIGNS" = "by campaigns";
 "BY OUTLETS" = "by outlets";
+"CAMERA PERMISSION RESTRICTED" = "Camera permission restricted";
+"CAMERA PERMISSION DENIED" = "Camera permission denied";
+

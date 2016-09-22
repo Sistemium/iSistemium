@@ -8,16 +8,14 @@
 
 #import "STMImagePickerController.h"
 
+#import <AVFoundation/AVFoundation.h>
 #import <AssetsLibrary/AssetsLibrary.h>
 
 #import "STMConstants.h"
-
-#import <AVFoundation/AVFoundation.h>
-
 #import "STMLogger.h"
 
 
-@interface STMImagePickerController () <UINavigationControllerDelegate, UIImagePickerControllerDelegate>
+@interface STMImagePickerController () <UINavigationControllerDelegate, UIImagePickerControllerDelegate, UIAlertViewDelegate>
 
 @end
 
@@ -29,7 +27,7 @@
     self = [super init];
     
     if (self) {
-
+        
         self.delegate = self;
         
         self.sourceType = sourceType;
@@ -38,8 +36,10 @@
             
             self.showsCameraControls = NO;
             
-            UIView *cameraOverlayView = [[NSBundle mainBundle] loadNibNamed:@"STMCameraOverlayView" owner:self options:nil].firstObject;
-
+            UIView *cameraOverlayView = [[NSBundle mainBundle] loadNibNamed:@"STMCameraOverlayView"
+                                                                      owner:self
+                                                                    options:nil].firstObject;
+            
             [self setFrameForCameraOverlayView:cameraOverlayView];
             
             self.cameraOverlayView = cameraOverlayView;
@@ -203,24 +203,102 @@
 }
 
 
+#pragma mark - authorizationStatus
+
+- (void)checkAuthorizationStatus {
+    
+    NSString *statusString = @"";
+    AVAuthorizationStatus status = [AVCaptureDevice authorizationStatusForMediaType:AVMediaTypeVideo];
+    
+    switch (status) {
+        case AVAuthorizationStatusNotDetermined:
+            statusString = @"not determined";
+            break;
+
+        case AVAuthorizationStatusRestricted:
+            statusString = @"restricted";
+            [self showCameraPermissionAlert:statusString];
+            break;
+
+        case AVAuthorizationStatusDenied:
+            statusString = @"denied";
+            [self showCameraPermissionAlert:statusString];
+            break;
+
+        case AVAuthorizationStatusAuthorized:
+            statusString = @"authorized";
+            break;
+
+        default:
+            break;
+    }
+    
+    NSString *logMessage = [@"Camera permission: " stringByAppendingString:statusString];
+
+    [[STMLogger sharedLogger] saveLogMessageWithText:logMessage
+                                             numType:STMLogMessageTypeImportant];
+    
+}
+
+- (void)showCameraPermissionAlert:(NSString *)alertReason {
+
+    NSString *alertMessage = nil;
+    NSString *settingButtonTitle = nil;
+    
+    if ([alertReason isEqualToString:@"restricted"]) {
+        
+        alertMessage = NSLocalizedString(@"CAMERA PERMISSION RESTRICTED", nil);
+        
+    } else if ([alertReason isEqualToString:@"denied"]) {
+        
+        alertMessage = NSLocalizedString(@"CAMERA PERMISSION DENIED", nil);
+        settingButtonTitle = NSLocalizedString(@"SETTINGS", nil);
+
+    }
+    
+    if (alertMessage) {
+        
+        [[NSOperationQueue mainQueue] addOperationWithBlock:^{
+        
+            UIAlertView *alert = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"WARNING", nil)
+                                                            message:alertMessage
+                                                           delegate:self
+                                                  cancelButtonTitle:NSLocalizedString(@"OK", nil)
+                                                  otherButtonTitles:nil];
+            
+            if (settingButtonTitle) [alert addButtonWithTitle:settingButtonTitle];
+            [alert show];
+
+        }];
+        
+    }
+    
+}
+
+
+#pragma mark - UIAlertViewDelegate
+
+- (void)alertView:(UIAlertView *)alertView didDismissWithButtonIndex:(NSInteger)buttonIndex {
+    
+    if (buttonIndex == 1) {
+        
+        NSURL *appSettings = [NSURL URLWithString:UIApplicationOpenSettingsURLString];
+        [[UIApplication sharedApplication] openURL:appSettings];
+
+    }
+    
+    [self.delegate imagePickerControllerDidCancel:self];
+    
+}
+
+
 #pragma mark - view lifecycle
 
 - (void)viewDidLoad {
-    [super viewDidLoad];
     
-    AVAuthorizationStatus status = [AVCaptureDevice authorizationStatusForMediaType:AVMediaTypeVideo];
-    if(status == AVAuthorizationStatusAuthorized) {
-        [[STMLogger sharedLogger] saveLogMessageWithText:@"Camera permission: authorized" type:@"important"];
-    }
-    else if(status == AVAuthorizationStatusDenied){
-        [[STMLogger sharedLogger] saveLogMessageWithText:@"Camera permission: denied" type:@"important"];
-    }
-    else if(status == AVAuthorizationStatusRestricted){
-        [[STMLogger sharedLogger] saveLogMessageWithText:@"Camera permission: restricted" type:@"important"];
-    }
-    else if(status == AVAuthorizationStatusNotDetermined){
-        [[STMLogger sharedLogger] saveLogMessageWithText:@"Camera permission: not determined" type:@"important"];
-    }
+    [super viewDidLoad];
+    [self checkAuthorizationStatus];
+
 }
 
 - (void)didReceiveMemoryWarning {
@@ -228,14 +306,5 @@
     // Dispose of any resources that can be recreated.
 }
 
-/*
-#pragma mark - Navigation
-
-// In a storyboard-based application, you will often want to do a little preparation before navigation
-- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
-    // Get the new view controller using [segue destinationViewController].
-    // Pass the selected object to the new view controller.
-}
-*/
 
 @end
