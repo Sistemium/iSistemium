@@ -182,9 +182,7 @@
 }
 
 - (IBAction)cancelButtonPressed:(id)sender {
-    
-    [self imagePickerControllerDidCancel:self];
-    
+    [self.delegate imagePickerControllerDidCancel:self];
 }
 
 - (IBAction)photoLibraryButtonPressed:(id)sender {
@@ -291,9 +289,9 @@
         NSURL *appSettings = [NSURL URLWithString:UIApplicationOpenSettingsURLString];
         [[UIApplication sharedApplication] openURL:appSettings];
 
+        [self cancelButtonPressed:self];
+
     }
-    
-    [self.delegate imagePickerControllerDidCancel:self];
     
 }
 
