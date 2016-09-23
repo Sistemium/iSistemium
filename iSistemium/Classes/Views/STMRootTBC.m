@@ -249,10 +249,35 @@
 
 - (void)replaceVC:(UIViewController *)currentVC withVC:(UIViewController *)vc {
     
+    if (!currentVC || !vc) {
+        
+        [[STMLogger sharedLogger] saveLogMessageWithText:@"!currentVC || !vc in replaceVC:withVC:"
+                                                 numType:STMLogMessageTypeError];
+        return;
+        
+    }
+    
     NSUInteger index = [self.currentTabsVCs indexOfObject:currentVC];
     
+    if (index == NSNotFound) {
+
+        [[STMLogger sharedLogger] saveLogMessageWithText:@"indexOfObject:currentVC == NSNotFound"
+                                                 numType:STMLogMessageTypeError];
+        return;
+
+    }
+
     NSArray *siblings = [self siblingsForViewController:currentVC];
     NSUInteger siblingIndex = [siblings indexOfObject:vc];
+    
+    if (siblingIndex == NSNotFound) {
+        
+        [[STMLogger sharedLogger] saveLogMessageWithText:@"indexOfObject:vc == NSNotFound"
+                                                 numType:STMLogMessageTypeError];
+        return;
+        
+    }
+
     self.orderedStcTabs[@(index)] = @(siblingIndex);
     
     STMUserDefaults *defaults = [STMUserDefaults standardUserDefaults];
@@ -260,7 +285,7 @@
     [defaults setObject:data forKey:[self orderedStcTabsKey]];
     [defaults synchronize];
     
-    (self.currentTabsVCs)[index] = vc;
+    self.currentTabsVCs[index] = vc;
     
     NSString *logMessage = [NSString stringWithFormat:@"didSelectViewController: %@", NSStringFromClass([vc class])];
     [STMSocketController sendEvent:STMSocketEventStatusChange withValue:logMessage];

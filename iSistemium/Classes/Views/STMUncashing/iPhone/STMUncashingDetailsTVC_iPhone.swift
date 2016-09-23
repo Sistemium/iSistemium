@@ -100,7 +100,7 @@ class STMUncashingDetailsTVC_iPhone: STMUncashingDetailsTVC, UIPopoverPresentati
                     let flexibleSpace = UIBarButtonItem(barButtonSystemItem: .FlexibleSpace, target: nil, action: nil)
                     var cashingSum = NSDecimalNumber.zero()
                     for cashing in self.resultsController.fetchedObjects! {
-                        cashingSum = cashingSum.decimalNumberByAdding(cashing.summ ?? 0)
+                        cashingSum = cashingSum.decimalNumberByAdding((cashing as! STMCashing).summ ?? 0)
                     }
                     var uncashingSum = NSDecimalNumber.zero()
                     for cashing in STMUncashingProcessController.sharedInstance().cashingDictionary.allValues {

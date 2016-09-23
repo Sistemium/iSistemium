@@ -76,7 +76,7 @@
             
             [[NSNotificationCenter defaultCenter] postNotificationName:@"cashingIsProcessedChanged"
                                                                 object:nil
-                                                              userInfo:@{@"outlet": self.outlet}];
+                                                              userInfo:@{@"outletXid": self.outlet.xid}];
             
         }
         

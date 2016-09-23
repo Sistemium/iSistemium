@@ -190,25 +190,24 @@
 
 - (void)debtSummChanged:(NSNotification *)notification {
     
-//    CLS_LOG(@"____________debtSummChanged____________");
-    
-    STMOutlet *outlet = (notification.userInfo)[@"outlet"];
-    
-//    CLS_LOG(@"outlet %@", outlet);
-//    CLS_LOG(@"outlet.managedObjectContext %@", outlet.managedObjectContext);
-//    CLS_LOG(@"self.resultsController.managedObjectContext %@", self.resultsController.managedObjectContext);
-//    CLS_LOG(@"isMainThread %d", [NSThread isMainThread]);
-//    CLS_LOG(@"____________debtSummChanged____________");
-
-    [self reloadRowWithOutlet:outlet];
+    [self.document.managedObjectContext performBlock:^{
+        
+        NSData *outletXid = notification.userInfo[@"outletXid"];
+        [self reloadRowWithOutletXid:outletXid];
+        
+    }];
     
 }
 
 - (void)cashingIsProcessedChanged:(NSNotification *)notification {
 
-    STMOutlet *outlet = (notification.userInfo)[@"outlet"];
-    [self reloadRowWithOutlet:outlet];
+    [self.document.managedObjectContext performBlock:^{
+    
+        NSData *outletXid = notification.userInfo[@"outletXid"];
+        [self reloadRowWithOutletXid:outletXid];
 
+    }];
+    
 }
 
 - (void)settingsChanged:(NSNotification *)notification {
@@ -223,13 +222,50 @@
     
 }
 
+- (void)reloadRowWithOutletXid:(NSData *)outletXid {
+    
+    if (outletXid) {
+        
+        NSPredicate *predicate = [NSPredicate predicateWithFormat:@"xid == %@", outletXid];
+        STMOutlet *outlet = [self.resultsController.fetchedObjects filteredArrayUsingPredicate:predicate].firstObject;
+        if (outlet) [self reloadRowWithOutlet:outlet];
+
+    }
+
+}
+
 - (void)reloadRowWithOutlet:(STMOutlet *)outlet {
+
+    if (!outlet || ![NSThread isMainThread]) {
+        
+        STMLogger *logger = [STMLogger sharedLogger];
+        
+        NSArray *logMessages = @[@"____________debtSummChanged____________",
+                                 [NSString stringWithFormat:@"outlet %@", outlet],
+                                 [NSString stringWithFormat:@"outlet.managedObjectContext %@", outlet.managedObjectContext],
+                                 [NSString stringWithFormat:@"self.resultsController.managedObjectContext %@", self.resultsController.managedObjectContext],
+                                 [NSString stringWithFormat:@"isMainThread %d", [NSThread isMainThread]],
+                                 @"____________debtSummChanged____________"];
+        
+        for (NSString *logMessage in logMessages) {
+            [logger saveLogMessageWithText:logMessage numType:STMLogMessageTypeError];
+        }
+        
+        return;
+        
+    }
 
     NSIndexPath *indexPath = [self.resultsController indexPathForObject:outlet];
     
-    if (indexPath) {
-        [self.tableView reloadRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationFade];
+    if (!indexPath) {
+        
+        [[STMLogger sharedLogger] saveLogMessageWithText:@"no indexPath in reloadRowWithOutlet:"
+                                                 numType:STMLogMessageTypeError];
+        return;
+        
     }
+    
+    [self.tableView reloadRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationFade];
 
 }
 

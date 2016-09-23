@@ -67,7 +67,7 @@
             
             [[NSNotificationCenter defaultCenter] postNotificationName:@"debtSummChanged"
                                                                 object:nil
-                                                              userInfo:@{@"outlet": self.outlet}];
+                                                              userInfo:@{@"outletXid": self.outlet.xid}];
             
         }
         

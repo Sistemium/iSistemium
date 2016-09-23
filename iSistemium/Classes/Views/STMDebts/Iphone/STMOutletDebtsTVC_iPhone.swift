@@ -56,7 +56,7 @@ class STMOutletDebtsTVC_iPhone: STMOutletDebtsTVC {
     
     override func tableView(tableView: UITableView, willDisplayCell cell: UITableViewCell, forRowAtIndexPath indexPath: NSIndexPath) {
         let customCell = cell as! STMThreeLinesAndCheckboxTVCell
-        let debt = self.resultsController.objectAtIndexPath(indexPath)
+        let debt = self.resultsController.objectAtIndexPath(indexPath) as! STMDebt
         customCell.contentView.viewWithTag(1)?.removeFromSuperview()
         customCell.tintColor = STMSwiftConstants.ACTIVE_BLUE_COLOR
         customCell.accessoryType = .None
@@ -71,7 +71,7 @@ class STMOutletDebtsTVC_iPhone: STMOutletDebtsTVC {
             
             if debt.xid != nil && debtsDictionary.allKeys.contains({$0 as? NSObject == debt.xid}) {
                 
-                let debtValues: NSArray = debtsDictionary[debt.xid!!]! as! NSArray
+                let debtValues: NSArray = debtsDictionary[debt.xid!]! as! NSArray
                 let cashingSum = debtValues[1]
                 fillWidth = CGFloat(cashingSum.decimalNumberByDividingBy(debt.calculatedSum ?? 0).doubleValue)
                 

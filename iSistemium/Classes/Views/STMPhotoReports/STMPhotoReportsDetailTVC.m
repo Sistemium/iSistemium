@@ -498,19 +498,11 @@
         STMImagePickerController *imagePickerController = [[STMImagePickerController alloc] initWithSourceType:imageSourceType];
         imagePickerController.ownerVC = self;
         
-        if (self.splitViewController != nil){
-            [self.splitViewController presentViewController:imagePickerController animated:YES completion:^{
-                
-                [self.view addSubview:self.spinner];
-                
-            }];
-        }else{
-            [self.navigationController presentViewController:imagePickerController animated:YES completion:^{
-                
-                [self.view addSubview:self.spinner];
-                
-            }];
-        }
+        UIViewController *presentingVC = (self.splitViewController) ? self.splitViewController : self.navigationController;
+
+        [presentingVC presentViewController:imagePickerController animated:YES completion:^{
+            [self.view addSubview:self.spinner];
+        }];
         
     }
     

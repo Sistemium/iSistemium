@@ -108,7 +108,7 @@
 
     UIViewController *vc = self.siblings[index];
     
-    if (vc != self) {
+    if (vc && vc != self) {
         [[STMRootTBC sharedRootVC] replaceVC:self withVC:vc];
     }
     
