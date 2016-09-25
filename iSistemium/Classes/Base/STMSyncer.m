@@ -1084,32 +1084,45 @@
     if (newsData) {
         
         NSError *error;
-        NSDictionary *responseJSON = [NSJSONSerialization JSONObjectWithData:newsData options:NSJSONReadingMutableContainers error:&error];
+        NSDictionary *responseJSON = [NSJSONSerialization JSONObjectWithData:newsData
+                                                                     options:NSJSONReadingMutableContainers
+                                                                       error:&error];
         
         if (!error) {
             
-//            NSLog(@"responseJSON %@", responseJSON);
-
-            NSArray *entitiesNames = [responseJSON valueForKeyPath:@"data.@unionOfObjects.properties.name"];
-//            NSLog(@"entitiesNames %@", entitiesNames);
-            NSArray *objectsCount = [responseJSON valueForKeyPath:@"data.@unionOfObjects.properties.cnt"];
+            NSArray *newsProperties = [responseJSON valueForKeyPath:@"data.@unionOfObjects.properties"];
             
-            NSDictionary *news = [NSDictionary dictionaryWithObjects:objectsCount forKeys:entitiesNames];
-
-            for (NSString *entityName in entitiesNames) {
-                NSLog(@"    news: STM%@ — %@ objects", entityName, news[entityName]);
+            NSMutableArray *entitiesNames = @[].mutableCopy;
+            NSMutableArray *newsObjectsCounts = @[].mutableCopy;
+            
+            for (NSDictionary *newsEntityProperty in newsProperties) {
+                
+                NSString *entityName = newsEntityProperty[@"name"];
+                
+                if (entityName) {
+                    
+                    NSString *objectsCount = newsEntityProperty[@"cnt"] ? newsEntityProperty[@"cnt"] : @"";
+                    
+                    [newsObjectsCounts addObject:objectsCount];
+                    [entitiesNames addObject:[ISISTEMIUM_PREFIX stringByAppendingString:entityName]];
+                    
+                }
+                
             }
             
-            NSMutableArray *tempArray = [NSMutableArray array];
-            
+            NSDictionary *news = [NSDictionary dictionaryWithObjects:newsObjectsCounts forKeys:entitiesNames];
+
+#ifdef DEBUG
             for (NSString *entityName in entitiesNames) {
-                [tempArray addObject:[ISISTEMIUM_PREFIX stringByAppendingString:entityName]];
+                NSLog(@"    news: %@ — %@ objects", entityName, news[entityName]);
             }
+#endif
+            self.entitySyncNames = entitiesNames;
+            self.entityCount = entitiesNames.count;
             
-            self.entitySyncNames = tempArray;
-            self.entityCount = tempArray.count;
-            
-            [[NSNotificationCenter defaultCenter] postNotificationName:@"syncerNewsHaveObjects" object:self userInfo:@{@"totalNumberOfObjects": [objectsCount valueForKeyPath:@"@sum.integerValue"]}];
+            [[NSNotificationCenter defaultCenter] postNotificationName:@"syncerNewsHaveObjects"
+                                                                object:self
+                                                              userInfo:@{@"totalNumberOfObjects": [newsObjectsCounts valueForKeyPath:@"@sum.integerValue"]}];
             
             [self checkConditionForReceivingEntityWithName:self.entitySyncNames.firstObject];
 
