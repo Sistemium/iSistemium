@@ -57,7 +57,7 @@
 @property (nonatomic) BOOL sendOnce;
 @property (nonatomic) BOOL errorOccured;
 @property (nonatomic) BOOL fullSyncWasDone;
-@property (nonatomic) BOOL isFirstSyncCycleIteration;
+@property (nonatomic) BOOL entitiesWasUpdated;
 
 @property (nonatomic, strong) NSMutableDictionary *responses;
 @property (nonatomic, strong) NSMutableDictionary *temporaryETag;
@@ -234,18 +234,20 @@
     
     if (self.running && !self.syncing && syncerState != _syncerState) {
         
-//        syncerState = (_syncerState == STMSyncerSendData && !self.fullSyncWasDone) ? STMSyncerReceiveData : syncerState;
-        
         STMSyncerState previousState = _syncerState;
         
         _syncerState = syncerState;
-        
+
+#ifdef DEBUG
         NSArray *syncStates = @[@"idle", @"sendData", @"sendDataOnce", @"receiveData"];
-        [[NSNotificationCenter defaultCenter] postNotificationName:@"syncStatusChanged" object:self userInfo:@{@"from":@(previousState), @"to":@(syncerState)}];
-        
         NSString *logMessage = [NSString stringWithFormat:@"Syncer %@", syncStates[syncerState]];
         NSLog(logMessage);
-
+#endif
+        
+        [[NSNotificationCenter defaultCenter] postNotificationName:@"syncStatusChanged"
+                                                            object:self
+                                                          userInfo:@{@"from":@(previousState), @"to":@(syncerState)}];
+        
         switch (_syncerState) {
             case STMSyncerIdle: {
                 
@@ -287,90 +289,6 @@
     }
     
     return;
-    
-
-//    self.sendOnce = (syncerState != STMSyncerIdle) && ((self.sendOnce) || (self.syncing && syncerState == STMSyncerSendDataOnce))? YES : NO;
-//    
-//    if (!self.syncing && syncerState != _syncerState) {
-//        
-//        syncerState = (_syncerState == STMSyncerSendData && !self.fullSyncWasDone) ? STMSyncerReceiveData : (self.sendOnce) ? STMSyncerSendDataOnce : syncerState;
-//
-//        STMSyncerState previousState = _syncerState;
-//        
-//        _syncerState = syncerState;
-//        
-//        NSArray *syncStates = @[@"idle", @"sendData", @"sendDataOnce", @"receiveData"];
-//        [[NSNotificationCenter defaultCenter] postNotificationName:@"syncStatusChanged" object:self userInfo:@{@"from":@(previousState), @"to":@(syncerState)}];
-//        
-//        NSString *logMessage = [NSString stringWithFormat:@"Syncer %@", syncStates[syncerState]];
-//        NSLog(logMessage);
-//        
-//        self.isFirstSyncCycleIteration = (previousState == STMSyncerIdle);
-//        
-//        switch (syncerState) {
-//                
-//            case STMSyncerSendData:
-//                
-////                [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:YES];
-////                [STMClientDataController checkClientData];
-////                self.syncing = YES;
-////                [self sendData];
-////                
-////                break;
-//
-//                
-//            case STMSyncerSendDataOnce:
-//                
-//                [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:YES];
-//                [STMClientDataController checkClientData];
-//                self.syncing = YES;
-//                [self sendingRoute];
-//                
-////                [self sendData];
-////                [self nothingToSend];
-//                
-//                break;
-//
-//                
-//            case STMSyncerReceiveData:
-//                
-//                [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:YES];
-//                self.syncing = YES;
-//                [self checkNews];
-//                
-//                break;
-//                
-//                
-//            case STMSyncerIdle:
-//                
-//                [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:NO];
-//                self.syncing = NO;
-//                self.sendOnce = NO;
-//                self.checkSending = NO;
-//
-////                [STMObjectsController dataLoadingFinished];
-////                [STMPicturesController checkUploadedPhotos];
-//                
-//                self.entitySyncNames = nil;
-//                if (self.receivingEntitiesNames) self.receivingEntitiesNames = nil;
-//                if (self.fetchCompletionHandler) self.fetchCompletionHandler(self.fetchResult);
-//
-////                if (previousState == STMSyncerReceiveData) {
-////                    
-////                    [STMObjectsController dataLoadingFinished];
-////                    [STMSocketController sendUnsyncedObjects:self];
-////
-////                }
-//                
-//                break;
-//                
-//                
-//            default:
-//                break;
-//                
-//        }
-//        
-//    }
     
 }
 
@@ -1174,29 +1092,17 @@
 - (void)checkConditionForReceivingEntityWithName:(NSString *)entityName {
     
     if (self.syncerState != STMSyncerIdle) {
-
-        if ([entityName isEqualToString:@"STMShipmentRoutePointShipment"]) {
-            
-        }
         
-        
-        STMEntity *entity = (self.stcEntities)[entityName];
+        STMEntity *entity = self.stcEntities[entityName];
         NSString *url = entity.url;
         
         if (url) {
         
             STMClientEntity *clientEntity = [STMClientEntityController clientEntityWithName:entity.name];
             
-//            NSLog(@"entity.name %@ entity.eTag %@", entity.name, entity.eTag);
-//            NSLog(@"clientEntity.name %@ clientEntity.eTag %@", clientEntity.name, clientEntity.eTag);
-
             NSString *eTag = clientEntity.eTag;
             eTag = eTag ? eTag : @"*";
             
-//            if (!self.fullSyncWasDone && [entityName isEqualToString:NSStringFromClass([STMSetting class])]) {
-//                eTag = @"*";
-//            }
-
             NSURL *requestURL = [NSURL URLWithString:url];
             
             [self startReceiveDataFromURL:requestURL withETag:eTag];
@@ -1220,7 +1126,7 @@
     
     if ([request valueForHTTPHeaderField:@"Authorization"]) {
         
-        request.timeoutInterval = 120/*[self timeout]*/;
+        request.timeoutInterval = [self timeout];
         request.HTTPShouldHandleCookies = NO;
         [request setHTTPMethod:@"GET"];
         
@@ -1321,11 +1227,8 @@
     
     [self saveReceiveDate];
     
-//    if (!self.fullSyncWasDone) [STMSocketController startSocket];
-    
     self.fullSyncWasDone = YES;
-    self.isFirstSyncCycleIteration = NO;
-    
+
     [self.document saveDocument:^(BOOL success) {
         
         if (success) {
@@ -1380,6 +1283,8 @@
     NSString *entityName = [self entityNameForConnection:connection];
     
     if (statusCode == 200) {
+        
+        if ([entityName isEqualToString:@"STMEntity"]) self.entitiesWasUpdated = YES;
         
         self.responses[entityName] = [NSMutableData data];
         
@@ -1440,25 +1345,34 @@
 
     if ([entityName isEqualToString:@"STMEntity"]) {
         
-        [STMEntityController flushSelf];
-        [STMSocketController reloadResultsControllers];
-        
-        self.stcEntities = nil;
-        NSMutableArray *entityNames = [self.stcEntities.allKeys mutableCopy];
-        [entityNames removeObject:entityName];
-        
-        self.entitySyncNames = entityNames;
-        
-        self.entityCount = entityNames.count;
-        
-        NSUInteger settingsIndex = [self.entitySyncNames indexOfObject:@"STMSetting"];        
-        if (settingsIndex != NSNotFound) [self.entitySyncNames exchangeObjectAtIndex:settingsIndex withObjectAtIndex:0];
-        
-        [[NSNotificationCenter defaultCenter] postNotificationName:@"entitiesReceivingDidFinish" object:self];
-        
-//        for (NSString *name in entityNames) {
+        if (!self.fullSyncWasDone || self.entitiesWasUpdated) {
+            
+            [STMEntityController flushSelf];
+            [STMSocketController reloadResultsControllers];
+            
+            self.stcEntities = nil;
+            NSMutableArray *entityNames = [self.stcEntities.allKeys mutableCopy];
+            [entityNames removeObject:entityName];
+            
+            self.entitySyncNames = entityNames;
+            
+            self.entityCount = entityNames.count;
+            
+            NSUInteger settingsIndex = [self.entitySyncNames indexOfObject:@"STMSetting"];
+            
+            if (settingsIndex != NSNotFound) [self.entitySyncNames exchangeObjectAtIndex:settingsIndex
+                                                                       withObjectAtIndex:0];
+            
+            [[NSNotificationCenter defaultCenter] postNotificationName:@"entitiesReceivingDidFinish"
+                                                                object:self];
+            
+            self.entitiesWasUpdated = NO;
+
             [self checkConditionForReceivingEntityWithName:self.entitySyncNames.firstObject];
-//        }
+
+        } else {
+            [self entityCountDecrease];
+        }
         
     } else {
         [self entityCountDecrease];
@@ -1469,7 +1383,7 @@
 - (void)connection:(NSURLConnection *)connection didReceiveData:(NSData *)data {
     
     NSString *entityName = [self entityNameForConnection:connection];
-    NSMutableData *responseData = (self.responses)[entityName];
+    NSMutableData *responseData = self.responses[entityName];
     [responseData appendData:data];
     
 }
@@ -1477,7 +1391,7 @@
 - (void)connectionDidFinishLoading:(NSURLConnection *)connection {
     
     NSString *entityName = [self entityNameForConnection:connection];
-    NSMutableData *responseData = (self.responses)[entityName];
+    NSMutableData *responseData = self.responses[entityName];
     
     if (responseData) {
         [self parseResponse:responseData fromConnection:connection];
@@ -1631,14 +1545,6 @@
         
         [self nothingToSend];
         
-//        if (![STMSocketController socketIsAvailable]) {
-        
-//            self.syncing = NO;
-//            self.syncerState = (self.isFirstSyncCycleIteration && self.syncerState == STMSyncerSendData) ? STMSyncerReceiveData : STMSyncerIdle;
-//            [self afterSendFurcation];
-
-//        }
-
     }];
 
 }
