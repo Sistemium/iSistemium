@@ -246,12 +246,14 @@
         
         STMLogger *logger = [STMLogger sharedLogger];
         
-        NSString *logMessage = [NSString stringWithFormat:@"socket %@ disconnect", sc.socket.sid];
+        NSString *logMessage = [NSString stringWithFormat:@"close socket %@", sc.socket.sid];
         [logger saveLogMessageWithText:logMessage
                                numType:STMLogMessageTypeImportant];
 
         //    [self sharedInstance].shouldStarted = NO;
         [sc.socket disconnect];
+        [sc.socket removeAllHandlers];
+        
         sc.socketUrl = nil;
         sc.socket = nil;
         sc.isSendingData = NO;
@@ -415,6 +417,8 @@
 #pragma mark - socket events receiveing
 
 - (void)addEventObserversToSocket:(SocketIOClient *)socket {
+    
+    [socket removeAllHandlers];
     
     NSLog(@"addEventObserversToSocket %@", socket);
     
@@ -1122,7 +1126,12 @@
                                                                                               /*@"forceWebsockets"   : @YES,*/
                                                                                               @"path"              : path}];
 
-        NSLog(@"init socket %@", socket);
+        STMLogger *logger = [STMLogger sharedLogger];
+        
+        NSString *logMessage = [NSString stringWithFormat:@"init socket %@", socket];
+        [logger saveLogMessageWithText:logMessage
+                               numType:STMLogMessageTypeImportant];
+        
 
         [self addEventObserversToSocket:socket];
 
