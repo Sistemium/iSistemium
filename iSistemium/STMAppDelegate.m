@@ -38,8 +38,11 @@
 
     NSLog(@"deviceUUID %@", [STMClientDataController deviceUUIDString]);
     
-    NSString *logMessage = [NSString stringWithFormat:@"application didFinishLaunchingWithOptions"];
-    [[STMLogger sharedLogger] saveLogMessageWithText:logMessage type:@"info"];
+    STMLogger *logger = [STMLogger sharedLogger];
+    
+    NSString *logMessage = [NSString stringWithFormat:@"application didFinishLaunchingWithOptions: %@", launchOptions.description];
+    [logger saveLogMessageWithText:logMessage
+                           numType:STMLogMessageTypeImportant];
 
     [STMAuthController authController];
     
@@ -64,12 +67,14 @@
                name:NOTIFICATION_SESSION_STATUS_CHANGED
              object:[STMSessionManager sharedManager].currentSession];
     
-    NSError *error = NULL;
+    NSError *error = nil;
     AVAudioSession *session = [AVAudioSession sharedInstance];
     [session setCategory:AVAudioSessionCategoryPlayback error:&error];
-    if(error) {
+    
+    if (error) {
         // Do some error handling
     }
+    
     [session setActive:YES error:&error];
 
     [self setupWindow];
