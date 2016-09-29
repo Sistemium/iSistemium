@@ -160,9 +160,11 @@
 - (void)applicationWillResignActive:(UIApplication *)application {
     
     NSString *logMessage = [NSString stringWithFormat:@"applicationWillResignActive"];
-    [[STMLogger sharedLogger] saveLogMessageWithText:logMessage type:nil];
+    [[STMLogger sharedLogger] saveLogMessageWithText:logMessage
+                                             numType:STMLogMessageTypeImportant];
     
-    [STMSocketController sendEvent:STMSocketEventStatusChange withValue:logMessage];
+    [STMSocketController sendEvent:STMSocketEventStatusChange
+                         withValue:logMessage];
     
 }
 
@@ -179,9 +181,11 @@
     NSLog(@"BackgroundTimeRemaining %d", (unsigned int)[application backgroundTimeRemaining]);
     
     NSString *logMessage = [NSString stringWithFormat:@"applicationDidEnterBackground"];
-    [[STMLogger sharedLogger] saveLogMessageWithText:logMessage type:nil];
+    [[STMLogger sharedLogger] saveLogMessageWithText:logMessage
+                                             numType:STMLogMessageTypeImportant];
     
-    [STMSocketController sendEvent:STMSocketEventStatusChange withValue:logMessage];
+    [STMSocketController sendEvent:STMSocketEventStatusChange
+                         withValue:logMessage];
 
 //    [self showTestLocalNotification];
     
@@ -190,16 +194,19 @@
 - (void)applicationWillEnterForeground:(UIApplication *)application {
     
     NSString *logMessage = [NSString stringWithFormat:@"applicationWillEnterForeground"];
-    [[STMLogger sharedLogger] saveLogMessageWithText:logMessage type:nil];
+    [[STMLogger sharedLogger] saveLogMessageWithText:logMessage
+                                             numType:STMLogMessageTypeImportant];
     
-    [STMSocketController sendEvent:STMSocketEventStatusChange withValue:logMessage];
+    [STMSocketController sendEvent:STMSocketEventStatusChange
+                         withValue:logMessage];
 
 }
 
 - (void)applicationDidBecomeActive:(UIApplication *)application {
     
     NSString *logMessage = [NSString stringWithFormat:@"applicationDidBecomeActive"];
-    [[STMLogger sharedLogger] saveLogMessageWithText:logMessage type:nil];
+    [[STMLogger sharedLogger] saveLogMessageWithText:logMessage
+                                             numType:STMLogMessageTypeImportant];
 
     [self setupWindow];
 
@@ -208,13 +215,15 @@
         [STMMessageController showMessageVCsIfNeeded];
     }
     
-    [STMSocketController sendEvent:STMSocketEventStatusChange withValue:logMessage];
+    [STMSocketController sendEvent:STMSocketEventStatusChange
+                         withValue:logMessage];
 
 }
 
 - (void)applicationDidReceiveMemoryWarning:(UIApplication *)application {
     
-    [[STMLogger sharedLogger] saveLogMessageWithText:@"applicationDidReceiveMemoryWarning" type:@"important"];
+    [[STMLogger sharedLogger] saveLogMessageWithText:@"applicationDidReceiveMemoryWarning"
+                                             numType:STMLogMessageTypeImportant];
     [STMFunctions logMemoryStat];
     
 }
