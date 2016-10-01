@@ -259,6 +259,7 @@
                 self.entitySyncNames = nil;
                 if (self.receivingEntitiesNames) self.receivingEntitiesNames = nil;
                 if (self.fetchCompletionHandler) self.fetchCompletionHandler(self.fetchResult);
+                self.fetchCompletionHandler = nil;
 
                 break;
             }
@@ -751,9 +752,14 @@
         } else {
             
             if (self.receivingEntitiesNames) {
+                
                 self.syncerState = STMSyncerReceiveData;
+                
             } else {
+                
+                if (self.fetchCompletionHandler) self.fetchResult = UIBackgroundFetchResultNoData;
                 self.syncerState = STMSyncerIdle;
+                
             }
             
         }
