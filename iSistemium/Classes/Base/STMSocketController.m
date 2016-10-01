@@ -231,7 +231,6 @@
             case SocketIOClientStatusNotConnected:
             case SocketIOClientStatusDisconnected: {
                 [sc.socket connect];
-//                [sc performSelector:@selector(checkAuthorizationForSocket:) withObject:sc.socket afterDelay:CHECK_AUTHORIZATION_DELAY];
                 break;
             }
             case SocketIOClientStatusConnecting: {
@@ -541,10 +540,8 @@
                                numType:STMLogMessageTypeImportant];
         
         ssc.isAuthorized = NO;
-        
-        [ssc performSelector:@selector(checkAuthorizationForSocket:)
-                  withObject:socket
-                  afterDelay:CHECK_AUTHORIZATION_DELAY];
+
+        [ssc startDelayedAuthorizationCheckForSocket:socket];
         
         STMClientData *clientData = [STMClientDataController clientData];
         NSMutableDictionary *dataDic = [[STMObjectsController dictionaryForObject:clientData][@"properties"] mutableCopy];
@@ -1284,9 +1281,7 @@
             [logger saveLogMessageWithText:logMessage
                                    numType:STMLogMessageTypeImportant];
             
-            [self performSelector:@selector(checkAuthorizationForSocket:)
-                       withObject:socket
-                       afterDelay:CHECK_AUTHORIZATION_DELAY];
+            [self startDelayedAuthorizationCheckForSocket:socket];
             
         }
         
@@ -1294,6 +1289,19 @@
     
 }
 
+- (void)startDelayedAuthorizationCheckForSocket:(SocketIOClient *)socket {
+    
+    SEL checkAuthSel = @selector(checkAuthorizationForSocket:);
+    
+    [STMSocketController cancelPreviousPerformRequestsWithTarget:self
+                                                        selector:checkAuthSel
+                                                          object:socket];
+    
+    [self performSelector:checkAuthSel
+               withObject:socket
+               afterDelay:CHECK_AUTHORIZATION_DELAY];
+    
+}
 
 
 @end
