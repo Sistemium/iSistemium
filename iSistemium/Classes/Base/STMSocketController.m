@@ -1256,27 +1256,33 @@
         [logger saveLogMessageWithText:logMessage
                                numType:STMLogMessageTypeImportant];
         
-        if (self.isAuthorized) {
+        if (socket.status == SocketIOClientStatusConnected) {
             
-            logMessage = [NSString stringWithFormat:@"socket %@ %@ is authorized", socket, socket.sid];
-            [logger saveLogMessageWithText:logMessage
-                                   numType:STMLogMessageTypeImportant];
-            
-        } else {
-            
-            if (socket.status == SocketIOClientStatusConnected || socket.status == SocketIOClientStatusConnecting) {
+            if (self.isAuthorized) {
                 
-                logMessage = [NSString stringWithFormat:@"socket %@ %@ is connected (status %@) but don't receive authorization ack, reconnecting", socket, socket.sid, @(socket.status)];
+                logMessage = [NSString stringWithFormat:@"socket %@ %@ is authorized", socket, socket.sid];
+                [logger saveLogMessageWithText:logMessage
+                                       numType:STMLogMessageTypeImportant];
+                
+            } else {
+                
+                logMessage = [NSString stringWithFormat:@"socket %@ %@ is connected but don't receive authorization ack, reconnecting", socket, socket.sid];
                 [logger saveLogMessageWithText:logMessage
                                        numType:STMLogMessageTypeError];
                 
                 [self reconnectSocket];
-
-            } else {
-                
-                socket = nil;
                 
             }
+            
+        } else {
+            
+            logMessage = [NSString stringWithFormat:@"socket %@ %@ is not connected, wait for it", socket, socket.sid];
+            [logger saveLogMessageWithText:logMessage
+                                   numType:STMLogMessageTypeImportant];
+            
+            [self performSelector:@selector(checkAuthorizationForSocket:)
+                       withObject:socket
+                       afterDelay:CHECK_AUTHORIZATION_DELAY];
             
         }
         
