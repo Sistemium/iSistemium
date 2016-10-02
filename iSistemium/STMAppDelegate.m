@@ -237,9 +237,8 @@
     
     [[STMUserDefaults standardUserDefaults] synchronize];
     
-    NSString *logMessage = [NSString stringWithFormat:@"applicationWillTerminate"];
-    NSLog(logMessage);
-    [[STMLogger sharedLogger] saveLogMessageDictionary:@{@"text": logMessage, @"type": @"error"}];
+    [[STMLogger sharedLogger] saveLogMessageWithText:@"applicationWillTerminate"
+                                             numType:STMLogMessageTypeError];
     
     [self sendAppTerminateLocalNotification];
     

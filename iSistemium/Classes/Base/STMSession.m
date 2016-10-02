@@ -28,26 +28,7 @@
         session.startSettings = startSettings;
         session.authDelegate = authDelegate;
         session.startTrackers = trackers;
-        
-//#warning move settingController, trackers and syncer init to documentReady method
-//        session.settingsController = [STMSettingsController initWithSettings:startSettings];
-//        session.trackers = [NSMutableDictionary dictionary];
-//        session.syncer = [[STMSyncer alloc] init];
-//
-//        if ([trackers containsObject:@"location"]) {
-//            
-//            session.locationTracker = [[STMLocationTracker alloc] init];
-//            (session.trackers)[session.locationTracker.group] = session.locationTracker;
-//
-//        }
-//        
-//        if ([trackers containsObject:@"battery"]) {
-//            
-//            session.batteryTracker = [[STMBatteryTracker alloc] init];
-//            (session.trackers)[session.batteryTracker.group] = session.batteryTracker;
-//
-//        }
-        
+                
         [session addObservers];
 
         NSString *dataModelName = [startSettings valueForKey:@"dataModelName"];
@@ -81,14 +62,14 @@
     if (self.document.documentState == UIDocumentStateNormal) {
         
         [self.document saveDocument:^(BOOL success) {
-            
+
             if (success) {
                 self.status = (self.status == STMSessionRemoving) ? self.status : STMSessionStopped;
                 [self.manager sessionStopped:self];
             } else {
                 NSLog(@"Can not stop session with uid %@", self.uid);
             }
-            
+
         }];
         
     }
@@ -148,7 +129,7 @@
            selector:@selector(applicationDidEnterBackground)
                name:UIApplicationDidEnterBackgroundNotification
              object:nil];
-    
+
 }
 
 - (void)removeObservers {
@@ -259,8 +240,11 @@
             }
         }
 
-        [[NSNotificationCenter defaultCenter] postNotificationName:NOTIFICATION_SESSION_STATUS_CHANGED object:self];
-        [[STMLogger sharedLogger] saveLogMessageWithText:[NSString stringWithFormat:@"Session #%@ status changed to %@", self.uid, statusString] type:nil];
+        [[NSNotificationCenter defaultCenter] postNotificationName:NOTIFICATION_SESSION_STATUS_CHANGED
+                                                            object:self];
+        
+        NSString *logMessage = [NSString stringWithFormat:@"Session #%@ status changed to %@", self.uid, statusString];
+        [[STMLogger sharedLogger] saveLogMessageWithText:logMessage];
 
     }
     

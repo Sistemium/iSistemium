@@ -15,12 +15,31 @@
 @implementation STMSessionManager
 
 + (STMSessionManager *)sharedManager {
+    
     static dispatch_once_t pred = 0;
     __strong static id _sharedManager = nil;
+    
     dispatch_once(&pred, ^{
         _sharedManager = [[self alloc] init];
     });
     return _sharedManager;
+    
+}
+
+- (instancetype)init {
+    
+    self = [super init];
+    
+    if (self) {
+        
+        [[NSNotificationCenter defaultCenter] addObserver:self
+                                                 selector:@selector(applicationWillTerminate)
+                                                     name:UIApplicationWillTerminateNotification
+                                                   object:nil];
+
+    }
+    return self;
+    
 }
 
 - (NSMutableDictionary *)sessions {
@@ -79,6 +98,18 @@
             session.authDelegate = authDelegate;
             session.status = STMSessionRunning;
             session.logger.session = session;
+            
+            if (session.document && session.document.documentState == UIDocumentStateClosed) {
+                
+                [STMDocument openDocument:session.document];
+                
+            } else {
+                
+                NSString *logMessage = [NSString stringWithFormat:@"session %@ have no document", session.uid];
+                
+                [session.logger saveLogMessageWithText:logMessage
+                                               numType:STMLogMessageTypeError];
+            }
             
         }
         return session;
@@ -148,6 +179,14 @@
     }
 
 }
+
+- (void)applicationWillTerminate {
+    
+    [self cleanStoppedSessions];
+    [self removeSessionForUID:self.currentSessionUID];
+    
+}
+
 
 
 @end

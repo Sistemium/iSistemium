@@ -12,13 +12,15 @@
 @interface STMDocument : UIManagedDocument
 
 @property (nonatomic, strong, readonly) NSManagedObjectModel *myManagedObjectModel;
+@property (nonatomic, strong) NSString *uid;
 
 + (STMDocument *)documentWithUID:(NSString *)uid
                           iSisDB:(NSString *)iSisDB
                    dataModelName:(NSString *)dataModelName
                           prefix:(NSString *)prefix;
 
-- (void)saveDocument:(void (^)(BOOL success))completionHandler;
++ (void)openDocument:(STMDocument *)document;
 
+- (void)saveDocument:(void (^)(BOOL success))completionHandler;
 
 @end
