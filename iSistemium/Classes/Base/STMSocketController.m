@@ -36,6 +36,7 @@
 @property (nonatomic) BOOL isManualReconnecting;
 @property (nonatomic) BOOL shouldSendData;
 @property (nonatomic) BOOL controllersDidChangeContent;
+@property (nonatomic) BOOL wasClosedInBackground;
 
 @property (nonatomic, strong) NSMutableDictionary *syncDataDictionary;
 @property (nonatomic, strong) NSMutableArray *resultsControllers;
@@ -200,6 +201,19 @@
 
     }
 
+}
+
++ (void)checkSocket {
+    
+    STMSocketController *sc = [self sharedInstance];
+    
+    if (sc.wasClosedInBackground) {
+        
+        sc.wasClosedInBackground = NO;
+        [self startSocket];
+        
+    }
+    
 }
 
 + (void)startSocket {
@@ -1211,6 +1225,8 @@
     [logger saveLogMessageWithText:@"close socket in background"
                            numType:STMLogMessageTypeImportant];
     
+    self.wasClosedInBackground = YES;
+
     [self closeSocket];
     
 }

@@ -30,6 +30,7 @@ typedef NS_ENUM(NSInteger, STMSocketEvent) {
 
 + (STMSocketController *)sharedInstance;
 
++ (void)checkSocket;
 + (void)startSocket;
 + (void)closeSocket;
 
