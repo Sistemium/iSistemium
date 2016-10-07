@@ -1208,7 +1208,7 @@
         NSTimeInterval flushingTime = [[NSDate date] timeIntervalSinceDate:startFlushing];
         
         NSString *logMessage = [NSString stringWithFormat:@"flush %lu objects with expired lifetime, %f seconds", (unsigned long)objectsSet.count, flushingTime];
-        [[STMLogger sharedLogger] saveLogMessageWithText:logMessage type:@"info"];
+        [[STMLogger sharedLogger] saveLogMessageWithText:logMessage];
         
         [self sharedController].isInFlushingProcess = YES;
         
