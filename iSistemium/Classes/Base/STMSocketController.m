@@ -1161,8 +1161,11 @@
 }
 
 - (NSString *)uploadLogType {
-        NSString *uploadLogType = [STMSettingsController stringValueForSettings:@"uploadLog.type" forGroup:@"syncer"];
+    
+    NSString *uploadLogType = [STMSettingsController stringValueForSettings:@"uploadLog.type"
+                                                                   forGroup:@"syncer"];
     return uploadLogType;
+    
 }
 
 - (NSArray *)unsyncedObjectsArray {
