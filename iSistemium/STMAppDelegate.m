@@ -67,15 +67,7 @@
                name:NOTIFICATION_SESSION_STATUS_CHANGED
              object:[STMSessionManager sharedManager].currentSession];
     
-    NSError *error = nil;
-    AVAudioSession *session = [AVAudioSession sharedInstance];
-    [session setCategory:AVAudioSessionCategoryPlayback error:&error];
-    
-    if (error) {
-        // Do some error handling
-    }
-    
-    [session setActive:YES error:&error];
+    [STMSoundController initAudioSession];
 
     [self setupWindow];
 
@@ -174,6 +166,8 @@
     [STMSocketController sendEvent:STMSocketEventStatusChange
                          withValue:logMessage];
     
+    [STMSoundController startBackgroundPlay];
+
 }
 
 - (void)applicationDidEnterBackground:(UIApplication *)application {
@@ -233,6 +227,8 @@
     [STMSocketController sendEvent:STMSocketEventStatusChange
                          withValue:logMessage];
 
+    [STMSoundController stopBackgroundPlay];
+
 }
 
 - (void)applicationDidReceiveMemoryWarning:(UIApplication *)application {
@@ -254,6 +250,8 @@
     
 }
 
+
+#pragma mark - app fetching
 
 - (void)application:(UIApplication *)application didReceiveRemoteNotification:(NSDictionary *)userInfo fetchCompletionHandler:(void (^)(UIBackgroundFetchResult result))handler {
     
