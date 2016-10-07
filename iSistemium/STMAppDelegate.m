@@ -311,9 +311,9 @@
         [logger saveLogMessageWithText:logMessage
                                numType:STMLogMessageTypeImportant];
         
-//        [[STMSocketController sharedInstance] performSelector:@selector(closeSocketInBackground)
-//                                                   withObject:nil
-//                                                   afterDelay:delayInterval];
+        [[STMSocketController sharedInstance] performSelector:@selector(closeSocketInBackground)
+                                                   withObject:nil
+                                                   afterDelay:delayInterval];
         
     }
     

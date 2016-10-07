@@ -28,6 +28,8 @@ typedef NS_ENUM(NSInteger, STMSocketEvent) {
 
 @interface STMSocketController : NSObject
 
++ (STMSocketController *)sharedInstance;
+
 + (void)startSocket;
 + (void)closeSocket;
 
@@ -45,6 +47,9 @@ typedef NS_ENUM(NSInteger, STMSocketEvent) {
 
 + (NSDate *)deviceTsForSyncedObjectXid:(NSData *)xid;
 + (void)successfullySyncObjectWithXid:(NSData *)xid;
+
+
+- (void)closeSocketInBackground;
 
 
 @end
