@@ -1278,11 +1278,11 @@
             
         } else {
             
-            logMessage = [NSString stringWithFormat:@"socket %@ %@ is not connected, wait for it", socket, socket.sid];
+            logMessage = [NSString stringWithFormat:@"socket %@ %@ is not connected", socket, socket.sid];
             [logger saveLogMessageWithText:logMessage
                                    numType:STMLogMessageTypeImportant];
             
-            [self startDelayedAuthorizationCheckForSocket:socket];
+//            [self startDelayedAuthorizationCheckForSocket:socket];
             
         }
         
