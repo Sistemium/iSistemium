@@ -263,7 +263,11 @@
     if (![[self availableTypes] containsObject:type]) type = @"info";
     
     NSLog(@"Log %@: %@", type, text);
-    
+
+#ifdef DEBUG
+    //            [self sendLogMessageToLocalServerForDebugWithType:type andText:text];
+#endif
+
     BOOL sessionIsRunning = (self.session.status == STMSessionRunning);
 
     NSMutableDictionary *logMessageDic = @{}.mutableCopy;
@@ -333,10 +337,6 @@
             
         }
         
-#ifdef DEBUG
-//        [self sendLogMessageToLocalServerForDebug:logMessage];
-#endif
-        
         [self.document saveDocument:^(BOOL success) {
         }];
 
@@ -344,13 +344,17 @@
     
 }
 
-- (void)sendLogMessageToLocalServerForDebug:(STMLogMessage *)logMessage {
+- (void)sendLogMessageToLocalServerForDebugWithType:(NSString *)type andText:(NSString *)text {
     
     NSURL *url = [NSURL URLWithString:@"http://maxbook.local:8888"];
     NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:url];
     request.HTTPMethod = @"POST";
     
-    NSString *bodyString = [NSString stringWithFormat:@"%@ %@: %@", logMessage.deviceCts, logMessage.type, logMessage.text];
+    NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
+    dateFormatter.dateStyle = NSDateFormatterShortStyle;
+    dateFormatter.timeStyle = NSDateFormatterMediumStyle;
+    
+    NSString *bodyString = [NSString stringWithFormat:@"%@ %@: %@", [dateFormatter stringFromDate:[NSDate date]], type, text];
     request.HTTPBody = [bodyString dataUsingEncoding:NSUTF8StringEncoding];
     
     NSOperationQueue *queue = [[NSOperationQueue alloc] init];
