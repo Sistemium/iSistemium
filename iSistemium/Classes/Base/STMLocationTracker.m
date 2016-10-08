@@ -555,7 +555,7 @@
         }
 
         NSString *logMessage = [NSString stringWithFormat:@"set desired accuracy to %f", _locationManager.desiredAccuracy];
-        [[STMLogger sharedLogger] saveLogMessageWithText:logMessage type:@"important"];
+        [[STMLogger sharedLogger] saveLogMessageWithText:logMessage numType:STMLogMessageTypeInfo];
         
     }
     
