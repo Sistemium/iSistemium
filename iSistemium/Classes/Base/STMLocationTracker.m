@@ -155,7 +155,7 @@
         self.locationManager.desiredAccuracy = currentAccuracy;
 
         NSString *logMessage = [NSString stringWithFormat:@"change desired accuracy to %f", currentAccuracy];
-        [[STMLogger sharedLogger] saveLogMessageWithText:logMessage type:@"important"];
+        [[STMLogger sharedLogger] saveLogMessageWithText:logMessage numType:STMLogMessageTypeInfo];
         
     }
     
