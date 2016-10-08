@@ -13,6 +13,7 @@
 
 #import "STMObjectsController.h"
 
+
 @interface STMLogger() <NSFetchedResultsControllerDelegate>
 
 @property (strong, nonatomic) STMDocument *document;
@@ -23,6 +24,9 @@
 @property (nonatomic, strong) NSMutableArray *deletedRowIndexPaths;
 @property (nonatomic, strong) NSMutableArray *insertedRowIndexPaths;
 @property (nonatomic, strong) NSMutableArray *updatedRowIndexPaths;
+
+@property (nonatomic, strong) NSString *uploadLogType;
+
 
 @end
 
@@ -64,10 +68,25 @@
     
     self = [super init];
     if (self) {
-
+        [self addObservers];
     }
     return self;
     
+}
+
+- (void)addObservers {
+
+    NSNotificationCenter *nc = [NSNotificationCenter defaultCenter];
+    
+    [nc addObserver:self
+           selector:@selector(syncerSettingsChanged:)
+               name:@"syncerSettingsChanged"
+             object:nil];
+
+}
+
+- (void)syncerSettingsChanged:(NSNotification *)notification {
+    self.uploadLogType = nil;
 }
 
 - (void)requestInfo:(NSString *)xidString {
@@ -82,19 +101,22 @@
             
             NSDictionary *objectDic = [STMObjectsController dictionaryForObject:object];
             NSString *JSONString = [STMFunctions jsonStringFromDictionary:objectDic];
-            [self saveLogMessageWithText:JSONString type:@"important"];
+            [self saveLogMessageWithText:JSONString
+                                 numType:STMLogMessageTypeImportant];
             
         } else {
             
             NSString *logMessage = [NSString stringWithFormat:@"no object with xid %@", xidString];
-            [self saveLogMessageWithText:logMessage type:@"error"];
+            [self saveLogMessageWithText:logMessage
+                                 numType:STMLogMessageTypeError];
             
         }
 
     } else {
         
         NSString *logMessage = [NSString stringWithFormat:@"xidSting is NSNull"];
-        [self saveLogMessageWithText:logMessage type:@"error"];
+        [self saveLogMessageWithText:logMessage
+                             numType:STMLogMessageTypeError];
         
     }
     
@@ -116,11 +138,13 @@
                                   @"requestParameters": parameters};
 
         NSString *JSONString = [STMFunctions jsonStringFromDictionary:jsonDic];
-        [self saveLogMessageWithText:JSONString type:@"important"];
+        [self saveLogMessageWithText:JSONString
+                             numType:STMLogMessageTypeImportant];
         
     } else {
 
-        [self saveLogMessageWithText:error.localizedDescription type:@"error"];
+        [self saveLogMessageWithText:error.localizedDescription
+                             numType:STMLogMessageTypeError];
 
     }
 
@@ -138,7 +162,8 @@
         
         NSString *JSONString = [STMFunctions jsonStringFromDictionary:defaultsDic];
         
-        [self saveLogMessageWithText:JSONString type:@"important"];
+        [self saveLogMessageWithText:JSONString
+                             numType:STMLogMessageTypeImportant];
 
         [self.document saveDocument:^(BOOL success) {
 //            if (success) [[self.session syncer] setSyncerState:STMSyncerSendDataOnce];
@@ -202,7 +227,7 @@
 
 - (NSArray *)syncingTypesForSettingType:(NSString *)settingType {
     
-    NSMutableArray *types = [[self availableTypes] mutableCopy];
+    NSMutableArray *types = [self availableTypes].mutableCopy;
     
     if ([settingType isEqualToString:@"debug"]) {
         return types;
@@ -237,6 +262,19 @@
     
 }
 
+- (NSString *)uploadLogType {
+    
+    if (!_uploadLogType) {
+
+        NSString *uploadLogType = [STMSettingsController stringValueForSettings:@"uploadLog.type"
+                                                                       forGroup:@"syncer"];
+        _uploadLogType = uploadLogType;
+
+    }
+    return _uploadLogType;
+    
+}
+
 - (void)saveLogMessageWithText:(NSString *)text
                        numType:(STMLogMessageType)numType{
     
@@ -263,28 +301,38 @@
     if (![[self availableTypes] containsObject:type]) type = @"info";
     
     NSLog(@"Log %@: %@", type, text);
-    
-    BOOL sessionIsRunning = (self.session.status == STMSessionRunning);
 
-    NSMutableDictionary *logMessageDic = @{}.mutableCopy;
-    
-    logMessageDic[@"text"] = text;
-    logMessageDic[@"type"] = type;
+#ifdef DEBUG
+//    [self sendLogMessageToLocalServerForDebugWithType:type andText:text];
+#endif
 
-    if (sessionIsRunning && self.document) {
+    NSArray *uploadTypes = [self syncingTypesForSettingType:self.uploadLogType];
+    
+    if ([uploadTypes containsObject:type]) {
+    
+        BOOL sessionIsRunning = (self.session.status == STMSessionRunning);
         
-        [self createAndSaveLogMessageFromDictionary:logMessageDic];
+        NSMutableDictionary *logMessageDic = @{}.mutableCopy;
         
-    } else {
+        logMessageDic[@"text"] = text;
+        logMessageDic[@"type"] = type;
         
-        logMessageDic[@"deviceCts"] = [NSDate date];
-        
-        [self performSelector:@selector(saveLogMessageDictionary:)
-                   withObject:logMessageDic
-                   afterDelay:0];
-        
+        if (sessionIsRunning && self.document) {
+            
+            [self createAndSaveLogMessageFromDictionary:logMessageDic];
+            
+        } else {
+            
+            logMessageDic[@"deviceCts"] = [NSDate date];
+            
+            [self performSelector:@selector(saveLogMessageDictionary:)
+                       withObject:logMessageDic
+                       afterDelay:0];
+            
+        }
+
     }
-
+    
 }
 
 - (void)saveLogMessageDictionary:(NSDictionary *)logMessageDic {
@@ -333,10 +381,6 @@
             
         }
         
-#ifdef DEBUG
-//        [self sendLogMessageToLocalServerForDebug:logMessage];
-#endif
-        
         [self.document saveDocument:^(BOOL success) {
         }];
 
@@ -344,13 +388,17 @@
     
 }
 
-- (void)sendLogMessageToLocalServerForDebug:(STMLogMessage *)logMessage {
+- (void)sendLogMessageToLocalServerForDebugWithType:(NSString *)type andText:(NSString *)text {
     
     NSURL *url = [NSURL URLWithString:@"http://maxbook.local:8888"];
     NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:url];
     request.HTTPMethod = @"POST";
     
-    NSString *bodyString = [NSString stringWithFormat:@"%@ %@: %@", logMessage.deviceCts, logMessage.type, logMessage.text];
+    NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
+    dateFormatter.dateStyle = NSDateFormatterShortStyle;
+    dateFormatter.timeStyle = NSDateFormatterMediumStyle;
+    
+    NSString *bodyString = [NSString stringWithFormat:@"%@ %@: %@", [dateFormatter stringFromDate:[NSDate date]], type, text];
     request.HTTPBody = [bodyString dataUsingEncoding:NSUTF8StringEncoding];
     
     NSOperationQueue *queue = [[NSOperationQueue alloc] init];

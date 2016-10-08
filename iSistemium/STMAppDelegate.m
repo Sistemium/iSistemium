@@ -38,11 +38,11 @@
 
     NSLog(@"deviceUUID %@", [STMClientDataController deviceUUIDString]);
     
-    STMLogger *logger = [STMLogger sharedLogger];
-    
-    NSString *logMessage = [NSString stringWithFormat:@"application didFinishLaunchingWithOptions: %@", launchOptions.description];
-    [logger saveLogMessageWithText:logMessage
-                           numType:STMLogMessageTypeImportant];
+//    STMLogger *logger = [STMLogger sharedLogger];
+//    
+//    NSString *logMessage = [NSString stringWithFormat:@"application didFinishLaunchingWithOptions: %@", launchOptions.description];
+//    [logger saveLogMessageWithText:logMessage
+//                           numType:STMLogMessageTypeImportant];
 
     [STMAuthController authController];
     
@@ -160,8 +160,8 @@
 - (void)applicationWillResignActive:(UIApplication *)application {
     
     NSString *logMessage = [NSString stringWithFormat:@"applicationWillResignActive"];
-    [[STMLogger sharedLogger] saveLogMessageWithText:logMessage
-                                             numType:STMLogMessageTypeImportant];
+//    [[STMLogger sharedLogger] saveLogMessageWithText:logMessage
+//                                             numType:STMLogMessageTypeImportant];
     
     [STMSocketController sendEvent:STMSocketEventStatusChange
                          withValue:logMessage];
@@ -194,8 +194,8 @@
 - (void)applicationWillEnterForeground:(UIApplication *)application {
     
     NSString *logMessage = [NSString stringWithFormat:@"applicationWillEnterForeground"];
-    [[STMLogger sharedLogger] saveLogMessageWithText:logMessage
-                                             numType:STMLogMessageTypeImportant];
+//    [[STMLogger sharedLogger] saveLogMessageWithText:logMessage
+//                                             numType:STMLogMessageTypeImportant];
     
     [STMSocketController sendEvent:STMSocketEventStatusChange
                          withValue:logMessage];
