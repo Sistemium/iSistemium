@@ -22,19 +22,12 @@
 @implementation STMArticlePicturePVC
 
 - (NSMutableArray *)articlesArray {
-    
     return [self.parentVC currentArticles].mutableCopy;
-    
-//    if (!_articlesArray) {
-//        _articlesArray = [self.parentVC currentArticles].mutableCopy;
-//    }
-//    return _articlesArray;
-    
 }
 
 - (STMArticlePictureVC *)viewControllerAtIndex:(NSUInteger)index storyboard:(UIStoryboard *)storyboard {
     
-    if ((self.articlesArray.count == 0) || (index >= self.articlesArray.count)) {
+    if ((self.articlesArray.count == 0) || (index >= self.articlesArray.count) || index == NSNotFound) {
         
         return nil;
         
@@ -71,15 +64,11 @@
 }
 
 - (NSInteger)presentationCountForPageViewController:(UIPageViewController *)pageViewController {
-    
     return self.articlesArray.count;
-    
 }
 
 - (NSInteger)presentationIndexForPageViewController:(UIPageViewController *)pageViewController {
-    
     return self.currentIndex;
-    
 }
 
 
@@ -122,8 +111,23 @@
     
     self.currentIndex = [self.articlesArray indexOfObject:self.currentArticle];
     
-    STMArticlePictureVC *vc = [self viewControllerAtIndex:self.currentIndex storyboard:self.storyboard];
-    [self setViewControllers:@[vc] direction:UIPageViewControllerNavigationDirectionForward animated:YES completion:NULL];
+    if (self.currentIndex != NSNotFound) {
+        
+        STMArticlePictureVC *vc = [self viewControllerAtIndex:self.currentIndex
+                                                   storyboard:self.storyboard];
+        
+        if (vc) {
+            
+            [self setViewControllers:@[vc]
+                           direction:UIPageViewControllerNavigationDirectionForward
+                            animated:YES
+                          completion:NULL];
+
+        }
+
+    } else {
+        
+    }
     
 }
 
@@ -136,17 +140,7 @@
 
 - (void)didReceiveMemoryWarning {
     [super didReceiveMemoryWarning];
-    // Dispose of any resources that can be recreated.
 }
 
-/*
-#pragma mark - Navigation
-
-// In a storyboard-based application, you will often want to do a little preparation before navigation
-- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
-    // Get the new view controller using [segue destinationViewController].
-    // Pass the selected object to the new view controller.
-}
-*/
 
 @end
