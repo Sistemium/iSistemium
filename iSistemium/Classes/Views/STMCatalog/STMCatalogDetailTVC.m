@@ -187,14 +187,7 @@ static NSString *Custom5CellIdentifier = @"STMCustom5TVCell";
 
 - (NSArray *)currentArticles {
     
-    NSArray *currentPrices = nil;
-    
-    if (self.searchDisplayController.active) {
-        currentPrices = self.searchResults;
-    } else {
-        currentPrices = self.resultsController.fetchedObjects;
-    }
-    
+    NSArray *currentPrices = (self.searchDisplayController.active) ? self.searchResults : self.resultsController.fetchedObjects;
     return [currentPrices valueForKeyPath:@"article"];
     
 }
@@ -308,14 +301,7 @@ static NSString *Custom5CellIdentifier = @"STMCustom5TVCell";
 
 - (void)updateInfoLabel {
 
-    NSUInteger count;
-    
-    if (self.searchDisplayController.active) {
-        count = self.searchResults.count;
-    } else {
-        count = self.resultsController.fetchedObjects.count;
-    }
-    
+    NSUInteger count = (self.searchDisplayController.active) ? self.searchResults.count : self.resultsController.fetchedObjects.count;
     [self updateInfoLabelWithArticleCount:count];
     
 }
@@ -529,14 +515,11 @@ static NSString *Custom5CellIdentifier = @"STMCustom5TVCell";
 
         if (indexPath) {
             
-            [self.currentTableView selectRowAtIndexPath:indexPath animated:YES scrollPosition:UITableViewScrollPositionNone];
+            [self.currentTableView selectRowAtIndexPath:indexPath
+                                               animated:YES
+                                         scrollPosition:UITableViewScrollPositionNone];
 
-            STMPrice *price = nil;
-            if (self.searchDisplayController.active) {
-                price = (self.searchResults)[indexPath.row];
-            } else {
-                price = [self.resultsController objectAtIndexPath:indexPath];
-            }
+            STMPrice *price = (self.searchDisplayController.active) ? self.searchResults[indexPath.row] : [self.resultsController objectAtIndexPath:indexPath];
             self.selectedArticle = price.article;
 
         }
@@ -793,7 +776,7 @@ static NSString *Custom5CellIdentifier = @"STMCustom5TVCell";
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
     
-    STMPrice *price = (tableView == self.searchDisplayController.searchResultsTableView) ? (self.searchResults)[indexPath.row] : [self.resultsController objectAtIndexPath:indexPath];
+    STMPrice *price = (tableView == self.searchDisplayController.searchResultsTableView) ? self.searchResults[indexPath.row] : [self.resultsController objectAtIndexPath:indexPath];
     
     STMTableViewCell <STMTDICell> *cell = nil;
     
@@ -891,20 +874,8 @@ static NSString *Custom5CellIdentifier = @"STMCustom5TVCell";
 
 - (NSIndexPath *)tableView:(UITableView *)tableView willSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     
-    STMPrice *price = nil;
-    
-    if (tableView == self.searchDisplayController.searchResultsTableView) {
+    STMPrice *price = (tableView == self.searchDisplayController.searchResultsTableView) ? self.searchResults[indexPath.row] : [self.resultsController objectAtIndexPath:indexPath];
         
-//        self.selectedArticle = [self.searchResults objectAtIndex:indexPath.row];
-        price = (self.searchResults)[indexPath.row];
-        
-    } else {
-        
-//        self.selectedArticle = [self.resultsController objectAtIndexPath:indexPath];
-        price = [self.resultsController objectAtIndexPath:indexPath];
-        
-    }
-    
     self.selectedArticle = price.article;
     
     [self.view endEditing:NO];
@@ -926,10 +897,7 @@ static NSString *Custom5CellIdentifier = @"STMCustom5TVCell";
 #pragma mark - UISearchDisplayDelegate / deprecated in >8.0
 
 - (void)searchDisplayControllerWillBeginSearch:(UISearchDisplayController *)controller {
-    
-//    [self setupSearchBar];
     [self updateInfoLabel];
-    
 }
 
 - (void)searchDisplayControllerDidEndSearch:(UISearchDisplayController *)controller {
