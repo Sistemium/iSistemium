@@ -196,7 +196,14 @@
 - (void)customInit {
 
     self.webView.delegate = self;
-    self.webView.scrollView.scrollEnabled = NO;
+    
+    STMStoryboard *storyboard = (STMStoryboard *)self.storyboard;
+    NSString *disableScroll = storyboard.parameters[@"disableScroll"];
+    
+    if ([disableScroll isEqualToString:@"true"]) {
+        self.webView.scrollView.scrollEnabled = NO;
+    }
+    
     [self loadWebView];
     
 }
