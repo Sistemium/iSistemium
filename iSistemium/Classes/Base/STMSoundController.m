@@ -9,6 +9,7 @@
 #import "STMSoundController.h"
 
 #import <AVFoundation/AVFoundation.h>
+#import <Crashlytics/Crashlytics.h>
 
 #import "STMConstants.h"
 #import "STMLogger.h"
@@ -490,7 +491,23 @@ static void completionCallback (SystemSoundID sysSound, void *data) {
         self.player.numberOfLoops = -1;
         self.player.volume = 0;
         
-        [self.player play];
+        @try {
+        
+            [self.player play];
+
+        } @catch (NSException *exception) {
+            
+            CLS_LOG(@"%@ %@", exception.name, exception.reason);
+            CLS_LOG(@"self.player %@", self.player);
+            CLS_LOG(@"self.player.delegate %@", self.player.delegate);
+            CLS_LOG(@"[AVAudioSession sharedInstance] %@", [AVAudioSession sharedInstance]);
+            CLS_LOG(@"[AVAudioSession sharedInstance].delegate %@", [AVAudioSession sharedInstance].delegate);
+            
+            [exception raise];
+            
+        } @finally {
+            
+        }
         
     } else {
         [logger saveLogMessageWithText:@"have no path for file silent.wav"
