@@ -1241,6 +1241,8 @@
         [logger saveLogMessageWithText:logMessage
                                numType:STMLogMessageTypeInfo];
         
+        [self.socket disconnect];
+        
         if (!self.isManualReconnecting) {
             self.socket = nil;
         }
@@ -1251,8 +1253,6 @@
         self.isRunning = NO;
         self.syncDataDictionary = nil;
         self.sendingDate = nil;
-        
-        [self.socket disconnect];
         
     }
     
