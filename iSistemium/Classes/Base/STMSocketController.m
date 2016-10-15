@@ -221,24 +221,19 @@
     STMSocketController *sc = [self sharedInstance];
     
     STMLogger *logger = [STMLogger sharedLogger];
+
+    NSString *logFormat = @"SocketController startSocket %@, sc.socketUrl %@, sc.isRunning %@, sc.isManualReconnecting %@, sc.socket.sid %@";
     
-    NSString *logMessage = @"startSocket";
+    NSString *logMessage = [NSString stringWithFormat:logFormat, sc.socket, sc.socketUrl, @(sc.isRunning), @(sc.isManualReconnecting), sc.socket.sid];
+    
     [logger saveLogMessageWithText:logMessage
                            numType:STMLogMessageTypeInfo];
-    
-//    logMessage = [NSString stringWithFormat:@"sc.socket %@, sc.socketUrl %@, sc.isRunning %@, sc.isManualReconnecting %@, sc.socket.sid %@", sc.socket, sc.socketUrl, @(sc.isRunning), @(sc.isManualReconnecting), sc.socket.sid];
-//    [logger saveLogMessageWithText:logMessage
-//                           numType:STMLogMessageTypeInfo];
 
     if (sc.socketUrl && !sc.isRunning && !sc.isManualReconnecting) {
 
         NSLogMethodName;
 
         sc.isRunning = YES;
-
-//        logMessage = [NSString stringWithFormat:@"sc.socket %@ %@ status %@", sc.socket, sc.socket.sid, @(sc.socket.status)];
-//        [logger saveLogMessageWithText:logMessage
-//                               numType:STMLogMessageTypeInfo];
 
         switch (sc.socket.status) {
                 
@@ -1200,9 +1195,9 @@
         NSURL *socketUrl = [NSURL URLWithString:self.socketUrl];
         NSString *path = [socketUrl.path stringByAppendingString:@"/"];
 
-        SocketIOClient *socket = [[SocketIOClient alloc] initWithSocketURL:socketUrl config:@{@"voipEnabled"       : @NO,
+        SocketIOClient *socket = [[SocketIOClient alloc] initWithSocketURL:socketUrl config:@{@"voipEnabled"       : @YES,
                                                                                               @"log"               : @NO,
-                                                                                              @"forceWebsockets"   : @YES,
+                                                                                              @"forceWebsockets"   : @NO,
                                                                                               @"path"              : path}];
 
         STMLogger *logger = [STMLogger sharedLogger];
