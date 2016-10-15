@@ -308,7 +308,7 @@
     logMessage = [NSString stringWithFormat:@"BackgroundTimeRemaining %@", @(timeRemaining)];
     [logger saveLogMessageWithText:logMessage];
     
-    if (timeRemaining != DBL_MAX) {
+    if (timeRemaining < DBL_MAX / 10) {
         
         timeRemaining -= 10; // is 10 sec enough for closing socket?
         
