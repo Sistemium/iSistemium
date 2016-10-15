@@ -15,13 +15,17 @@
 
 #import "STMFunctions.h"
 
+
 @interface STMWebViewVC () <UIWebViewDelegate>
 
 @property (weak, nonatomic) IBOutlet UIWebView *webView;
 @property (nonatomic) BOOL isAuthorizing;
 @property (nonatomic, strong) UIView *spinnerView;
+@property (nonatomic, strong) NSDictionary *webViewStoryboardParameters;
+
 
 @end
+
 
 @implementation STMWebViewVC
 
@@ -50,6 +54,27 @@
 
 #pragma mark - settings
 
+- (NSDictionary *)webViewStoryboardParameters {
+    
+    if (!_webViewStoryboardParameters) {
+        
+        if ([self.storyboard isKindOfClass:[STMStoryboard class]]) {
+            
+            STMStoryboard *storyboard = (STMStoryboard *)self.storyboard;
+            _webViewStoryboardParameters = storyboard.parameters;
+            
+        } else {
+            
+            _webViewStoryboardParameters = @{};
+            
+        }
+        
+    }
+    return _webViewStoryboardParameters;
+    
+}
+
+
 - (NSDictionary *)webViewSettings {
     
     NSDictionary *settings = [[STMSessionManager sharedManager].currentSession.settingsController currentSettingsForGroup:@"webview"];
@@ -59,44 +84,29 @@
 
 - (NSString *)webViewUrlString {
     
-    if ([self.storyboard isKindOfClass:[STMStoryboard class]]) {
-
-        STMStoryboard *storyboard = (STMStoryboard *)self.storyboard;
-        NSString *url = storyboard.parameters[@"url"];
-        return url;
-        
-    } else {
-        return [[self webViewSettings] valueForKey:@"wv.url"];
-    }
+    NSString *storyboardUrl = self.webViewStoryboardParameters[@"url"];
+    return (storyboardUrl) ? storyboardUrl : [[self webViewSettings] valueForKey:@"wv.url"];
     
 }
 
 - (NSString *)webViewSessionCheckJS {
     
-    if ([self.storyboard isKindOfClass:[STMStoryboard class]]) {
-        
-        STMStoryboard *storyboard = (STMStoryboard *)self.storyboard;
-        NSString *authCheck = storyboard.parameters[@"authCheck"];
-        return authCheck;
-        
-    } else {
-        return [[self webViewSettings] valueForKey:@"wv.session.check"];
-    }
+    NSString *storyboardCheckJS = self.webViewStoryboardParameters[@"authCheck"];
+    return (storyboardCheckJS) ? storyboardCheckJS : [[self webViewSettings] valueForKey:@"wv.session.check"];
     
 }
 
 - (NSString *)webViewSessionCookie {
-    
     return [[self webViewSettings] valueForKey:@"wv.session.cookie"];
-    
 }
 
 - (NSString *)webViewTitle {
-    
     return [[self webViewSettings] valueForKey:@"wv.title"];
-    
 }
 
+- (BOOL)disableScroll {
+    return [self.webViewStoryboardParameters[@"disableScroll"] boolValue];
+}
 
 - (void)loadWebView {
 
@@ -197,12 +207,7 @@
 
     self.webView.delegate = self;
     
-    STMStoryboard *storyboard = (STMStoryboard *)self.storyboard;
-    NSString *disableScroll = storyboard.parameters[@"disableScroll"];
-    
-    if ([disableScroll isEqualToString:@"true"]) {
-        self.webView.scrollView.scrollEnabled = NO;
-    }
+    self.webView.scrollView.scrollEnabled = ![self disableScroll];
     
     [self loadWebView];
     
