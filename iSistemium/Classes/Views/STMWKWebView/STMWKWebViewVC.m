@@ -114,6 +114,8 @@
 
 }
 
+- (BOOL)disableScroll {
+    return [self.webViewStoryboardParameters[@"disableScroll"] boolValue];
 }
 
 - (void)reloadWebView {
@@ -206,6 +208,9 @@
     [self.localView addSubview:self.webView];
     
     self.webView.navigationDelegate = self;
+
+    self.webView.scrollView.scrollEnabled = ![self disableScroll];
+
     [self loadWebView];
     
 }
@@ -909,8 +914,10 @@ int counter = 0;
 }
 
 - (void)customInit {
+    
     [self addObservers];
     [self webViewInit];
+    
 }
 
 - (void)viewDidLoad {
