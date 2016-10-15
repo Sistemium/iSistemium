@@ -196,6 +196,7 @@
 - (void)customInit {
 
     self.webView.delegate = self;
+    self.webView.scrollView.scrollEnabled = NO;
     [self loadWebView];
     
 }
