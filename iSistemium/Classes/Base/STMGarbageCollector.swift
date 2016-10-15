@@ -13,19 +13,19 @@ import Foundation
     static var unusedImages = Set<String>()
     
     static func removeUnusedImages(){
-        let priority = DISPATCH_QUEUE_PRIORITY_DEFAULT
-        dispatch_async(dispatch_get_global_queue(priority, 0)) {
+        let priority = DispatchQueue.GlobalQueuePriority.default
+        DispatchQueue.global(priority: priority).async {
             do {
                 searchUnusedImages()
                 if unusedImages.count > 0 {
                     let logMessage = String(format: "Deleting %i images",unusedImages.count)
-                    STMLogger.sharedLogger().saveLogMessageWithText(logMessage, type:"important")
+                    STMLogger.shared().saveLogMessage(withText: logMessage, type:"important")
                 }
                 recheckUnusedImages()
                 for unusedImage in unusedImages{
-                    try NSFileManager.defaultManager().removeItemAtPath(STMFunctions.documentsDirectory()+"/"+unusedImage)
+                    try FileManager.default.removeItem(atPath: STMFunctions.documentsDirectory()+"/"+unusedImage)
                     self.unusedImages.remove(unusedImage)
-                    NSNotificationCenter.defaultCenter().postNotificationName("unusedImageRemoved", object: nil)
+                    NotificationCenter.default.post(name: Notification.Name(rawValue: "unusedImageRemoved"), object: nil)
                 }
             } catch let error as NSError {
                 NSLog(error.description)
@@ -33,12 +33,12 @@ import Foundation
         }
     }
     
-    private static func recheckUnusedImages(){
+    fileprivate static func recheckUnusedImages(){
         do {
             var usedImages = Set<String>()
-            let document = STMSessionManager.sharedManager().currentSession.document
+            let document = STMSessionManager.shared().currentSession.document
             let photoFetchRequest = STMFetchRequest(entityName: NSStringFromClass(STMPicture))
-            let photos = try document.managedObjectContext.executeFetchRequest(photoFetchRequest) as! [STMPicture]
+            let photos = try document?.managedObjectContext.fetch(photoFetchRequest) as! [STMPicture]
             for image in photos{
                 if let path = image.imagePath{
                     usedImages.insert(path)
@@ -47,7 +47,7 @@ import Foundation
                     usedImages.insert(resizedPath)
                 }
             }
-            unusedImages = unusedImages.subtract(usedImages)
+            unusedImages = unusedImages.subtracting(usedImages)
         } catch let error as NSError {
             NSLog(error.description)
         }
@@ -58,16 +58,16 @@ import Foundation
             unusedImages = Set<String>()
             var allImages = Set<String>()
             var usedImages = Set<String>()
-            let document = STMSessionManager.sharedManager().currentSession.document
-            let fileManager = NSFileManager.defaultManager()
-            let enumerator = fileManager.enumeratorAtPath(STMFunctions.documentsDirectory())
+            let document = STMSessionManager.shared().currentSession.document
+            let fileManager = FileManager.default
+            let enumerator = fileManager.enumerator(atPath: STMFunctions.documentsDirectory())
             while let element = enumerator?.nextObject() as? String {
                 if element.hasSuffix(".jpg") {
                     allImages.insert(element)
                 }
             }
             let photoFetchRequest = STMFetchRequest(entityName: NSStringFromClass(STMPicture))
-            let photos = try document.managedObjectContext.executeFetchRequest(photoFetchRequest) as! [STMPicture]
+            let photos = try document?.managedObjectContext.fetch(photoFetchRequest) as! [STMPicture]
             for image in photos{
                 if let path = image.imagePath{
                     usedImages.insert(path)
@@ -76,7 +76,7 @@ import Foundation
                     usedImages.insert(resizedPath)
                 }
             }
-            unusedImages = allImages.subtract(usedImages)
+            unusedImages = allImages.subtracting(usedImages)
         } catch let error as NSError {
             NSLog(error.description)
         }

@@ -16,18 +16,18 @@ class STMOutletsTVC_iPhone: STMOutletsTVC {
     
     // MARK: Table view data
     
-    override func tableView(tableView: UITableView, willSelectRowAtIndexPath indexPath: NSIndexPath) -> NSIndexPath? {
-        let outlet = self.resultsController.objectAtIndexPath(indexPath)
-        performSegueWithIdentifier("showDebts", sender: outlet)
+    override func tableView(_ tableView: UITableView, willSelectRowAt indexPath: IndexPath) -> IndexPath? {
+        let outlet = self.resultsController.object(at: indexPath)
+        performSegue(withIdentifier: "showDebts", sender: outlet)
         return indexPath
     }
     
     // MARK: Navigation
     
-    override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         switch segue.identifier!{
         case "showDebts":
-            (segue.destinationViewController as! STMDebtsPVC_iPhone).outlet = sender as? STMOutlet
+            (segue.destination as! STMDebtsPVC_iPhone).outlet = sender as? STMOutlet
         default:
             break
         }
@@ -35,7 +35,7 @@ class STMOutletsTVC_iPhone: STMOutletsTVC {
     
     // MARK: View lifecycle
     
-    override func viewWillAppear(animated: Bool) {
+    override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         self.navigationController?.setToolbarHidden(true, animated: true)
     }

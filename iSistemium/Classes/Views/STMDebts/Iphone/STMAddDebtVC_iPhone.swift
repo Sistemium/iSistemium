@@ -15,29 +15,29 @@ class STMAddDebtVC_iPhone: STMAddDebtVC,UIPopoverPresentationControllerDelegate 
     
     func closeButtonPressed(){
         self.view.endEditing(true)
-        self.dismissViewControllerAnimated(true, completion: nil)
+        self.dismiss(animated: true, completion: nil)
     }
     
     func addButtonPressed() {
         super.doneButtonPressed(nil)
         if debtNdoc ?? "" != "" && debtSum ?? 0 != 0 {
-            self.dismissViewControllerAnimated(true, completion: nil)
+            self.dismiss(animated: true, completion: nil)
         }
     }
     
     // MARK: UIPopoverPresentationControllerDelegate
     
-    func adaptivePresentationStyleForPresentationController(PC: UIPresentationController) -> UIModalPresentationStyle {
-        return .None
+    func adaptivePresentationStyle(for PC: UIPresentationController) -> UIModalPresentationStyle {
+        return .none
     }
     
     // MARK: Navigation
     
-    override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         switch(segue.identifier!){
         case "showDatePicker":
-            let datePickerVC = segue.destinationViewController as! STMDatePickerVC
-            datePickerVC.preferredContentSize = CGSizeMake(450,250)
+            let datePickerVC = segue.destination as! STMDatePickerVC
+            datePickerVC.preferredContentSize = CGSize(width: 450,height: 250)
             datePickerVC.popoverPresentationController?.delegate = self
             datePickerVC.popoverPresentationController?.sourceRect = dateButton!.frame
             datePickerVC.popoverPresentationController?.sourceRect.origin.x -= 220
@@ -55,8 +55,8 @@ class STMAddDebtVC_iPhone: STMAddDebtVC,UIPopoverPresentationControllerDelegate 
     override func viewDidLoad() {
         super.viewDidLoad()
         self.title = NSLocalizedString("ADD DEBT", comment: "")
-        self.navigationItem.leftBarButtonItem = UIBarButtonItem(title: NSLocalizedString("CLOSE", comment: ""), style: .Plain, target: self, action: #selector(STMAddDebtVC_iPhone.closeButtonPressed))
-        self.navigationItem.rightBarButtonItem = UIBarButtonItem(title: NSLocalizedString("ADD", comment: ""), style: .Plain, target: self, action: #selector(STMAddDebtVC_iPhone.addButtonPressed))
+        self.navigationItem.leftBarButtonItem = UIBarButtonItem(title: NSLocalizedString("CLOSE", comment: ""), style: .plain, target: self, action: #selector(STMAddDebtVC_iPhone.closeButtonPressed))
+        self.navigationItem.rightBarButtonItem = UIBarButtonItem(title: NSLocalizedString("ADD", comment: ""), style: .plain, target: self, action: #selector(STMAddDebtVC_iPhone.addButtonPressed))
     }
     
 }

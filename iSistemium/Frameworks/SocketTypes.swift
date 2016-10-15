@@ -26,12 +26,12 @@ import Foundation
 
 public typealias AckCallback = ([AnyObject]) -> Void
 public typealias NormalCallback = ([AnyObject], SocketAckEmitter) -> Void
-public typealias OnAckCallback = (timeoutAfter: UInt64, callback: AckCallback) -> Void
+public typealias OnAckCallback = (_ timeoutAfter: UInt64, _ callback: AckCallback) -> Void
 
-typealias Probe = (msg: String, type: SocketEnginePacketType, data: [NSData])
+typealias Probe = (msg: String, type: SocketEnginePacketType, data: [Data])
 typealias ProbeWaitQueue = [Probe]
 
 enum Either<E, V> {
-    case Left(E)
-    case Right(V)
+    case left(E)
+    case right(V)
 }

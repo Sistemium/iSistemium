@@ -35,7 +35,7 @@ private struct SocketAck : Hashable {
         self.ack = ack
     }
     
-    init(ack: Int, callback: AckCallback) {
+    init(ack: Int, callback: @escaping AckCallback) {
         self.ack = ack
         self.callback = callback
     }
@@ -50,26 +50,26 @@ private func ==(lhs: SocketAck, rhs: SocketAck) -> Bool {
 }
 
 struct SocketAckManager {
-    private var acks = Set<SocketAck>(minimumCapacity: 1)
+    fileprivate var acks = Set<SocketAck>(minimumCapacity: 1)
     
-    mutating func addAck(ack: Int, callback: AckCallback) {
+    mutating func addAck(_ ack: Int, callback: @escaping AckCallback) {
         acks.insert(SocketAck(ack: ack, callback: callback))
     }
     
     /// Should be called on handle queue
-    mutating func executeAck(ack: Int, items: [AnyObject], onQueue: dispatch_queue_t) {
+    mutating func executeAck(_ ack: Int, items: [AnyObject], onQueue: DispatchQueue) {
         let callback = acks.remove(SocketAck(ack: ack))
         
-        dispatch_async(onQueue) {
+        onQueue.async {
             callback?.callback(items)
         }
     }
     
     /// Should be called on handle queue
-    mutating func timeoutAck(ack: Int, onQueue: dispatch_queue_t) {
+    mutating func timeoutAck(_ ack: Int, onQueue: DispatchQueue) {
         let callback = acks.remove(SocketAck(ack: ack))
         
-        dispatch_async(onQueue) {
+        onQueue.async {
             callback?.callback(["NO ACK"])
         }
     }

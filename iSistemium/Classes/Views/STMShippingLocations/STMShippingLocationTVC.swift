@@ -10,10 +10,10 @@ import Foundation
 
 class STMShippingLocationTVC:STMVariableCellsHeightTVC,UIImagePickerControllerDelegate,UINavigationControllerDelegate,STMPicturesViewerDelegate {
     
-    private var picturesView = UIView()
+    fileprivate var picturesView = UIView()
     
     var THUMB_SIZE:CGSize {
-        return CGSizeMake(STMSwiftConstants.CELL_IMAGES_SIZE, STMSwiftConstants.CELL_IMAGES_SIZE)
+        return CGSize(width: STMSwiftConstants.CELL_IMAGES_SIZE, height: STMSwiftConstants.CELL_IMAGES_SIZE)
     }
 
     var shippingLocation: STMShippingLocation?{
@@ -23,7 +23,7 @@ class STMShippingLocationTVC:STMVariableCellsHeightTVC,UIImagePickerControllerDe
                     if error == nil{
                         if let firstPlacemark = placemarks?[0] {
                             
-                            let location: STMLocation = STMLocationController.locationObjectFromCLLocation(firstPlacemark.location)
+                            let location: STMLocation = STMLocationController.locationObject(from: firstPlacemark.location)
                             location.source = "geocoder"
                             self.shippingLocation?.isLocationConfirmed = false
                             self.shippingLocation?.location = location
@@ -42,13 +42,13 @@ class STMShippingLocationTVC:STMVariableCellsHeightTVC,UIImagePickerControllerDe
     
     var cameraOverlayView = UIView()
     
-    private var selectedSourceType : UIImagePickerControllerSourceType?
+    fileprivate var selectedSourceType : UIImagePickerControllerSourceType?
     
     // Mark: resultsController
     
-    private var _resultsController:NSFetchedResultsController?
+    fileprivate var _resultsController:NSFetchedResultsController<AnyObject>?
     
-    override var resultsController : NSFetchedResultsController? {
+    override var resultsController : NSFetchedResultsController<AnyObject>? {
         get {
             if (_resultsController == nil && shippingLocation != nil) {
                 let shippingFetchRequest = STMFetchRequest(entityName: NSStringFromClass(STMShipmentRoutePoint))
@@ -67,11 +67,11 @@ class STMShippingLocationTVC:STMVariableCellsHeightTVC,UIImagePickerControllerDe
     
     //MARK: table view data
     
-    override func numberOfSectionsInTableView(tableView: UITableView) -> Int {
+    override func numberOfSections(in tableView: UITableView) -> Int {
         return shippingLocation != nil ? 3 : 0
     }
     
-    override func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+    override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         switch section{
         case 0:
             return 2
@@ -84,7 +84,7 @@ class STMShippingLocationTVC:STMVariableCellsHeightTVC,UIImagePickerControllerDe
         }
     }
     
-    override func tableView(tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
+    override func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
         switch section{
         case 0:
             return NSLocalizedString("SHIPPING LOCATION", comment: "")
@@ -95,11 +95,11 @@ class STMShippingLocationTVC:STMVariableCellsHeightTVC,UIImagePickerControllerDe
         }
     }
     
-    override func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCellWithIdentifier(self.cellIdentifier, forIndexPath:indexPath) as! STMCustom7TVCell
-        switch indexPath.section{
+    override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        let cell = tableView.dequeueReusableCell(withIdentifier: self.cellIdentifier, for:indexPath) as! STMCustom7TVCell
+        switch (indexPath as NSIndexPath).section{
         case 0:
-            switch indexPath.row{
+            switch (indexPath as NSIndexPath).row{
             case 0:
                 cell.titleLabel?.text = shippingLocation?.name
                 cell.detailLabel?.text = ""
@@ -110,36 +110,36 @@ class STMShippingLocationTVC:STMVariableCellsHeightTVC,UIImagePickerControllerDe
                 break
             }
         case 1:
-            switch indexPath.row{
+            switch (indexPath as NSIndexPath).row{
             case 0:
-                    cell.titleLabel!.font = UIFont.boldSystemFontOfSize(cell.textLabel!.font.pointSize)
+                    cell.titleLabel!.font = UIFont.boldSystemFont(ofSize: cell.textLabel!.font.pointSize)
                     cell.titleLabel!.text = ""
-                    cell.titleLabel!.textColor = UIColor.blackColor()
-                    cell.titleLabel!.textAlignment = .Center
+                    cell.titleLabel!.textColor = UIColor.black
+                    cell.titleLabel!.textAlignment = .center
                     
                     cell.detailLabel!.text = "";
-                    cell.detailLabel!.textColor = UIColor.blackColor()
-                    cell.detailLabel!.textAlignment = .Center
+                    cell.detailLabel!.textColor = UIColor.black
+                    cell.detailLabel!.textAlignment = .center
                     
                     cell.viewWithTag(666)?.removeFromSuperview()
                     
                     if ((shippingLocation?.location) != nil) {
                         
                         cell.titleLabel!.text = NSLocalizedString("SHOW MAP", comment: "");
-                        cell.titleLabel.tintColor = UIColor.blackColor()
+                        cell.titleLabel.tintColor = UIColor.black
                         
                         if (!(shippingLocation?.isLocationConfirmed ?? 0).boolValue ) {
                             
                             cell.detailLabel!.text = NSLocalizedString("LOCATION NEEDS CONFIRMATION", comment: "");
-                            cell.detailLabel!.textColor = UIColor.redColor()
+                            cell.detailLabel!.textColor = UIColor.red
                             
                         }
                     }else{
                         cell.titleLabel!.text = NSLocalizedString("UNKNOWN LOCATION", comment: "");
-                        cell.titleLabel.tintColor = UIColor.grayColor()
+                        cell.titleLabel.tintColor = UIColor.gray
                     }
                 
-                    cell.accessoryType = .None
+                    cell.accessoryType = .none
                 
             case 1:
                 cell.titleLabel!.text = ""
@@ -152,7 +152,7 @@ class STMShippingLocationTVC:STMVariableCellsHeightTVC,UIImagePickerControllerDe
                     
                     let blankPicture = self.blankPicture
                     
-                    blankPicture.frame = CGRectMake(0, 0, STMSwiftConstants.CELL_IMAGES_SIZE, STMSwiftConstants.CELL_IMAGES_SIZE);
+                    blankPicture.frame = CGRect(x: 0, y: 0, width: STMSwiftConstants.CELL_IMAGES_SIZE, height: STMSwiftConstants.CELL_IMAGES_SIZE);
                     
                     picturesView.addSubview(blankPicture)
                     
@@ -163,7 +163,7 @@ class STMShippingLocationTVC:STMVariableCellsHeightTVC,UIImagePickerControllerDe
                     let sortDesriptor = NSSortDescriptor(key: "deviceTs", ascending: false, selector: #selector(NSNumber.compare(_:)))
                     let range = NSMakeRange(0, showCount)
                     
-                    let photoArray = (shippingLocation!.shippingLocationPictures! as NSSet).sortedArrayUsingDescriptors([sortDesriptor] )[range.toRange()!]
+                    let photoArray = (shippingLocation!.shippingLocationPictures! as NSSet).sortedArray(using: [sortDesriptor] )[range.toRange()!]
                     
                     for picture in photoArray {
                         if let pictureData = (picture as! STMPicture).imageThumbnail{
@@ -172,14 +172,14 @@ class STMShippingLocationTVC:STMVariableCellsHeightTVC,UIImagePickerControllerDe
                             let count = CGFloat(self.picturesView.subviews.count);
                             let x = (count > 0) ? count * (STMSwiftConstants.CELL_IMAGES_SIZE + STMSwiftConstants.IMAGE_PADDING) : 0;
                             
-                            pictureButton.frame = CGRectMake(x, 0, STMSwiftConstants.CELL_IMAGES_SIZE, STMSwiftConstants.CELL_IMAGES_SIZE);
+                            pictureButton.frame = CGRect(x: x, y: 0, width: STMSwiftConstants.CELL_IMAGES_SIZE, height: STMSwiftConstants.CELL_IMAGES_SIZE);
                             
                             self.picturesView.addSubview(pictureButton)
                         }else{
                             let downloadPlaceholder = self.downloadPlaceholder
                             let count = CGFloat(self.picturesView.subviews.count);
                             let x = (count > 0) ? count * (STMSwiftConstants.CELL_IMAGES_SIZE + STMSwiftConstants.IMAGE_PADDING) : 0;
-                            downloadPlaceholder.frame = CGRectMake(x, 0, STMSwiftConstants.CELL_IMAGES_SIZE - 5 , STMSwiftConstants.CELL_IMAGES_SIZE - 5);
+                            downloadPlaceholder.frame = CGRect(x: x, y: 0, width: STMSwiftConstants.CELL_IMAGES_SIZE - 5 , height: STMSwiftConstants.CELL_IMAGES_SIZE - 5);
                             
                             picturesView.addSubview(downloadPlaceholder)
                         }
@@ -192,7 +192,7 @@ class STMShippingLocationTVC:STMVariableCellsHeightTVC,UIImagePickerControllerDe
                 
                 var x = CGFloat(self.picturesView.subviews.count) * (STMSwiftConstants.CELL_IMAGES_SIZE + STMSwiftConstants.IMAGE_PADDING);
                 
-                addButton.frame = CGRectMake(x, 0, STMSwiftConstants.CELL_IMAGES_SIZE, STMSwiftConstants.CELL_IMAGES_SIZE);
+                addButton.frame = CGRect(x: x, y: 0, width: STMSwiftConstants.CELL_IMAGES_SIZE, height: STMSwiftConstants.CELL_IMAGES_SIZE);
                 
                 self.picturesView.addSubview(addButton)
                 
@@ -200,32 +200,32 @@ class STMShippingLocationTVC:STMVariableCellsHeightTVC,UIImagePickerControllerDe
                 x = ceil((cell.contentView.frame.size.width - picturesWidth) / 2);
                 let y = ceil((cell.contentView.frame.size.height - STMSwiftConstants.CELL_IMAGES_SIZE) / 2);
                 
-                self.picturesView.frame = CGRectMake(x, y, picturesWidth, STMSwiftConstants.CELL_IMAGES_SIZE);
+                self.picturesView.frame = CGRect(x: x, y: y, width: picturesWidth, height: STMSwiftConstants.CELL_IMAGES_SIZE);
                 
                 cell.contentView.addSubview(self.picturesView)
                 
-                cell.accessoryType = .None
+                cell.accessoryType = .none
             default:
                 break
             }
         case 2:
-            let formatter = NSDateFormatter()
-            formatter.dateStyle = .LongStyle
-            cell.titleLabel?.text = formatter.stringFromDate((resultsController!.fetchedObjects![indexPath.row] as! STMShipmentRoutePoint).shipmentRoute!.date!)
-            cell.detailLabel?.text = (resultsController!.fetchedObjects![indexPath.row] as! STMShipmentRoutePoint).shortInfo()
+            let formatter = DateFormatter()
+            formatter.dateStyle = .long
+            cell.titleLabel?.text = formatter.string(from: (resultsController!.fetchedObjects![(indexPath as NSIndexPath).row] as! STMShipmentRoutePoint).shipmentRoute!.date!)
+            cell.detailLabel?.text = (resultsController!.fetchedObjects![(indexPath as NSIndexPath).row] as! STMShipmentRoutePoint).shortInfo()
         default:
             break
         }
-        cell.selectionStyle = .None
+        cell.selectionStyle = .none
         cell.layoutIfNeeded()
         return cell
     }
     
-    override func tableView(tableView: UITableView, heightForRowAtIndexPath indexPath: NSIndexPath) -> CGFloat {
-        switch (indexPath.section){
+    override func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
+        switch ((indexPath as NSIndexPath).section){
             
         case 1:
-            switch (indexPath.row) {
+            switch ((indexPath as NSIndexPath).row) {
             case 1:
                 return STMSwiftConstants.CELL_IMAGES_SIZE + STMSwiftConstants.IMAGE_PADDING * 2;
             default:
@@ -238,13 +238,13 @@ class STMShippingLocationTVC:STMVariableCellsHeightTVC,UIImagePickerControllerDe
         return UITableViewAutomaticDimension
     }
     
-    override func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
-        if (indexPath.section == 1) {
+    override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        if ((indexPath as NSIndexPath).section == 1) {
             
-            switch (indexPath.row) {
+            switch ((indexPath as NSIndexPath).row) {
             case 0:
                 if ((shippingLocation?.location) != nil) {
-                    performSegueWithIdentifier("showShippingLocationMap", sender:self.shippingLocation)
+                    performSegue(withIdentifier: "showShippingLocationMap", sender:self.shippingLocation)
                 }
             default:
                 break;
@@ -255,75 +255,75 @@ class STMShippingLocationTVC:STMVariableCellsHeightTVC,UIImagePickerControllerDe
     
     // MARK: photos
     
-    private var blankPicture:UIView {
+    fileprivate var blankPicture:UIView {
     
-    let image = STMFunctions.resizeImage(UIImage(named:"Picture-100")!, toSize:THUMB_SIZE).imageWithRenderingMode(.AlwaysTemplate)
+    let image = STMFunctions.resize(UIImage(named:"Picture-100")!, to:THUMB_SIZE).withRenderingMode(.alwaysTemplate)
     let imageView = UIImageView(image: image)
-    imageView.tintColor = UIColor.lightGrayColor()
+    imageView.tintColor = UIColor.lightGray
     
     return imageView;
     
     }
     
-    private var downloadPlaceholder:UIView {
+    fileprivate var downloadPlaceholder:UIView {
         
-        let image = STMFunctions.resizeImage(UIImage(named:"Download-100")!, toSize:THUMB_SIZE).imageWithRenderingMode(.AlwaysTemplate)
+        let image = STMFunctions.resize(UIImage(named:"Download-100")!, to:THUMB_SIZE).withRenderingMode(.alwaysTemplate)
         let imageView = UIImageView(image: image)
-        imageView.tintColor = UIColor.grayColor()
+        imageView.tintColor = UIColor.gray
         let tap = UITapGestureRecognizer(target: self, action: #selector(STMShippingLocationTVC.photoButtonPressed(_:)))
         imageView.gestureRecognizers = [tap]
-        imageView.userInteractionEnabled = true
+        imageView.isUserInteractionEnabled = true
         return imageView;
         
     }
     
-    private func pictureButtonWithPicture(data : NSData) -> UIView{
+    fileprivate func pictureButtonWithPicture(_ data : Data) -> UIView{
     
     let imageView = UIImageView(image: UIImage(data: data))
     
     let tap = UITapGestureRecognizer(target: self, action: #selector(STMShippingLocationTVC.photoButtonPressed(_:)))
     imageView.gestureRecognizers = [tap]
-    imageView.userInteractionEnabled = true
+    imageView.isUserInteractionEnabled = true
     
     return imageView;
     
     }
     
-    private var addPhotoButton : UIView {
+    fileprivate var addPhotoButton : UIView {
     
-    let imageView = UIImageView(image: STMFunctions.resizeImage(UIImage(named: "plus")!, toSize:THUMB_SIZE))
+    let imageView = UIImageView(image: STMFunctions.resize(UIImage(named: "plus")!, to:THUMB_SIZE))
     
     let tap = UITapGestureRecognizer(target: self, action: #selector(STMShippingLocationTVC.addPhotoButtonPressed(_:)))
     imageView.gestureRecognizers = [tap]
-    imageView.userInteractionEnabled = true
+    imageView.isUserInteractionEnabled = true
     
     return imageView;
     
     }
     
-    func addPhotoButtonPressed(sender:AnyObject) {
-    self.showImagePickerForSourceType(.Camera)
+    func addPhotoButtonPressed(_ sender:AnyObject) {
+    self.showImagePickerForSourceType(.camera)
     
     }
     
-    func photoButtonPressed(sender:AnyObject) {
+    func photoButtonPressed(_ sender:AnyObject) {
     
-    if sender.isKindOfClass(UITapGestureRecognizer){
+    if sender.isKind(of: UITapGestureRecognizer){
         let tappedView = (sender as! UIGestureRecognizer).view
-        performSegueWithIdentifier("showPhotos",sender:tappedView)
+        performSegue(withIdentifier: "showPhotos",sender:tappedView)
     }
     
     }
     
-    func showImagePickerForSourceType( imageSourceType:UIImagePickerControllerSourceType ){
+    func showImagePickerForSourceType( _ imageSourceType:UIImagePickerControllerSourceType ){
     if UIImagePickerController.isSourceTypeAvailable(imageSourceType) {
         self.selectedSourceType = imageSourceType;
-        self.presentViewController(self.imagePickerController!, animated: true, completion: nil)
+        self.present(self.imagePickerController!, animated: true, completion: nil)
         }
     
     }
     
-    private var _imagePickerController:STMImagePickerController?
+    fileprivate var _imagePickerController:STMImagePickerController?
     
     var imagePickerController:STMImagePickerController? {
         get{
@@ -333,11 +333,11 @@ class STMShippingLocationTVC:STMVariableCellsHeightTVC,UIImagePickerControllerDe
                 
                 _imagePickerController!.sourceType = self.selectedSourceType!;
                 
-                if _imagePickerController!.sourceType == .Camera {
+                if _imagePickerController!.sourceType == .camera {
                     
                     _imagePickerController!.showsCameraControls = false
                     
-                    NSBundle.mainBundle().loadNibNamed("STMCameraOverlayView", owner: self, options: nil)
+                    Bundle.main.loadNibNamed("STMCameraOverlayView", owner: self, options: nil)
                     
                     _imagePickerController?.setFrameForCameraOverlayView(self.cameraOverlayView)
                     
@@ -355,16 +355,16 @@ class STMShippingLocationTVC:STMVariableCellsHeightTVC,UIImagePickerControllerDe
     }
     
     
-    func saveImage(image:UIImage) {
+    func saveImage(_ image:UIImage) {
     
-        let shippingLocationPicture = STMObjectsController.newObjectForEntityName(NSStringFromClass(STMShippingLocationPicture), isFantom:false) as! STMShippingLocationPicture
+        let shippingLocationPicture = STMObjectsController.newObject(forEntityName: NSStringFromClass(STMShippingLocationPicture), isFantom:false) as! STMShippingLocationPicture
         
         let jpgQuality = STMPicturesController.jpgQuality()
         
-        STMPicturesController.setImagesFromData(UIImageJPEGRepresentation(image, jpgQuality),forPicture: shippingLocationPicture ,andUpload:true)
+        STMPicturesController.setImagesFrom(UIImageJPEGRepresentation(image, jpgQuality),for: shippingLocationPicture ,andUpload:true)
 
         shippingLocationPicture.shippingLocation = self.shippingLocation
-        self.document.saveDocument{
+        self.document.save{
             if ($0) {
                 self.spinner?.removeFromSuperview()
                 self.tableView.reloadData()
@@ -373,47 +373,47 @@ class STMShippingLocationTVC:STMVariableCellsHeightTVC,UIImagePickerControllerDe
     
     }
     
-    func photoWasDeleted(photo:STMPhoto) {
+    func photoWasDeleted(_ photo:STMPhoto) {
         tableView.reloadData()
     }
     
     // MARK: Camera buttons
     
     
-    @IBAction func cameraButtonPressed(sender:AnyObject) {
+    @IBAction func cameraButtonPressed(_ sender:AnyObject) {
         
-    self.spinner = STMSpinnerView(frame: self.view.bounds, indicatorStyle: .WhiteLarge, backgroundColor:UIColor.grayColor(), alfa:0.75)
+    self.spinner = STMSpinnerView(frame: self.view.bounds, indicatorStyle: .whiteLarge, backgroundColor:UIColor.gray, alfa:0.75)
     self.view.addSubview(self.spinner!)
-    self.imagePickerController!.cameraOverlayView!.addSubview(STMSpinnerView(frame: self.imagePickerController!.cameraOverlayView!.bounds, indicatorStyle: .WhiteLarge, backgroundColor:UIColor.grayColor(), alfa:0.75))
+    self.imagePickerController!.cameraOverlayView!.addSubview(STMSpinnerView(frame: self.imagePickerController!.cameraOverlayView!.bounds, indicatorStyle: .whiteLarge, backgroundColor:UIColor.gray, alfa:0.75))
     self.imagePickerController!.takePicture()
     }
     
-    @IBAction func cancelButtonPressed(sender:AnyObject) {
+    @IBAction func cancelButtonPressed(_ sender:AnyObject) {
     self.imagePickerControllerDidCancel(self.imagePickerController!)
     }
     
-    @IBAction func photoLibraryButtonPressed(sender:AnyObject) {
+    @IBAction func photoLibraryButtonPressed(_ sender:AnyObject) {
     self.cancelButtonPressed(sender)
-    self.showImagePickerForSourceType(.PhotoLibrary)
+    self.showImagePickerForSourceType(.photoLibrary)
     }
     
     // MARK:  Navigation
     
-    override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         if segue.identifier == "showPhotos" {
-            let picturesPVC = segue.destinationViewController as! STMShippingLocationPicturesPVC
+            let picturesPVC = segue.destination as! STMShippingLocationPicturesPVC
             
             let sortDesriptor = NSSortDescriptor(key: "deviceTs", ascending: false, selector: #selector(NSNumber.compare(_:)))
-            let photoArray = (shippingLocation!.shippingLocationPictures! as NSSet).sortedArrayUsingDescriptors([sortDesriptor])
+            let photoArray = (shippingLocation!.shippingLocationPictures! as NSSet).sortedArray(using: [sortDesriptor])
             
             picturesPVC.photoArray =  NSMutableArray(array: photoArray)
-            let index = picturesView.subviews.indexOf(sender as! UIView)
+            let index = picturesView.subviews.index(of: sender as! UIView)
             picturesPVC.currentIndex = UInt(index ?? 0)
             picturesPVC.parentVC = self
         }
         if segue.identifier == "showShippingLocationMap" {
             
-            let mapVC = segue.destinationViewController as! STMShippingLocationMapVC
+            let mapVC = segue.destination as! STMShippingLocationMapVC
             
             mapVC.shippingLocation = self.shippingLocation
             
@@ -423,16 +423,16 @@ class STMShippingLocationTVC:STMVariableCellsHeightTVC,UIImagePickerControllerDe
     
     // MARK: UIImagePickerControllerDelegate
     
-    func imagePickerController(picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [String : AnyObject]) {
-        picker.dismissViewControllerAnimated(false){
+    func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [String : Any]) {
+        picker.dismiss(animated: false){
             self.saveImage(info[UIImagePickerControllerOriginalImage] as! UIImage)
             self.imagePickerController = nil
         }
         
     }
     
-    func imagePickerControllerDidCancel(picker: UIImagePickerController) {
-        picker.dismissViewControllerAnimated(false,completion: nil)
+    func imagePickerControllerDidCancel(_ picker: UIImagePickerController) {
+        picker.dismiss(animated: false,completion: nil)
             imagePickerController = nil
     }
     
@@ -442,11 +442,11 @@ class STMShippingLocationTVC:STMVariableCellsHeightTVC,UIImagePickerControllerDe
         super.customInit()
         self.cellIdentifier = "shippingLocationCell"
         let cellNib = UINib(nibName: NSStringFromClass(STMCustom7TVCell.self), bundle:nil)
-        self.tableView.registerNib(cellNib, forCellReuseIdentifier:self.cellIdentifier)
+        self.tableView.register(cellNib, forCellReuseIdentifier:self.cellIdentifier)
         performFetch()
     }
     
-    override func viewWillAppear(animated: Bool) {
+    override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         tableView.reloadData()
     }

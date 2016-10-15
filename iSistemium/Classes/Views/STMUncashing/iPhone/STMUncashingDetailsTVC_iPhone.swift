@@ -22,20 +22,20 @@ class STMUncashingDetailsTVC_iPhone: STMUncashingDetailsTVC, UIPopoverPresentati
     }
     
     override func showUncashingInfoPopover(){
-        let content = self.storyboard!.instantiateViewControllerWithIdentifier("uncashingInfoPopover") as! STMUncashingInfoVC
+        let content = self.storyboard!.instantiateViewController(withIdentifier: "uncashingInfoPopover") as! STMUncashingInfoVC
         content.uncashing = self.uncashing
-        content.modalPresentationStyle = .Popover
+        content.modalPresentationStyle = .popover
         let popover = content.popoverPresentationController
-        content.preferredContentSize = CGSizeMake(388,205)
+        content.preferredContentSize = CGSize(width: 388,height: 205)
         popover!.delegate = self
         popover!.sourceView = self.navigationController?.toolbar
-        let frame = (self.infoLabel!.valueForKey("view") as! UIView).frame
+        let frame = (self.infoLabel!.value(forKey: "view") as! UIView).frame
         popover!.sourceRect = frame
-        self.presentViewController(content, animated: true, completion: nil)
+        self.present(content, animated: true, completion: nil)
     }
     
     override func showAddButton() {
-        self.navigationItem.setRightBarButtonItem(UIBarButtonItem(barButtonSystemItem: .Add, target: self, action: #selector(STMUncashingDetailsTVC_iPhone.addButtonPressed)), animated: true)
+        self.navigationItem.setRightBarButton(UIBarButtonItem(barButtonSystemItem: .add, target: self, action: #selector(STMUncashingDetailsTVC_iPhone.addButtonPressed)), animated: true)
     }
     
     override func hideAddButton() {
@@ -47,14 +47,14 @@ class STMUncashingDetailsTVC_iPhone: STMUncashingDetailsTVC, UIPopoverPresentati
         self.tableView.allowsSelectionDuringEditing = true
         self.tableView.allowsMultipleSelectionDuringEditing = true
         for cashing in self.resultsController.fetchedObjects! {
-            let indexPath = self.resultsController.indexPathForObject(cashing)
+            let indexPath = self.resultsController.indexPath(forObject: cashing)
             if indexPath != nil {
-                self.tableView(self.tableView, willSelectRowAtIndexPath:indexPath!)
-                self.tableView.selectRowAtIndexPath(indexPath, animated: true, scrollPosition: .None)
+                self.tableView(self.tableView, willSelectRowAt:indexPath!)
+                self.tableView.selectRow(at: indexPath, animated: true, scrollPosition: .none)
             }
         }
-        self.navigationItem.setLeftBarButtonItem(UIBarButtonItem(barButtonSystemItem: .Cancel, target: self, action: #selector(STMUncashingDetailsTVC_iPhone.cancelButtonPressed)), animated: true)
-        self.navigationItem.setRightBarButtonItem(UIBarButtonItem(title: NSLocalizedString("CONFIRM", comment: ""), style: .Plain, target: self, action: #selector(STMUncashingDetailsTVC_iPhone.confirmButtonPressed)), animated: true)
+        self.navigationItem.setLeftBarButton(UIBarButtonItem(barButtonSystemItem: .cancel, target: self, action: #selector(STMUncashingDetailsTVC_iPhone.cancelButtonPressed)), animated: true)
+        self.navigationItem.setRightBarButton(UIBarButtonItem(title: NSLocalizedString("CONFIRM", comment: ""), style: .plain, target: self, action: #selector(STMUncashingDetailsTVC_iPhone.confirmButtonPressed)), animated: true)
         self.navigationItem.titleView = UIView()
         toolbar = .sum
     }
@@ -65,14 +65,14 @@ class STMUncashingDetailsTVC_iPhone: STMUncashingDetailsTVC, UIPopoverPresentati
         self.tableView.setEditing(false, animated:true)
         self.uncashingProcessButton.title = NSLocalizedString("HAND OVER BUTTON",comment: "")
         self.setInfoLabelTitle()
-        self.navigationItem.setLeftBarButtonItem(nil, animated: true)
+        self.navigationItem.setLeftBarButton(nil, animated: true)
         self.navigationItem.titleView = nil
         toolbar = .total
         showAddButton()
     }
     
     // MARK: Toolbar
-    private enum Toolbar{
+    fileprivate enum Toolbar{
         case total
         case sum
         
@@ -86,27 +86,27 @@ class STMUncashingDetailsTVC_iPhone: STMUncashingDetailsTVC, UIPopoverPresentati
         }
     }
     
-    private var toolbar:Toolbar? {
+    fileprivate var toolbar:Toolbar? {
         didSet{
             if toolbar != nil{
                 switch toolbar!{
                 case .total:
                     setInfoLabelTitle()
-                    let flexibleSpace = UIBarButtonItem(barButtonSystemItem: .FlexibleSpace, target: nil, action: nil)
+                    let flexibleSpace = UIBarButtonItem(barButtonSystemItem: .flexibleSpace, target: nil, action: nil)
                     self.view.layoutIfNeeded()
                     setToolbarItems([self.infoLabel!,flexibleSpace,self.uncashingProcessButton], animated: true)
                 case .sum:
                     let numberFormatter = STMFunctions.decimalMaxTwoMinTwoDigitFormatter()
-                    let flexibleSpace = UIBarButtonItem(barButtonSystemItem: .FlexibleSpace, target: nil, action: nil)
-                    var cashingSum = NSDecimalNumber.zero()
+                    let flexibleSpace = UIBarButtonItem(barButtonSystemItem: .flexibleSpace, target: nil, action: nil)
+                    var cashingSum = NSDecimalNumber.zero
                     for cashing in self.resultsController.fetchedObjects! {
-                        cashingSum = cashingSum.decimalNumberByAdding((cashing as! STMCashing).summ ?? 0)
+                        cashingSum = cashingSum.adding((cashing as! STMCashing).summ ?? 0)
                     }
-                    var uncashingSum = NSDecimalNumber.zero()
+                    var uncashingSum = NSDecimalNumber.zero
                     for cashing in STMUncashingProcessController.sharedInstance().cashingDictionary.allValues {
-                        uncashingSum = uncashingSum.decimalNumberByAdding(cashing.summ ?? 0)
+                        uncashingSum = uncashingSum.adding((cashing as AnyObject).summ ?? 0)
                     }
-                    infoLabel?.title = NSLocalizedString("SUM", comment: "") + numberFormatter.stringFromNumber(uncashingSum)! + " " + NSLocalizedString("FROM", comment: "") + " " + numberFormatter.stringFromNumber(cashingSum)!
+                    infoLabel?.title = NSLocalizedString("SUM", comment: "") + numberFormatter.string(from: uncashingSum)! + " " + NSLocalizedString("FROM", comment: "") + " " + numberFormatter.string(from: cashingSum)!
                     setToolbarItems([flexibleSpace,self.infoLabel!,flexibleSpace], animated: true)
                 }
             }
@@ -115,35 +115,35 @@ class STMUncashingDetailsTVC_iPhone: STMUncashingDetailsTVC, UIPopoverPresentati
     
     //MARK: UIPopoverPresentationControllerDelegate
     
-    func adaptivePresentationStyleForPresentationController(PC: UIPresentationController) -> UIModalPresentationStyle {
-        return .None
+    func adaptivePresentationStyle(for PC: UIPresentationController) -> UIModalPresentationStyle {
+        return .none
     }
     
     // MARK: table view data
     
-    override func numberOfSectionsInTableView(tableView: UITableView) -> Int {
-        let rez = super.numberOfSectionsInTableView(tableView)
+    override func numberOfSections(in tableView: UITableView) -> Int {
+        let rez = super.numberOfSections(in: tableView)
         if rez == 0 {
-            uncashingProcessButton.enabled = false
+            uncashingProcessButton.isEnabled = false
         }else{
-            uncashingProcessButton.enabled = true
+            uncashingProcessButton.isEnabled = true
         }
         return rez
     }
     
-    override func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCellWithIdentifier("STMCustom6TVCell",forIndexPath:indexPath) as! STMCustom6TVCell
+    override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        let cell = tableView.dequeueReusableCell(withIdentifier: "STMCustom6TVCell",for:indexPath) as! STMCustom6TVCell
         cell.heightLimiter = 44
-        cell.editingAccessoryType = .Checkmark
-        let cashing = self.resultsController.objectAtIndexPath(indexPath) as! STMCashing
+        cell.editingAccessoryType = .checkmark
+        let cashing = self.resultsController.object(at: indexPath) as! STMCashing
         cell.titleLabel?.attributedText = self.textLabelForDebt(cashing, withFont:cell.titleLabel!.font)
         cell.detailLabel?.attributedText = self.detailTextLabelForDebt(cashing, withFont:cell.detailLabel!.font)
         cell.messageLabel?.attributedText = self.messageTextLabelForDebt(cashing, withFont:cell.detailLabel!.font)
-        cell.selectionStyle = .None
+        cell.selectionStyle = .none
         cell.titleLabel?.adjustsFontSizeToFitWidth = true
         cell.detailLabel?.adjustsFontSizeToFitWidth = true
         
-        if STMUncashingProcessController.sharedInstance().hasCashingWithXid(cashing.xid){
+        if STMUncashingProcessController.sharedInstance().hasCashing(withXid: cashing.xid){
             
             cell.tintColor = STMSwiftConstants.ACTIVE_BLUE_COLOR
             
@@ -156,7 +156,7 @@ class STMUncashingDetailsTVC_iPhone: STMUncashingDetailsTVC, UIPopoverPresentati
         return cell
     }
     
-    func textLabelForDebt(cashing: STMCashing, withFont font: UIFont!) -> NSMutableAttributedString! {
+    func textLabelForDebt(_ cashing: STMCashing, withFont font: UIFont!) -> NSMutableAttributedString! {
         var backgroundColor :UIColor
         var textColor :UIColor
         var attributes: NSDictionary
@@ -164,34 +164,34 @@ class STMUncashingDetailsTVC_iPhone: STMUncashingDetailsTVC, UIPopoverPresentati
         let numberFormatter = STMFunctions.currencyFormatter
         let debt = cashing.debt
         if uncashing != nil{
-            textColor = UIColor.darkGrayColor()
+            textColor = UIColor.darkGray
         }else{
-            textColor = UIColor.blackColor()
+            textColor = UIColor.black
         }
-        backgroundColor = UIColor.clearColor()
+        backgroundColor = UIColor.clear
         attributes = [
             NSFontAttributeName: font,
             NSBackgroundColorAttributeName: backgroundColor,
             NSForegroundColorAttributeName: textColor
         ]
         if let summ = cashing.summ{
-            let cashingSumString = numberFormatter().stringFromNumber(summ)
-            text.appendAttributedString(NSAttributedString(string: cashingSumString! + " ", attributes: attributes as? [String : AnyObject]))
+            let cashingSumString = numberFormatter().string(from: summ)
+            text.append(NSAttributedString(string: cashingSumString! + " ", attributes: attributes as? [String : AnyObject]))
         }
         if (debt != nil){
             if debt!.ndoc != nil{
-                text.appendAttributedString(NSAttributedString(string: NSLocalizedString("FOR", comment: "") + " " + debt!.ndoc! ,attributes:attributes as? [String : AnyObject]))
+                text.append(NSAttributedString(string: NSLocalizedString("FOR", comment: "") + " " + debt!.ndoc! ,attributes:attributes as? [String : AnyObject]))
             }
         }
         else{
             if (cashing.ndoc != nil) {
-                text.appendAttributedString(NSAttributedString(string:NSLocalizedString("FOR", comment: "") + " " + cashing.ndoc!,attributes: attributes as? [String : AnyObject]))
+                text.append(NSAttributedString(string:NSLocalizedString("FOR", comment: "") + " " + cashing.ndoc!,attributes: attributes as? [String : AnyObject]))
             }
         }
         return text
     }
     
-    func detailTextLabelForDebt(cashing: STMCashing, withFont font: UIFont!) -> NSMutableAttributedString! {
+    func detailTextLabelForDebt(_ cashing: STMCashing, withFont font: UIFont!) -> NSMutableAttributedString! {
         var backgroundColor :UIColor
         var textColor :UIColor
         var attributes: NSDictionary
@@ -199,11 +199,11 @@ class STMUncashingDetailsTVC_iPhone: STMUncashingDetailsTVC, UIPopoverPresentati
         let numberFormatter = STMFunctions.currencyFormatter
         let debt = cashing.debt
         if uncashing != nil{
-            textColor = UIColor.darkGrayColor()
+            textColor = UIColor.darkGray
         }else{
-            textColor = UIColor.blackColor()
+            textColor = UIColor.black
         }
-        backgroundColor = UIColor.clearColor()
+        backgroundColor = UIColor.clear
         attributes = [
             NSFontAttributeName: font,
             NSBackgroundColorAttributeName: backgroundColor,
@@ -211,30 +211,30 @@ class STMUncashingDetailsTVC_iPhone: STMUncashingDetailsTVC, UIPopoverPresentati
         ]
         if debt != nil{
             if debt!.summOrigin != nil {
-                let debtSumOriginString = numberFormatter().stringFromNumber(debt!.summOrigin!)
-                text.appendAttributedString(NSAttributedString(string: NSLocalizedString("BY SUMM", comment: "").uppercaseFirst + " " + debtSumOriginString! + " ", attributes: attributes as? [String : AnyObject]))
+                let debtSumOriginString = numberFormatter().string(from: debt!.summOrigin!)
+                text.append(NSAttributedString(string: NSLocalizedString("BY SUMM", comment: "").uppercaseFirst + " " + debtSumOriginString! + " ", attributes: attributes as? [String : AnyObject]))
             }
             if debt!.date != nil {
                 let dateFormatter = STMFunctions.dateMediumNoTimeFormatter
-                let debtDate = dateFormatter().stringFromDate(debt!.date!)
-                text.appendAttributedString(NSAttributedString(string: NSLocalizedString("OF", comment: "") + " " + debtDate, attributes: attributes as? [String : AnyObject]))
+                let debtDate = dateFormatter().string(from: debt!.date!)
+                text.append(NSAttributedString(string: NSLocalizedString("OF", comment: "") + " " + debtDate, attributes: attributes as? [String : AnyObject]))
             }
         }
         return text
     }
     
-    func messageTextLabelForDebt(cashing: STMCashing, withFont font: UIFont!) -> NSMutableAttributedString! {
+    func messageTextLabelForDebt(_ cashing: STMCashing, withFont font: UIFont!) -> NSMutableAttributedString! {
         var backgroundColor :UIColor
         var textColor :UIColor
         var attributes: NSDictionary
         let text = NSMutableAttributedString()
         let debt = cashing.debt
         if uncashing != nil{
-            textColor = UIColor.darkGrayColor()
+            textColor = UIColor.darkGray
         }else{
-            textColor = UIColor.blackColor()
+            textColor = UIColor.black
         }
-        backgroundColor = UIColor.clearColor()
+        backgroundColor = UIColor.clear
         attributes = [
             NSFontAttributeName: font,
             NSBackgroundColorAttributeName: backgroundColor,
@@ -242,25 +242,25 @@ class STMUncashingDetailsTVC_iPhone: STMUncashingDetailsTVC, UIPopoverPresentati
         ]
         if cashing.date != nil {
             let dateFormatter = STMFunctions.dateMediumNoTimeFormatter
-            let cashingDate = dateFormatter().stringFromDate(cashing.date!)
+            let cashingDate = dateFormatter().string(from: cashing.date!)
             let commentString = NSString(format:"%@ ", cashingDate)
-            text.appendAttributedString(NSAttributedString(string: commentString as String, attributes:attributes as? [String : AnyObject]))
+            text.append(NSAttributedString(string: commentString as String, attributes:attributes as? [String : AnyObject]))
         }
         if cashing.commentText != nil {
             let commentString = NSString(format:"(%@) ", cashing.commentText!)
-            text.appendAttributedString(NSAttributedString(string: commentString as String, attributes:attributes as? [String : AnyObject]))
+            text.append(NSAttributedString(string: commentString as String, attributes:attributes as? [String : AnyObject]))
         }
         if debt?.responsibility != nil {
-            backgroundColor = UIColor.grayColor()
-            textColor = UIColor.whiteColor()
+            backgroundColor = UIColor.gray
+            textColor = UIColor.white
             attributes = [
                 NSFontAttributeName: font,
                 NSBackgroundColorAttributeName: backgroundColor,
                 NSForegroundColorAttributeName: textColor
             ]
             let responsibilityString = NSString(format: "%@", debt!.responsibility!)
-            text.appendAttributedString(NSAttributedString(string:responsibilityString as String, attributes:attributes as? [String : AnyObject]))
-            text.appendAttributedString(NSAttributedString(string: " "))
+            text.append(NSAttributedString(string:responsibilityString as String, attributes:attributes as? [String : AnyObject]))
+            text.append(NSAttributedString(string: " "))
         }
         return text
     }
@@ -268,28 +268,28 @@ class STMUncashingDetailsTVC_iPhone: STMUncashingDetailsTVC, UIPopoverPresentati
     // MARK: Selectors
     
     func addButtonPressed() {
-        let alert = UIAlertController(title: NSLocalizedString("ADD SUM", comment: ""), message: nil, preferredStyle: .ActionSheet)
-        let etc = UIAlertAction(title: NSLocalizedString("ETC", comment: ""), style: .Default){
+        let alert = UIAlertController(title: NSLocalizedString("ADD SUM", comment: ""), message: nil, preferredStyle: .actionSheet)
+        let etc = UIAlertAction(title: NSLocalizedString("ETC", comment: ""), style: .default){
             (action) -> Void in
-            let content = self.storyboard!.instantiateViewControllerWithIdentifier("addEtceteraVC") as! STMAddEtceteraVC
-            content.cashingType = .Etcetera
+            let content = self.storyboard!.instantiateViewController(withIdentifier: "addEtceteraVC") as! STMAddEtceteraVC
+            content.cashingType = .etcetera
             let nav = UINavigationController(rootViewController: content)
-            nav.modalPresentationStyle = .FullScreen
-            self.presentViewController(nav, animated: true, completion: nil)
+            nav.modalPresentationStyle = .fullScreen
+            self.present(nav, animated: true, completion: nil)
         }
-        let deduction = UIAlertAction(title: NSLocalizedString("DEDUCTION", comment: ""), style: .Default){
+        let deduction = UIAlertAction(title: NSLocalizedString("DEDUCTION", comment: ""), style: .default){
             (action) -> Void in
-            let content = self.storyboard!.instantiateViewControllerWithIdentifier("addEtceteraVC") as! STMAddEtceteraVC
-            content.cashingType = .Deduction
+            let content = self.storyboard!.instantiateViewController(withIdentifier: "addEtceteraVC") as! STMAddEtceteraVC
+            content.cashingType = .deduction
             let nav = UINavigationController(rootViewController: content)
-            nav.modalPresentationStyle = .FullScreen
-            self.presentViewController(nav, animated: true, completion: nil)
+            nav.modalPresentationStyle = .fullScreen
+            self.present(nav, animated: true, completion: nil)
         }
-        let cancel = UIAlertAction(title: NSLocalizedString("CANCEL", comment: ""), style: .Cancel, handler: nil)
+        let cancel = UIAlertAction(title: NSLocalizedString("CANCEL", comment: ""), style: .cancel, handler: nil)
         alert.addAction(etc)
         alert.addAction(deduction)
         alert.addAction(cancel)
-        presentViewController(alert, animated: true, completion: nil)
+        present(alert, animated: true, completion: nil)
     }
     
     func cancelButtonPressed(){
@@ -303,8 +303,8 @@ class STMUncashingDetailsTVC_iPhone: STMUncashingDetailsTVC, UIPopoverPresentati
     
     func confirmButtonPressed(){
         if STMUncashingProcessController.sharedInstance().isCashingSelected(){
-            let content = self.storyboard!.instantiateViewControllerWithIdentifier("uncashingHandOverVC")
-            self.navigationController?.showViewController(content, sender: self)
+            let content = self.storyboard!.instantiateViewController(withIdentifier: "uncashingHandOverVC")
+            self.navigationController?.show(content, sender: self)
         }
     }
     
@@ -312,19 +312,19 @@ class STMUncashingDetailsTVC_iPhone: STMUncashingDetailsTVC, UIPopoverPresentati
     
     override func addObservers(){
         super.addObservers()
-        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(STMUncashingDetailsTVC_iPhone.resetToolbar), name: "cashingDictionaryChanged", object: STMUncashingProcessController.sharedInstance())
+        NotificationCenter.default.addObserver(self, selector: #selector(STMUncashingDetailsTVC_iPhone.resetToolbar), name: NSNotification.Name(rawValue: "cashingDictionaryChanged"), object: STMUncashingProcessController.sharedInstance())
     }
     
     override func viewDidLoad() {
         super.viewDidLoad()
         tableView!.rowHeight = UITableViewAutomaticDimension
         tableView!.estimatedRowHeight = 100
-        tableView!.registerNib(UINib(nibName: "STMCustom6TVCell", bundle: nil), forCellReuseIdentifier: "STMCustom6TVCell")
-        let backItem = UIBarButtonItem(title: NSLocalizedString("BACK", comment: ""), style: .Plain, target: nil, action: nil)
+        tableView!.register(UINib(nibName: "STMCustom6TVCell", bundle: nil), forCellReuseIdentifier: "STMCustom6TVCell")
+        let backItem = UIBarButtonItem(title: NSLocalizedString("BACK", comment: ""), style: .plain, target: nil, action: nil)
         navigationItem.backBarButtonItem = backItem
     }
     
-    override func viewWillAppear(animated: Bool) {
+    override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         self.navigationController!.setToolbarHidden(false, animated: true)
     }

@@ -11,13 +11,13 @@ import UIKit
 @available(iOS 8.0, *)
 class STMUncashingHandOverVC_iPhone: STMUncashingHandOverVC, UIPopoverPresentationControllerDelegate {
     // MARK: Superclass override
-    private var infoPopover:STMUncashingInfoVC_iPhone?
+    fileprivate var infoPopover:STMUncashingInfoVC_iPhone?
     
     override func customInit() {
         super.customInit()
         self.navigationItem.leftBarButtonItem = nil
         self.navigationItem.setHidesBackButton(false, animated: false)
-        self.navigationItem.rightBarButtonItem = UIBarButtonItem(title: NSLocalizedString("DONE", comment: ""), style: .Done, target: STMUncashingProcessController.sharedInstance(), action: #selector(STMUncashingProcessController.checkUncashing))
+        self.navigationItem.rightBarButtonItem = UIBarButtonItem(title: NSLocalizedString("DONE", comment: ""), style: .done, target: STMUncashingProcessController.sharedInstance(), action: #selector(STMUncashingProcessController.checkUncashing))
         self.navigationController?.setToolbarHidden(true, animated: true)
         STMUncashingProcessController.sharedInstance().uncashingType = nil
         STMUncashingProcessController.sharedInstance().pictureImage = nil
@@ -25,39 +25,39 @@ class STMUncashingHandOverVC_iPhone: STMUncashingHandOverVC, UIPopoverPresentati
     
     override func showInfoPopover(){
         self.commentTextView?.endEditing(true)
-        let content = self.storyboard!.instantiateViewControllerWithIdentifier("uncashingInfoPopover") as! STMUncashingInfoVC_iPhone
+        let content = self.storyboard!.instantiateViewController(withIdentifier: "uncashingInfoPopover") as! STMUncashingInfoVC_iPhone
         content.sum = self.uncashingSum
         content.type = self.uncashingType
         content.comment = self.commentText
         content.image = self.pictureImage
         content.place = self.currentUncashingPlace
-        content.modalPresentationStyle = .Popover
+        content.modalPresentationStyle = .popover
         let popover = content.popoverPresentationController
         popover!.delegate = self
         popover!.sourceView = self.navigationController?.navigationBar
-        let frame = (self.navigationItem.rightBarButtonItem!.valueForKey("view") as! UIView).frame
+        let frame = (self.navigationItem.rightBarButtonItem!.value(forKey: "view") as! UIView).frame
         popover!.sourceRect = frame
         content.parentVC = self
-        self.presentViewController(content, animated: true, completion: nil)
+        self.present(content, animated: true, completion: nil)
         infoPopover = content
     }
     
-    override func showImagePickerForSourceType(imageSourceType:UIImagePickerControllerSourceType) {
+    override func showImagePicker(for imageSourceType:UIImagePickerControllerSourceType) {
         if UIImagePickerController.isSourceTypeAvailable(imageSourceType) {
         self.selectedSourceType = imageSourceType
-        self.presentViewController(self.imagePickerController, animated:true){
+        self.present(self.imagePickerController, animated:true){
             self.view.addSubview(self.spinnerView)
             }
         }
     }
     
     override func dismissInfoPopover() {
-        infoPopover?.dismissViewControllerAnimated(true, completion: nil)
+        infoPopover?.dismiss(animated: true, completion: nil)
     }
     
     //MARK: UIPopoverPresentationControllerDelegate
     
-    func adaptivePresentationStyleForPresentationController(PC: UIPresentationController) -> UIModalPresentationStyle {
-        return .None
+    func adaptivePresentationStyle(for PC: UIPresentationController) -> UIModalPresentationStyle {
+        return .none
     }
 }

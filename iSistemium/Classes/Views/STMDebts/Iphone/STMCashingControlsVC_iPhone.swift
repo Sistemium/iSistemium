@@ -20,7 +20,7 @@ class STMCashingControlsVC_iPhone: STMCashingControlsVC {
     
     // MARK: view lifecycle
     
-    override func viewWillAppear(animated: Bool) {
+    override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         self.navigationController?.setToolbarHidden(true, animated: true)
     }

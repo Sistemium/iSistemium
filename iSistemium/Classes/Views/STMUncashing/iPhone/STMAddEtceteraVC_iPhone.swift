@@ -15,29 +15,29 @@ class STMAddEtceteraVC_iPhone: STMAddEtceteraVC,UIPopoverPresentationControllerD
     
     func closeButtonPressed(){
         self.view.endEditing(true)
-        self.dismissViewControllerAnimated(true, completion: nil)
+        self.dismiss(animated: true, completion: nil)
     }
     
     func addButtonPressed() {
         super.doneButtonPressed(nil)
         if super.textFieldFillingIsCorrect(){
-            self.dismissViewControllerAnimated(true, completion: nil)
+            self.dismiss(animated: true, completion: nil)
         }
     }
     
     // MARK: UIPopoverPresentationControllerDelegate
     
-    func adaptivePresentationStyleForPresentationController(PC: UIPresentationController) -> UIModalPresentationStyle {
-        return .None
+    func adaptivePresentationStyle(for PC: UIPresentationController) -> UIModalPresentationStyle {
+        return .none
     }
     
     // MARK: Navigation
     
-    override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         switch(segue.identifier!){
         case "showDatePicker":
-            let datePickerVC = segue.destinationViewController as! STMDatePickerVC
-            datePickerVC.preferredContentSize = CGSizeMake(450,250)
+            let datePickerVC = segue.destination as! STMDatePickerVC
+            datePickerVC.preferredContentSize = CGSize(width: 450,height: 250)
             datePickerVC.popoverPresentationController?.delegate = self
             datePickerVC.popoverPresentationController?.sourceRect = dateButton!.frame
             datePickerVC.popoverPresentationController?.sourceRect.origin.x -= 220
@@ -55,14 +55,14 @@ class STMAddEtceteraVC_iPhone: STMAddEtceteraVC,UIPopoverPresentationControllerD
     override func viewDidLoad() {
         super.viewDidLoad()
         switch (cashingType){
-        case .Deduction:
+        case .deduction:
             self.title = NSLocalizedString("DEDUCTION", comment: "")
-        case .Etcetera:
+        case .etcetera:
             self.title = NSLocalizedString("ETC", comment: "")
             break
         }
-        self.navigationItem.leftBarButtonItem = UIBarButtonItem(title: NSLocalizedString("CLOSE", comment: ""), style: .Plain, target: self, action: #selector(STMAddEtceteraVC_iPhone.closeButtonPressed))
-        self.navigationItem.rightBarButtonItem = UIBarButtonItem(title: NSLocalizedString("ADD", comment: ""), style: .Plain, target: self, action: #selector(STMAddEtceteraVC_iPhone.addButtonPressed))
+        self.navigationItem.leftBarButtonItem = UIBarButtonItem(title: NSLocalizedString("CLOSE", comment: ""), style: .plain, target: self, action: #selector(STMAddEtceteraVC_iPhone.closeButtonPressed))
+        self.navigationItem.rightBarButtonItem = UIBarButtonItem(title: NSLocalizedString("ADD", comment: ""), style: .plain, target: self, action: #selector(STMAddEtceteraVC_iPhone.addButtonPressed))
     }
     
 }

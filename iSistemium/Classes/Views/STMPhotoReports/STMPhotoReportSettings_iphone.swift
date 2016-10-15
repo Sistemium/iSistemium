@@ -40,17 +40,17 @@ class STMPhotoReportSettings_iphone:UITableViewController{
         didSet{
             let userID = STMAuthController().userID
             let key = "showDataOnlyWithPhotos_\(userID)"
-            let defaults = NSUserDefaults.standardUserDefaults()
-            let showDataOnlyWithPhotos = defaults.boolForKey(key)
-            onlyPhotosSwitcher.on = showDataOnlyWithPhotos
+            let defaults = UserDefaults.standard
+            let showDataOnlyWithPhotos = defaults.bool(forKey: key)
+            onlyPhotosSwitcher.isOn = showDataOnlyWithPhotos
         }
     }
 
     @IBOutlet weak var groupingTypeLabel: UILabel!{
         didSet{
-            let defaults = NSUserDefaults.standardUserDefaults()
+            let defaults = UserDefaults.standard
             let key = "currentGrouping_\(STMAuthController().userID)"
-            groupingType = defaults.integerForKey(key)
+            groupingType = defaults.integer(forKey: key)
             refreshGroupingTypeLabel()
         }
     }
@@ -63,24 +63,24 @@ class STMPhotoReportSettings_iphone:UITableViewController{
         }
     }
     
-    @IBAction func cancelButton(sender: UIBarButtonItem) {
-        self.dismissViewControllerAnimated(true, completion: nil)
+    @IBAction func cancelButton(_ sender: UIBarButtonItem) {
+        self.dismiss(animated: true, completion: nil)
     }
     
-    @IBAction func doneButton(sender: UIBarButtonItem) {
+    @IBAction func doneButton(_ sender: UIBarButtonItem) {
         if onlyPhotosSwitcher != nil{
             let userID = STMAuthController().userID
-            let defaults = NSUserDefaults.standardUserDefaults()
-            defaults.setBool(onlyPhotosSwitcher.on, forKey: "showDataOnlyWithPhotos_\(userID)")
-            defaults.setInteger(groupingType ?? 0, forKey: "currentGrouping_\(STMAuthController().userID)")
+            let defaults = UserDefaults.standard
+            defaults.set(onlyPhotosSwitcher.isOn, forKey: "showDataOnlyWithPhotos_\(userID)")
+            defaults.set(groupingType ?? 0, forKey: "currentGrouping_\(STMAuthController().userID)")
             defaults.synchronize()
             if let filter = self.navigationController?.popoverPresentationController?.delegate as? STMPhotoReportsFilterTVC_iphone{
                 filter.photoReportGroupingChanged()
             }
             if let detail = self.navigationController?.popoverPresentationController?.delegate as? STMPhotoReportsDetailTVC_iphone{
-                detail.currentGrouping = groupingType == 1 ? .Outlet : .Campaign
+                detail.currentGrouping = groupingType == 1 ? .outlet : .campaign
             }
-            self.dismissViewControllerAnimated(true, completion: nil)
+            self.dismiss(animated: true, completion: nil)
         }else{
             mainSettingsViewController.doneButton(sender)
         }
@@ -90,9 +90,9 @@ class STMPhotoReportSettings_iphone:UITableViewController{
         didSet{
             byCampaignCell.textLabel!.text = NSLocalizedString(byCampaignCell.textLabel!.text!, comment: "")
             if mainSettingsViewController.groupingType == 0{
-                byCampaignCell.accessoryType = .Checkmark
+                byCampaignCell.accessoryType = .checkmark
             }else{
-                byCampaignCell.accessoryType = .None
+                byCampaignCell.accessoryType = .none
             }
         }
     }
@@ -101,19 +101,19 @@ class STMPhotoReportSettings_iphone:UITableViewController{
         didSet{
             byOutletCell.textLabel!.text = NSLocalizedString(byOutletCell.textLabel!.text!, comment: "")
             if mainSettingsViewController.groupingType == 1{
-                byOutletCell.accessoryType = .Checkmark
+                byOutletCell.accessoryType = .checkmark
             }else{
-                byOutletCell.accessoryType = .None
+                byOutletCell.accessoryType = .none
             }
         }
     }
     
-    override func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
+    override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         if byCampaignCell != nil && byOutletCell != nil{
-            switch tableView.cellForRowAtIndexPath(indexPath)! {
+            switch tableView.cellForRow(at: indexPath)! {
             case byCampaignCell:
-                byCampaignCell.accessoryType = .Checkmark
-                byOutletCell.accessoryType = .None
+                byCampaignCell.accessoryType = .checkmark
+                byOutletCell.accessoryType = .none
                 if let _ = groupingTypeLabel{
                     groupingType = 0
                 }else{
@@ -121,8 +121,8 @@ class STMPhotoReportSettings_iphone:UITableViewController{
                     mainSettingsViewController.refreshGroupingTypeLabel()
                 }
             case byOutletCell:
-                byCampaignCell.accessoryType = .None
-                byOutletCell.accessoryType = .Checkmark
+                byCampaignCell.accessoryType = .none
+                byOutletCell.accessoryType = .checkmark
                 if let _ = groupingTypeLabel{
                     groupingType = 1
                 }else{

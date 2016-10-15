@@ -15,8 +15,8 @@ class STMCampaignGroupTVC_iphone:STMCampaignGroupTVC, UIPopoverPresentationContr
         super.viewDidLoad()
     }
     
-    func adaptivePresentationStyleForPresentationController(controller: UIPresentationController) -> UIModalPresentationStyle {
-        return .None
+    func adaptivePresentationStyle(for controller: UIPresentationController) -> UIModalPresentationStyle {
+        return .none
     }
     
     @IBOutlet weak var showAllButton: UIBarButtonItem!{
@@ -25,32 +25,32 @@ class STMCampaignGroupTVC_iphone:STMCampaignGroupTVC, UIPopoverPresentationContr
         }
     }
     
-    override func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
-        self.performSegueWithIdentifier("showFilterTVC", sender: (self.resultsController.objectAtIndexPath(indexPath)))
+    override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        self.performSegue(withIdentifier: "showFilterTVC", sender: (self.resultsController.object(at: indexPath)))
     }
     
-    override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         switch segue.identifier! {
         case "showFilterTVC":
-            (segue.destinationViewController as! STMPhotoReportsFilterTVC).title = (sender as! STMCampaignGroup).displayName()
+            (segue.destination as! STMPhotoReportsFilterTVC).title = (sender as! STMCampaignGroup).displayName()
             let campaignGroup = (sender as! STMCampaignGroup)
-            (segue.destinationViewController as! STMPhotoReportsFilterTVC).selectedCampaignGroup = campaignGroup;
+            (segue.destination as! STMPhotoReportsFilterTVC).selectedCampaignGroup = campaignGroup;
         case "showSettings":
-            segue.destinationViewController.popoverPresentationController?.delegate = self
+            segue.destination.popoverPresentationController?.delegate = self
         default:
             break
         }
     }
     
-    override func viewWillAppear(animated: Bool) {
+    override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(true)
         self.navigationController?.setToolbarHidden(false, animated: true)
         if let _ = self.tableView.indexPathForSelectedRow{
-            self.tableView.deselectRowAtIndexPath(self.tableView.indexPathForSelectedRow!, animated: true)
+            self.tableView.deselectRow(at: self.tableView.indexPathForSelectedRow!, animated: true)
         }
     }
     
-    override func viewWillDisappear(animated: Bool) {
+    override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
         self.navigationController?.setToolbarHidden(true, animated: true)
     }

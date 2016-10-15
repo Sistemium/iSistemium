@@ -12,44 +12,44 @@ class STMOutletCashingVC_iPhone: STMOutletCashingVC {
 
     // MARK: table view data
     
-    override func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCellWithIdentifier("STMCustom6TVCell",forIndexPath:indexPath) as! STMCustom6TVCell
-        let cashing = self.resultsController.objectAtIndexPath(indexPath) as! STMCashing
+    override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        let cell = tableView.dequeueReusableCell(withIdentifier: "STMCustom6TVCell",for:indexPath) as! STMCustom6TVCell
+        let cashing = self.resultsController.object(at: indexPath) as! STMCashing
         
         cell.titleLabel?.attributedText = self.textLabelForDebt(cashing, withFont:cell.titleLabel!.font)
         cell.detailLabel?.attributedText = self.detailTextLabelForDebt(cashing, withFont:cell.detailLabel!.font)
         cell.messageLabel?.attributedText = self.messageTextLabelForDebt(cashing, withFont:cell.detailLabel!.font)
-        cell.selectionStyle = .None
+        cell.selectionStyle = .none
         cell.titleLabel?.adjustsFontSizeToFitWidth = true
         cell.detailLabel?.adjustsFontSizeToFitWidth = true
         return cell
     }
     
-    func textLabelForDebt(cashing: STMCashing, withFont font: UIFont!) -> NSMutableAttributedString! {
+    func textLabelForDebt(_ cashing: STMCashing, withFont font: UIFont!) -> NSMutableAttributedString! {
         var backgroundColor :UIColor
         var textColor :UIColor
         var attributes: NSDictionary
         let text = NSMutableAttributedString()
         let numberFormatter = STMFunctions.currencyFormatter
-        let cashingSumString = numberFormatter().stringFromNumber(cashing.summ!)
+        let cashingSumString = numberFormatter().string(from: cashing.summ!)
         let debt = cashing.debt
-        backgroundColor = UIColor.clearColor()
-        textColor = UIColor.darkGrayColor()
+        backgroundColor = UIColor.clear
+        textColor = UIColor.darkGray
         attributes = [
             NSFontAttributeName: font,
             NSBackgroundColorAttributeName: backgroundColor,
             NSForegroundColorAttributeName: textColor
         ]
         if cashingSumString != nil{
-            text.appendAttributedString(NSAttributedString(string: cashingSumString! + " ", attributes: attributes as? [String : AnyObject]))
+            text.append(NSAttributedString(string: cashingSumString! + " ", attributes: attributes as? [String : AnyObject]))
         }
         if debt?.ndoc != nil{
-            text.appendAttributedString(NSAttributedString(string: NSLocalizedString("FOR", comment: "") + " " + debt!.ndoc! ,attributes:attributes as? [String : AnyObject]))
+            text.append(NSAttributedString(string: NSLocalizedString("FOR", comment: "") + " " + debt!.ndoc! ,attributes:attributes as? [String : AnyObject]))
         }
         return text
     }
     
-    func detailTextLabelForDebt(cashing: STMCashing, withFont font: UIFont!) -> NSMutableAttributedString! {
+    func detailTextLabelForDebt(_ cashing: STMCashing, withFont font: UIFont!) -> NSMutableAttributedString! {
         var backgroundColor :UIColor
         var textColor :UIColor
         var attributes: NSDictionary
@@ -60,54 +60,54 @@ class STMOutletCashingVC_iPhone: STMOutletCashingVC {
         if debt?.summOrigin == nil{
             debtSumOriginString = nil
         }else{
-            debtSumOriginString = numberFormatter().stringFromNumber(debt!.summOrigin!)
+            debtSumOriginString = numberFormatter().string(from: debt!.summOrigin!)
         }
-        backgroundColor = UIColor.clearColor()
-        textColor = UIColor.darkGrayColor()
+        backgroundColor = UIColor.clear
+        textColor = UIColor.darkGray
         attributes = [
             NSFontAttributeName: font,
             NSBackgroundColorAttributeName: backgroundColor,
             NSForegroundColorAttributeName: textColor
         ]
         if debtSumOriginString != nil{
-            text.appendAttributedString(NSAttributedString(string: NSLocalizedString("BY SUMM", comment: "").uppercaseFirst + " " + debtSumOriginString! + " ", attributes: attributes as? [String : AnyObject]))
+            text.append(NSAttributedString(string: NSLocalizedString("BY SUMM", comment: "").uppercaseFirst + " " + debtSumOriginString! + " ", attributes: attributes as? [String : AnyObject]))
         }
         if debt?.date != nil {
             let dateFormatter = STMFunctions.dateMediumNoTimeFormatter
-            let debtDate = dateFormatter().stringFromDate(debt!.date!)
-            text.appendAttributedString(NSAttributedString(string: NSLocalizedString("OF", comment: "") + " " + debtDate, attributes: attributes as? [String : AnyObject]))
+            let debtDate = dateFormatter().string(from: debt!.date!)
+            text.append(NSAttributedString(string: NSLocalizedString("OF", comment: "") + " " + debtDate, attributes: attributes as? [String : AnyObject]))
         }
         return text
     }
     
-    func messageTextLabelForDebt(cashing: STMCashing, withFont font: UIFont!) -> NSMutableAttributedString! {
+    func messageTextLabelForDebt(_ cashing: STMCashing, withFont font: UIFont!) -> NSMutableAttributedString! {
         var backgroundColor :UIColor
         var textColor :UIColor
         var attributes: NSDictionary
         let text = NSMutableAttributedString()
         let debt = cashing.debt
         if cashing.commentText != nil {
-            backgroundColor = UIColor.clearColor()
-            textColor = UIColor.darkGrayColor()
+            backgroundColor = UIColor.clear
+            textColor = UIColor.darkGray
             attributes = [
                 NSFontAttributeName: font,
                 NSBackgroundColorAttributeName: backgroundColor,
                 NSForegroundColorAttributeName: textColor
             ]
             let commentString = NSString(format:"(%@) ", cashing.commentText!)
-            text.appendAttributedString(NSAttributedString(string: commentString as String, attributes:attributes as? [String : AnyObject]))
+            text.append(NSAttributedString(string: commentString as String, attributes:attributes as? [String : AnyObject]))
         }
         if debt?.responsibility != nil {
-            backgroundColor = UIColor.grayColor()
-            textColor = UIColor.whiteColor()
+            backgroundColor = UIColor.gray
+            textColor = UIColor.white
             attributes = [
                 NSFontAttributeName: font,
                 NSBackgroundColorAttributeName: backgroundColor,
                 NSForegroundColorAttributeName: textColor
             ]
             let responsibilityString = NSString(format: "%@", debt!.responsibility!)
-            text.appendAttributedString(NSAttributedString(string:responsibilityString as String, attributes:attributes as? [String : AnyObject]))
-            text.appendAttributedString(NSAttributedString(string: " "))
+            text.append(NSAttributedString(string:responsibilityString as String, attributes:attributes as? [String : AnyObject]))
+            text.append(NSAttributedString(string: " "))
         }
         return text
     }
@@ -118,6 +118,6 @@ class STMOutletCashingVC_iPhone: STMOutletCashingVC {
         super.viewDidLoad()
         tableView!.rowHeight = UITableViewAutomaticDimension
         tableView!.estimatedRowHeight = 100
-        tableView!.registerNib(UINib(nibName: "STMCustom6TVCell", bundle: nil), forCellReuseIdentifier: "STMCustom6TVCell")
+        tableView!.register(UINib(nibName: "STMCustom6TVCell", bundle: nil), forCellReuseIdentifier: "STMCustom6TVCell")
     }
 }

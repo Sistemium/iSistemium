@@ -46,7 +46,7 @@ import Foundation
 public final class SocketClientManager : NSObject {
     public static let sharedManager = SocketClientManager()
     
-    private var sockets = [String: SocketIOClient]()
+    fileprivate var sockets = [String: SocketIOClient]()
     
     public subscript(string: String) -> SocketIOClient? {
         get {
@@ -58,19 +58,19 @@ public final class SocketClientManager : NSObject {
         }
     }
     
-    public func addSocket(socket: SocketIOClient, labeledAs label: String) {
+    public func addSocket(_ socket: SocketIOClient, labeledAs label: String) {
         sockets[label] = socket
     }
     
     public func removeSocket(withLabel label: String) -> SocketIOClient? {
-        return sockets.removeValueForKey(label)
+        return sockets.removeValue(forKey: label)
     }
 
-    public func removeSocket(socket: SocketIOClient) -> SocketIOClient? {
+    public func removeSocket(_ socket: SocketIOClient) -> SocketIOClient? {
         var returnSocket: SocketIOClient?
         
         for (label, dictSocket) in sockets where dictSocket === socket {
-            returnSocket = sockets.removeValueForKey(label)
+            returnSocket = sockets.removeValue(forKey: label)
         }
         
         return returnSocket
