@@ -35,6 +35,8 @@
 
 @property (nonatomic, strong) STMBarCodeScanner *iOSModeBarCodeScanner;
 
+@property (nonatomic, strong) NSDictionary *webViewStoryboardParameters;
+
 @property (nonatomic, strong) NSString *scannerScanJSFunction;
 @property (nonatomic, strong) NSString *scannerPowerButtonJSFunction;
 @property (nonatomic, strong) NSString *subscribeDataCallbackJSFunction;
@@ -78,34 +80,40 @@
     
 }
 
-- (NSString *)webViewUrlString {
+- (NSDictionary *)webViewStoryboardParameters {
     
-    if ([self.storyboard isKindOfClass:[STMStoryboard class]]) {
+    if (!_webViewStoryboardParameters) {
         
-        STMStoryboard *storyboard = (STMStoryboard *)self.storyboard;
-        NSString *url = storyboard.parameters[@"url"];
-        return url;
-        
-    } else {
-        
-        return @"https://sistemium.com";
+        if ([self.storyboard isKindOfClass:[STMStoryboard class]]) {
+            
+            STMStoryboard *storyboard = (STMStoryboard *)self.storyboard;
+            _webViewStoryboardParameters = storyboard.parameters;
+            
+        } else {
+            
+            _webViewStoryboardParameters = @{};
+            
+        }
         
     }
+    return _webViewStoryboardParameters;
     
+}
+
+- (NSString *)webViewUrlString {
+    
+    NSString *webViewUrlString = self.webViewStoryboardParameters[@"url"];
+    return webViewUrlString ? webViewUrlString : @"https://sistemium.com";
+
 }
 
 - (NSString *)webViewAuthCheckJS {
     
-    if ([self.storyboard isKindOfClass:[STMStoryboard class]]) {
-        
-        STMStoryboard *storyboard = (STMStoryboard *)self.storyboard;
-        NSString *authCheck = storyboard.parameters[@"authCheck"];
-        return authCheck;
-        
-    } else {
-        return [[self webViewSettings] valueForKey:@"wv.session.check"];
-    }
-    
+    NSString *webViewAuthCheckJS = self.webViewStoryboardParameters[@"authCheck"];
+    return webViewAuthCheckJS ? webViewAuthCheckJS : [[self webViewSettings] valueForKey:@"wv.session.check"];
+
+}
+
 }
 
 - (void)reloadWebView {
