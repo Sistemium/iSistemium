@@ -542,7 +542,7 @@
         
         NSString *event = [STMSocketController stringValueForEvent:STMSocketEventAuthorization];
         
-        [socket emitWithAck:event withItems:@[dataDic]](0, ^(NSArray *data) {
+        [socket emitWithAck:event with:@[dataDic]](0, ^(NSArray *data) {
             [self socket:socket receiveAckWithData:data forEvent:event];
         });
 
@@ -702,12 +702,12 @@
                         [self sharedInstance].isSendingData = YES;
                         [self sharedInstance].sendingDate = [NSDate date];
                         
-                        [socket emitWithAck:eventStringValue withItems:@[dataDic]](0, ^(NSArray *data) {
+                        [socket emitWithAck:eventStringValue with:@[dataDic]](0, ^(NSArray *data) {
                             [self receiveEventDataAckWithData:data];
                         });
                         
                     } else {
-                        [socket emit:eventStringValue withItems:@[dataDic]];
+                        [socket emit:eventStringValue with:@[dataDic]];
                     }
                     
                 }
