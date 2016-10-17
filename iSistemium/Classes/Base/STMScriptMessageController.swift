@@ -39,21 +39,21 @@ class STMScriptMessageController: NSObject {
             
             case STMSwiftConstants.ScriptMessageNames.WK_SCRIPT_MESSAGE_FIND:
                 
-                guard let xid: Data? = STMFunctions.xidData(fromXidString: body["id"] as? String) else {
+                guard let xid: Data = STMFunctions.xidData(fromXidString: body["id"] as? String) else {
                     errorWithMessage(error, errorMessage: "where is no xid in \(STMSwiftConstants.ScriptMessageNames.WK_SCRIPT_MESSAGE_FIND) script message")
                     return nil
                 }
                 
-                return predicateForFilters(entityName, filter: ["xid": xid! as AnyObject], whereFilter: nil, error: error)
+                return predicateForFilters(entityName, filter: ["xid": xid as AnyObject], whereFilter: nil, error: error)
             
             case STMSwiftConstants.ScriptMessageNames.WK_SCRIPT_MESSAGE_FIND_ALL:
                 
-                guard let filter: [String: AnyObject]? = body["filter"] as? [String: AnyObject] else {
+                guard let filter: [String : AnyObject] = body["filter"] as? [String: AnyObject] else {
                     print("filter section malformed")
                     break
                 }
                 
-                guard let whereFilter: [String: [String: AnyObject]]? = body["where"] as? [String: [String: AnyObject]] else {
+                guard let whereFilter: [String : [String : AnyObject]] = body["where"] as? [String: [String: AnyObject]] else {
                     print("whereFilter section malformed")
                     break
                 }
@@ -140,7 +140,7 @@ class STMScriptMessageController: NSObject {
                         continue
                     }
                     
-                    value = value?.replacingOccurrences(of: "-", with: "")
+                    value = (value as? String)?.replacingOccurrences(of: "-", with: "") as AnyObject?
                     
                 }
                 
@@ -205,11 +205,11 @@ class STMScriptMessageController: NSObject {
         
         switch className {
             
-            case NSStringFromClass(NSNumber)    :   return NumberFormatter().number(from: value as! String)!
+            case NSStringFromClass(NSNumber.self)    :   return NumberFormatter().number(from: value as! String)!
                 
-            case NSStringFromClass(Date) as! (AnyClass) as! (AnyClass) as! (AnyClass) as! (AnyClass) as! (AnyClass) as! (AnyClass) as! (AnyClass)      :   return STMFunctions.dateFormatter().date(from: value as! String)! as AnyObject?
+            case NSStringFromClass(Date.self as! AnyClass) :   return STMFunctions.dateFormatter().date(from: value as! String)! as AnyObject?
                 
-            case NSStringFromClass(Data) as! (AnyClass) as! (AnyClass) as! (AnyClass) as! (AnyClass) as! (AnyClass) as! (AnyClass) as! (AnyClass)      :   return STMFunctions.data(from: value as! String) as AnyObject?
+            case NSStringFromClass(Data.self as! AnyClass) :   return STMFunctions.data(from: value as! String) as AnyObject?
                 
             default                             :   return value
             

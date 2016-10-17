@@ -10,6 +10,8 @@
 #import <CoreData/CoreData.h>
 
 #import "iSistemium-Swift.h"
+@import SocketIO;
+
 
 
 typedef NS_ENUM(NSInteger, STMSocketEvent) {

@@ -69,7 +69,7 @@ class STMOutletDebtsTVC_iPhone: STMOutletDebtsTVC {
             var fillWidth: CGFloat = 0
             let debtsDictionary: NSDictionary = STMCashingProcessController.sharedInstance().debtsDictionary
             
-            if debt.xid != nil && debtsDictionary.allKeys.contains(where: {$0 as? NSObject == debt.xid}) {
+            if debt.xid != nil && debtsDictionary.allKeys.contains(where: {$0 as? Data == debt.xid}) {
                 
                 let debtValues: NSArray = debtsDictionary[debt.xid!]! as! NSArray
                 let cashingSum = debtValues[1]

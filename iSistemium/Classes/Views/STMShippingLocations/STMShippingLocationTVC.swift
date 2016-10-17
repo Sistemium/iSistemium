@@ -46,12 +46,12 @@ class STMShippingLocationTVC:STMVariableCellsHeightTVC,UIImagePickerControllerDe
     
     // Mark: resultsController
     
-    fileprivate var _resultsController:NSFetchedResultsController<AnyObject>?
+    fileprivate var _resultsController:NSFetchedResultsController<NSFetchRequestResult>?
     
-    override var resultsController : NSFetchedResultsController<AnyObject>? {
+    override var resultsController: NSFetchedResultsController<NSFetchRequestResult>!{
         get {
             if (_resultsController == nil && shippingLocation != nil) {
-                let shippingFetchRequest = STMFetchRequest(entityName: NSStringFromClass(STMShipmentRoutePoint))
+                let shippingFetchRequest = STMFetchRequest(entityName: NSStringFromClass(STMShipmentRoutePoint.self))
                 shippingFetchRequest.sortDescriptors = [NSSortDescriptor(key: "deviceTs", ascending:false)]
                 shippingFetchRequest.predicate = NSPredicate(format: "shippingLocation == %@", shippingLocation!)
                 _resultsController = NSFetchedResultsController(fetchRequest: shippingFetchRequest, managedObjectContext: self.document.managedObjectContext, sectionNameKeyPath: nil, cacheName: nil)
@@ -64,6 +64,7 @@ class STMShippingLocationTVC:STMVariableCellsHeightTVC,UIImagePickerControllerDe
             _resultsController = newValue
         }
     }
+    
     
     //MARK: table view data
     
@@ -308,7 +309,7 @@ class STMShippingLocationTVC:STMVariableCellsHeightTVC,UIImagePickerControllerDe
     
     func photoButtonPressed(_ sender:AnyObject) {
     
-    if sender.isKind(of: UITapGestureRecognizer){
+    if sender.isKind(of: UITapGestureRecognizer.self){
         let tappedView = (sender as! UIGestureRecognizer).view
         performSegue(withIdentifier: "showPhotos",sender:tappedView)
     }
@@ -357,7 +358,7 @@ class STMShippingLocationTVC:STMVariableCellsHeightTVC,UIImagePickerControllerDe
     
     func saveImage(_ image:UIImage) {
     
-        let shippingLocationPicture = STMObjectsController.newObject(forEntityName: NSStringFromClass(STMShippingLocationPicture), isFantom:false) as! STMShippingLocationPicture
+        let shippingLocationPicture = STMObjectsController.newObject(forEntityName: NSStringFromClass(STMShippingLocationPicture.self), isFantom:false) as! STMShippingLocationPicture
         
         let jpgQuality = STMPicturesController.jpgQuality()
         

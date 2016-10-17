@@ -13,10 +13,8 @@ import Foundation
     static var unusedImages = Set<String>()
     
     static func removeUnusedImages(){
-        let priority = DispatchQueue.GlobalQueuePriority.default
-        DispatchQueue.global(priority: priority).async {
+        DispatchQueue.global(qos: .default).async{
             do {
-                searchUnusedImages()
                 if unusedImages.count > 0 {
                     let logMessage = String(format: "Deleting %i images",unusedImages.count)
                     STMLogger.shared().saveLogMessage(withText: logMessage, type:"important")
@@ -37,8 +35,8 @@ import Foundation
         do {
             var usedImages = Set<String>()
             let document = STMSessionManager.shared().currentSession.document
-            let photoFetchRequest = STMFetchRequest(entityName: NSStringFromClass(STMPicture))
-            let photos = try document?.managedObjectContext.fetch(photoFetchRequest) as! [STMPicture]
+            let photoFetchRequest = STMFetchRequest(entityName: NSStringFromClass(STMPicture.self))
+            let photos = try document!.managedObjectContext.fetch(photoFetchRequest) as! [STMPicture]
             for image in photos{
                 if let path = image.imagePath{
                     usedImages.insert(path)
@@ -66,8 +64,8 @@ import Foundation
                     allImages.insert(element)
                 }
             }
-            let photoFetchRequest = STMFetchRequest(entityName: NSStringFromClass(STMPicture))
-            let photos = try document?.managedObjectContext.fetch(photoFetchRequest) as! [STMPicture]
+            let photoFetchRequest = STMFetchRequest(entityName: NSStringFromClass(STMPicture.self))
+            let photos = try document!.managedObjectContext.fetch(photoFetchRequest) as! [STMPicture]
             for image in photos{
                 if let path = image.imagePath{
                     usedImages.insert(path)

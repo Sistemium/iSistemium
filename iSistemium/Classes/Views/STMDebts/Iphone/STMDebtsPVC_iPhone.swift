@@ -62,7 +62,7 @@ class STMDebtsPVC_iPhone: STMDebtsDetailsPVC, UIPopoverPresentationControllerDel
         self.navigationItem.titleView? = self.segmentedControl!
     }
     
-    override func addDebtButtonPressed(_ sender:AnyObject){
+    override func addDebtButtonPressed(_ sender: Any!) {
         let content = self.storyboard!.instantiateViewController(withIdentifier: "addDebtVC") as! STMAddDebtVC_iPhone
         content.parentVC = self
         let nav = UINavigationController(rootViewController: content)
@@ -180,7 +180,7 @@ class STMDebtsPVC_iPhone: STMDebtsDetailsPVC, UIPopoverPresentationControllerDel
         if decimalPart?.characters.count == 3 && string != "" {
             return false
         } else {
-            (text as AnyObject).replaceOccurrences(of: numberFormatter.groupingSeparator, with:"", options: .caseInsensitive, range:NSMakeRange(0, text.length))
+            let _ = (text as AnyObject).replaceOccurrences(of: numberFormatter.groupingSeparator, with: "", options: .caseInsensitive, range: NSMakeRange(0, (text as AnyObject).length))
             self.fillTextField(textField, withText: text as! String)
             return false
         }

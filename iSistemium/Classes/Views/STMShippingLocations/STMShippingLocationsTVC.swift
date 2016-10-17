@@ -10,9 +10,9 @@ import UIKit
 
 class STMShippingLocationsTVC: STMSearchableTVC, UISearchBarDelegate{
     
-    fileprivate var _resultsController:NSFetchedResultsController<AnyObject>?
+    fileprivate var _resultsController:NSFetchedResultsController<NSFetchRequestResult>?
     
-    override var resultsController : NSFetchedResultsController<AnyObject>? {
+    override var resultsController : NSFetchedResultsController<NSFetchRequestResult>? {
         get {
             if (_resultsController == nil) {
                 let shippingFetchRequest = STMFetchRequest(entityName: "STMShippingLocation")

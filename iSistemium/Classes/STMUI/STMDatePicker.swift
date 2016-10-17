@@ -89,8 +89,7 @@ class STMDatePicker: UIPickerView, UIPickerViewDelegate, UIPickerViewDataSource 
             
             let numberFormatter: NumberFormatter = NumberFormatter.init()
             numberFormatter.minimumIntegerDigits = 2
-
-            stringToShow = numberFormatter.string(from: row + 1)!
+            stringToShow = numberFormatter.string(from: NSNumber(value: row + 1))!
             
         }
         
@@ -186,7 +185,7 @@ class STMDatePicker: UIPickerView, UIPickerViewDelegate, UIPickerViewDataSource 
         let numberFormatter: NumberFormatter = NumberFormatter.init()
         numberFormatter.minimumIntegerDigits = 2
         
-        return String(year) + "-" + numberFormatter.string(from: NSNumber(month))! + "-" + numberFormatter.string(from: day)!
+        return String(year) + "-" + numberFormatter.string(from: NSNumber(value:month))! + "-" + numberFormatter.string(from: NSNumber(value:day))!
         
     }
     

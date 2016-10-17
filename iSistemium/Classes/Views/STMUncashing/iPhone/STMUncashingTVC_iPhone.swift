@@ -26,7 +26,7 @@ class STMUncashingTVC_iPhone: STMUncashingMasterTVC {
             performSegue(withIdentifier: "showUncashing", sender: uncashing)
         }
         let cell = self.tableView.cellForRow(at: indexPath)
-        cell?.tintColor = .white()
+        cell?.tintColor = .white
         return indexPath
     }
     
