@@ -370,7 +370,8 @@ static void completionCallback (SystemSoundID sysSound, void *data) {
 - (void)startBackgroundPlay {
     
     [[STMLogger sharedLogger] saveLogMessageWithText:@"startBackgroundPlay"];
-    
+    CLS_LOG(@"startBackgroundPlay");
+
     NSNotificationCenter *nc = [NSNotificationCenter defaultCenter];
     
     [nc removeObserver:self];
@@ -389,6 +390,7 @@ static void completionCallback (SystemSoundID sysSound, void *data) {
     if (self.player.playing) {
         
         [[STMLogger sharedLogger] saveLogMessageWithText:@"stopBackgroundPlay"];
+        CLS_LOG(@"stopBackgroundPlay");
         
         [[NSNotificationCenter defaultCenter] removeObserver:self];
         
@@ -405,7 +407,6 @@ static void completionCallback (SystemSoundID sysSound, void *data) {
 - (void)interruptedAudio:(NSNotification *)notification {
     
     STMLogger *logger = [STMLogger sharedLogger];
-    
     [logger saveLogMessageWithText:@"interuptedAudio notification"];
     
     if (![notification.name isEqualToString:AVAudioSessionInterruptionNotification]) return;
@@ -421,13 +422,15 @@ static void completionCallback (SystemSoundID sysSound, void *data) {
         case AVAudioSessionInterruptionTypeEnded: {
             
             [logger saveLogMessageWithText:@"interruption ended"];
-            
+            CLS_LOG(@"interuptedAudio ended notification");
+
             NSNumber *interruptionOption = userInfo[AVAudioSessionInterruptionOptionKey];
             
             if (interruptionOption.unsignedIntegerValue == AVAudioSessionInterruptionOptionShouldResume) {
                 
                 [logger saveLogMessageWithText:@"audio session should resume"];
-                
+                CLS_LOG(@"audio session should resume");
+
                 [self playSilentAudio];
                 
             } else {
@@ -442,7 +445,8 @@ static void completionCallback (SystemSoundID sysSound, void *data) {
         case AVAudioSessionInterruptionTypeBegan: {
             
             [logger saveLogMessageWithText:@"interruption began"];
-            
+            CLS_LOG(@"interuptedAudio began notification");
+
         }
             break;
             
@@ -491,23 +495,12 @@ static void completionCallback (SystemSoundID sysSound, void *data) {
         self.player.numberOfLoops = -1;
         self.player.volume = 0;
         
-        @try {
-        
-            [self.player play];
+        CLS_LOG(@"self.player %@", self.player);
+        CLS_LOG(@"self.player.delegate %@", self.player.delegate);
+        CLS_LOG(@"[AVAudioSession sharedInstance] %@", [AVAudioSession sharedInstance]);
+        CLS_LOG(@"[AVAudioSession sharedInstance].delegate %@", [AVAudioSession sharedInstance].delegate);
 
-        } @catch (NSException *exception) {
-            
-            CLS_LOG(@"%@ %@", exception.name, exception.reason);
-            CLS_LOG(@"self.player %@", self.player);
-            CLS_LOG(@"self.player.delegate %@", self.player.delegate);
-            CLS_LOG(@"[AVAudioSession sharedInstance] %@", [AVAudioSession sharedInstance]);
-            CLS_LOG(@"[AVAudioSession sharedInstance].delegate %@", [AVAudioSession sharedInstance].delegate);
-            
-            [exception raise];
-            
-        } @finally {
-            
-        }
+        [self.player play];
         
     } else {
         [logger saveLogMessageWithText:@"have no path for file silent.wav"
