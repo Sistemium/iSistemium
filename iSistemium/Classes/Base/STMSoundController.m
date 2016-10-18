@@ -371,16 +371,11 @@ static void completionCallback (SystemSoundID sysSound, void *data) {
     
     [[STMLogger sharedLogger] saveLogMessageWithText:@"startBackgroundPlay"];
     CLS_LOG(@"startBackgroundPlay");
-
-    NSNotificationCenter *nc = [NSNotificationCenter defaultCenter];
     
-    [nc removeObserver:self];
-    
-    [nc addObserver:self
-           selector:@selector(interruptedAudio:)
-               name:AVAudioSessionInterruptionNotification
-             object:[AVAudioSession sharedInstance]];
+    [[NSNotificationCenter defaultCenter] removeObserver:self];
 
+    [self addAudioSessionObservers];
+    
     [self playSilentAudio];
     
 }
@@ -400,59 +395,6 @@ static void completionCallback (SystemSoundID sysSound, void *data) {
         
         [[STMLogger sharedLogger] saveLogMessageWithText:@"player is not playing"];
         
-    }
-    
-}
-
-- (void)interruptedAudio:(NSNotification *)notification {
-    
-    STMLogger *logger = [STMLogger sharedLogger];
-    [logger saveLogMessageWithText:@"interuptedAudio notification"];
-    
-    if (![notification.name isEqualToString:AVAudioSessionInterruptionNotification]) return;
-    if (!notification.userInfo) return;
-    
-    [logger saveLogMessageWithText:@"AVAudioSessionInterruptionNotification"];
-    
-    NSDictionary *userInfo = notification.userInfo;
-    NSNumber *interruptionType = userInfo[AVAudioSessionInterruptionTypeKey];
-    
-    switch (interruptionType.unsignedIntegerValue) {
-            
-        case AVAudioSessionInterruptionTypeEnded: {
-            
-            [logger saveLogMessageWithText:@"interruption ended"];
-            CLS_LOG(@"interuptedAudio ended notification");
-
-            NSNumber *interruptionOption = userInfo[AVAudioSessionInterruptionOptionKey];
-            
-            if (interruptionOption.unsignedIntegerValue == AVAudioSessionInterruptionOptionShouldResume) {
-                
-                [logger saveLogMessageWithText:@"audio session should resume"];
-                CLS_LOG(@"audio session should resume");
-
-                [self playSilentAudio];
-                
-            } else {
-                
-                [logger saveLogMessageWithText:@"something else"];
-                
-            }
-            
-        }
-            break;
-            
-        case AVAudioSessionInterruptionTypeBegan: {
-            
-            [logger saveLogMessageWithText:@"interruption began"];
-            CLS_LOG(@"interuptedAudio began notification");
-
-        }
-            break;
-            
-        default:
-            break;
-            
     }
     
 }
@@ -482,7 +424,7 @@ static void completionCallback (SystemSoundID sysSound, void *data) {
         
         self.player = [[AVAudioPlayer alloc] initWithContentsOfURL:silentWavURL
                                                              error:&error];
-        self.player.delegate = self;
+        self.player.delegate = nil;
         
         if (error) {
             
@@ -507,6 +449,224 @@ static void completionCallback (SystemSoundID sysSound, void *data) {
                                numType:STMLogMessageTypeError];
     }
     
+}
+
+
+#pragma mark - AVAudoiSession notifications
+
+- (void)addAudioSessionObservers {
+    
+    AVAudioSession *audioSession = [AVAudioSession sharedInstance];
+    NSNotificationCenter *nc = [NSNotificationCenter defaultCenter];
+
+    [nc addObserver:self
+           selector:@selector(audioSessionInterruption:)
+               name:AVAudioSessionInterruptionNotification
+             object:audioSession];
+    
+    [nc addObserver:self
+           selector:@selector(audioSessionRouteChange:)
+               name:AVAudioSessionRouteChangeNotification
+             object:audioSession];
+
+    [nc addObserver:self
+           selector:@selector(audioSessionMediaServicesWereLost:)
+               name:AVAudioSessionMediaServicesWereLostNotification
+             object:audioSession];
+
+    [nc addObserver:self
+           selector:@selector(audioSessionMediaServicesWereReset:)
+               name:AVAudioSessionMediaServicesWereResetNotification
+             object:audioSession];
+
+    [nc addObserver:self
+           selector:@selector(audioSessionSilenceSecondaryAudioHint:)
+               name:AVAudioSessionSilenceSecondaryAudioHintNotification
+             object:audioSession];
+
+}
+
+- (void)audioSessionInterruption:(NSNotification *)notification {
+    
+    if (![notification.name isEqualToString:AVAudioSessionInterruptionNotification]) return;
+    
+    STMLogger *logger = [STMLogger sharedLogger];
+    NSString *logMessage = @"audioSessionInterruption notification";
+    [logger saveLogMessageWithText:logMessage];
+    CLS_LOG(@"%@", logMessage);
+
+    if (!notification.userInfo) return;
+
+    NSDictionary *userInfo = notification.userInfo;
+    NSNumber *interruptionType = userInfo[AVAudioSessionInterruptionTypeKey];
+    
+    switch (interruptionType.unsignedIntegerValue) {
+            
+        case AVAudioSessionInterruptionTypeEnded: {
+            
+            logMessage = @"audioSessionInterruption ended";
+            [logger saveLogMessageWithText:logMessage];
+            CLS_LOG(@"%@", logMessage);
+            
+            NSNumber *interruptionOption = userInfo[AVAudioSessionInterruptionOptionKey];
+            
+            if (interruptionOption.unsignedIntegerValue == AVAudioSessionInterruptionOptionShouldResume) {
+                
+                logMessage = @"audioSessionInterruption should resume";
+                [logger saveLogMessageWithText:logMessage];
+                CLS_LOG(@"%@", logMessage);
+                
+                [self playSilentAudio];
+                
+            } else {
+                
+                logMessage = @"audioSessionInterruption something else";
+                [logger saveLogMessageWithText:logMessage];
+                CLS_LOG(@"%@", logMessage);
+
+            }
+            
+        }
+            break;
+            
+        case AVAudioSessionInterruptionTypeBegan: {
+            
+            logMessage = @"audioSessionInterruption began";
+            [logger saveLogMessageWithText:logMessage];
+            CLS_LOG(@"%@", logMessage);
+            
+        }
+            break;
+            
+        default:
+            break;
+            
+    }
+    
+}
+
+- (void)audioSessionRouteChange:(NSNotification *)notification {
+    
+    if (![notification.name isEqualToString:AVAudioSessionRouteChangeNotification]) return;
+    
+    NSString *logMessage = @"audioSessionRouteChange notification";
+    CLS_LOG(@"%@", logMessage);
+
+    if (!notification.userInfo) return;
+
+    NSDictionary *userInfo = notification.userInfo;
+    NSNumber *changeReason = userInfo[AVAudioSessionRouteChangeReasonKey];
+
+    if (changeReason) {
+        
+        logMessage = @"RouteChangeReason undefined";
+        
+        switch (changeReason.unsignedIntegerValue) {
+            case AVAudioSessionRouteChangeReasonUnknown:
+                logMessage = @"AVAudioSessionRouteChangeReasonUnknown";
+                break;
+            case AVAudioSessionRouteChangeReasonNewDeviceAvailable:
+                logMessage = @"AVAudioSessionRouteChangeReasonNewDeviceAvailable";
+                break;
+            case AVAudioSessionRouteChangeReasonOldDeviceUnavailable:
+                logMessage = @"AVAudioSessionRouteChangeReasonOldDeviceUnavailable";
+                break;
+            case AVAudioSessionRouteChangeReasonCategoryChange:
+                logMessage = @"AVAudioSessionRouteChangeReasonCategoryChange";
+                break;
+            case AVAudioSessionRouteChangeReasonOverride:
+                logMessage = @"AVAudioSessionRouteChangeReasonOverride";
+                break;
+            case AVAudioSessionRouteChangeReasonWakeFromSleep:
+                logMessage = @"AVAudioSessionRouteChangeReasonWakeFromSleep";
+                break;
+            case AVAudioSessionRouteChangeReasonNoSuitableRouteForCategory:
+                logMessage = @"AVAudioSessionRouteChangeReasonNoSuitableRouteForCategory";
+                break;
+            case AVAudioSessionRouteChangeReasonRouteConfigurationChange:
+                logMessage = @"AVAudioSessionRouteChangeReasonRouteConfigurationChange";
+                break;
+                
+            default:
+                break;
+        }
+        
+        CLS_LOG(@"%@", logMessage);
+
+    }
+    
+    NSNumber *hintType = userInfo[AVAudioSessionSilenceSecondaryAudioHintTypeKey];
+    
+    if (hintType) {
+
+        logMessage = @"AudioHintType undefined";
+
+        switch (hintType.unsignedIntegerValue) {
+            case AVAudioSessionSilenceSecondaryAudioHintTypeEnd:
+                logMessage = @"AVAudioSessionSilenceSecondaryAudioHintTypeEnd";
+                break;
+            case AVAudioSessionSilenceSecondaryAudioHintTypeBegin:
+                logMessage = @"AVAudioSessionSilenceSecondaryAudioHintTypeBegin";
+                break;
+                
+            default:
+                break;
+        }
+        
+        CLS_LOG(@"%@", logMessage);
+
+    }
+    
+}
+
+- (void)audioSessionMediaServicesWereLost:(NSNotification *)notification {
+    
+    if (![notification.name isEqualToString:AVAudioSessionMediaServicesWereLostNotification]) return;
+    
+    NSString *logMessage = @"audioSessionMediaServicesWereLost notification";
+    CLS_LOG(@"%@", logMessage);
+
+}
+
+- (void)audioSessionMediaServicesWereReset:(NSNotification *)notification {
+    
+    if (![notification.name isEqualToString:AVAudioSessionMediaServicesWereResetNotification]) return;
+    
+    NSString *logMessage = @"audioSessionMediaServicesWereReset notification";
+    CLS_LOG(@"%@", logMessage);
+
+}
+
+- (void)audioSessionSilenceSecondaryAudioHint:(NSNotification *)notification {
+
+    if (![notification.name isEqualToString:AVAudioSessionSilenceSecondaryAudioHintNotification]) return;
+    
+    NSString *logMessage = @"audioSessionSilenceSecondaryAudioHint notification";
+    CLS_LOG(@"%@", logMessage);
+
+    NSDictionary *userInfo = notification.userInfo;
+    NSNumber *hintType = userInfo[AVAudioSessionSilenceSecondaryAudioHintTypeKey];
+    
+    if (hintType) {
+        
+        logMessage = @"AudioHintType undefined";
+        
+        switch (hintType.unsignedIntegerValue) {
+            case AVAudioSessionSilenceSecondaryAudioHintTypeEnd:
+                logMessage = @"AVAudioSessionSilenceSecondaryAudioHintTypeEnd";
+                break;
+            case AVAudioSessionSilenceSecondaryAudioHintTypeBegin:
+                logMessage = @"AVAudioSessionSilenceSecondaryAudioHintTypeBegin";
+                break;
+                
+            default:
+                break;
+        }
+        
+        CLS_LOG(@"%@", logMessage);
+        
+    }
+
 }
 
 
