@@ -552,6 +552,9 @@ static void completionCallback (SystemSoundID sysSound, void *data) {
             [logger saveLogMessageWithText:logMessage];
             CLS_LOG(@"%@", logMessage);
             
+            self.player.delegate = nil;
+            self.player = nil;
+            
         }
             break;
             
