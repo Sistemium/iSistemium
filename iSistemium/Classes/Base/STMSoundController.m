@@ -328,7 +328,7 @@ static void completionCallback (SystemSoundID sysSound, void *data) {
     
     for (NSInteger i = 0; i < numberOfRepeats; ++i) {
         
-        NSLog(@"i %d", i)
+        NSLog(@"i %d", i);
         
         UILocalNotification *ln = [[UILocalNotification alloc] init];
         ln.soundName = soundName;
@@ -551,6 +551,9 @@ static void completionCallback (SystemSoundID sysSound, void *data) {
             logMessage = @"audioSessionInterruption began";
             [logger saveLogMessageWithText:logMessage];
             CLS_LOG(@"%@", logMessage);
+            
+            self.player.delegate = nil;
+            self.player = nil;
             
         }
             break;
