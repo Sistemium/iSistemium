@@ -1,8 +1,8 @@
-platform :ios, ‘8.0’
+platform :ios, '8.0'
 
 target 'iSistemium' do
     pod 'KiteJSONValidator', '~> 0.2.3'
-    pod 'Reachability', '~> 3.2’
+    pod 'Reachability', '~> 3.2'
     pod 'ScanAPI', :path => '../ScanApiSDK'
     pod 'JNKeychain', '~> 0.1.4'
     pod 'Socket.IO-Client-Swift', '~> 8.0.2'
