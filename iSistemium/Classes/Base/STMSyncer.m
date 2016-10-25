@@ -1136,7 +1136,7 @@
             
             if ([entity.url isEqualToString:urlString]) {
                 
-                return [[self.stcEntities allKeysForObject:entity] lastObject];
+                return [self.stcEntities allKeysForObject:entity].lastObject;
                 
             }
             
@@ -1150,27 +1150,31 @@
 
 - (void)entityCountDecrease {
     
-    self.entityCount -= 1;
+    [[NSOperationQueue mainQueue] addOperationWithBlock:^{
     
-    if (self.entityCount == 0) {
-
-        [self receivingDidFinish];
+        self.entityCount -= 1;
         
-    } else {
-        
-        if (self.entitySyncNames.firstObject) [self.entitySyncNames removeObject:(id _Nonnull)self.entitySyncNames.firstObject];
-
-        if (self.entitySyncNames.firstObject) {
+        if (self.entityCount == 0) {
             
-            [self checkConditionForReceivingEntityWithName:self.entitySyncNames.firstObject];
+            [self receivingDidFinish];
             
         } else {
             
-            [self receivingDidFinish];
-
+            if (self.entitySyncNames.firstObject) [self.entitySyncNames removeObject:(id _Nonnull)self.entitySyncNames.firstObject];
+            
+            if (self.entitySyncNames.firstObject) {
+                
+                [self checkConditionForReceivingEntityWithName:self.entitySyncNames.firstObject];
+                
+            } else {
+                
+                [self receivingDidFinish];
+                
+            }
+            
         }
-        
-    }
+
+    }];
     
 }
 
@@ -1369,56 +1373,28 @@
     
     if (!errorString) {
         
-        NSString *connectionEntityName = [self entityNameForConnection:connection];
-        NSArray *dataArray = responseJSON[@"data"];
+        [self.document.managedObjectContext performBlock:^{
         
-        STMEntity *entity = (self.stcEntities)[connectionEntityName];
-        
-        if (entity) {
+            NSString *connectionEntityName = [self entityNameForConnection:connection];
+            STMEntity *entity = self.stcEntities[connectionEntityName];
             
-            [STMObjectsController processingOfDataArray:dataArray roleName:entity.roleName withCompletionHandler:^(BOOL success) {
+            if (entity) {
                 
-                if (success) {
-                    
-                    NSLog(@"    %@: get %d objects", connectionEntityName, dataArray.count);
-                    
-                    NSUInteger pageRowCount = [responseJSON[@"page-row-count"] integerValue];
-                    NSUInteger pageSize = [responseJSON[@"page-size"] integerValue];
-                    
-                    if (pageRowCount < pageSize) {
-                        
-                        NSLog(@"    %@: pageRowCount < pageSize / No more content", connectionEntityName);
-                        
-                        [self fillETagWithTemporaryValueForEntityName:connectionEntityName];
-                        [self receiveNoContentStatusForEntityWithName:connectionEntityName];
-                        
-                    } else {
-                    
-                        [self nextReceiveEntityWithName:connectionEntityName];
-
-                    }
-                    
-                    [[NSNotificationCenter defaultCenter] postNotificationName:NOTIFICATION_SYNCER_GET_BUNCH_OF_OBJECTS
-                                                                        object:self
-                                                                      userInfo:@{@"count"         :@(dataArray.count),
-                                                                                 @"entityName"    :connectionEntityName}];
-                    
-                } else {
-                    self.errorOccured = YES;
-                    [self entityCountDecrease];
-                }
+                [self processingResponseJSON:responseJSON
+                                      entity:entity];
                 
-            }];
-            
-        } else {
-            
-            for (NSDictionary *datum in dataArray) {
-                [STMObjectsController syncObject:datum];
+            } else {
+                
+                NSArray *dataArray = responseJSON[@"data"];
+                
+                for (NSDictionary *datum in dataArray)
+                    [STMObjectsController syncObject:datum];
+                
+                [self sendFinished:self];
+                
             }
-            
-            [self sendFinished:self];
 
-        }
+        }];
         
     } else {
         
@@ -1454,10 +1430,55 @@
     
 }
 
+- (void)processingResponseJSON:(NSDictionary *)responseJSON entity:(STMEntity *)entity {
+    
+    if (!entity.name) return;
+    
+    NSString *entityName = [ISISTEMIUM_PREFIX stringByAppendingString:(NSString *)entity.name];
+    NSArray *dataArray = responseJSON[@"data"];
+
+    [STMObjectsController processingOfDataArray:dataArray roleName:entity.roleName withCompletionHandler:^(BOOL success) {
+        
+        if (success) {
+            
+            NSLog(@"    %@: get %d objects", entityName, dataArray.count);
+            
+            NSUInteger pageRowCount = [responseJSON[@"page-row-count"] integerValue];
+            NSUInteger pageSize = [responseJSON[@"page-size"] integerValue];
+            
+            if (pageRowCount < pageSize) {
+                
+                NSLog(@"    %@: pageRowCount < pageSize / No more content", entityName);
+                
+                [self fillETagWithTemporaryValueForEntityName:entityName];
+                [self receiveNoContentStatusForEntityWithName:entityName];
+                
+            } else {
+                
+                [self nextReceiveEntityWithName:entityName];
+                
+            }
+            
+            [[NSNotificationCenter defaultCenter] postNotificationName:NOTIFICATION_SYNCER_GET_BUNCH_OF_OBJECTS
+                                                                object:self
+                                                              userInfo:@{@"count"         :@(dataArray.count),
+                                                                         @"entityName"    :entityName}];
+            
+        } else {
+            
+            self.errorOccured = YES;
+            [self entityCountDecrease];
+            
+        }
+        
+    }];
+    
+}
+
 - (void)fillETagWithTemporaryValueForEntityName:(NSString *)entityName {
     
     NSString *eTag = [self.temporaryETag valueForKey:entityName];
-    STMEntity *entity = (self.stcEntities)[entityName];
+    STMEntity *entity = self.stcEntities[entityName];
     STMClientEntity *clientEntity = [STMClientEntityController clientEntityWithName:entity.name];
     
     clientEntity.eTag = eTag;
