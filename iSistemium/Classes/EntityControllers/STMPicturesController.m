@@ -601,7 +601,7 @@
 
     } else {
         
-        CLS_LOG(@"nil filename for picture %@", picture);
+//        CLS_LOG(@"nil filename for picture %@", picture);
         
     }
     

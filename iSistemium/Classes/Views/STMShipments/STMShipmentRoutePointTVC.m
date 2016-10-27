@@ -606,7 +606,7 @@
     if (objectID) {
         self.cachedCellsHeights[objectID] = @(height);
     } else {
-        CLS_LOG(@"objectID is nil for %@", objectID);
+//        CLS_LOG(@"objectID is nil for %@", objectID);
     }
     
 }
