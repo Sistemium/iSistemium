@@ -877,7 +877,9 @@
                 
                 if (dictionary) {
                 
-                    NSData *picturesJson = [NSJSONSerialization dataWithJSONObject:(NSDictionary * _Nonnull) dictionary[@"pictures"]
+                    NSArray *picturesDicts = dictionary[@"pictures"];
+                    
+                    NSData *picturesJson = [NSJSONSerialization dataWithJSONObject:picturesDicts
                                                                            options:0
                                                                              error:&localError];
                     
@@ -885,7 +887,7 @@
                         
                         dispatch_async(dispatch_get_main_queue(), ^{
                             
-                            for (NSDictionary *dict in dictionary[@"pictures"]){
+                            for (NSDictionary *dict in picturesDicts){
                                 if ([dict[@"name"] isEqual:@"original"]){
                                     picture.href = dict[@"src"];
                                 }
