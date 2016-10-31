@@ -2358,9 +2358,10 @@
             request.predicate = (withFantoms) ? predicate : [STMPredicate predicateWithNoFantomsFromPredicate:predicate];
             
             NSError *fetchError;
-            NSArray *result = [[self document].managedObjectContext executeFetchRequest:request error:&fetchError];
+            NSArray *result = [[self document].managedObjectContext executeFetchRequest:request
+                                                                                  error:&fetchError];
             
-            if (!fetchError) {
+            if (result) {
                 return result;
             } else {
                 errorMessage = fetchError.localizedDescription;

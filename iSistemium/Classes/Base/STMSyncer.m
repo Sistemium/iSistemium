@@ -795,7 +795,9 @@
         NSDictionary *dataDictionary = @{@"data": syncDataArray};
         
         NSError *error;
-        NSData *JSONData = [NSJSONSerialization dataWithJSONObject:dataDictionary options:0 error:&error];
+        NSData *JSONData = [NSJSONSerialization dataWithJSONObject:dataDictionary
+                                                           options:0
+                                                             error:&error];
         
 //        NSData *JSONData = [NSJSONSerialization dataWithJSONObject:dataDictionary options:NSJSONWritingPrettyPrinted error:&error];
 //        NSString *JSONString = [[NSString alloc] initWithData:JSONData encoding:NSUTF8StringEncoding];
@@ -956,12 +958,12 @@
     
     if (newsData) {
         
-        NSError *error;
+        NSError *error = nil;
         NSDictionary *responseJSON = [NSJSONSerialization JSONObjectWithData:newsData
                                                                      options:NSJSONReadingMutableContainers
                                                                        error:&error];
         
-        if (!error) {
+        if (responseJSON) {
             
             NSArray *newsProperties = [responseJSON valueForKeyPath:@"data.@unionOfObjects.properties"];
             

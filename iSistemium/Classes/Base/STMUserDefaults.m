@@ -90,7 +90,25 @@
                                                          options:0
                                                            error:&error];
             
-            if (error) {
+            if (defaultsData) {
+
+                id unarchiveObject = [NSKeyedUnarchiver unarchiveObjectWithData:defaultsData];
+                
+                if ([unarchiveObject isKindOfClass:[NSDictionary class]]) {
+                    
+                    self.defaultsDic = (NSMutableDictionary*)unarchiveObject;
+                    
+                } else {
+                    
+                    NSString *logMessage = [NSString stringWithFormat:@"load userDefaults from file: unarchiveObject is not NSDictionary class, flush userDefaults"];
+                    [[STMLogger sharedLogger] saveLogMessageWithText:logMessage
+                                                             numType:STMLogMessageTypeError];
+                    
+                    [self flushUserDefaults];
+                    
+                }
+                
+            } else {
                 
                 NSString *logMessage = [NSString stringWithFormat:@"can't load defaults from url %@, flush userDefaults", self.defaultsUrl];
                 [[STMLogger sharedLogger] saveLogMessageWithText:logMessage
@@ -100,24 +118,6 @@
                 
                 [self flushUserDefaults];
 
-            } else {
-                
-                id unarchiveObject = [NSKeyedUnarchiver unarchiveObjectWithData:defaultsData];
-                
-                if ([unarchiveObject isKindOfClass:[NSDictionary class]]) {
-                
-                    self.defaultsDic = (NSMutableDictionary*)unarchiveObject;
-
-                } else {
-                    
-                    NSString *logMessage = [NSString stringWithFormat:@"load userDefaults from file: unarchiveObject is not NSDictionary class, flush userDefaults"];
-                    [[STMLogger sharedLogger] saveLogMessageWithText:logMessage
-                                                             numType:STMLogMessageTypeError];
-                    
-                    [self flushUserDefaults];
-
-                }
-                
             }
             
         }
