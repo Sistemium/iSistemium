@@ -11,11 +11,11 @@
 
 @implementation STMApplication
 
-- (void)sendEvent:(UIEvent *)event {
-    
-    [super sendEvent:event];
-    
-}
+//- (void)sendEvent:(UIEvent *)event {
+//    
+//    [super sendEvent:event];
+//    
+//}
 
 
 @end
