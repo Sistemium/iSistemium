@@ -453,7 +453,7 @@
     
     [socket onAny:^(SocketAnyEvent *event) {
         
-        NSLog(@"%@ %@ ___ status %@", socket, socket.sid, @(socket.status));
+//        NSLog(@"%@ %@ ___ status %@", socket, socket.sid, @(socket.status));
         
         NSLog(@"%@ %@ ___ event %@", socket, socket.sid, event.event);
         NSLog(@"%@ %@ ___ items (", socket, socket.sid);
@@ -667,13 +667,6 @@
 }
 
 + (void)socket:(SocketIOClient *)socket sendEvent:(STMSocketEvent)event withValue:(id)value {
-
-    if ([Reachability reachabilityWithHostname:[self sharedInstance].socketUrl].isReachable) {
-        NSLog(@"socketUrl.isReachable YES!!!!");
-    } else {
-        NSLog(@"socketUrl.isNOTReachable NO!!!!");
-    }
-
     
 // Log
 // ----------
