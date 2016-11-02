@@ -17,37 +17,37 @@ class STMUncashingTVC_iPhone: STMUncashingMasterTVC {
     
     // MARK: Table view data
     
-    override func tableView(tableView: UITableView, willSelectRowAtIndexPath indexPath: NSIndexPath) -> NSIndexPath? {
-        if (indexPath.section == 0) {
-            performSegueWithIdentifier("showUncashing", sender: nil)
+    override func tableView(_ tableView: UITableView, willSelectRowAt indexPath: IndexPath) -> IndexPath? {
+        if ((indexPath as NSIndexPath).section == 0) {
+            performSegue(withIdentifier: "showUncashing", sender: nil)
         } else {
-            let sectionInfo = self.resultsController.sections![indexPath.section-1]
-            let uncashing = sectionInfo.objects![indexPath.row];
-            performSegueWithIdentifier("showUncashing", sender: uncashing)
+            let sectionInfo = self.resultsController.sections![(indexPath as NSIndexPath).section-1]
+            let uncashing = sectionInfo.objects![(indexPath as NSIndexPath).row];
+            performSegue(withIdentifier: "showUncashing", sender: uncashing)
         }
-        let cell = self.tableView.cellForRowAtIndexPath(indexPath)
-        cell?.tintColor = .whiteColor()
+        let cell = self.tableView.cellForRow(at: indexPath)
+        cell?.tintColor = .white
         return indexPath
     }
     
     // MARK: Navigation
     
-    override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         switch segue.identifier!{
         case "showUncashing":
-            (segue.destinationViewController as! STMUncashingDetailsTVC).uncashing = sender as? STMUncashing
-            let dateFormatter = NSDateFormatter()
-            dateFormatter.dateStyle = .ShortStyle
-            dateFormatter.timeStyle = .ShortStyle
+            (segue.destination as! STMUncashingDetailsTVC).uncashing = sender as? STMUncashing
+            let dateFormatter = DateFormatter()
+            dateFormatter.dateStyle = .short
+            dateFormatter.timeStyle = .short
             if sender != nil{
-                if let destination = segue.destinationViewController as? STMUncashingDetailsTVC{
+                if let destination = segue.destination as? STMUncashingDetailsTVC{
                     destination.title = NSLocalizedString("HAND OVER", comment: "").dropLast
                     if let date = (sender as! STMUncashing).date {
-                        destination.title! += " (" + dateFormatter.stringFromDate(date) + ")"
+                        destination.title! += " (" + dateFormatter.string(from: date) + ")"
                     }
                 }
             }else{
-                (segue.destinationViewController as! STMUncashingDetailsTVC).title = NSLocalizedString("ON HAND", comment: "").dropLast
+                (segue.destination as! STMUncashingDetailsTVC).title = NSLocalizedString("ON HAND", comment: "").dropLast
             }
         default:
             break
@@ -56,7 +56,7 @@ class STMUncashingTVC_iPhone: STMUncashingMasterTVC {
     
     // MARK: View lifecycle
     
-    override func viewWillAppear(animated: Bool) {
+    override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         self.navigationController!.setToolbarHidden(true, animated: true)
     }

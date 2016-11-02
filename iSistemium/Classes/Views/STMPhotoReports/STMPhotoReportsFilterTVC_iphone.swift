@@ -11,47 +11,47 @@ import UIKit
 @available(iOS 8.0, *)
 class STMPhotoReportsFilterTVC_iphone:STMPhotoReportsFilterTVC,UIPopoverPresentationControllerDelegate{
     
-    private var currentGrouping:STMPhotoReportGrouping {
-        let defaults = NSUserDefaults.standardUserDefaults()
+    fileprivate var currentGrouping:STMPhotoReportGrouping {
+        let defaults = UserDefaults.standard
         let key = "currentGrouping_\(STMAuthController().userID)"
-        if defaults.integerForKey(key) == 1{
-            return .Campaign
+        if defaults.integer(forKey: key) == 1{
+            return .campaign
         }else{
-            return .Outlet
+            return .outlet
         }
     }
     
-    override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         switch segue.identifier! {
         case "showSettings":
-            segue.destinationViewController.popoverPresentationController?.delegate = self
+            segue.destination.popoverPresentationController?.delegate = self
         case "showPhotoReportByOutlet":
-            (segue.destinationViewController as! STMPhotoReportsDetailTVC_iphone).selectedOutlet = sender as! STMOutlet
-            (segue.destinationViewController as! STMPhotoReportsDetailTVC_iphone).selectedCampaignGroup = self.selectedCampaignGroup
-            (segue.destinationViewController as! STMPhotoReportsDetailTVC_iphone).filterTVC = self
+            (segue.destination as! STMPhotoReportsDetailTVC_iphone).selectedOutlet = sender as! STMOutlet
+            (segue.destination as! STMPhotoReportsDetailTVC_iphone).selectedCampaignGroup = self.selectedCampaignGroup
+            (segue.destination as! STMPhotoReportsDetailTVC_iphone).filterTVC = self
         case "showPhotoReportByCampaign":
-            (segue.destinationViewController as! STMPhotoReportsDetailTVC_iphone).selectedCampaign = sender as! STMCampaign
-            (segue.destinationViewController as! STMPhotoReportsDetailTVC_iphone).selectedCampaignGroup = self.selectedCampaignGroup
-            (segue.destinationViewController as! STMPhotoReportsDetailTVC_iphone).filterTVC = self
+            (segue.destination as! STMPhotoReportsDetailTVC_iphone).selectedCampaign = sender as! STMCampaign
+            (segue.destination as! STMPhotoReportsDetailTVC_iphone).selectedCampaignGroup = self.selectedCampaignGroup
+            (segue.destination as! STMPhotoReportsDetailTVC_iphone).filterTVC = self
         default:
             break
         }
     }
     
-    func adaptivePresentationStyleForPresentationController(controller: UIPresentationController) -> UIModalPresentationStyle {
-        return .None
+    func adaptivePresentationStyle(for controller: UIPresentationController) -> UIModalPresentationStyle {
+        return .none
     }
     
-    override func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
+    override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         switch (currentGrouping) {
-        case .Outlet:
-            performSegueWithIdentifier("showPhotoReportByOutlet", sender: self.resultsController.objectAtIndexPath(indexPath))
-        case .Campaign:
-            performSegueWithIdentifier("showPhotoReportByCampaign", sender: self.resultsController.objectAtIndexPath(indexPath))
+        case .outlet:
+            performSegue(withIdentifier: "showPhotoReportByOutlet", sender: self.resultsController.object(at: indexPath))
+        case .campaign:
+            performSegue(withIdentifier: "showPhotoReportByCampaign", sender: self.resultsController.object(at: indexPath))
         }
     }
     
-    override func viewWillAppear(animated: Bool) {
+    override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         self.performFetch()
     }

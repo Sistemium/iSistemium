@@ -25,6 +25,7 @@
 @property (nonatomic, strong) NSMutableArray *insertedRowIndexPaths;
 @property (nonatomic, strong) NSMutableArray *updatedRowIndexPaths;
 
+@property (nonatomic, strong) NSArray *uploadTypes;
 @property (nonatomic, strong) NSString *uploadLogType;
 
 
@@ -86,7 +87,10 @@
 }
 
 - (void)syncerSettingsChanged:(NSNotification *)notification {
+    
+    self.uploadTypes = nil;
     self.uploadLogType = nil;
+    
 }
 
 - (void)requestInfo:(NSString *)xidString {
@@ -262,6 +266,15 @@
     
 }
 
+- (NSArray *)uploadTypes {
+    
+    if (!_uploadTypes) {
+        _uploadTypes = [self syncingTypesForSettingType:self.uploadLogType];
+    }
+    return _uploadTypes;
+    
+}
+
 - (NSString *)uploadLogType {
     
     if (!_uploadLogType) {
@@ -305,10 +318,8 @@
 #ifdef DEBUG
 //    [self sendLogMessageToLocalServerForDebugWithType:type andText:text];
 #endif
-
-    NSArray *uploadTypes = [self syncingTypesForSettingType:self.uploadLogType];
     
-    if ([uploadTypes containsObject:type]) {
+    if ([self.uploadTypes containsObject:type]) {
     
         BOOL sessionIsRunning = (self.session.status == STMSessionRunning);
         

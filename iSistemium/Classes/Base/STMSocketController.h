@@ -10,6 +10,8 @@
 #import <CoreData/CoreData.h>
 
 #import "iSistemium-Swift.h"
+@import SocketIO;
+
 
 
 typedef NS_ENUM(NSInteger, STMSocketEvent) {
@@ -28,6 +30,9 @@ typedef NS_ENUM(NSInteger, STMSocketEvent) {
 
 @interface STMSocketController : NSObject
 
++ (STMSocketController *)sharedInstance;
+
++ (void)checkSocket;
 + (void)startSocket;
 + (void)closeSocket;
 
@@ -45,6 +50,9 @@ typedef NS_ENUM(NSInteger, STMSocketEvent) {
 
 + (NSDate *)deviceTsForSyncedObjectXid:(NSData *)xid;
 + (void)successfullySyncObjectWithXid:(NSData *)xid;
+
+
+- (void)closeSocketInBackground;
 
 
 @end

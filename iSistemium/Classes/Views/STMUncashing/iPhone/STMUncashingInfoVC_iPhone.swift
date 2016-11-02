@@ -16,15 +16,15 @@ class STMUncashingInfoVC_iPhone: STMUncashingInfoVC {
     @IBOutlet weak var commentTextView: UILabel!
     
     @IBAction func cancelButtonPressed(){
-        self.dismissViewControllerAnimated(true, completion: nil)
+        self.dismiss(animated: true, completion: nil)
     }
     
     @IBAction func confirmButtonPressed(){
         STMUncashingProcessController.sharedInstance().uncashingDone()
-        self.dismissViewControllerAnimated(true, completion: nil)
+        self.dismiss(animated: true, completion: nil)
     }
     
-    override func viewWillAppear(animated: Bool) {
+    override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         if self.uncashing != nil {
             commentTextView.text = self.uncashing.commentText
@@ -46,17 +46,17 @@ class STMUncashingInfoVC_iPhone: STMUncashingInfoVC {
             typeTextLabel.constraintWithIdentifier("height")?.constant = typeTextLabel.requiredHeight(self.view.frame.width / 2)
             commentTextView.constraintWithIdentifier("height")?.constant = commentTextView.requiredHeight(self.view.frame.width / 2)
         }
-        self.preferredContentSize = CGSizeMake(500,mainTextLabel.constraintWithIdentifier("height")!.constant + sumTextLabel.constraintWithIdentifier("height")!.constant +
+        self.preferredContentSize = CGSize(width: 500,height: mainTextLabel.constraintWithIdentifier("height")!.constant + sumTextLabel.constraintWithIdentifier("height")!.constant +
             typeTextLabel.constraintWithIdentifier("height")!.constant + commentTextView.constraintWithIdentifier("height")!.constant + 80)
     }
     
 }
 
 private extension UILabel{
-    func requiredHeight(width:CGFloat) -> CGFloat{
-        let label:UILabel = UILabel(frame: CGRectMake(0, 0, width, CGFloat.max))
+    func requiredHeight(_ width:CGFloat) -> CGFloat{
+        let label:UILabel = UILabel(frame: CGRect(x: 0, y: 0, width: width, height: CGFloat.greatestFiniteMagnitude))
         label.numberOfLines = 0
-        label.lineBreakMode = NSLineBreakMode.ByWordWrapping
+        label.lineBreakMode = NSLineBreakMode.byWordWrapping
         label.font = self.font
         label.text = self.text
         label.sizeToFit()
@@ -65,7 +65,7 @@ private extension UILabel{
 }
 
 private extension UIView{
-    func constraintWithIdentifier(identifier:String) -> NSLayoutConstraint?{
+    func constraintWithIdentifier(_ identifier:String) -> NSLayoutConstraint?{
         if let constraint = (constraints.filter{$0.identifier == identifier}.first) {
             return constraint
         }

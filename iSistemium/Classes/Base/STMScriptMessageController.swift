@@ -14,7 +14,7 @@ class STMScriptMessageController: NSObject {
     
     @available(iOS 8.0, *)
 
-    class func predicateForScriptMessage(scriptMessage: WKScriptMessage, error: NSErrorPointer) -> NSPredicate? {
+    class func predicateForScriptMessage(_ scriptMessage: WKScriptMessage, error: NSErrorPointer) -> NSPredicate? {
     
         guard let body: Dictionary = scriptMessage.body as? [String: AnyObject] else {
             errorWithMessage(error, errorMessage: "message body is not a Dictionary")
@@ -39,21 +39,21 @@ class STMScriptMessageController: NSObject {
             
             case STMSwiftConstants.ScriptMessageNames.WK_SCRIPT_MESSAGE_FIND:
                 
-                guard let xid: NSData? = STMFunctions.xidDataFromXidString(body["id"] as? String) else {
+                guard let xid: Data = STMFunctions.xidData(fromXidString: body["id"] as? String) else {
                     errorWithMessage(error, errorMessage: "where is no xid in \(STMSwiftConstants.ScriptMessageNames.WK_SCRIPT_MESSAGE_FIND) script message")
                     return nil
                 }
                 
-                return predicateForFilters(entityName, filter: ["xid": xid!], whereFilter: nil, error: error)
+                return predicateForFilters(entityName, filter: ["xid": xid as AnyObject], whereFilter: nil, error: error)
             
             case STMSwiftConstants.ScriptMessageNames.WK_SCRIPT_MESSAGE_FIND_ALL:
                 
-                guard let filter: [String: AnyObject]? = body["filter"] as? [String: AnyObject] else {
+                guard let filter: [String : AnyObject] = body["filter"] as? [String: AnyObject] else {
                     print("filter section malformed")
                     break
                 }
                 
-                guard let whereFilter: [String: [String: AnyObject]]? = body["where"] as? [String: [String: AnyObject]] else {
+                guard let whereFilter: [String : [String : AnyObject]] = body["where"] as? [String: [String: AnyObject]] else {
                     print("whereFilter section malformed")
                     break
                 }
@@ -69,7 +69,7 @@ class STMScriptMessageController: NSObject {
         
     }
 
-    class func predicateForFilters(entityName: String, filter: [String: AnyObject]?, whereFilter: [String: [String: AnyObject]]?, error: NSErrorPointer) -> NSPredicate {
+    class func predicateForFilters(_ entityName: String, filter: [String: AnyObject]?, whereFilter: [String: [String: AnyObject]]?, error: NSErrorPointer) -> NSPredicate {
         
         var filterDictionary: [String: [String: AnyObject]] = (whereFilter != nil) ? whereFilter! : [String: [String: AnyObject]]();
         
@@ -85,9 +85,9 @@ class STMScriptMessageController: NSObject {
         
     }
 
-    class func subpredicatesForFilterDictionaryWithEntityName(entityName: String, filterDictionary: [String: [String: AnyObject]]) -> [NSPredicate] {
+    class func subpredicatesForFilterDictionaryWithEntityName(_ entityName: String, filterDictionary: [String: [String: AnyObject]]) -> [NSPredicate] {
         var filterDictionary = filterDictionary
-        let entityDescription: STMEntityDescription = STMEntityDescription.entityForName(entityName, inManagedObjectContext: currentContext())
+        let entityDescription: STMEntityDescription = STMEntityDescription.entity(forEntityName: entityName, in: currentContext())
         
         let properties: [String : NSPropertyDescription] = entityDescription.propertiesByName
         let attributes: [String : NSAttributeDescription] = entityDescription.attributesByName
@@ -133,14 +133,14 @@ class STMScriptMessageController: NSObject {
 
                 var value: AnyObject? = arguments[compOp]
                 
-                if localKey.lowercaseString.hasSuffix("uuid") || localKey.lowercaseString.hasSuffix("xid") || isRelationship {
+                if localKey.lowercased().hasSuffix("uuid") || localKey.lowercased().hasSuffix("xid") || isRelationship {
 
                     guard value is String else {
                         print("value is not a String, but it should be to get xid or uuid value")
                         continue
                     }
                     
-                    value = value?.stringByReplacingOccurrencesOfString("-", withString: "")
+                    value = (value as? String)?.replacingOccurrences(of: "-", with: "") as AnyObject?
                     
                 }
                 
@@ -155,7 +155,7 @@ class STMScriptMessageController: NSObject {
 
                 } else if isRelationship {
                     
-                    guard ((relationships[localKey]?.toMany) == false) else {
+                    guard ((relationships[localKey]?.isToMany) == false) else {
                         print("relationship \(localKey) is toMany")
                         continue
                     }
@@ -193,7 +193,7 @@ class STMScriptMessageController: NSObject {
         
     }
 
-    class func normalizeValue(value: AnyObject?, className: String) -> AnyObject? {
+    class func normalizeValue(_ value: AnyObject?, className: String) -> AnyObject? {
         
         var value = value
         
@@ -201,15 +201,15 @@ class STMScriptMessageController: NSObject {
             return nil
         }
         
-        if value is NSNumber { value = value!.stringValue }
+        if value is NSNumber { value = value!.stringValue as AnyObject? }
         
         switch className {
             
-            case NSStringFromClass(NSNumber)    :   return NSNumberFormatter().numberFromString(value as! String)!
+            case NSStringFromClass(NSNumber.self)    :   return NumberFormatter().number(from: value as! String)!
                 
-            case NSStringFromClass(NSDate)      :   return STMFunctions.dateFormatter().dateFromString(value as! String)!
+            case NSStringFromClass(Date.self as! AnyClass) :   return STMFunctions.dateFormatter().date(from: value as! String)! as AnyObject?
                 
-            case NSStringFromClass(NSData)      :   return STMFunctions.dataFromString(value as! String)
+            case NSStringFromClass(Data.self as! AnyClass) :   return STMFunctions.data(from: value as! String) as AnyObject?
                 
             default                             :   return value
             
@@ -217,7 +217,7 @@ class STMScriptMessageController: NSObject {
         
     }
     
-    class func relationshipObjectForValue(value: AnyObject?, className: String) -> AnyObject? {
+    class func relationshipObjectForValue(_ value: AnyObject?, className: String) -> AnyObject? {
         
         var value = value
         
@@ -226,7 +226,7 @@ class STMScriptMessageController: NSObject {
             return nil
         }
         
-        value = STMObjectsController.objectForXid(STMFunctions.dataFromString(value as! String), entityName: className)
+        value = STMObjectsController.object(forXid: STMFunctions.data(from: value as! String), entityName: className)
         
         return value
 
@@ -234,17 +234,17 @@ class STMScriptMessageController: NSObject {
 
     class func currentContext() -> NSManagedObjectContext {
         
-        return STMSessionManager.sharedManager().currentSession.document.managedObjectContext
+        return STMSessionManager.shared().currentSession.document.managedObjectContext
         
     }
     
-    class func errorWithMessage(error: NSErrorPointer, errorMessage: String) {
+    class func errorWithMessage(_ error: NSErrorPointer?, errorMessage: String) {
         
-        let bundleId: String? = NSBundle.mainBundle().bundleIdentifier
+        let bundleId: String? = Bundle.main.bundleIdentifier
         
         if (bundleId != nil && error != nil) {
          
-            error.memory = NSError(domain: bundleId!, code: 1, userInfo: [NSLocalizedDescriptionKey: errorMessage])
+            error??.pointee = NSError(domain: bundleId!, code: 1, userInfo: [NSLocalizedDescriptionKey: errorMessage])
             
         }
         

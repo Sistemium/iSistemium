@@ -11,31 +11,31 @@ import UIKit
 @available(iOS 8.0, *)
 class STMPhotoReportsDetailTVC_iphone:STMPhotoReportsDetailTVC,UIPopoverPresentationControllerDelegate{
     
-    override func viewWillAppear(animated: Bool) {
+    override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(true)
         if self.selectedCampaign != nil || self.selectedOutlet != nil{
             self.navigationController?.setToolbarHidden(false, animated: true)
         }
     }
     
-    override func viewWillDisappear(animated: Bool) {
+    override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
         self.navigationController?.setToolbarHidden(true, animated: true)
     }
     
-    override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
-        super.prepareForSegue(segue, sender: sender)
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+        super.prepare(for: segue, sender: sender)
         switch segue.identifier {
         case "cameraButtonPressed"?:
-            (segue.destinationViewController as! STMPhotoReportAddPhotoTVC).parentVC = self
+            (segue.destination as! STMPhotoReportAddPhotoTVC).parentVC = self
         case "showSettings"?:
-            segue.destinationViewController.popoverPresentationController?.delegate = self
+            segue.destination.popoverPresentationController?.delegate = self
         default:
             break
         }
     }
     
-    func adaptivePresentationStyleForPresentationController(controller: UIPresentationController) -> UIModalPresentationStyle {
-        return .None
+    func adaptivePresentationStyle(for controller: UIPresentationController) -> UIModalPresentationStyle {
+        return .none
     }
 }

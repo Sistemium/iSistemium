@@ -19,9 +19,10 @@
     request.predicate = [NSPredicate predicateWithFormat:@"SELF.objectXid == %@", objectXid];
     
     NSError *error;
-    NSArray *fetchResult = [[self document].managedObjectContext executeFetchRequest:request error:&error];
+    NSArray *fetchResult = [[self document].managedObjectContext executeFetchRequest:request
+                                                                               error:&error];
     
-    STMRecordStatus *recordStatus = [fetchResult lastObject];
+    STMRecordStatus *recordStatus = fetchResult.lastObject;
     
     return recordStatus;
     
@@ -54,7 +55,8 @@
     request.predicate = predicate;
     
     NSError *error;
-    NSArray *recordStatuses = [[self document].managedObjectContext executeFetchRequest:request error:&error];
+    NSArray *recordStatuses = [[self document].managedObjectContext executeFetchRequest:request
+                                                                                  error:&error];
 
     return recordStatuses;
     

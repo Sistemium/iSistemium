@@ -11,29 +11,29 @@ import UIKit
 @available(iOS 8.0, *)
 class STMDebtsPVC_iPhone: STMDebtsDetailsPVC, UIPopoverPresentationControllerDelegate, STMDatePickerParent, UITextFieldDelegate{
     
-    private var doneButton:STMBarButtonItem?
+    fileprivate var doneButton:STMBarButtonItem?
     
-    private var cancelButton:STMBarButtonItem?
+    fileprivate var cancelButton:STMBarButtonItem?
     
-    private lazy var addDebt:UIBarButtonItem = UIBarButtonItem(barButtonSystemItem: .Add, target:self, action:#selector(STMDebtsDetailsPVC.addDebtButtonPressed(_:)))
+    fileprivate lazy var addDebt:UIBarButtonItem = UIBarButtonItem(barButtonSystemItem: .add, target:self, action:#selector(STMDebtsDetailsPVC.addDebtButtonPressed(_:)))
     
-    private let dateButton = UIButton(type: .System)
+    fileprivate let dateButton = UIButton(type: .system)
     
-    private func removeSwipeGesture(){
+    fileprivate func removeSwipeGesture(){
         for view in self.view.subviews {
             if let subView = view as? UIScrollView {
-                subView.scrollEnabled = false
+                subView.isScrollEnabled = false
             }
         }
     }
     
     // MARK: STMDatePickerParent
     
-    var selectedDate: NSDate?{
+    var selectedDate: Date?{
         didSet{
             STMCashingProcessController.sharedInstance().selectedDate = selectedDate
             let dateFormatter = STMFunctions.dateLongNoTimeFormatter
-            self.dateButton.setTitle(dateFormatter().stringFromDate(selectedDate!),forState:.Normal)
+            self.dateButton.setTitle(dateFormatter().string(from: selectedDate!),for:UIControlState())
             dateButton.sizeToFit()
         }
     }
@@ -41,10 +41,10 @@ class STMDebtsPVC_iPhone: STMDebtsDetailsPVC, UIPopoverPresentationControllerDel
     // MARK: Override superclass
     
     override func cashingProcessStart() {
-        self.navigationItem.setRightBarButtonItem(doneButton, animated: true)
+        self.navigationItem.setRightBarButton(doneButton, animated: true)
         self.navigationItem.titleView = dateButton
-        self.navigationItem.setLeftBarButtonItem(cancelButton, animated: true)
-        selectedDate = NSDate()
+        self.navigationItem.setLeftBarButton(cancelButton, animated: true)
+        selectedDate = Date()
         updateCashingLabel()
     }
     
@@ -57,102 +57,102 @@ class STMDebtsPVC_iPhone: STMDebtsDetailsPVC, UIPopoverPresentationControllerDel
             self.segmentedControl!.sizeToFit()
             setupSegmentedControl()
         }
-        self.navigationItem.setLeftBarButtonItem(self.navigationItem.backBarButtonItem, animated: true)
-        self.buttonsForVC(self)
+        self.navigationItem.setLeftBarButton(self.navigationItem.backBarButtonItem, animated: true)
+        self.buttons(forVC: self)
         self.navigationItem.titleView? = self.segmentedControl!
     }
     
-    override func addDebtButtonPressed(sender:AnyObject){
-        let content = self.storyboard!.instantiateViewControllerWithIdentifier("addDebtVC") as! STMAddDebtVC_iPhone
+    override func addDebtButtonPressed(_ sender: Any!) {
+        let content = self.storyboard!.instantiateViewController(withIdentifier: "addDebtVC") as! STMAddDebtVC_iPhone
         content.parentVC = self
         let nav = UINavigationController(rootViewController: content)
-        nav.modalPresentationStyle = .FullScreen
-        self.presentViewController(nav, animated: true, completion: nil)
+        nav.modalPresentationStyle = .fullScreen
+        self.present(nav, animated: true, completion: nil)
     }
     
-    override func buttonsForVC(vc:UIViewController){
+    override func buttons(forVC vc:UIViewController){
         self.navigationController?.setToolbarHidden(false, animated: true)
         self.addDebtButton = addDebt
         self.navigationItem.rightBarButtonItem = self.addDebtButton
-        if vc.isKindOfClass(STMOutletCashingVC){
+        if vc.isKind(of: STMOutletCashingVC.self){
             self.navigationItem.rightBarButtonItem = nil
             self.navigationController?.setToolbarHidden(true, animated: true)
         }
-        self.toolbar = .Default
+        self.toolbar = .default
     }
     
     // MARK: Toolbar
     
-    private enum Toolbar{
-        case Default
-        case SetCashing
-        case CashingSum
-        case LimitedSum
+    fileprivate enum Toolbar{
+        case `default`
+        case setCashing
+        case cashingSum
+        case limitedSum
         
         mutating func reset(){
             switch self{
-            case .SetCashing:
-                self = .SetCashing
-            case .CashingSum:
-                self = .CashingSum
-            case .LimitedSum:
-                self = .LimitedSum
-            case .Default:
-                self = .Default
+            case .setCashing:
+                self = .setCashing
+            case .cashingSum:
+                self = .cashingSum
+            case .limitedSum:
+                self = .limitedSum
+            case .default:
+                self = .default
             }
         }
     }
     
-    private var toolbar:Toolbar = .Default{
+    fileprivate var toolbar:Toolbar = .default{
         didSet{
-            let flexibleSpace = UIBarButtonItem(barButtonSystemItem: .FlexibleSpace, target: nil, action: nil)
+            let flexibleSpace = UIBarButtonItem(barButtonSystemItem: .flexibleSpace, target: nil, action: nil)
             let summLabel = UILabel()
             switch toolbar{
-            case .SetCashing:
-                let setCahshingSumButton:UIBarButtonItem = UIBarButtonItem(title: "", style: .Plain, target: self, action: #selector(STMDebtsPVC_iPhone.setCashingSum))
+            case .setCashing:
+                let setCahshingSumButton:UIBarButtonItem = UIBarButtonItem(title: "", style: .plain, target: self, action: #selector(STMDebtsPVC_iPhone.setCashingSum))
                 if let limit = STMCashingProcessController.sharedInstance().cashingSummLimit{
                     let numberFormatter = STMFunctions.currencyFormatter
                     setCahshingSumButton.title = NSLocalizedString("CASHING SUMM", comment: "") + ":"
-                    summLabel.text = numberFormatter().stringFromNumber(limit)!
+                    summLabel.text = numberFormatter().string(from: limit)!
                 }else{
                     setCahshingSumButton.title = NSLocalizedString("CASHING SUMM", comment: "")
                 }
                 summLabel.sizeToFit()
                 self.setToolbarItems([flexibleSpace,setCahshingSumButton, UIBarButtonItem(customView: summLabel),flexibleSpace], animated: true)
-                if setCahshingSumButton.valueForKey("view") != nil && summLabel.frame.size.width>UIScreen.mainScreen().bounds.width - (setCahshingSumButton.valueForKey("view")  as! UIView).frame.width - 15{
-                    summLabel.frame.size.width = UIScreen.mainScreen().bounds.width - (setCahshingSumButton.valueForKey("view") as! UIView).frame.width - 15
+                if setCahshingSumButton.value(forKey: "view") != nil && summLabel.frame.size.width>UIScreen.main.bounds.width - (setCahshingSumButton.value(forKey: "view")  as! UIView).frame.width - 15{
+                    summLabel.frame.size.width = UIScreen.main.bounds.width - (setCahshingSumButton.value(forKey: "view") as! UIView).frame.width - 15
                     summLabel.numberOfLines = 2
-                    summLabel.lineBreakMode = .ByWordWrapping
-                    summLabel.textAlignment = .Center
+                    summLabel.lineBreakMode = .byWordWrapping
+                    summLabel.textAlignment = .center
                     summLabel.sizeToFit()
                 }
-            case .CashingSum:
+            case .cashingSum:
                 let summ = STMCashingProcessController.sharedInstance().debtsSumm()
                 let numberFormatter = STMFunctions.currencyFormatter
-                let sumString = numberFormatter().stringFromNumber(summ)
+                let sumString = numberFormatter().string(from: summ!)
                 summLabel.text = NSLocalizedString("PICKED",comment: "") + " " + sumString!
                 summLabel.sizeToFit()
                 self.setToolbarItems([flexibleSpace,UIBarButtonItem(customView: summLabel),flexibleSpace],animated: true)
-                if summLabel.frame.size.width>UIScreen.mainScreen().bounds.width - 15{
-                    summLabel.frame.size.width = UIScreen.mainScreen().bounds.width - 15
+                if summLabel.frame.size.width>UIScreen.main.bounds.width - 15{
+                    summLabel.frame.size.width = UIScreen.main.bounds.width - 15
                     summLabel.numberOfLines = 2
-                    summLabel.lineBreakMode = .ByWordWrapping
-                    summLabel.textAlignment = .Center
+                    summLabel.lineBreakMode = .byWordWrapping
+                    summLabel.textAlignment = .center
                     summLabel.sizeToFit()
                 }
-            case .LimitedSum:
-                let fixedSpace = UIBarButtonItem(barButtonSystemItem: .FixedSpace , target: nil, action: nil)
+            case .limitedSum:
+                let fixedSpace = UIBarButtonItem(barButtonSystemItem: .fixedSpace , target: nil, action: nil)
                 fixedSpace.width = -5
-                let setCahshingSumButton:UIBarButtonItem = UIBarButtonItem(title: "", style: .Plain, target: self, action: #selector(STMDebtsPVC_iPhone.setCashingSum))
+                let setCahshingSumButton:UIBarButtonItem = UIBarButtonItem(title: "", style: .plain, target: self, action: #selector(STMDebtsPVC_iPhone.setCashingSum))
                 let summ = STMCashingProcessController.sharedInstance().debtsSumm()
                 let limit = STMCashingProcessController.sharedInstance().cashingSummLimit
                 let numberFormatter = STMFunctions.decimalMaxTwoMinTwoDigitFormatter()
-                let sumString = numberFormatter.stringFromNumber(summ)!
-                setCahshingSumButton.title = numberFormatter.stringFromNumber(limit)
+                let sumString = numberFormatter.string(from: summ!)!
+                setCahshingSumButton.title = numberFormatter.string(from: limit!)
                 summLabel.text = String(format: NSLocalizedString("RECEIVE2",comment: ""), arguments: [sumString])
                 summLabel.sizeToFit()
                 self.setToolbarItems([flexibleSpace,UIBarButtonItem(customView: summLabel),fixedSpace,setCahshingSumButton,flexibleSpace],animated: true)
-            case .Default:
+            case .default:
                 self.setToolbarItems([flexibleSpace,self.cashingButton,flexibleSpace], animated: true)
             }
         }
@@ -160,10 +160,10 @@ class STMDebtsPVC_iPhone: STMDebtsDetailsPVC, UIPopoverPresentationControllerDel
     
     // MARK: UITextFieldDelegate
     
-    func textFieldShouldReturn(textField: UITextField) -> Bool {
+    func textFieldShouldReturn(_ textField: UITextField) -> Bool {
         let numberFormatter = STMFunctions.decimalMaxTwoMinTwoDigitFormatter
-        let number = numberFormatter().numberFromString(textField.text!)
-        textField.text = numberFormatter().stringFromNumber(number!)
+        let number = numberFormatter().number(from: textField.text!)
+        textField.text = numberFormatter().string(from: number!)
         if number != nil && number!.doubleValue>0{
             STMCashingProcessController.sharedInstance().cashingSummLimit = NSDecimalNumber(decimal: number!.decimalValue)
         }
@@ -171,24 +171,24 @@ class STMDebtsPVC_iPhone: STMDebtsDetailsPVC, UIPopoverPresentationControllerDel
         return true
     }
     
-    func textField(textField: UITextField, shouldChangeCharactersInRange range: NSRange, replacementString string: String) -> Bool {
+    func textField(_ textField: UITextField, shouldChangeCharactersIn range: NSRange, replacementString string: String) -> Bool {
         let numberFormatter = STMFunctions.decimalMaxTwoDigitFormatter()
         let text = textField.text!.mutableCopy()
-        text.replaceCharactersInRange(range, withString:string)
-        let textParts = text.componentsSeparatedByString(numberFormatter.decimalSeparator)
+        (text as AnyObject).replaceCharacters(in: range, with:string)
+        let textParts = (text as AnyObject).components(separatedBy: numberFormatter.decimalSeparator)
         let decimalPart:String? = textParts.count == 2 ? textParts[1] : nil
         if decimalPart?.characters.count == 3 && string != "" {
             return false
         } else {
-            text.replaceOccurrencesOfString(numberFormatter.groupingSeparator, withString:"", options: .CaseInsensitiveSearch, range:NSMakeRange(0, text.length))
+            let _ = (text as AnyObject).replaceOccurrences(of: numberFormatter.groupingSeparator, with: "", options: .caseInsensitive, range: NSMakeRange(0, (text as AnyObject).length))
             self.fillTextField(textField, withText: text as! String)
             return false
         }
     }
     
-    func fillTextField(textField:UITextField, withText text:String) {
+    func fillTextField(_ textField:UITextField, withText text:String) {
         let numberFormatter = STMFunctions.decimalMaxTwoDigitFormatter()
-        let number = numberFormatter.numberFromString(text)
+        let number = numberFormatter.number(from: text)
         if number == nil {
             if text == "" {
                 textField.text = text
@@ -197,17 +197,17 @@ class STMDebtsPVC_iPhone: STMDebtsDetailsPVC, UIPopoverPresentationControllerDel
             if number!.doubleValue == 0 {
                 textField.text = text
             } else {
-                var finalString = numberFormatter.stringFromNumber(number!)
+                var finalString = numberFormatter.string(from: number!)
                 var appendingString:String? = nil
                 var suffix:String? = nil
                 for i in 0...2 {
                     suffix = numberFormatter.decimalSeparator
                     for _ in 0..<i {
-                        suffix = suffix!.stringByAppendingString("0")
+                        suffix = suffix! + "0"
                     }
                     appendingString = text.hasSuffix(suffix!) ? suffix : appendingString
                 }
-                finalString = appendingString != nil ? finalString!.stringByAppendingString(appendingString!) : finalString
+                finalString = appendingString != nil ? finalString! + appendingString! : finalString
                 textField.text = finalString
             }
         }
@@ -215,35 +215,35 @@ class STMDebtsPVC_iPhone: STMDebtsDetailsPVC, UIPopoverPresentationControllerDel
     
     //MARK: UIPopoverPresentationControllerDelegate
     
-    func adaptivePresentationStyleForPresentationController(PC: UIPresentationController) -> UIModalPresentationStyle {
-        return .None
+    func adaptivePresentationStyle(for PC: UIPresentationController) -> UIModalPresentationStyle {
+        return .none
     }
     
     // MARK: Selectors
     
     func changeDate(){
-        let popoverContent = self.storyboard!.instantiateViewControllerWithIdentifier("datePickerVC") as! STMDatePickerVC
+        let popoverContent = self.storyboard!.instantiateViewController(withIdentifier: "datePickerVC") as! STMDatePickerVC
         popoverContent.parentVC = self
         popoverContent.selectedDate = STMCashingProcessController.sharedInstance().selectedDate
         let nav = UINavigationController(rootViewController: popoverContent)
-        nav.navigationBar.hidden = true
-        nav.modalPresentationStyle = .Popover
+        nav.navigationBar.isHidden = true
+        nav.modalPresentationStyle = .popover
         let popover = nav.popoverPresentationController
-        popoverContent.preferredContentSize = CGSizeMake(388,205)
+        popoverContent.preferredContentSize = CGSize(width: 388,height: 205)
         popover?.delegate = self
         popover?.sourceView = self.view
         var frame = dateButton.frame
         frame.origin.y -= 60
         popover?.sourceRect = frame
-        self.presentViewController(nav, animated: true, completion: nil)
+        self.present(nav, animated: true, completion: nil)
     }
     
     func setCashingSum(){
         var cashingSum: UITextField?
-        let alertController = UIAlertController(title: NSLocalizedString("CASHING SUMM", comment: ""), message: nil, preferredStyle: .Alert)
-        let done = UIAlertAction(title: NSLocalizedString("DONE", comment: ""), style: .Default){ (action) -> Void in
+        let alertController = UIAlertController(title: NSLocalizedString("CASHING SUMM", comment: ""), message: nil, preferredStyle: .alert)
+        let done = UIAlertAction(title: NSLocalizedString("DONE", comment: ""), style: .default){ (action) -> Void in
             let numberFormatter = STMFunctions.decimalMaxTwoMinTwoDigitFormatter
-            let number = numberFormatter().numberFromString(alertController.textFields![0].text!)
+            let number = numberFormatter().number(from: alertController.textFields![0].text!)
             if number != nil{
                 STMCashingProcessController.sharedInstance().cashingSummLimit = NSDecimalNumber(decimal: number!.decimalValue)
             }
@@ -252,32 +252,32 @@ class STMDebtsPVC_iPhone: STMDebtsDetailsPVC, UIPopoverPresentationControllerDel
             }
             self.updateCashingLabel()
         }
-        let cancel = UIAlertAction(title: NSLocalizedString("CANCEL", comment: ""), style: .Cancel, handler: nil)
+        let cancel = UIAlertAction(title: NSLocalizedString("CANCEL", comment: ""), style: .cancel, handler: nil)
         alertController.addAction(done)
         alertController.addAction(cancel)
-        alertController.addTextFieldWithConfigurationHandler { (textField) -> Void in
+        alertController.addTextField { (textField) -> Void in
             let numberFormatter = STMFunctions.decimalMaxTwoMinTwoDigitFormatter
             var number = ""
             if STMCashingProcessController.sharedInstance().cashingSummLimit != nil{
-                number = numberFormatter().stringFromNumber(STMCashingProcessController.sharedInstance().cashingSummLimit)!
+                number = numberFormatter().string(from: STMCashingProcessController.sharedInstance().cashingSummLimit)!
             }
             cashingSum = textField
             cashingSum?.placeholder = NSLocalizedString("CASHING SUMM PLACEHOLDER", comment: "")
             cashingSum?.delegate = self
             cashingSum?.text = number
-            cashingSum?.clearButtonMode = .Always
+            cashingSum?.clearButtonMode = .always
         }
-        presentViewController(alertController, animated: true, completion: nil)
+        present(alertController, animated: true, completion: nil)
     }
     
     func updateCashingLabel() {
         if STMCashingProcessController.sharedInstance().debtsArray.count == 0{
-            toolbar = .SetCashing
+            toolbar = .setCashing
         }else if STMCashingProcessController.sharedInstance().cashingSummLimit == nil{
-            toolbar = .CashingSum
+            toolbar = .cashingSum
         }
         else{
-            toolbar = .LimitedSum
+            toolbar = .limitedSum
         }
     }
     
@@ -285,15 +285,15 @@ class STMDebtsPVC_iPhone: STMDebtsDetailsPVC, UIPopoverPresentationControllerDel
     
     override func addObservers(){
         super.addObservers()
-        NSNotificationCenter.defaultCenter().addObserver(
+        NotificationCenter.default.addObserver(
             self,
             selector: #selector(STMDebtsPVC_iPhone.updateCashingLabel),
-            name: "debtAdded",
+            name: NSNotification.Name(rawValue: "debtAdded"),
             object: STMCashingProcessController.sharedInstance())
-        NSNotificationCenter.defaultCenter().addObserver(
+        NotificationCenter.default.addObserver(
             self,
             selector: #selector(STMDebtsPVC_iPhone.updateCashingLabel),
-            name: "debtRemoved",
+            name: NSNotification.Name(rawValue: "debtRemoved"),
             object: STMCashingProcessController.sharedInstance())
     }
     
@@ -303,13 +303,13 @@ class STMDebtsPVC_iPhone: STMDebtsDetailsPVC, UIPopoverPresentationControllerDel
         super.viewDidLoad()
         setupSegmentedControl()
         removeSwipeGesture()
-        doneButton = STMBarButtonItem(title: NSLocalizedString("DONE", comment: ""), style: .Done, target: self, action: #selector(STMDebtsDetailsPVC.cashingButtonPressed))
-        cancelButton = STMBarButtonItem(title: NSLocalizedString("CANCEL", comment: ""), style: .Plain, target:STMCashingProcessController.sharedInstance(), action:#selector(STMCashingProcessController.cancelCashingProcess))
-        dateButton.addTarget(self, action: #selector(STMDebtsPVC_iPhone.changeDate), forControlEvents: .TouchUpInside)
+        doneButton = STMBarButtonItem(title: NSLocalizedString("DONE", comment: ""), style: .done, target: self, action: #selector(STMDebtsDetailsPVC.cashingButtonPressed))
+        cancelButton = STMBarButtonItem(title: NSLocalizedString("CANCEL", comment: ""), style: .plain, target:STMCashingProcessController.sharedInstance(), action:#selector(STMCashingProcessController.cancelCashingProcess))
+        dateButton.addTarget(self, action: #selector(STMDebtsPVC_iPhone.changeDate), for: .touchUpInside)
         
     }
     
-    override func viewWillAppear(animated: Bool) {
+    override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         self.navigationController?.setToolbarHidden(false, animated: true)
         toolbar.reset()

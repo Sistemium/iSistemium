@@ -35,7 +35,9 @@
         NSMutableDictionary *settingsControls = [NSMutableDictionary dictionary];
         
         NSError *error;
-        NSDictionary *settingsJSON = [NSJSONSerialization JSONObjectWithData:settingsData options:NSJSONReadingMutableContainers error:&error];
+        NSDictionary *settingsJSON = [NSJSONSerialization JSONObjectWithData:settingsData
+                                                                     options:NSJSONReadingMutableContainers
+                                                                       error:&error];
         
         NSMutableArray *settingsControlGroupNames = [NSMutableArray array];
         

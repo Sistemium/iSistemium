@@ -155,7 +155,7 @@
         self.locationManager.desiredAccuracy = currentAccuracy;
 
         NSString *logMessage = [NSString stringWithFormat:@"change desired accuracy to %f", currentAccuracy];
-        [[STMLogger sharedLogger] saveLogMessageWithText:logMessage type:@"important"];
+        [[STMLogger sharedLogger] saveLogMessageWithText:logMessage numType:STMLogMessageTypeInfo];
         
     }
     
@@ -375,7 +375,7 @@
             
             if ([CLLocationManager authorizationStatus] == kCLAuthorizationStatusRestricted || [CLLocationManager authorizationStatus] == kCLAuthorizationStatusDenied) {
                 
-                [[self.session logger] saveLogMessageWithText:@"location tracking is not permitted" type:@"error"];
+                [[self.session logger] saveLogMessageWithText:@"location tracking is not permitted" numType:STMLogMessageTypeWarning];
                 self.locationManager = nil;
                 [super stopTracking];
                 
@@ -392,7 +392,7 @@
                     
                 } else {
                     
-                    [[self.session logger] saveLogMessageWithText:@"location tracking disabled" type:@"error"];
+                    [[self.session logger] saveLogMessageWithText:@"location tracking disabled" numType:STMLogMessageTypeWarning];
                     [super stopTracking];
                     
                 }
@@ -415,7 +415,7 @@
     
         if (status == kCLAuthorizationStatusRestricted || status == kCLAuthorizationStatusDenied) {
             
-            [[self.session logger] saveLogMessageWithText:@"location tracking is not permitted" type:@"error"];
+            [[self.session logger] saveLogMessageWithText:@"location tracking is not permitted" type:@"warning"];
             
             completionHandler(NO);
             
@@ -555,7 +555,7 @@
         }
 
         NSString *logMessage = [NSString stringWithFormat:@"set desired accuracy to %f", _locationManager.desiredAccuracy];
-        [[STMLogger sharedLogger] saveLogMessageWithText:logMessage type:@"important"];
+        [[STMLogger sharedLogger] saveLogMessageWithText:logMessage numType:STMLogMessageTypeInfo];
         
     }
     
