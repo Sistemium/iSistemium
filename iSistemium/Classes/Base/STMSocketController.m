@@ -239,8 +239,12 @@
                 
             case SocketIOClientStatusNotConnected:
             case SocketIOClientStatusDisconnected: {
+                
+                sc.socket.reconnects = YES;
                 [sc.socket connect];
+                
                 break;
+                
             }
             case SocketIOClientStatusConnecting: {
                 
@@ -1198,7 +1202,8 @@
         SocketIOClient *socket = [[SocketIOClient alloc] initWithSocketURL:socketUrl config:@{@"voipEnabled"       : @YES,
                                                                                               @"log"               : @NO,
                                                                                               @"forceWebsockets"   : @NO,
-                                                                                              @"path"              : path}];
+                                                                                              @"path"              : path,
+                                                                                              @"reconnects"        : @YES}];
 
         STMLogger *logger = [STMLogger sharedLogger];
         
