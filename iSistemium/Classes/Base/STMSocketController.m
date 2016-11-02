@@ -19,6 +19,8 @@
 
 #import "STMFunctions.h"
 
+#import <Reachability/Reachability.h>
+
 
 #define SOCKET_URL @"https://socket.sistemium.com/socket.io-client"
 #define CHECK_AUTHORIZATION_DELAY 15
@@ -451,6 +453,8 @@
     
     [socket onAny:^(SocketAnyEvent *event) {
         
+        NSLog(@"%@ %@ ___ status %@", socket, socket.sid, @(socket.status));
+        
         NSLog(@"%@ %@ ___ event %@", socket, socket.sid, event.event);
         NSLog(@"%@ %@ ___ items (", socket, socket.sid);
 
@@ -658,8 +662,19 @@
 
 }
 
++ (void)socket:(SocketIOClient *)socket sendEvent:(STMSocketEvent)event withStringValue:(NSString *)stringValue {
+    [self socket:socket sendEvent:event withValue:stringValue];
+}
+
 + (void)socket:(SocketIOClient *)socket sendEvent:(STMSocketEvent)event withValue:(id)value {
 
+    if ([Reachability reachabilityWithHostname:[self sharedInstance].socketUrl].isReachable) {
+        NSLog(@"socketUrl.isReachable YES!!!!");
+    } else {
+        NSLog(@"socketUrl.isNOTReachable NO!!!!");
+    }
+
+    
 // Log
 // ----------
     
@@ -730,12 +745,33 @@
             [self sendFinishedWithError:@"socket not connected"];
         }
         
+        [self checkReachabilityAndSocketStatus:socket];
+        
     }
     
 }
 
-+ (void)socket:(SocketIOClient *)socket sendEvent:(STMSocketEvent)event withStringValue:(NSString *)stringValue {
-    [self socket:socket sendEvent:event withValue:stringValue];
++ (void)checkReachabilityAndSocketStatus:(SocketIOClient *)socket {
+    
+    switch (socket.status) {
+        case SocketIOClientStatusNotConnected:
+        case SocketIOClientStatusDisconnected:
+            
+            if ([Reachability reachabilityWithHostname:[self sharedInstance].socketUrl].isReachable) {
+                
+                [self closeSocket];
+                [self startSocket];
+                
+            }
+
+            break;
+
+        case SocketIOClientStatusConnecting:
+        case SocketIOClientStatusConnected:
+        default:
+            break;
+    }
+    
 }
 
 + (void)socket:(SocketIOClient *)socket receiveAckWithData:(NSArray *)data forEvent:(NSString *)event {
@@ -1294,8 +1330,9 @@
     
     if (!_socketUrl) {
         
-        _socketUrl = [STMSettingsController stringValueForSettings:@"socketUrl" forGroup:@"appSettings"];
-        
+        _socketUrl = [STMSettingsController stringValueForSettings:@"socketUrl"
+                                                          forGroup:@"appSettings"];
+
     }
     return _socketUrl;
     
