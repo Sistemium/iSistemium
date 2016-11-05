@@ -508,13 +508,14 @@ typedef NS_ENUM(NSUInteger, STMPositionProcessingType) {
     
     STMShipmentPosition *position = [self.resultsController objectAtIndexPath:indexPath];
 
-    if (!position.isProcessed.boolValue) {
+    if (position && !position.isProcessed.boolValue) {
         
         ([self.checkedPositions containsObject:position]) ? [self.checkedPositions removeObject:position] : [self.checkedPositions addObject:position];
         
-//        [self.cachedCellsHeights removeObjectForKey:position.objectID];
-        
-        [tableView reloadRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationFade];
+        if (indexPath) {
+            [tableView reloadRowsAtIndexPaths:@[indexPath]
+                             withRowAnimation:UITableViewRowAnimationFade];
+        }
         
         [self hideKeyboard];
         [self updateToolbarButtons];
