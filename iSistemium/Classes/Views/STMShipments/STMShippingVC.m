@@ -662,9 +662,15 @@ typedef NS_ENUM(NSUInteger, STMPositionProcessingType) {
         
         switch (type) {
                 
+            case NSFetchedResultsChangeUpdate:
+                
             case NSFetchedResultsChangeMove: {
-
-                [self moveObject:anObject atIndexPath:indexPath toIndexPath:newIndexPath];
+                
+                if (indexPath != newIndexPath){
+                
+                    [self moveObject:anObject atIndexPath:indexPath toIndexPath:newIndexPath];
+                    
+                }
 
                 NSArray *visibleRows = [self.tableView indexPathsForVisibleRows];
                 
