@@ -560,7 +560,7 @@
 
 + (void)disconnectCallbackWithData:(NSArray *)data ack:(SocketAckEmitter *)ack socket:(SocketIOClient *)socket {
     
-    if (![[STMSocketController sharedInstance] socket] || [self isItCurrentSocket:socket failString:@"disconnectCallback"]) {
+    if (![STMSocketController sharedInstance].socket || [self isItCurrentSocket:socket failString:@"disconnectCallback"]) {
         
         STMSocketController *sc = [STMSocketController sharedInstance];
         STMLogger *logger = [STMLogger sharedLogger];
@@ -1079,7 +1079,9 @@
 
         if ([context isEqual:[STMSocketController document].managedObjectContext]) {
             
-            [[STMSocketController sharedInstance] performSelector:@selector(sendUnsyncedObjects) withObject:nil afterDelay:0];
+            [[STMSocketController sharedInstance] performSelector:@selector(sendUnsyncedObjects)
+                                                       withObject:nil
+                                                       afterDelay:0];
             
         }
         
