@@ -740,6 +740,9 @@
 
 - (void)downloadConnectionForObjectID:(NSManagedObjectID *)objectID {
     
+#warning check objectId != nil
+    //https://fabric.io/sistemium2/ios/apps/com.sistemium.isistemium/issues/5822e2a50aeb16625ba66f2b
+    
     dispatch_async(dispatch_get_main_queue(), ^{
         
         NSError *error = nil;
