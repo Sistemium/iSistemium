@@ -617,10 +617,8 @@
     NSString *logMessage = [NSString stringWithFormat:@"reconnectCallback socket %@ %@", socket, socket.sid];
     [logger saveLogMessageWithText:logMessage
                            numType:STMLogMessageTypeDebug];
-    
-    if ([self syncer].syncerState == STMSyncerSendData || [self syncer].syncerState == STMSyncerSendDataOnce) {
-        [self sendFinishedWithError:@"socket recconecting"];
-    }
+
+    [self socketLostConnection];
 
 }
 
@@ -635,8 +633,16 @@
 }
 
 + (void)dataCallbackWithData:(NSArray *)data ack:(SocketAckEmitter *)ack socket:(SocketIOClient *)socket {
-    
     NSLog(@"dataCallback socket %@ data %@", socket, data);
+}
+
++ (void)socketLostConnection {
+    
+    STMSyncer *syncer = [self syncer];
+    
+    if (syncer.syncerState == STMSyncerSendData || syncer.syncerState == STMSyncerSendDataOnce) {
+        [self sendFinishedWithError:@"socket recconecting"];
+    }
     
 }
 
