@@ -618,6 +618,10 @@
     [logger saveLogMessageWithText:logMessage
                            numType:STMLogMessageTypeDebug];
     
+    if ([self syncer].syncerState == STMSyncerSendData || [self syncer].syncerState == STMSyncerSendDataOnce) {
+        [self sendFinishedWithError:@"socket recconecting"];
+    }
+
 }
 
 + (void)remoteCommandsCallbackWithData:(NSArray *)data ack:(SocketAckEmitter *)ack socket:(SocketIOClient *)socket {
