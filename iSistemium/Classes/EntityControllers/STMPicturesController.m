@@ -790,13 +790,28 @@
                                    completionHandler:^(NSURLResponse * _Nullable response, NSData * _Nullable data, NSError * _Nullable connectionError) {
 
                 self.waitingForDownloadPicture = NO;
-                                       
+                
                 if (connectionError) {
                    
                     NSLog(@"error %@ in %@", connectionError.description, [object valueForKey:@"name"]);
                     [self didProcessHref:href];
 
-                } else {
+                }else{
+                    if (response){
+                        NSHTTPURLResponse *httpResponse = (NSHTTPURLResponse *) response;
+                        if ([httpResponse statusCode] != 200){
+                            NSLog(@"error response status %d in %@", [httpResponse statusCode], [object valueForKey:@"name"]);
+                            [self didProcessHref:href];
+                            return;
+                        }
+                        NSString* content_type = [[httpResponse
+                                                   allHeaderFields] valueForKey:@"content-type"];
+                        if (![content_type hasPrefix: @"image/"]){
+                            NSLog(@"errror content_type %@ in %@", content_type, [object valueForKey:@"name"]);
+                            [self didProcessHref:href];
+                            return;
+                        }
+                    }
                    
                    //                NSLog(@"%@ load successefully", href);
                    
