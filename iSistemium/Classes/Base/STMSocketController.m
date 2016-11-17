@@ -618,7 +618,7 @@
     [logger saveLogMessageWithText:logMessage
                            numType:STMLogMessageTypeDebug];
 
-    [self socketLostConnection];
+    [self socketLostConnection:@"socket recconecting"];
 
 }
 
@@ -636,12 +636,12 @@
     NSLog(@"dataCallback socket %@ data %@", socket, data);
 }
 
-+ (void)socketLostConnection {
++ (void)socketLostConnection:(NSString *)errorString {
     
     STMSyncer *syncer = [self syncer];
     
     if (syncer.syncerState == STMSyncerSendData || syncer.syncerState == STMSyncerSendDataOnce) {
-        [self sendFinishedWithError:@"socket recconecting"];
+        [self sendFinishedWithError:errorString];
     }
     
 }
@@ -742,12 +742,7 @@
 
     } else {
         
-        NSLog(@"socket not connected");
-        
-        if ([self syncer].syncerState == STMSyncerSendData || [self syncer].syncerState == STMSyncerSendDataOnce) {
-            [self sendFinishedWithError:@"socket not connected"];
-        }
-        
+        [self socketLostConnection:@"socket sendEvent: not connected"];        
         [self checkReachabilityAndSocketStatus:socket];
         
     }
