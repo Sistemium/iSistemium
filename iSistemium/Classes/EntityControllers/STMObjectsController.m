@@ -1342,13 +1342,13 @@
     for (NSString *entityName in entityNames) {
         
         NSUInteger count = [self numberOfObjectsForEntityName:entityName];
-        NSLog(@"%@ count %d", entityName, count);
+        NSLog(@"%@ count %@", entityName, @(count));
         totalCount += count;
         
     }
     
-    NSLog(@"fantoms count %d", [self numberOfFantoms]);
-    NSLog(@"total count %d", totalCount);
+    NSLog(@"fantoms count %@", @([self numberOfFantoms]));
+    NSLog(@"total count %@", @(totalCount));
     
 }
 
@@ -1525,7 +1525,7 @@
     if (isFantomResolving) {
         
         [self didFinishResolveFantom:parameters successfully:NO];
-        NSLog(errorMessage);
+        NSLog(@"%@", errorMessage);
         
     } else {
         
@@ -2597,14 +2597,14 @@
                     NSString *entityName = object.entity.name;
                     
                     NSString *logMessage = [NSString stringWithFormat:@"successefully sync %@ with xid %@", entityName, xid];
-                    NSLog(logMessage);
+                    NSLog(@"%@", logMessage);
                     
                 }];
                 
             } else {
                 
                 NSString *logMessage = [NSString stringWithFormat:@"Sync: no object with xid: %@", xid];
-                NSLog(logMessage);
+                NSLog(@"%@", logMessage);
                 
             }
             
