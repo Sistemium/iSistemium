@@ -824,19 +824,19 @@
 
 - (void)shipmentsInfo {
     
-    NSLog(@"shipmentRoutePoints.count %d", self.route.shipmentRoutePoints.count);
+    NSLog(@"shipmentRoutePoints.count %lu", (unsigned long)self.route.shipmentRoutePoints.count);
     
     NSSet *shipments = [self.route valueForKeyPath:@"shipmentRoutePoints.@distinctUnionOfSets.shipments"];
     
-    NSLog(@"shipments.count %d", shipments.count);
+    NSLog(@"shipments.count %lu", (unsigned long)shipments.count);
     
     NSSet *positions = [shipments valueForKeyPath:@"@distinctUnionOfSets.shipmentPositions"];
     
-    NSLog(@"positions.count %d", positions.count);
+    NSLog(@"positions.count %lu", (unsigned long)positions.count);
     
     NSArray *articles = [positions valueForKeyPath:@"@distinctUnionOfObjects.article"];
     
-    NSLog(@"articles.count %d", articles.count);
+    NSLog(@"articles.count %lu", (unsigned long)articles.count);
     
     for (STMArticle *article in articles) {
         

@@ -572,7 +572,7 @@
     
     if (self.isInActiveTab) {
         
-        NSLog(@"barCodeScanner receiveBarCode: %@ withType:%d", barcode, type);
+        NSLog(@"barCodeScanner receiveBarCode: %@ withType:%lu", barcode, (unsigned long)type);
         
         switch (type) {
             case STMBarCodeTypeUnknown: {

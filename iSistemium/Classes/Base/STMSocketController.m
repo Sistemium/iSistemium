@@ -353,7 +353,7 @@
 
     if (syncDataArray.count > 0) {
 
-        NSLog(@"%d objects to send via Socket", syncDataArray.count);
+        NSLog(@"%lu objects to send via Socket", (unsigned long)syncDataArray.count);
         [self sendEvent:STMSocketEventData withValue:syncDataArray];
         
         return YES;

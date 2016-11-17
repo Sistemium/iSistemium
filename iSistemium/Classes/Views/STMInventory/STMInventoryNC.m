@@ -250,7 +250,7 @@
 
     if (self.scanEnabled && [self isInActiveTab]) {
         
-        NSLog(@"barCodeScanner receiveBarCode: %@ withType: %d", barcode, type);
+        NSLog(@"barCodeScanner receiveBarCode: %@ withType: %lu", barcode, (unsigned long)type);
         [STMInventoryProcessController receiveBarcode:barcode withType:type source:self];
 
     }

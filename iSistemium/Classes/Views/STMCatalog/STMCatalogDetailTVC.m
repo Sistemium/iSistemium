@@ -387,9 +387,9 @@ static NSString *Custom5CellIdentifier = @"STMCustom5TVCell";
 
     NSLog(@"-------------------------------s");
 
-    NSLog(@"resultsGorod.count %d", resultsGorod.count);
-    NSLog(@"resultsDobronom.count %d", resultsDobronom.count);
-    NSLog(@"resultsRoznica.count %d", resultsRoznica.count);
+    NSLog(@"resultsGorod.count %lu", (unsigned long)resultsGorod.count);
+    NSLog(@"resultsDobronom.count %lu", (unsigned long)resultsDobronom.count);
+    NSLog(@"resultsRoznica.count %lu", (unsigned long)resultsRoznica.count);
     
     NSLog(@"-------------------------------f");
 

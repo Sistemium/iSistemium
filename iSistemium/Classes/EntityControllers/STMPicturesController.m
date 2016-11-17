@@ -800,7 +800,7 @@
                     if (response){
                         NSHTTPURLResponse *httpResponse = (NSHTTPURLResponse *) response;
                         if ([httpResponse statusCode] != 200){
-                            NSLog(@"error response status %d in %@", [httpResponse statusCode], [object valueForKey:@"name"]);
+                            NSLog(@"error response status %@ in %@", @(httpResponse.statusCode), [object valueForKey:@"name"]);
                             [self didProcessHref:href];
                             return;
                         }
@@ -921,7 +921,7 @@
                             
                             picture.deviceTs = currentDate;
                             
-                            NSLog(picture.picturesInfo)
+                            NSLog(@"%@", picture.picturesInfo);
                             
                             __block STMSession *session = [STMSessionManager sharedManager].currentSession;
                             
@@ -944,7 +944,7 @@
                 
             } else {
                 
-                NSLog(@"Request error, statusCode: %d", statusCode);
+                NSLog(@"Request error, statusCode: %@", @(statusCode));
                 
             }
             self.uploadingPicturesCount-=1;
