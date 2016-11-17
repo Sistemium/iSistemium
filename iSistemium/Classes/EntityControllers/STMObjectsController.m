@@ -1307,8 +1307,8 @@
     NSLog(@"avgEighth %@", avgEighth);
     NSLog(@"avgNineth %@", avgNineth);
     
-    NSLog(@"eighth.count %d", eighth.count)
-    NSLog(@"nineth.count %d", nineth.count)
+    NSLog(@"eighth.count %@", @(eighth.count));
+    NSLog(@"nineth.count %@", @(nineth.count));
     
 }
 

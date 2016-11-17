@@ -190,8 +190,8 @@
     
     for (STMArticleGroup *articleGroup in fetchResults) {
         
-        NSLog(@"group %@ priceTypes %d", articleGroup.name, articleGroup.articlesPriceTypes.count);
-        NSLog(@" articles.count %d", articleGroup.articles.count)
+        NSLog(@"group %@ priceTypes %@", articleGroup.name, @(articleGroup.articlesPriceTypes.count));
+        NSLog(@" articles.count %@", @(articleGroup.articles.count));
         
         for (STMPriceType *priceType in articleGroup.articlesPriceTypes) {
             

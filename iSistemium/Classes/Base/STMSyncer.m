@@ -239,7 +239,7 @@
 #ifdef DEBUG
         NSArray *syncStates = @[@"idle", @"sendData", @"sendDataOnce", @"receiveData"];
         NSString *logMessage = [NSString stringWithFormat:@"Syncer %@", syncStates[syncerState]];
-        NSLog(logMessage);
+        NSLog(@"%@", logMessage);
 #endif
         
         [[NSNotificationCenter defaultCenter] postNotificationName:@"syncStatusChanged"
@@ -790,7 +790,7 @@
     } else {
         
         NSString *logMessage = [NSString stringWithFormat:@"%lu objects to send", (unsigned long)syncDataArray.count];
-        NSLog(logMessage);
+        NSLog(@"%@", logMessage);
 
         NSDictionary *dataDictionary = @{@"data": syncDataArray};
         
@@ -928,7 +928,7 @@
                         break;
                         
                     default:
-                        NSLog(@"    news statusCode: %d %@", statusCode, stringForStatusCode);
+                        NSLog(@"    news statusCode: %@ %@", @(statusCode), stringForStatusCode);
                         self.fetchResult = UIBackgroundFetchResultFailed;
                         [self receivingDidFinish];
                         break;
@@ -1255,7 +1255,7 @@
         
     } else {
     
-        NSLog(@"%@: %d %@", entityName, statusCode, stringForStatusCode);
+        NSLog(@"%@: %@ %@", entityName, @(statusCode), stringForStatusCode);
 
         self.responses[entityName] = nil;
         
@@ -1443,7 +1443,7 @@
         
         if (success) {
             
-            NSLog(@"    %@: get %d objects", entityName, dataArray.count);
+            NSLog(@"    %@: get %@ objects", entityName, @(dataArray.count));
             
             NSUInteger pageRowCount = [responseJSON[@"page-row-count"] integerValue];
             NSUInteger pageSize = [responseJSON[@"page-size"] integerValue];
