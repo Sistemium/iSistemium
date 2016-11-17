@@ -1498,6 +1498,9 @@
     
     if (errorString) {
         
+        [[self.session logger] saveLogMessageWithText:errorString
+                                              numType:STMLogMessageTypeError];
+        
         self.syncing = NO;
         self.syncerState = (self.receivingEntitiesNames) ? STMSyncerReceiveData : STMSyncerIdle;
         

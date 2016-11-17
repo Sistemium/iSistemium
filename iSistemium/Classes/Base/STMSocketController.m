@@ -742,7 +742,7 @@
 
     } else {
         
-        [self socketLostConnection:@"socket sendEvent: not connected"];        
+        [self socketLostConnection:@"socket sendEvent: not connected"];
         [self checkReachabilityAndSocketStatus:socket];
         
     }
