@@ -618,7 +618,7 @@
     [logger saveLogMessageWithText:logMessage
                            numType:STMLogMessageTypeDebug];
 
-    [self socketLostConnection:@"socket recconecting"];
+    [self socketLostConnection:@"socket reconnecting"];
 
 }
 
