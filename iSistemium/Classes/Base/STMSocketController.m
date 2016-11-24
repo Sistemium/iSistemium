@@ -582,6 +582,15 @@
 
     [self socketLostConnection:@"socket reconnecting"];
 
+    if (![self sharedInstance].socketReachability.isReachable) {
+        
+        logMessage = [NSString stringWithFormat:@"have no internet connection, close socket %@ %@", socket, socket.sid];
+        [logger saveLogMessageWithText:logMessage
+                               numType:STMLogMessageTypeDebug];
+        [self closeSocket];
+        
+    }
+    
 }
 
 + (void)remoteCommandsCallbackWithData:(NSArray *)data ack:(SocketAckEmitter *)ack socket:(SocketIOClient *)socket {
