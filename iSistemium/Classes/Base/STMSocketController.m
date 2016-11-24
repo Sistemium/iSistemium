@@ -970,6 +970,11 @@
                name:@"documentSavedSuccessfully"
              object:nil];
 
+    [nc addObserver:self
+           selector:@selector(reachabilityChanged:)
+               name:kReachabilityChangedNotification
+             object:nil];
+
 }
 
 - (void)removeObservers {
