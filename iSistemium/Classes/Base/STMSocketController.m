@@ -911,18 +911,21 @@
 
 - (void)startReachability {
     
-    [self.socketReachability stopNotifier];
     self.socketReachability = [Reachability reachabilityForInternetConnection];
     [self.socketReachability startNotifier];
     
 }
 
 - (void)reachabilityChanged:(NSNotification *)notification {
-
-    NSLog(@"currentReachabilityString: %@", [self.socketReachability currentReachabilityString])
     
-    if ([notification.object isEqual:self.socketReachability] && self.socketReachability.isReachable) {
-        [STMSocketController checkReachabilityAndSocketStatus:self.socket];
+    if ([notification.object isEqual:self.socketReachability]) {
+        
+        NSLog(@"currentReachabilityString: %@", [self.socketReachability currentReachabilityString])
+
+        if (self.socketReachability.isReachable) {
+            [STMSocketController checkReachabilityAndSocketStatus:self.socket];
+        }
+        
     }
     
 }
@@ -936,6 +939,7 @@
     self = [super init];
     if (self) {
         
+        [self startReachability];
         [self addObservers];
 //        [self checkSocketStatus];
 
@@ -972,7 +976,7 @@
     [nc addObserver:self
            selector:@selector(reachabilityChanged:)
                name:kReachabilityChangedNotification
-             object:nil];
+             object:self.socketReachability];
 
 }
 
@@ -1020,8 +1024,6 @@
                 [STMSocketController startSocket];
                 
             }
-            
-            [self startReachability];
             
         }
         
@@ -1286,8 +1288,6 @@
 - (SocketIOClient *)createSocket {
     
     if (self.socketUrl && self.isRunning) {
-        
-        [self startReachability];
         
         NSURL *socketUrl = [NSURL URLWithString:self.socketUrl];
         NSString *path = [socketUrl.path stringByAppendingString:@"/"];
