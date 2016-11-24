@@ -31,6 +31,9 @@
 
 @property (nonatomic, strong) SocketIOClient *socket;
 @property (nonatomic, strong) NSString *socketUrl;
+@property (nonatomic) BOOL socketReconnects;
+@property (nonatomic) NSInteger socketReconnectAttempts;
+@property (nonatomic) NSInteger socketReconnectWait;
 
 @property (nonatomic) BOOL isRunning;
 @property (nonatomic) BOOL isAuthorized;
@@ -1013,9 +1016,10 @@
     
     if (currentSession.status == STMSessionRunning) {
         
-        NSString *key = @"socketUrl";
+        NSString *key = notification.userInfo.allKeys.firstObject;
+        NSString *value = notification.userInfo.allValues.firstObject;
         
-        if ([notification.userInfo.allKeys containsObject:key]) {
+        if ([key isEqualToString:@"socketUrl"]) {
             
             self.socketUrl = nil;
             
@@ -1030,6 +1034,24 @@
                 [STMSocketController startSocket];
                 
             }
+            
+        }
+        
+        if ([key isEqualToString:@"socketReconnects"]) {
+            
+            self.socketReconnects = value.boolValue;
+            if (self.isRunning) self.socket.reconnects = self.socketReconnects;
+            
+        }
+
+        if ([key isEqualToString:@"socketReconnectAttempts"]) {
+            self.socketReconnectAttempts = value.integerValue;
+        }
+
+        if ([key isEqualToString:@"socketReconnectWait"]) {
+            
+            self.socketReconnectWait= value.integerValue;
+            if (self.isRunning) self.socket.reconnectWait = self.socketReconnectWait;
             
         }
 
@@ -1204,14 +1226,6 @@
     
 }
 
-- (NSString *)uploadLogType {
-    
-    NSString *uploadLogType = [STMSettingsController stringValueForSettings:@"uploadLog.type"
-                                                                   forGroup:@"syncer"];
-    return uploadLogType;
-    
-}
-
 - (NSArray *)unsyncedObjectsArray {
     
     if (self.isAuthorized && [STMSocketController document].managedObjectContext) {
@@ -1227,6 +1241,58 @@
 }
 
 
+#pragma mark - settings
+
+- (NSString *)uploadLogType {
+    
+    NSString *uploadLogType = [STMSettingsController stringValueForSettings:@"uploadLog.type"
+                                                                   forGroup:@"syncer"];
+    return uploadLogType;
+    
+}
+
+- (NSString *)socketUrl {
+    
+    if (!_socketUrl) {
+        _socketUrl = [STMSettingsController stringValueForSettings:@"socketUrl"
+                                                          forGroup:@"appSettings"];
+    }
+    return _socketUrl;
+    
+}
+
+- (BOOL)socketReconnects {
+    
+    if (!_socketReconnects) {
+        _socketReconnects = [STMSettingsController stringValueForSettings:@"socketReconnects"
+                                                                 forGroup:@"appSettings"].boolValue;
+        if (!_socketReconnects) _socketReconnects = YES;
+    }
+    return _socketReconnects;
+    
+}
+
+- (NSInteger)socketReconnectAttempts {
+    
+    if (!_socketReconnectAttempts) {
+        _socketReconnectAttempts = [STMSettingsController stringValueForSettings:@"socketReconnectAttempts"
+                                                                        forGroup:@"appSettings"].integerValue;
+    }
+    return _socketReconnectAttempts;
+    
+}
+
+- (NSInteger)socketReconnectWait {
+    
+    if (!_socketReconnectWait) {
+        _socketReconnectWait = [STMSettingsController stringValueForSettings:@"socketReconnectWait"
+                                                                    forGroup:@"appSettings"].integerValue;
+    }
+    return _socketReconnectWait;
+    
+}
+
+
 #pragma mark - socket
 
 - (SocketIOClient *)socket {
@@ -1236,11 +1302,17 @@
         NSURL *socketUrl = [NSURL URLWithString:self.socketUrl];
         NSString *path = [socketUrl.path stringByAppendingString:@"/"];
 
-        SocketIOClient *socket = [[SocketIOClient alloc] initWithSocketURL:socketUrl config:@{@"voipEnabled"       : @YES,
-                                                                                              @"log"               : @NO,
-                                                                                              @"forceWebsockets"   : @NO,
-                                                                                              @"path"              : path,
-                                                                                              @"reconnects"        : @YES}];
+        NSMutableDictionary *config = @{@"voipEnabled"       : @YES,
+                                        @"log"               : @NO,
+                                        @"forceWebsockets"   : @NO,
+                                        @"path"              : path}.mutableCopy;
+        
+        config[@"reconnects"] = @NO;// @(self.socketReconnects);
+        if (self.socketReconnectAttempts) config[@"reconnectAttempts"] = @(self.socketReconnectAttempts);
+        if (self.socketReconnectWait) config[@"reconnectWait"] = @(self.socketReconnectWait);
+        
+        SocketIOClient *socket = [[SocketIOClient alloc] initWithSocketURL:socketUrl
+                                                                    config:config];
 
         STMLogger *logger = [STMLogger sharedLogger];
         
@@ -1324,18 +1396,6 @@
         [STMSocketController startSocket];
 
     }
-    
-}
-
-- (NSString *)socketUrl {
-    
-    if (!_socketUrl) {
-        
-        _socketUrl = [STMSettingsController stringValueForSettings:@"socketUrl"
-                                                          forGroup:@"appSettings"];
-
-    }
-    return _socketUrl;
     
 }
 

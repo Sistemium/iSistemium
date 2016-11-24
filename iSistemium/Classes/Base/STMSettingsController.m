@@ -65,6 +65,8 @@
     
     if ([value isKindOfClass:[NSString class]]) {
         
+        NSString *stringValue = (NSString *)value;
+        
         NSArray *positiveDoubleValues = @[@"trackDetectionTime",
                                           @"trackSeparationDistance",
                                           @"fetchLimit",
@@ -75,6 +77,9 @@
                                           @"http.timeout.background",
                                           @"objectsLifeTime",
                                           @"locationWaitingTimeInterval"];
+        
+        NSArray *positiveIntValues = @[@"socketReconnectWait"];
+        NSArray *intValues = @[@"socketReconnectAttempts"];
         
         NSArray *zeroPositiveValues = @[@"timeFilter",
                                         @"requiredAccuracy",
@@ -90,7 +95,8 @@
                                 @"getLocationsWithNegativeSpeed",
                                 @"blockIfNoLocationPermission",
                                 @"enableAggregateShipment",
-                                @"enableShowBottles"];
+                                @"enableShowBottles",
+                                @"socketReconnects"];
         
         NSArray *boolValueSuffixes = @[@"TrackerAutoStart"];
         
@@ -105,58 +111,68 @@
         NSArray *timeValueSuffixes = @[@"TrackerStartTime",
                                        @"TrackerFinishTime"];
         
-        NSArray *stringValue = @[@"uploadLog.type",
-                                 @"genericPriceType",
-                                 @"geotrackerControl"];
+        NSArray *stringValuesArray = @[@"uploadLog.type",
+                                       @"genericPriceType",
+                                       @"geotrackerControl"];
         
         NSArray *logicValue = @[@"timeDistanceLogic"];
         
         if ([positiveDoubleValues containsObject:key]) {
-            if ([self isPositiveDouble:value]) {
-                return [NSString stringWithFormat:@"%f", [value doubleValue]];
+            if ([self isPositiveDouble:stringValue]) {
+                return [NSString stringWithFormat:@"%f", stringValue.doubleValue];
+            }
+            
+        } else if ([positiveIntValues containsObject:key]) {
+            if ([self isPositiveInt:stringValue]) {
+                return stringValue;
+            }
+            
+        } else if ([intValues containsObject:key]) {
+            if ([self isInt:stringValue]) {
+                return stringValue;
             }
             
         } else  if ([boolValues containsObject:key] || [self key:key hasSuffixFromArray:boolValueSuffixes]) {
-            if ([self isBool:value]) {
-                return [NSString stringWithFormat:@"%d", [value boolValue]];
+            if ([self isBool:stringValue]) {
+                return [NSString stringWithFormat:@"%d", stringValue.boolValue];
             }
             
         } else if ([URIValues containsObject:key]) {
-            if ([self isValidURI:value]) {
-                return value;
+            if ([self isValidURI:stringValue]) {
+                return stringValue;
             }
             
         } else if ([timeValues containsObject:key] || [self key:key hasSuffixFromArray:timeValueSuffixes]) {
-            if ([self isValidTime:value]) {
-                return [NSString stringWithFormat:@"%f", [value doubleValue]];
+            if ([self isValidTime:stringValue]) {
+                return [NSString stringWithFormat:@"%f", stringValue.doubleValue];
             }
             
         } else if ([key isEqualToString:@"desiredAccuracy"] || [self key:key hasSuffixFromArray:desiredAccuracySuffixes]) {
-            double dValue = [value doubleValue];
+            double dValue = stringValue.doubleValue;
             if (dValue == -2 || dValue == -1 || dValue == 0 || dValue == 10 || dValue == 100 || dValue == 1000 || dValue == 3000) {
                 return [NSString stringWithFormat:@"%f", dValue];
             }
             
         } else if ([key isEqualToString:@"distanceFilter"]) {
-            double dValue = [value doubleValue];
+            double dValue = stringValue.doubleValue;
             if (dValue == -1 || dValue >= 0) {
                 return [NSString stringWithFormat:@"%f", dValue];
             }
             
         } else if ([zeroPositiveValues containsObject:key]) {
-            double dValue = [value doubleValue];
+            double dValue = stringValue.doubleValue;
             if (dValue >= 0) {
                 return [NSString stringWithFormat:@"%f", dValue];
             }
             
         } else if ([key isEqualToString:@"jpgQuality"]) {
-            double dValue = [value doubleValue];
+            double dValue = stringValue.doubleValue;
             if (dValue >= 0 && dValue <= 1) {
                 return [NSString stringWithFormat:@"%f", dValue];
             }
             
-        } else if ([stringValue containsObject:key]) {
-            return value;
+        } else if ([stringValuesArray containsObject:key]) {
+            return stringValue;
             
         } else if ([logicValue containsObject:key]) {
             
@@ -165,8 +181,8 @@
             
             NSArray *availableValues = @[orValue, andValue];
             
-            if ([availableValues containsObject:[(NSString *)value uppercaseString]]) {
-                return [(NSString *)value uppercaseString];
+            if ([availableValues containsObject:stringValue.uppercaseString]) {
+                return stringValue.uppercaseString;
             } else {
                 return andValue;
             }
@@ -175,8 +191,8 @@
             
             NSArray *availableValues = @[@"price", @"pieceVolume", @"stock"];
             
-            if ([availableValues containsObject:value]) {
-                return value;
+            if ([availableValues containsObject:stringValue]) {
+                return stringValue;
             } else {
                 return @"price";
             }
@@ -185,8 +201,8 @@
             
             NSArray *availableValues = @[@"noRequest", @"requestAlwaysAuthorization", @"requestWhenInUseAuthorization"];
             
-            if ([availableValues containsObject:value]) {
-                return value;
+            if ([availableValues containsObject:stringValue]) {
+                return stringValue;
             } else {
                 return @"noRequest";
             }
@@ -204,7 +220,19 @@
 }
 
 - (BOOL)isPositiveDouble:(NSString *)value {
-    return ([value doubleValue] > 0);
+    return value.doubleValue > 0;
+}
+
+- (BOOL)isPositiveInt:(NSString *)value {
+    return [self isInt:value] && value.integerValue > 0;
+}
+
+- (BOOL)isInt:(NSString *)value {
+    
+    NSScanner* scan = [NSScanner scannerWithString:value];
+    int intValue;
+    return [scan scanInt:&intValue] && [scan isAtEnd];
+    
 }
 
 - (BOOL)isBool:(NSString *)value {
