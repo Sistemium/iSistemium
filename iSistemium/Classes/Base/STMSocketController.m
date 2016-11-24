@@ -1297,7 +1297,7 @@
                                         @"forceWebsockets"   : @NO,
                                         @"path"              : path}.mutableCopy;
         
-        config[@"reconnects"] = @NO;// @(self.socketReconnects);
+        config[@"reconnects"] = @(self.socketReconnects);
         if (self.socketReconnectAttempts) config[@"reconnectAttempts"] = @(self.socketReconnectAttempts);
         if (self.socketReconnectWait) config[@"reconnectWait"] = @(self.socketReconnectWait);
         
