@@ -912,7 +912,6 @@
 - (void)startReachability {
     
     [self.socketReachability stopNotifier];
-//    self.socketReachability = [Reachability reachabilityWithHostname:self.socketUrl];
     self.socketReachability = [Reachability reachabilityForInternetConnection];
     [self.socketReachability startNotifier];
     
