@@ -47,6 +47,8 @@
 @property (nonatomic, strong) NSMutableArray *resultsControllers;
 @property (nonatomic, strong) NSDate *sendingDate;
 
+@property (nonatomic, strong) Reachability *socketReachability;
+
 
 @end
 
@@ -709,29 +711,6 @@
     
 }
 
-+ (void)checkReachabilityAndSocketStatus:(SocketIOClient *)socket {
-    
-    switch (socket.status) {
-        case SocketIOClientStatusNotConnected:
-        case SocketIOClientStatusDisconnected:
-            
-            if ([Reachability reachabilityWithHostname:[self sharedInstance].socketUrl].isReachable) {
-                
-                [self closeSocket];
-                [self startSocket];
-                
-            }
-
-            break;
-
-        case SocketIOClientStatusConnecting:
-        case SocketIOClientStatusConnected:
-        default:
-            break;
-    }
-    
-}
-
 + (void)socket:(SocketIOClient *)socket receiveAckWithData:(NSArray *)data forEvent:(NSString *)event {
     
     NSLog(@"%@ %@ ___ receive Ack, event: %@, data: %@", socket, socket.sid, event, data);
@@ -904,6 +883,53 @@
 }
 
 
+#pragma mark - reachability
+
++ (void)checkReachabilityAndSocketStatus:(SocketIOClient *)socket {
+    
+    switch (socket.status) {
+        case SocketIOClientStatusNotConnected:
+        case SocketIOClientStatusDisconnected:
+            
+            if ([self sharedInstance].socketReachability.isReachable) {
+                
+                [self reconnectSocket];
+//                [self closeSocket];
+//                [self startSocket];
+                
+            }
+            
+            break;
+            
+        case SocketIOClientStatusConnecting:
+        case SocketIOClientStatusConnected:
+        default:
+            break;
+    }
+    
+}
+
+- (void)startReachability {
+    
+    [self.socketReachability stopNotifier];
+//    self.socketReachability = [Reachability reachabilityWithHostname:self.socketUrl];
+    self.socketReachability = [Reachability reachabilityForInternetConnection];
+    [self.socketReachability startNotifier];
+    
+}
+
+- (void)reachabilityChanged:(NSNotification *)notification {
+
+    NSLog(@"currentReachabilityString: %@", [self.socketReachability currentReachabilityString])
+    
+    if ([notification.object isEqual:self.socketReachability] && self.socketReachability.isReachable) {
+        [STMSocketController checkReachabilityAndSocketStatus:self.socket];
+    }
+    
+}
+
+
+
 #pragma mark - instance methods
 
 - (instancetype)init {
@@ -990,6 +1016,8 @@
                 [STMSocketController startSocket];
                 
             }
+            
+            [self startReachability];
             
         }
         
@@ -1254,6 +1282,8 @@
 - (SocketIOClient *)createSocket {
     
     if (self.socketUrl && self.isRunning) {
+        
+        [self startReachability];
         
         NSURL *socketUrl = [NSURL URLWithString:self.socketUrl];
         NSString *path = [socketUrl.path stringByAppendingString:@"/"];
