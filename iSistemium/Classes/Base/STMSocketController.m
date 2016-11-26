@@ -929,7 +929,7 @@
     
     if ([notification.object isEqual:self.socketReachability]) {
         
-        NSLog(@"currentReachabilityString: %@", [self.socketReachability currentReachabilityString])
+        NSLog(@"currentReachabilityString: %@", [self.socketReachability currentReachabilityString]);
 
         if (self.socketReachability.isReachable) {
             [STMSocketController checkReachabilityAndSocketStatus:self.socket];
