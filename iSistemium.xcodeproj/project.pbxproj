@@ -102,6 +102,7 @@
 		2C46205A1B68F813007FD646 /* STMPositionVolumesVC.m in Sources */ = {isa = PBXBuildFile; fileRef = 2C4620591B68F813007FD646 /* STMPositionVolumesVC.m */; };
 		2C46206C1B6B5F45007FD646 /* STMRouteSummaryArticleInfoTVC.m in Sources */ = {isa = PBXBuildFile; fileRef = 2C46206B1B6B5F45007FD646 /* STMRouteSummaryArticleInfoTVC.m */; };
 		2C4620741B6E027B007FD646 /* waypoint_map.png in Resources */ = {isa = PBXBuildFile; fileRef = 2C4620731B6E027B007FD646 /* waypoint_map.png */; };
+		2C50341E1DF69A4600687A64 /* STMScriptMessagesController.m in Sources */ = {isa = PBXBuildFile; fileRef = 2C50341D1DF69A4600687A64 /* STMScriptMessagesController.m */; };
 		2C53B88A19409E42002298A5 /* settings_schema.json in Resources */ = {isa = PBXBuildFile; fileRef = 2C53B88819409E42002298A5 /* settings_schema.json */; };
 		2C53B88B19409E42002298A5 /* settings.json in Resources */ = {isa = PBXBuildFile; fileRef = 2C53B88919409E42002298A5 /* settings.json */; };
 		2C53B8AC19409E83002298A5 /* STMSettingsTVC.m in Sources */ = {isa = PBXBuildFile; fileRef = 2C53B8AA19409E83002298A5 /* STMSettingsTVC.m */; };
@@ -708,6 +709,8 @@
 		2C46206A1B6B5F45007FD646 /* STMRouteSummaryArticleInfoTVC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = STMRouteSummaryArticleInfoTVC.h; sourceTree = "<group>"; };
 		2C46206B1B6B5F45007FD646 /* STMRouteSummaryArticleInfoTVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = STMRouteSummaryArticleInfoTVC.m; sourceTree = "<group>"; };
 		2C4620731B6E027B007FD646 /* waypoint_map.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = waypoint_map.png; sourceTree = "<group>"; };
+		2C50341C1DF69A4600687A64 /* STMScriptMessagesController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = STMScriptMessagesController.h; sourceTree = "<group>"; };
+		2C50341D1DF69A4600687A64 /* STMScriptMessagesController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = STMScriptMessagesController.m; sourceTree = "<group>"; };
 		2C53B88819409E42002298A5 /* settings_schema.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = settings_schema.json; sourceTree = "<group>"; };
 		2C53B88919409E42002298A5 /* settings.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = settings.json; sourceTree = "<group>"; };
 		2C53B8A919409E83002298A5 /* STMSettingsTVC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = STMSettingsTVC.h; sourceTree = "<group>"; };
@@ -1577,6 +1580,8 @@
 				2CC5D3A31C85C78100193CD7 /* STMTracker.h */,
 				2CC5D3A41C85C78100193CD7 /* STMTracker.m */,
 				2CE634641C8AB5C7007CF578 /* STMScriptMessageController.swift */,
+				2C50341C1DF69A4600687A64 /* STMScriptMessagesController.h */,
+				2C50341D1DF69A4600687A64 /* STMScriptMessagesController.m */,
 				2CE634661C8D96FD007CF578 /* STMSwiftConstants.swift */,
 				6D69FA4B1CC6624900A3BCB2 /* STMGarbageCollector.swift */,
 				2CFA30281D47974500BB9E35 /* STMUserDefaults.h */,
@@ -3419,6 +3424,7 @@
 				2CE3F52C1C12DBAE00D8B4F3 /* STMInventoryBatchesTVC.m in Sources */,
 				2CC5D3101C85C73D00193CD7 /* STMBasketPosition+CoreDataProperties.m in Sources */,
 				2CC5D4901C85C7F300193CD7 /* UIViewController+custom.m in Sources */,
+				2C50341E1DF69A4600687A64 /* STMScriptMessagesController.m in Sources */,
 				2CC5D3051C85C73D00193CD7 /* STMArticlePicture.m in Sources */,
 				2C5763F21AA5E13600B9FD2C /* STMCampaignPhotoReportCVC.m in Sources */,
 				2C5763BF1AA4739200B9FD2C /* STMCatalogSVC.m in Sources */,
