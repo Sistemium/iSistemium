@@ -38,7 +38,9 @@ NS_ASSUME_NONNULL_BEGIN
 
 + (NSString *)displayDateInfo:(nullable NSString *)dateInfo;
 
-+ (STMDateFormatter *)dateFormatter;
++ (NSDate *)dateFromString:(NSString *)string;
++ (NSString *)stringFromDate:(NSDate *)date;
+
 + (NSDateFormatter *)dateNumbersFormatter;
 + (NSDateFormatter *)dateNumbersFormatterTwo;
 + (NSDateFormatter *)dateShortNoTimeFormatter;
@@ -50,8 +52,7 @@ NS_ASSUME_NONNULL_BEGIN
 + (NSDateFormatter *)noDateShortTimeFormatter;
 + (NSDateFormatter *)noDateMediumTimeFormatter;
 + (NSDateFormatter *)noDateShortTimeFormatterAllowZero:(BOOL)allowZero;
-+ (NSDate *)dateFromString:(NSString *)string;
-    
+
 + (void)NSLogCurrentDateWithMilliseconds;
 
 + (NSDate *)dateFromDouble:(double)time;

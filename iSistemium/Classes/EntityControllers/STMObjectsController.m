@@ -2277,7 +2277,7 @@
     NSMutableDictionary *propertiesDictionary = @{}.mutableCopy;
     
     if (object.xid) propertiesDictionary[@"id"] = [STMFunctions UUIDStringFromUUIDData:(NSData *)object.xid];
-    if (object.deviceTs) propertiesDictionary[@"ts"] = [[STMFunctions dateFormatter] stringFromDate:(NSDate *)object.deviceTs];
+    if (object.deviceTs) propertiesDictionary[@"ts"] = [STMFunctions stringFromDate:(NSDate *)object.deviceTs];
     
     NSArray *ownKeys = [self ownObjectKeysForEntityName:object.entity.name].allObjects;
     NSArray *ownRelationships = [self singleRelationshipsForEntityName:object.entity.name].allKeys;

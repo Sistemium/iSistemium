@@ -259,7 +259,7 @@
                 
                 if ([value isKindOfClass:[NSDate class]]) {
                     
-                    value = [[STMFunctions dateFormatter] stringFromDate:value];
+                    value = [STMFunctions stringFromDate:value];
                     
                 } else if ([value isKindOfClass:[NSData class]]) {
                     
