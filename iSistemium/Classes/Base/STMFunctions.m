@@ -33,8 +33,45 @@
 
 @end
 
+STMDateFormatter *sharedDateFormatterWithMilliseconds;
+STMDateFormatter *sharedDateFormatterWithoutTime;
 
 @implementation STMFunctions
+
++ (STMDateFormatter *)dateFormatterWithMilliseconds {
+    
+    if (sharedDateFormatterWithMilliseconds) return sharedDateFormatterWithMilliseconds;
+    
+    sharedDateFormatterWithMilliseconds = [[STMDateFormatter alloc] init];
+    sharedDateFormatterWithMilliseconds.locale = [NSLocale localeWithLocaleIdentifier:@"en_US_POSIX"];
+    sharedDateFormatterWithMilliseconds.timeZone = [NSTimeZone timeZoneForSecondsFromGMT:0];
+    sharedDateFormatterWithMilliseconds.dateFormat = DATE_FORMAT_WITH_MILLISECONDS;
+    
+    return sharedDateFormatterWithMilliseconds;
+    
+}
+
++ (STMDateFormatter *)dateFormatterWithoutTime {
+    
+    if (sharedDateFormatterWithoutTime) return sharedDateFormatterWithoutTime;
+    
+    sharedDateFormatterWithoutTime = [[STMDateFormatter alloc] init];
+    sharedDateFormatterWithoutTime.locale = [NSLocale localeWithLocaleIdentifier:@"en_US_POSIX"];
+    sharedDateFormatterWithoutTime.timeZone = [NSTimeZone timeZoneForSecondsFromGMT:0];
+    sharedDateFormatterWithoutTime.dateFormat = DATE_FORMAT_WITHOUT_TIME;
+    
+    return sharedDateFormatterWithoutTime;
+    
+}
+
++ (NSDate *)dateFromString:(NSString *)string {
+    
+    STMDateFormatter *dateFormatter = (string.length == 10) ? [self dateFormatterWithoutTime] : [self dateFormatterWithMilliseconds];
+    
+    return (NSDate *)[dateFormatter dateFromString:string];
+    
+}
+
 
 + (NSString *)displayDateInfo:(nullable NSString *)dateInfo {
     

@@ -437,7 +437,7 @@
         
     } else if ([valueClassName isEqualToString:NSStringFromClass([NSDate class])]) {
         
-        value = [[STMFunctions dateFormatter] dateFromString:value];
+        value = [STMFunctions dateFromString:value];
         
     } else if ([valueClassName isEqualToString:NSStringFromClass([NSNumber class])]) {
         
@@ -2135,7 +2135,7 @@
         
         if ([valueClass isSubclassOfClass:[NSDate class]]) {
             
-            value = [[STMFunctions dateFormatter] dateFromString:value];
+            value = [STMFunctions dateFromString:value];
             
         } else if ([valueClass isSubclassOfClass:[NSData class]]) {
             

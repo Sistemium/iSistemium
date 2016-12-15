@@ -42,6 +42,8 @@
 
 #define GEOTRACKER_CONTROL_SHIPMENT_ROUTE @"ShipmentRoute"
 
+#define DATE_FORMAT_WITH_MILLISECONDS @"yyyy-MM-dd HH:mm:ss.SSS"
+#define DATE_FORMAT_WITHOUT_TIME @"yyyy-MM-dd"
 
 // Notification's names
 

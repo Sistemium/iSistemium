@@ -50,7 +50,8 @@ NS_ASSUME_NONNULL_BEGIN
 + (NSDateFormatter *)noDateShortTimeFormatter;
 + (NSDateFormatter *)noDateMediumTimeFormatter;
 + (NSDateFormatter *)noDateShortTimeFormatterAllowZero:(BOOL)allowZero;
-
++ (NSDate *)dateFromString:(NSString *)string;
+    
 + (void)NSLogCurrentDateWithMilliseconds;
 
 + (NSDate *)dateFromDouble:(double)time;
