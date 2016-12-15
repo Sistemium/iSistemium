@@ -428,9 +428,19 @@
 
     [self backgroundTask:bgTask startedInApplication:application];
     
-    [[NSNotificationCenter defaultCenter] postNotificationName:@"applicationPerformFetchWithCompletionHandler" object:application];
+    [[NSNotificationCenter defaultCenter] postNotificationName:@"applicationPerformFetchWithCompletionHandler"
+                                                        object:application];
     
-    [[[STMSessionManager sharedManager].currentSession syncer] setSyncerState:STMSyncerSendData fetchCompletionHandler:completionHandler];
+    if ([STMSocketController socketIsAvailable]) {
+        
+        [[[STMSessionManager sharedManager].currentSession syncer] setSyncerState:STMSyncerSendData
+                                                           fetchCompletionHandler:completionHandler];
+        
+    } else {
+        
+        [STMSocketController checkSocket];
+        
+    }
 
 }
 

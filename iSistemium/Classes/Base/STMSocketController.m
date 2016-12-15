@@ -181,29 +181,39 @@
     } else {
         
         STMLogger *logger = [STMLogger sharedLogger];
-
-        NSString *logMessage = [NSString stringWithFormat:@"socket %@ %@ %@, is not the current socket", socket, socket.sid, failString];
-        [logger saveLogMessageWithText:logMessage
-                               numType:STMLogMessageTypeError];
         
-        logMessage = [NSString stringWithFormat:@"current socket %@ %@", ssc.socket, ssc.socket.sid];
-        [logger saveLogMessageWithText:logMessage
-                               numType:STMLogMessageTypeInfo];
-
-        if (socket.status != SocketIOClientStatusDisconnected || socket.status != SocketIOClientStatusNotConnected) {
+        if (ssc.socket) {
             
-            logMessage = [NSString stringWithFormat:@"not current socket disconnect"];
+            NSString *logMessage = [NSString stringWithFormat:@"socket %@ %@ %@, is not the current socket", socket, socket.sid, failString];
+            [logger saveLogMessageWithText:logMessage
+                                   numType:STMLogMessageTypeError];
+            
+            logMessage = [NSString stringWithFormat:@"current socket %@ %@", ssc.socket, ssc.socket.sid];
             [logger saveLogMessageWithText:logMessage
                                    numType:STMLogMessageTypeInfo];
-
-            [socket disconnect];
+            
+            if (socket.status != SocketIOClientStatusDisconnected || socket.status != SocketIOClientStatusNotConnected) {
+                
+                logMessage = [NSString stringWithFormat:@"not current socket disconnect"];
+                [logger saveLogMessageWithText:logMessage
+                                       numType:STMLogMessageTypeInfo];
+                
+                [socket disconnect];
+                
+            } else {
+                
+            }
             
         } else {
             
+            NSString *logMessage = [NSString stringWithFormat:@"there is no current socket for processing %@", failString];
+            [logger saveLogMessageWithText:logMessage
+                                   numType:STMLogMessageTypeError];
+            
         }
-
+        
         socket = nil;
-
+        
         return NO;
 
     }
@@ -211,16 +221,7 @@
 }
 
 + (void)checkSocket {
-    
-    STMSocketController *sc = [self sharedInstance];
-    
-    if (sc.wasClosedInBackground) {
-        
-        sc.wasClosedInBackground = NO;
-        [self startSocket];
-        
-    }
-    
+    [[self sharedInstance] checkSocket];
 }
 
 + (void)startSocket {
@@ -1328,8 +1329,21 @@
                            numType:STMLogMessageTypeInfo];
     
     self.wasClosedInBackground = YES;
-
+    [STMSocketController socketLostConnection:@"closeSocketInBackground"];
     [self closeSocket];
+    
+}
+
+- (void)checkSocket {
+    
+    if (self.wasClosedInBackground) {
+        
+        self.wasClosedInBackground = NO;
+        [self startSocket];
+        
+    } else if (![STMSocketController socketIsAvailable]) {
+        [self reconnectSocket];
+    }
     
 }
 
