@@ -599,9 +599,9 @@
         [self setThumbnailForPicture:weakPicture fromImageData:weakData];
         
         if (!result) {
-            
-            NSString *logMessage = [NSString stringWithFormat:@"have problem while save image files %@", fileName];
-            [[STMLogger sharedLogger] saveLogMessageWithText:logMessage type:@"error"];
+#warning too many logmessages generated need to update existing instead of creating new
+//            NSString *logMessage = [NSString stringWithFormat:@"have problem while save image files %@", fileName];
+//            [[STMLogger sharedLogger] saveLogMessageWithText:logMessage type:@"error"];
 
         }
         
@@ -647,9 +647,11 @@
 
     } else {
 
-        NSString *logMessage = [NSString stringWithFormat:@"saveImageFile %@ writeToFile %@ error: %@", fileName, imagePath, error.localizedDescription];
-        [[STMLogger sharedLogger] saveLogMessageWithText:logMessage
-                                                 numType:STMLogMessageTypeError];
+#warning too many logmessages generated need to update existing instead of creating new
+
+//        NSString *logMessage = [NSString stringWithFormat:@"saveImageFile %@ writeToFile %@ error: %@", fileName, imagePath, error.localizedDescription];
+//        [[STMLogger sharedLogger] saveLogMessageWithText:logMessage
+//                                                 numType:STMLogMessageTypeError];
 
     }
 
