@@ -39,7 +39,7 @@ class STMPhotoReportSettings_iphone:UITableViewController{
     @IBOutlet weak var onlyPhotosSwitcher: UISwitch!{
         didSet{
             let userID = STMAuthController().userID
-            let key = "showDataOnlyWithPhotos_\(userID)"
+            let key = "showDataOnlyWithPhotos_\(String(describing: userID))"
             let defaults = UserDefaults.standard
             let showDataOnlyWithPhotos = defaults.bool(forKey: key)
             onlyPhotosSwitcher.isOn = showDataOnlyWithPhotos
@@ -71,7 +71,7 @@ class STMPhotoReportSettings_iphone:UITableViewController{
         if onlyPhotosSwitcher != nil{
             let userID = STMAuthController().userID
             let defaults = UserDefaults.standard
-            defaults.set(onlyPhotosSwitcher.isOn, forKey: "showDataOnlyWithPhotos_\(userID)")
+            defaults.set(onlyPhotosSwitcher.isOn, forKey: "showDataOnlyWithPhotos_\(String(describing: userID))")
             defaults.set(groupingType ?? 0, forKey: "currentGrouping_\(STMAuthController().userID)")
             defaults.synchronize()
             if let filter = self.navigationController?.popoverPresentationController?.delegate as? STMPhotoReportsFilterTVC_iphone{

@@ -86,12 +86,12 @@
 
 - (CLLocationCoordinate2D)coordinate {
     
-    CLLocationCoordinate2D coordinate;
+    CLLocationCoordinate2D coordinate = CLLocationCoordinate2DMake(0.0, 0.0);
     
     if (self.location) {
-        return CLLocationCoordinate2DMake(self.location.latitude.doubleValue, self.location.longitude.doubleValue);
+        coordinate = CLLocationCoordinate2DMake(self.location.latitude.doubleValue, self.location.longitude.doubleValue);
     } else if (self.clLocation) {
-        return CLLocationCoordinate2DMake(self.clLocation.coordinate.latitude, self.clLocation.coordinate.longitude);
+        coordinate = CLLocationCoordinate2DMake(self.clLocation.coordinate.latitude, self.clLocation.coordinate.longitude);
     }
     return coordinate;
     
