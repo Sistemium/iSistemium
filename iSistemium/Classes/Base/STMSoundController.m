@@ -328,7 +328,7 @@ static void completionCallback (SystemSoundID sysSound, void *data) {
     
     for (NSInteger i = 0; i < numberOfRepeats; ++i) {
         
-        NSLog(@"i %d", i);
+        NSLog(@"i %ld", (long)i);
         
         UILocalNotification *ln = [[UILocalNotification alloc] init];
         ln.soundName = soundName;
@@ -366,11 +366,11 @@ static void completionCallback (SystemSoundID sysSound, void *data) {
 #pragma mark - playing silent sound
 
 + (void)startBackgroundPlay {
-    [[self sharedController] startBackgroundPlay];
+//    [[self sharedController] startBackgroundPlay];
 }
 
 + (void)stopBackgroundPlay {
-    [[self sharedController] stopBackgroundPlay];
+//    [[self sharedController] stopBackgroundPlay];
 }
 
 - (void)startBackgroundPlay {

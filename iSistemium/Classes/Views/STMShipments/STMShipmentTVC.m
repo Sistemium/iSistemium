@@ -740,7 +740,7 @@
 
 - (void)actionSheet:(UIActionSheet *)actionSheet clickedButtonAtIndex:(NSInteger)buttonIndex {
 
-    NSLog(@"buttonIndex %d", buttonIndex);
+    NSLog(@"buttonIndex %ld", (long)buttonIndex);
     
     [self performSegueWithIdentifier:@"showVolumes" sender:self];
     

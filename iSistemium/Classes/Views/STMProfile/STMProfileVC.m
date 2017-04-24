@@ -1051,7 +1051,6 @@
 
 - (void)startReachability {
     
-    //    Reachability *reach = [Reachability reachabilityWithHostname:@"www.google.com"];
     self.internetReachability = [Reachability reachabilityForInternetConnection];
     [self.internetReachability startNotifier];
     
@@ -1153,7 +1152,7 @@
     [nc addObserver:self
            selector:@selector(reachabilityChanged:)
                name:kReachabilityChangedNotification
-             object:nil];
+             object:self.internetReachability];
     
     [nc addObserver:self
            selector:@selector(nonloadedPicturesCountDidChange)
@@ -1230,9 +1229,9 @@
     [self setupUnusedPicturesButton];
     [self updateUnusedPicturesInfo];
     
-    [self addObservers];
     [self startReachability];
-        
+    [self addObservers];
+    
 }
 
 - (void)viewDidLoad {

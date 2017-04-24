@@ -19,6 +19,8 @@
 
 #import "STMFunctions.h"
 
+#import <Reachability/Reachability.h>
+
 
 #define SOCKET_URL @"https://socket.sistemium.com/socket.io-client"
 #define CHECK_AUTHORIZATION_DELAY 15
@@ -29,6 +31,9 @@
 
 @property (nonatomic, strong) SocketIOClient *socket;
 @property (nonatomic, strong) NSString *socketUrl;
+@property (nonatomic) BOOL socketReconnects;
+@property (nonatomic) NSInteger socketReconnectAttempts;
+@property (nonatomic) NSInteger socketReconnectWait;
 
 @property (nonatomic) BOOL isRunning;
 @property (nonatomic) BOOL isAuthorized;
@@ -41,6 +46,8 @@
 @property (nonatomic, strong) NSMutableDictionary *syncDataDictionary;
 @property (nonatomic, strong) NSMutableArray *resultsControllers;
 @property (nonatomic, strong) NSDate *sendingDate;
+
+@property (nonatomic, strong) Reachability *socketReachability;
 
 
 @end
@@ -174,28 +181,38 @@
     } else {
         
         STMLogger *logger = [STMLogger sharedLogger];
-
-        NSString *logMessage = [NSString stringWithFormat:@"socket %@ %@ %@, is not the current socket", socket, socket.sid, failString];
-        [logger saveLogMessageWithText:logMessage
-                               numType:STMLogMessageTypeError];
         
-        logMessage = [NSString stringWithFormat:@"current socket %@ %@", ssc.socket, ssc.socket.sid];
-        [logger saveLogMessageWithText:logMessage
-                               numType:STMLogMessageTypeInfo];
-
-        if (socket.status != SocketIOClientStatusDisconnected || socket.status != SocketIOClientStatusNotConnected) {
+        if (ssc.socket) {
             
-            logMessage = [NSString stringWithFormat:@"not current socket disconnect"];
+            NSString *logMessage = [NSString stringWithFormat:@"socket %@ %@ %@, is not the current socket", socket, socket.sid, failString];
+            [logger saveLogMessageWithText:logMessage
+                                   numType:STMLogMessageTypeError];
+            
+            logMessage = [NSString stringWithFormat:@"current socket %@ %@", ssc.socket, ssc.socket.sid];
             [logger saveLogMessageWithText:logMessage
                                    numType:STMLogMessageTypeInfo];
-
-            [socket disconnect];
+            
+            if (socket.status != SocketIOClientStatusDisconnected || socket.status != SocketIOClientStatusNotConnected) {
+                
+                logMessage = [NSString stringWithFormat:@"not current socket disconnect"];
+                [logger saveLogMessageWithText:logMessage
+                                       numType:STMLogMessageTypeInfo];
+                
+                [socket disconnect];
+                
+            } else {
+                
+            }
             
         } else {
             
-            socket = nil;
+            NSString *logMessage = [NSString stringWithFormat:@"there is no current socket for processing %@", failString];
+            [logger saveLogMessageWithText:logMessage
+                                   numType:STMLogMessageTypeError];
             
         }
+        
+        socket = nil;
         
         return NO;
 
@@ -204,72 +221,19 @@
 }
 
 + (void)checkSocket {
-    
-    STMSocketController *sc = [self sharedInstance];
-    
-    if (sc.wasClosedInBackground) {
-        
-        sc.wasClosedInBackground = NO;
-        [self startSocket];
-        
-    }
-    
+    [[self sharedInstance] checkSocket];
 }
 
 + (void)startSocket {
-    
-    STMSocketController *sc = [self sharedInstance];
-    
-    STMLogger *logger = [STMLogger sharedLogger];
-
-    NSString *logFormat = @"SocketController startSocket %@, sc.socketUrl %@, sc.isRunning %@, sc.isManualReconnecting %@, sc.socket.sid %@";
-    
-    NSString *logMessage = [NSString stringWithFormat:logFormat, sc.socket, sc.socketUrl, @(sc.isRunning), @(sc.isManualReconnecting), sc.socket.sid];
-    
-    [logger saveLogMessageWithText:logMessage
-                           numType:STMLogMessageTypeInfo];
-
-    if (sc.socketUrl && !sc.isRunning && !sc.isManualReconnecting) {
-
-        NSLogMethodName;
-
-        sc.isRunning = YES;
-
-        switch (sc.socket.status) {
-                
-            case SocketIOClientStatusNotConnected:
-            case SocketIOClientStatusDisconnected: {
-                [sc.socket connect];
-                break;
-            }
-            case SocketIOClientStatusConnecting: {
-                
-                break;
-            }
-            case SocketIOClientStatusConnected: {
-                
-                break;
-            }
-//            case SocketIOClientStatusReconnecting: {
-//
-//                break;
-//            }
-            default: {
-                break;
-            }
-                
-        }
-
-    } else {
-        
-        [[self syncer] setSyncerState:STMSyncerReceiveData];
-        
-    }
-
+    [[self sharedInstance] startSocket];
 }
 
 + (void)closeSocket {
     [[self sharedInstance] closeSocket];
+}
+
++ (void)reconnectSocket {
+    [[self sharedInstance] reconnectSocket];
 }
 
 + (void)sendEvent:(STMSocketEvent)event withStringValue:(NSString *)stringValue {
@@ -347,7 +311,7 @@
 
     if (syncDataArray.count > 0) {
 
-        NSLog(@"%d objects to send via Socket", syncDataArray.count);
+        NSLog(@"%lu objects to send via Socket", (unsigned long)syncDataArray.count);
         [self sendEvent:STMSocketEventData withValue:syncDataArray];
         
         return YES;
@@ -446,6 +410,8 @@
 + (void)addOnAnyEventToSocket:(SocketIOClient *)socket {
     
     [socket onAny:^(SocketAnyEvent *event) {
+        
+//        NSLog(@"%@ %@ ___ status %@", socket, socket.sid, @(socket.status));
         
         NSLog(@"%@ %@ ___ event %@", socket, socket.sid, event.event);
         NSLog(@"%@ %@ ___ items (", socket, socket.sid);
@@ -552,7 +518,7 @@
 
 + (void)disconnectCallbackWithData:(NSArray *)data ack:(SocketAckEmitter *)ack socket:(SocketIOClient *)socket {
     
-    if (![[STMSocketController sharedInstance] socket] || [self isItCurrentSocket:socket failString:@"disconnectCallback"]) {
+    if (![STMSocketController sharedInstance].socket || [self isItCurrentSocket:socket failString:@"disconnectCallback"]) {
         
         STMSocketController *sc = [STMSocketController sharedInstance];
         STMLogger *logger = [STMLogger sharedLogger];
@@ -560,14 +526,19 @@
         NSString *logMessage = [NSString stringWithFormat:@"disconnectCallback socket %@ %@", socket, socket.sid];
         [logger saveLogMessageWithText:logMessage
                                numType:STMLogMessageTypeDebug];
+
+        [sc.socket removeAllHandlers];
+        sc.socket = nil;
+        sc.isRunning = NO;
         
         if (sc.isManualReconnecting) {
             
-            logMessage = [NSString stringWithFormat:@"socket %@ %@ isManualReconnecting, start socket now", socket, socket.sid];
+            logMessage = [NSString stringWithFormat:@"socket %@ %@ isManualReconnecting, start new socket now", socket, socket.sid];
             [logger saveLogMessageWithText:logMessage
                                    numType:STMLogMessageTypeDebug];
             
             sc.isManualReconnecting = NO;
+            
             [self startSocket];
             
         } else {
@@ -609,7 +580,9 @@
     NSString *logMessage = [NSString stringWithFormat:@"reconnectCallback socket %@ %@", socket, socket.sid];
     [logger saveLogMessageWithText:logMessage
                            numType:STMLogMessageTypeDebug];
-    
+
+    [self socketLostConnection:@"socket reconnecting"];
+
 }
 
 + (void)remoteCommandsCallbackWithData:(NSArray *)data ack:(SocketAckEmitter *)ack socket:(SocketIOClient *)socket {
@@ -623,8 +596,16 @@
 }
 
 + (void)dataCallbackWithData:(NSArray *)data ack:(SocketAckEmitter *)ack socket:(SocketIOClient *)socket {
-    
     NSLog(@"dataCallback socket %@ data %@", socket, data);
+}
+
++ (void)socketLostConnection:(NSString *)errorString {
+    
+    STMSyncer *syncer = [self syncer];
+    
+    if (syncer.syncerState == STMSyncerSendData || syncer.syncerState == STMSyncerSendDataOnce) {
+        [self sendFinishedWithError:errorString];
+    }
     
 }
 
@@ -654,8 +635,12 @@
 
 }
 
-+ (void)socket:(SocketIOClient *)socket sendEvent:(STMSocketEvent)event withValue:(id)value {
++ (void)socket:(SocketIOClient *)socket sendEvent:(STMSocketEvent)event withStringValue:(NSString *)stringValue {
+    [self socket:socket sendEvent:event withValue:stringValue];
+}
 
++ (void)socket:(SocketIOClient *)socket sendEvent:(STMSocketEvent)event withValue:(id)value {
+    
 // Log
 // ----------
     
@@ -720,18 +705,11 @@
 
     } else {
         
-        NSLog(@"socket not connected");
-        
-        if ([self syncer].syncerState == STMSyncerSendData || [self syncer].syncerState == STMSyncerSendDataOnce) {
-            [self sendFinishedWithError:@"socket not connected"];
-        }
+        [self socketLostConnection:@"socket sendEvent: not connected"];
+        [self checkReachabilityAndSocketStatus:socket];
         
     }
     
-}
-
-+ (void)socket:(SocketIOClient *)socket sendEvent:(STMSocketEvent)event withStringValue:(NSString *)stringValue {
-    [self socket:socket sendEvent:event withValue:stringValue];
 }
 
 + (void)socket:(SocketIOClient *)socket receiveAckWithData:(NSArray *)data forEvent:(NSString *)event {
@@ -906,6 +884,55 @@
 }
 
 
+#pragma mark - reachability
+
++ (void)checkReachabilityAndSocketStatus:(SocketIOClient *)socket {
+    
+    switch (socket.status) {
+        case SocketIOClientStatusNotConnected:
+        case SocketIOClientStatusDisconnected:
+            
+            if ([self sharedInstance].socketReachability.isReachable) {
+                
+                [self reconnectSocket];
+//                [self closeSocket];
+//                [self startSocket];
+                
+            }
+            
+            break;
+            
+        case SocketIOClientStatusConnecting:
+        case SocketIOClientStatusConnected:
+        default:
+            break;
+    }
+    
+}
+
+- (void)startReachability {
+    
+    self.socketReachability = [Reachability reachabilityForInternetConnection];
+    [self.socketReachability startNotifier];
+    
+}
+
+- (void)reachabilityChanged:(NSNotification *)notification {
+    
+    if ([notification.object isEqual:self.socketReachability]) {
+        
+        NSLog(@"currentReachabilityString: %@", [self.socketReachability currentReachabilityString]);
+
+        if (self.socketReachability.isReachable) {
+            [STMSocketController checkReachabilityAndSocketStatus:self.socket];
+        }
+        
+    }
+    
+}
+
+
+
 #pragma mark - instance methods
 
 - (instancetype)init {
@@ -913,6 +940,7 @@
     self = [super init];
     if (self) {
         
+        [self startReachability];
         [self addObservers];
 //        [self checkSocketStatus];
 
@@ -946,6 +974,11 @@
                name:@"documentSavedSuccessfully"
              object:nil];
 
+    [nc addObserver:self
+           selector:@selector(reachabilityChanged:)
+               name:kReachabilityChangedNotification
+             object:self.socketReachability];
+
 }
 
 - (void)removeObservers {
@@ -974,9 +1007,10 @@
     
     if (currentSession.status == STMSessionRunning) {
         
-        NSString *key = @"socketUrl";
+        NSString *key = notification.userInfo.allKeys.firstObject;
+        NSString *value = notification.userInfo.allValues.firstObject;
         
-        if ([notification.userInfo.allKeys containsObject:key]) {
+        if ([key isEqualToString:@"socketUrl"]) {
             
             self.socketUrl = nil;
             
@@ -991,6 +1025,24 @@
                 [STMSocketController startSocket];
                 
             }
+            
+        }
+        
+        if ([key isEqualToString:@"socketReconnects"]) {
+            
+            self.socketReconnects = value.boolValue;
+            if (self.isRunning) self.socket.reconnects = self.socketReconnects;
+            
+        }
+
+        if ([key isEqualToString:@"socketReconnectAttempts"]) {
+            self.socketReconnectAttempts = value.integerValue;
+        }
+
+        if ([key isEqualToString:@"socketReconnectWait"]) {
+            
+            self.socketReconnectWait= value.integerValue;
+            if (self.isRunning) self.socket.reconnectWait = self.socketReconnectWait;
             
         }
 
@@ -1046,7 +1098,9 @@
 
         if ([context isEqual:[STMSocketController document].managedObjectContext]) {
             
-            [[STMSocketController sharedInstance] performSelector:@selector(sendUnsyncedObjects) withObject:nil afterDelay:0];
+            [[STMSocketController sharedInstance] performSelector:@selector(sendUnsyncedObjects)
+                                                       withObject:nil
+                                                       afterDelay:0];
             
         }
         
@@ -1163,14 +1217,6 @@
     
 }
 
-- (NSString *)uploadLogType {
-    
-    NSString *uploadLogType = [STMSettingsController stringValueForSettings:@"uploadLog.type"
-                                                                   forGroup:@"syncer"];
-    return uploadLogType;
-    
-}
-
 - (NSArray *)unsyncedObjectsArray {
     
     if (self.isAuthorized && [STMSocketController document].managedObjectContext) {
@@ -1186,33 +1232,92 @@
 }
 
 
+#pragma mark - settings
+
+- (NSString *)uploadLogType {
+    
+    NSString *uploadLogType = [STMSettingsController stringValueForSettings:@"uploadLog.type"
+                                                                   forGroup:@"syncer"];
+    return uploadLogType;
+    
+}
+
+- (NSString *)socketUrl {
+    
+    if (!_socketUrl) {
+        _socketUrl = [STMSettingsController stringValueForSettings:@"socketUrl"
+                                                          forGroup:@"appSettings"];
+    }
+    return _socketUrl;
+    
+}
+
+- (BOOL)socketReconnects {
+    
+    if (!_socketReconnects) {
+        _socketReconnects = [STMSettingsController stringValueForSettings:@"socketReconnects"
+                                                                 forGroup:@"appSettings"].boolValue;
+        if (!_socketReconnects) _socketReconnects = YES;
+    }
+    return _socketReconnects;
+    
+}
+
+- (NSInteger)socketReconnectAttempts {
+    
+    if (!_socketReconnectAttempts) {
+        _socketReconnectAttempts = [STMSettingsController stringValueForSettings:@"socketReconnectAttempts"
+                                                                        forGroup:@"appSettings"].integerValue;
+    }
+    return _socketReconnectAttempts;
+    
+}
+
+- (NSInteger)socketReconnectWait {
+    
+    if (!_socketReconnectWait) {
+        _socketReconnectWait = [STMSettingsController stringValueForSettings:@"socketReconnectWait"
+                                                                    forGroup:@"appSettings"].integerValue;
+    }
+    return _socketReconnectWait;
+    
+}
+
+
 #pragma mark - socket
 
-- (SocketIOClient *)socket {
+- (SocketIOClient *)createSocket {
     
-    if (!_socket && self.socketUrl && self.isRunning) {
+    if (self.socketUrl && self.isRunning) {
         
         NSURL *socketUrl = [NSURL URLWithString:self.socketUrl];
         NSString *path = [socketUrl.path stringByAppendingString:@"/"];
-
-        SocketIOClient *socket = [[SocketIOClient alloc] initWithSocketURL:socketUrl config:@{@"voipEnabled"       : @YES,
-                                                                                              @"log"               : @NO,
-                                                                                              @"forceWebsockets"   : @NO,
-                                                                                              @"path"              : path}];
-
+        
+        NSMutableDictionary *config = @{@"voipEnabled"       : @YES,
+                                        @"log"               : @NO,
+                                        @"forceWebsockets"   : @NO,
+                                        @"path"              : path}.mutableCopy;
+        
+        config[@"reconnects"] = @(self.socketReconnects);
+        if (self.socketReconnectAttempts) config[@"reconnectAttempts"] = @(self.socketReconnectAttempts);
+        if (self.socketReconnectWait) config[@"reconnectWait"] = @(self.socketReconnectWait);
+        
+        SocketIOClient *socket = [[SocketIOClient alloc] initWithSocketURL:socketUrl
+                                                                    config:config];
+        
         STMLogger *logger = [STMLogger sharedLogger];
         
         NSString *logMessage = [NSString stringWithFormat:@"init socket %@", socket];
         [logger saveLogMessageWithText:logMessage
                                numType:STMLogMessageTypeInfo];
         
-
+        
         [self addEventObserversToSocket:socket];
 
-        _socket = socket;
+        return socket;
         
     }
-    return _socket;
+    return nil;
     
 }
 
@@ -1224,9 +1329,64 @@
                            numType:STMLogMessageTypeInfo];
     
     self.wasClosedInBackground = YES;
-
+    [STMSocketController socketLostConnection:@"closeSocketInBackground"];
     [self closeSocket];
     
+}
+
+- (void)checkSocket {
+    
+    if (self.wasClosedInBackground) {
+        
+        self.wasClosedInBackground = NO;
+        [self startSocket];
+        
+    } else if (![STMSocketController socketIsAvailable]) {
+        [self reconnectSocket];
+    }
+    
+}
+
+- (void)startSocket {
+    
+    NSLogMethodName;
+
+    if (self.socketUrl && !self.isRunning && !self.isManualReconnecting) {
+        
+        STMLogger *logger = [STMLogger sharedLogger];
+        
+        NSString *logFormat = @"SocketController startSocket %@, socketUrl %@, isRunning %@, isManualReconnecting %@, socket.sid %@";
+        
+        NSString *logMessage = [NSString stringWithFormat:logFormat, self.socket, self.socketUrl, @(self.isRunning), @(self.isManualReconnecting), self.socket.sid];
+        
+        [logger saveLogMessageWithText:logMessage
+                               numType:STMLogMessageTypeInfo];
+        
+        self.isRunning = YES;
+        
+        if (!self.socket) self.socket = [self createSocket];
+        
+        switch (self.socket.status) {
+                
+            case SocketIOClientStatusNotConnected:
+            case SocketIOClientStatusDisconnected: {
+                
+                [self.socket connect];
+                break;
+                
+            }
+            case SocketIOClientStatusConnecting:
+            case SocketIOClientStatusConnected:
+            default: {
+                break;
+            }
+                
+        }
+        
+    } else {
+        [[STMSocketController syncer] setSyncerState:STMSyncerReceiveData];
+    }
+
 }
 
 - (void)closeSocket {
@@ -1241,18 +1401,14 @@
         [logger saveLogMessageWithText:logMessage
                                numType:STMLogMessageTypeInfo];
         
-        [self.socket disconnect];
-        
-        if (!self.isManualReconnecting) {
-            self.socket = nil;
-        }
-        
         self.socketUrl = nil;
         self.isSendingData = NO;
         self.isAuthorized = NO;
         self.isRunning = NO;
         self.syncDataDictionary = nil;
         self.sendingDate = nil;
+
+        [self.socket disconnect];
         
     }
     
@@ -1260,8 +1416,6 @@
 
 - (void)reconnectSocket {
 
-//    NSLogMethodName;
-    
     STMLogger *logger = [STMLogger sharedLogger];
     
     NSString *logMessage = [NSString stringWithFormat:@"reconnectSocket %@ %@", self.socket, self.socket.sid];
@@ -1282,17 +1436,6 @@
         [STMSocketController startSocket];
 
     }
-    
-}
-
-- (NSString *)socketUrl {
-    
-    if (!_socketUrl) {
-        
-        _socketUrl = [STMSettingsController stringValueForSettings:@"socketUrl" forGroup:@"appSettings"];
-        
-    }
-    return _socketUrl;
     
 }
 

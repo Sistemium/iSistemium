@@ -21,6 +21,21 @@
                     "value": "",
                     "control": "textField"
                 },
+                {
+                    "name": "socketReconnects",
+                    "value": true,
+                    "control": "switch"
+                },
+                {
+                    "name": "socketReconnectAttempts",
+                    "value": 90,
+                    "control": "slider"
+                },
+                {
+                    "name": "socketReconnectWait",
+                    "value": 10,
+                    "control": "slider"
+                },
 
                 {
                     "name": "enableDebtsEditing",

@@ -18,23 +18,58 @@
 
 @implementation STMDateFormatter
 
-- (NSDate *)dateFromString:(NSString *)string {
-
-    if (string.length == 10) {
-        
-        self.dateFormat = @"yyyy-MM-dd";
-        
-    }
-    
-    return [super dateFromString:string];
-    
-}
-
 
 @end
 
 
+STMDateFormatter *sharedDateFormatterWithMilliseconds;
+STMDateFormatter *sharedDateFormatterWithoutTime;
+
 @implementation STMFunctions
+
+
+#pragma mark - date formatters
+
++ (STMDateFormatter *)dateFormatterWithMilliseconds {
+    
+    if (sharedDateFormatterWithMilliseconds) return sharedDateFormatterWithMilliseconds;
+    
+    sharedDateFormatterWithMilliseconds = [[STMDateFormatter alloc] init];
+    sharedDateFormatterWithMilliseconds.locale = [NSLocale localeWithLocaleIdentifier:@"en_US_POSIX"];
+    sharedDateFormatterWithMilliseconds.timeZone = [NSTimeZone timeZoneForSecondsFromGMT:0];
+    sharedDateFormatterWithMilliseconds.dateFormat = DATE_FORMAT_WITH_MILLISECONDS;
+    
+    return sharedDateFormatterWithMilliseconds;
+    
+}
+
++ (STMDateFormatter *)dateFormatterWithoutTime {
+    
+    if (sharedDateFormatterWithoutTime) return sharedDateFormatterWithoutTime;
+    
+    sharedDateFormatterWithoutTime = [[STMDateFormatter alloc] init];
+    sharedDateFormatterWithoutTime.locale = [NSLocale localeWithLocaleIdentifier:@"en_US_POSIX"];
+    sharedDateFormatterWithoutTime.timeZone = [NSTimeZone timeZoneForSecondsFromGMT:0];
+    sharedDateFormatterWithoutTime.dateFormat = DATE_FORMAT_WITHOUT_TIME;
+    
+    return sharedDateFormatterWithoutTime;
+    
+}
+
++ (NSDate *)dateFromString:(NSString *)string {
+    
+    STMDateFormatter *dateFormatter = (string.length == 10) ? [self dateFormatterWithoutTime] : [self dateFormatterWithMilliseconds];
+    
+    return (NSDate *)[dateFormatter dateFromString:string];
+    
+}
+
++ (NSString *)stringFromDate:(NSDate *)date {
+    
+    return [[self dateFormatterWithMilliseconds] stringFromDate:date];
+    
+}
+
 
 + (NSString *)displayDateInfo:(nullable NSString *)dateInfo {
     
@@ -44,20 +79,6 @@
     separator = @"/";
     return [infoParts componentsJoinedByString:separator];
 
-}
-
-
-#pragma mark - date formatters
-
-+ (STMDateFormatter *)dateFormatter {
-    
-    STMDateFormatter *dateFormatter = [[STMDateFormatter alloc] init];
-    dateFormatter.locale = [NSLocale localeWithLocaleIdentifier:@"en_US_POSIX"];
-    dateFormatter.timeZone = [NSTimeZone timeZoneForSecondsFromGMT:0];
-    dateFormatter.dateFormat = @"yyyy-MM-dd HH:mm:ss.SSS";
-    
-    return dateFormatter;
-    
 }
 
 + (NSDateFormatter *)dateNumbersFormatter {
@@ -177,7 +198,7 @@
 }
 
 + (void)NSLogCurrentDateWithMilliseconds {
-    NSLog(@"%@", [[self dateFormatter] stringFromDate:[NSDate date]]);
+    NSLog(@"%@", [self stringFromDate:[NSDate date]]);
 }
 
 

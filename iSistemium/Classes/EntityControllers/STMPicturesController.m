@@ -599,9 +599,9 @@
         [self setThumbnailForPicture:weakPicture fromImageData:weakData];
         
         if (!result) {
-            
-            NSString *logMessage = [NSString stringWithFormat:@"have problem while save image files %@", fileName];
-            [[STMLogger sharedLogger] saveLogMessageWithText:logMessage type:@"error"];
+#warning too many logmessages generated need to update existing instead of creating new
+//            NSString *logMessage = [NSString stringWithFormat:@"have problem while save image files %@", fileName];
+//            [[STMLogger sharedLogger] saveLogMessageWithText:logMessage type:@"error"];
 
         }
         
@@ -647,9 +647,11 @@
 
     } else {
 
-        NSString *logMessage = [NSString stringWithFormat:@"saveImageFile %@ writeToFile %@ error: %@", fileName, imagePath, error.localizedDescription];
-        [[STMLogger sharedLogger] saveLogMessageWithText:logMessage
-                                                 numType:STMLogMessageTypeError];
+#warning too many logmessages generated need to update existing instead of creating new
+
+//        NSString *logMessage = [NSString stringWithFormat:@"saveImageFile %@ writeToFile %@ error: %@", fileName, imagePath, error.localizedDescription];
+//        [[STMLogger sharedLogger] saveLogMessageWithText:logMessage
+//                                                 numType:STMLogMessageTypeError];
 
     }
 
@@ -740,6 +742,9 @@
 
 - (void)downloadConnectionForObjectID:(NSManagedObjectID *)objectID {
     
+#warning check objectId != nil
+    //https://fabric.io/sistemium2/ios/apps/com.sistemium.isistemium/issues/5822e2a50aeb16625ba66f2b
+    
     dispatch_async(dispatch_get_main_queue(), ^{
         
         NSError *error = nil;
@@ -787,13 +792,28 @@
                                    completionHandler:^(NSURLResponse * _Nullable response, NSData * _Nullable data, NSError * _Nullable connectionError) {
 
                 self.waitingForDownloadPicture = NO;
-                                       
+                
                 if (connectionError) {
                    
                     NSLog(@"error %@ in %@", connectionError.description, [object valueForKey:@"name"]);
                     [self didProcessHref:href];
 
-                } else {
+                }else{
+                    if (response){
+                        NSHTTPURLResponse *httpResponse = (NSHTTPURLResponse *) response;
+                        if ([httpResponse statusCode] != 200){
+                            NSLog(@"error response status %@ in %@", @(httpResponse.statusCode), [object valueForKey:@"name"]);
+                            [self didProcessHref:href];
+                            return;
+                        }
+                        NSString* content_type = [[httpResponse
+                                                   allHeaderFields] valueForKey:@"content-type"];
+                        if (![content_type hasPrefix: @"image/"]){
+                            NSLog(@"errror content_type %@ in %@", content_type, [object valueForKey:@"name"]);
+                            [self didProcessHref:href];
+                            return;
+                        }
+                    }
                    
                    //                NSLog(@"%@ load successefully", href);
                    
@@ -903,7 +923,7 @@
                             
                             picture.deviceTs = currentDate;
                             
-                            NSLog(picture.picturesInfo)
+                            NSLog(@"%@", picture.picturesInfo);
                             
                             __block STMSession *session = [STMSessionManager sharedManager].currentSession;
                             
@@ -926,7 +946,7 @@
                 
             } else {
                 
-                NSLog(@"Request error, statusCode: %d", statusCode);
+                NSLog(@"Request error, statusCode: %@", @(statusCode));
                 
             }
             self.uploadingPicturesCount-=1;

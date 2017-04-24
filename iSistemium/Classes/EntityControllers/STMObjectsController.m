@@ -16,6 +16,7 @@
 #import "STMPicturesController.h"
 #import "STMRecordStatusController.h"
 #import "STMSocketController.h"
+#import "STMScriptMessagesController.h"
 
 #import "STMConstants.h"
 
@@ -436,7 +437,7 @@
         
     } else if ([valueClassName isEqualToString:NSStringFromClass([NSDate class])]) {
         
-        value = [[STMFunctions dateFormatter] dateFromString:value];
+        value = [STMFunctions dateFromString:value];
         
     } else if ([valueClassName isEqualToString:NSStringFromClass([NSNumber class])]) {
         
@@ -1307,8 +1308,8 @@
     NSLog(@"avgEighth %@", avgEighth);
     NSLog(@"avgNineth %@", avgNineth);
     
-    NSLog(@"eighth.count %d", eighth.count)
-    NSLog(@"nineth.count %d", nineth.count)
+    NSLog(@"eighth.count %@", @(eighth.count));
+    NSLog(@"nineth.count %@", @(nineth.count));
     
 }
 
@@ -1342,13 +1343,13 @@
     for (NSString *entityName in entityNames) {
         
         NSUInteger count = [self numberOfObjectsForEntityName:entityName];
-        NSLog(@"%@ count %d", entityName, count);
+        NSLog(@"%@ count %@", entityName, @(count));
         totalCount += count;
         
     }
     
-    NSLog(@"fantoms count %d", [self numberOfFantoms]);
-    NSLog(@"total count %d", totalCount);
+    NSLog(@"fantoms count %@", @([self numberOfFantoms]));
+    NSLog(@"total count %@", @(totalCount));
     
 }
 
@@ -1525,7 +1526,7 @@
     if (isFantomResolving) {
         
         [self didFinishResolveFantom:parameters successfully:NO];
-        NSLog(errorMessage);
+        NSLog(@"%@", errorMessage);
         
     } else {
         
@@ -2134,7 +2135,7 @@
         
         if ([valueClass isSubclassOfClass:[NSDate class]]) {
             
-            value = [[STMFunctions dateFormatter] dateFromString:value];
+            value = [STMFunctions dateFromString:value];
             
         } else if ([valueClass isSubclassOfClass:[NSData class]]) {
             
@@ -2177,7 +2178,7 @@
         
     }
     
-    NSPredicate *predicate = [STMScriptMessageController predicateForScriptMessage:scriptMessage error:error];
+    NSPredicate *predicate = [STMScriptMessagesController predicateForScriptMessage:scriptMessage error:error];
     
     if (*error) return nil;
     
@@ -2276,7 +2277,7 @@
     NSMutableDictionary *propertiesDictionary = @{}.mutableCopy;
     
     if (object.xid) propertiesDictionary[@"id"] = [STMFunctions UUIDStringFromUUIDData:(NSData *)object.xid];
-    if (object.deviceTs) propertiesDictionary[@"ts"] = [[STMFunctions dateFormatter] stringFromDate:(NSDate *)object.deviceTs];
+    if (object.deviceTs) propertiesDictionary[@"ts"] = [STMFunctions stringFromDate:(NSDate *)object.deviceTs];
     
     NSArray *ownKeys = [self ownObjectKeysForEntityName:object.entity.name].allObjects;
     NSArray *ownRelationships = [self singleRelationshipsForEntityName:object.entity.name].allKeys;
@@ -2597,14 +2598,14 @@
                     NSString *entityName = object.entity.name;
                     
                     NSString *logMessage = [NSString stringWithFormat:@"successefully sync %@ with xid %@", entityName, xid];
-                    NSLog(logMessage);
+                    NSLog(@"%@", logMessage);
                     
                 }];
                 
             } else {
                 
                 NSString *logMessage = [NSString stringWithFormat:@"Sync: no object with xid: %@", xid];
-                NSLog(logMessage);
+                NSLog(@"%@", logMessage);
                 
             }
             
