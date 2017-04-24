@@ -25,6 +25,7 @@
 #define SOCKET_URL @"https://socket.sistemium.com/socket.io-client"
 #define CHECK_AUTHORIZATION_DELAY 15
 #define CHECK_SENDING_TIME_INTERVAL 600
+#define SOCKET_TIMEOUT 15
 
 
 @interface STMSocketController() <NSFetchedResultsControllerDelegate>
@@ -508,9 +509,9 @@
         
         NSString *event = [STMSocketController stringValueForEvent:STMSocketEventAuthorization];
         
-        [socket emitWithAck:event with:@[dataDic]](0, ^(NSArray *data) {
+        [[socket emitWithAck:event with:@[dataDic]] timingOutAfter:SOCKET_TIMEOUT callback:^(NSArray *data) {
             [self socket:socket receiveAckWithData:data forEvent:event];
-        });
+        }];
 
     }
     
@@ -687,9 +688,9 @@
                         [self sharedInstance].isSendingData = YES;
                         [self sharedInstance].sendingDate = [NSDate date];
                         
-                        [socket emitWithAck:eventStringValue with:@[dataDic]](0, ^(NSArray *data) {
+                        [[socket emitWithAck:eventStringValue with:@[dataDic]] timingOutAfter:SOCKET_TIMEOUT callback:^(NSArray *data) {
                             [self receiveEventDataAckWithData:data];
-                        });
+                        }];
                         
                     } else {
                         [socket emit:eventStringValue with:@[dataDic]];
