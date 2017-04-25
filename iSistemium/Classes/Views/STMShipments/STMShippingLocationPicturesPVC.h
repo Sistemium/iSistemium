@@ -14,7 +14,6 @@
 
 @interface STMShippingLocationPicturesPVC : UIPageViewController
 
-@property (nonatomic, strong) STMShippingLocationPicture *photo;
 @property (nonatomic) NSUInteger currentIndex;
 @property (nonatomic, strong) NSMutableArray *photoArray;
 
