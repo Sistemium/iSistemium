@@ -208,6 +208,16 @@
     
 }
 
+- (NSSet *)currentPhotos {
+    
+    NSSet *pointPhotos = self.point.photos ? self.point.photos : [NSSet set];
+    NSSet *photos = [self.point.shippingLocation.shippingLocationPictures setByAddingObjectsFromSet:pointPhotos];
+
+    return photos;
+    
+}
+
+
 #pragma mark - resultsController
 
 - (NSFetchedResultsController *)resultsController {
@@ -943,12 +953,7 @@
 }
 
 - (void)fillCellWithPhotos:(UITableViewCell *)cell {
-    
-    NSSet *pointPhotos = self.point.photos ? self.point.photos : [NSSet set];
-    NSSet *photos = [self.point.shippingLocation.shippingLocationPictures setByAddingObjectsFromSet:pointPhotos];
-
-    [self fillCell:cell withPhotos:photos];
-    
+    [self fillCell:cell withPhotos:[self currentPhotos]];
 }
 
 - (void)fillCell:(UITableViewCell *)cell withPhotos:(NSSet *)photos {
@@ -1567,9 +1572,9 @@
         STMShippingLocationPicturesPVC *picturesPVC = (STMShippingLocationPicturesPVC *)segue.destinationViewController;
         
         NSSortDescriptor *sortDesriptor = [NSSortDescriptor sortDescriptorWithKey:@"deviceTs" ascending:NO selector:@selector(compare:)];
-        NSArray *photoArray = [self.point.shippingLocation.shippingLocationPictures sortedArrayUsingDescriptors:@[sortDesriptor]];
+        NSArray *photoArray = [[self currentPhotos] sortedArrayUsingDescriptors:@[sortDesriptor]];
         
-        picturesPVC.photoArray = [photoArray mutableCopy];
+        picturesPVC.photoArray = photoArray.mutableCopy;
         picturesPVC.currentIndex = [self.picturesView.subviews indexOfObject:sender];
         picturesPVC.parentVC = self;
         
