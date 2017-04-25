@@ -356,15 +356,30 @@
 
 - (void)saveImage:(UIImage *)image {
     
-    STMShippingLocationPicture *shippingLocationPicture = (STMShippingLocationPicture *)[STMObjectsController newObjectForEntityName:NSStringFromClass([STMShippingLocationPicture class]) isFantom:NO];
+    if (!self.currentPhotoType) return;
     
+    STMPhoto *photo = (STMPhoto *)[STMObjectsController newObjectForEntityName:self.currentPhotoType
+                                                                      isFantom:NO];
+
     CGFloat jpgQuality = [STMPicturesController jpgQuality];
     
     [STMPicturesController setImagesFromData:UIImageJPEGRepresentation(image, jpgQuality)
-                                  forPicture:shippingLocationPicture
+                                  forPicture:photo
                                    andUpload:YES];
 
-    shippingLocationPicture.shippingLocation = self.point.shippingLocation;
+    if ([self.currentPhotoType isEqualToString:NSStringFromClass([STMShippingLocationPicture class])] &&
+        [photo respondsToSelector:@selector(shippingLocation)]) {
+        
+        [photo setValue:self.point.shippingLocation forKey:@"shippingLocation"];
+        
+    }
+
+    if ([self.currentPhotoType isEqualToString:NSStringFromClass([STMShipmentRoutePointPhoto class])] &&
+        [photo respondsToSelector:@selector(shipmentRoutePoint)]) {
+        
+        [photo setValue:self.point forKey:@"shipmentRoutePoint"];
+        
+    }
     
     [[self document] saveDocument:^(BOOL success) {
         
@@ -1469,11 +1484,11 @@
             default:
                 break;
         }
-        
-    }
     
-    //    [self showImagePickerForSourceType:UIImagePickerControllerSourceTypeCamera];
-    //    [self showImagePickerForSourceType:UIImagePickerControllerSourceTypePhotoLibrary];
+        //    [self showImagePickerForSourceType:UIImagePickerControllerSourceTypeCamera];
+            [self showImagePickerForSourceType:UIImagePickerControllerSourceTypePhotoLibrary];
+
+    }
     
 }
 
