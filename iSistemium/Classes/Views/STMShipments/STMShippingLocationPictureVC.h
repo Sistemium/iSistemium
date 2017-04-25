@@ -12,7 +12,7 @@
 
 @interface STMShippingLocationPictureVC : UIViewController
 
-@property (nonatomic, strong) STMShippingLocationPicture *photo;
+@property (nonatomic, strong) STMPhoto *photo;
 @property (nonatomic) NSUInteger index;
 
 @end
