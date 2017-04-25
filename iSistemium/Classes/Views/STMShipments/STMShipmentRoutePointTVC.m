@@ -1319,6 +1319,15 @@
     
     [[NSOperationQueue mainQueue] addOperationWithBlock:^{
         
+        if (self.point.photos.count) {
+            
+            self.currentPhotoType = NSStringFromClass([STMShipmentRoutePointPhoto class]);
+            [self showImagePicker];
+            return;
+            
+        }
+        
+        
         UIActionSheet *actionSheet = [[UIActionSheet alloc] initWithTitle:NSLocalizedString(@"SELECT SHIPMENTROUTEPOINT PHOTO TYPE TITLE", nil)
                                                                  delegate:self
                                                         cancelButtonTitle:NSLocalizedString(@"CANCEL", nil)
@@ -1494,12 +1503,18 @@
             default:
                 break;
         }
+        
+        [self showImagePicker];
     
-        //    [self showImagePickerForSourceType:UIImagePickerControllerSourceTypeCamera];
-            [self showImagePickerForSourceType:UIImagePickerControllerSourceTypePhotoLibrary];
-
     }
     
+}
+
+- (void)showImagePicker {
+    
+    //    [self showImagePickerForSourceType:UIImagePickerControllerSourceTypeCamera];
+    [self showImagePickerForSourceType:UIImagePickerControllerSourceTypePhotoLibrary];
+
 }
 
 
