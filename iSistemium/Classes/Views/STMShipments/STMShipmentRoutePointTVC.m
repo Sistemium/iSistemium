@@ -1517,8 +1517,8 @@
 
 - (void)showImagePicker {
     
-    //    [self showImagePickerForSourceType:UIImagePickerControllerSourceTypeCamera];
-    [self showImagePickerForSourceType:UIImagePickerControllerSourceTypePhotoLibrary];
+    [self showImagePickerForSourceType:UIImagePickerControllerSourceTypeCamera];
+//    [self showImagePickerForSourceType:UIImagePickerControllerSourceTypePhotoLibrary];
 
 }
 
