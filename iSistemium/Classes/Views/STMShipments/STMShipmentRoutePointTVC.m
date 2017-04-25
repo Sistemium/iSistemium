@@ -756,7 +756,8 @@
                     break;
                     
                 case 1:
-                    [self fillCell:cell withPhotos:self.point.shippingLocation.shippingLocationPictures];
+//                    [self fillCell:cell withPhotos:self.point.shippingLocation.shippingLocationPictures];
+                    [self fillCellWithPhotos:cell];
                     break;
                     
                 default:
@@ -939,6 +940,15 @@
 
     cell.accessoryType = UITableViewCellAccessoryNone;
 
+}
+
+- (void)fillCellWithPhotos:(UITableViewCell *)cell {
+    
+    NSSet *pointPhotos = self.point.photos ? self.point.photos : [NSSet set];
+    NSSet *photos = [self.point.shippingLocation.shippingLocationPictures setByAddingObjectsFromSet:pointPhotos];
+
+    [self fillCell:cell withPhotos:photos];
+    
 }
 
 - (void)fillCell:(UITableViewCell *)cell withPhotos:(NSSet *)photos {
