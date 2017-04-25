@@ -52,6 +52,8 @@
 @property (nonatomic, strong) STMImagePickerController *imagePickerController;
 @property (nonatomic) UIImagePickerControllerSourceType selectedSourceType;
 
+@property (nonatomic, strong) NSString *currentPhotoType;
+
 @property (nonatomic ,strong) STMSpinnerView *spinner;
 
 @property (nonatomic, strong) UIView *picturesView;
@@ -1453,12 +1455,15 @@
         switch (buttonIndex) {
             case 0:
                 NSLog(@"cancel button pressed");
+                self.currentPhotoType = nil;
                 break;
             case 1:
                 NSLog(@"shipping location photo type");
+                self.currentPhotoType = NSStringFromClass([STMShippingLocationPicture class]);
                 break;
             case 2:
                 NSLog(@"shipment route point photo type");
+                self.currentPhotoType = NSStringFromClass([STMShipmentRoutePointPhoto class]);
                 break;
                 
             default:
