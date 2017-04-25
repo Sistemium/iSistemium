@@ -10,6 +10,7 @@
 #import "STMLocation.h"
 #import "STMShipment.h"
 #import "STMShipmentRoute.h"
+#import "STMShipmentRoutePointPhoto+CoreDataClass.h"
 #import "STMShippingLocation.h"
 
 #import "STMObjectsController.h"

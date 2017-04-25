@@ -12,7 +12,7 @@
 #import <MapKit/MapKit.h>
 
 
-@class STMLocation, STMShipment, STMShipmentRoute, STMShippingLocation;
+@class STMLocation, STMShipment, STMShipmentRoute, STMShipmentRoutePointPhoto, STMShippingLocation;
 
 NS_ASSUME_NONNULL_BEGIN
 
