@@ -32,6 +32,7 @@
 @interface STMShipmentRoutePointTVC () <UINavigationControllerDelegate,
                                         UIImagePickerControllerDelegate,
                                         UIAlertViewDelegate,
+                                        UIActionSheetDelegate,
                                         NSFetchedResultsControllerDelegate,
                                         UIPickerViewDataSource,
                                         UIPickerViewDelegate>
@@ -288,10 +289,7 @@
 }
 
 - (void)addPhotoButtonPressed {
-
-    [self showImagePickerForSourceType:UIImagePickerControllerSourceTypeCamera];
-//    [self showImagePickerForSourceType:UIImagePickerControllerSourceTypePhotoLibrary];
-    
+    [self showSelectPhotoTypeActionSheet];
 }
 
 - (void)photoButtonPressed:(id)sender {
@@ -1290,6 +1288,26 @@
     
 }
 
+- (void)showSelectPhotoTypeActionSheet {
+    
+    [[NSOperationQueue mainQueue] addOperationWithBlock:^{
+        
+        UIActionSheet *actionSheet = [[UIActionSheet alloc] initWithTitle:NSLocalizedString(@"SELECT SHIPMENTROUTEPOINT PHOTO TYPE TITLE", nil)
+                                                                 delegate:self
+                                                        cancelButtonTitle:NSLocalizedString(@"CANCEL", nil)
+                                                   destructiveButtonTitle:nil
+                                                        otherButtonTitles:nil];
+        actionSheet.tag = 111;
+        
+        [actionSheet addButtonWithTitle:NSLocalizedString(@"SHIPPINGLOCATION PHOTO TYPE", nil)];
+        [actionSheet addButtonWithTitle:NSLocalizedString(@"SHIPMENTROUTEPOINT PHOTO TYPE", nil)];
+        
+        [actionSheet showInView:self.view];
+        
+    }];
+
+}
+
 - (void)shippingDidDone {
     
     [self.navigationController popToViewController:self animated:YES];
@@ -1421,6 +1439,36 @@
     }
     
     [self performSegueWithIdentifier:@"showShipping" sender:self];
+    
+}
+
+
+#pragma mark - UIActionSheetDelegate
+
+- (void)actionSheet:(UIActionSheet *)actionSheet didDismissWithButtonIndex:(NSInteger)buttonIndex {
+    
+    if (actionSheet.tag == 111) {
+        NSLog(@"buttonIndex %@", @(buttonIndex));
+        
+        switch (buttonIndex) {
+            case 0:
+                NSLog(@"cancel button pressed");
+                break;
+            case 1:
+                NSLog(@"shipping location photo type");
+                break;
+            case 2:
+                NSLog(@"shipment route point photo type");
+                break;
+                
+            default:
+                break;
+        }
+        
+    }
+    
+    //    [self showImagePickerForSourceType:UIImagePickerControllerSourceTypeCamera];
+    //    [self showImagePickerForSourceType:UIImagePickerControllerSourceTypePhotoLibrary];
     
 }
 
