@@ -709,8 +709,11 @@ typedef NS_ENUM(NSUInteger, STMPositionProcessingType) {
         self.insertedSectionIndexes = nil;
         self.deletedSectionIndexes = nil;
         
-        [self.tableView deleteRowsAtIndexPaths:@[indexPath] withRowAnimation:rowAnimation];
-        [self.tableView insertRowsAtIndexPaths:@[newIndexPath] withRowAnimation:rowAnimation];
+        if (indexPath)
+            [self.tableView deleteRowsAtIndexPaths:@[indexPath] withRowAnimation:rowAnimation];
+        
+        if (newIndexPath)
+            [self.tableView insertRowsAtIndexPaths:@[newIndexPath] withRowAnimation:rowAnimation];
         
         [self.tableView endUpdates];
 
