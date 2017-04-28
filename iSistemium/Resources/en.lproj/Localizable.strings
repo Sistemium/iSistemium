@@ -494,5 +494,6 @@
 "BY OUTLETS" = "by outlets";
 "CAMERA PERMISSION RESTRICTED" = "Camera permission restricted";
 "CAMERA PERMISSION DENIED" = "Camera permission denied";
+"SELECT SHIPMENTROUTEPOINT PHOTO TYPE TITLE" = "Select Photo type";
 "SHIPPINGLOCATION PHOTO TYPE" = "Shipping location";
 "SHIPMENTROUTEPOINT PHOTO TYPE" = "Photo report";
