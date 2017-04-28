@@ -1439,7 +1439,8 @@
     
     if (self.arrivalButtonCellIndexPath) {
         
-        [self.tableView reloadSections:[NSIndexSet indexSetWithIndex:self.arrivalButtonCellIndexPath.section] withRowAnimation:UITableViewRowAnimationAutomatic];
+        [self.tableView reloadSections:[NSIndexSet indexSetWithIndex:self.arrivalButtonCellIndexPath.section]
+                      withRowAnimation:UITableViewRowAnimationAutomatic];
                 
     }
     
