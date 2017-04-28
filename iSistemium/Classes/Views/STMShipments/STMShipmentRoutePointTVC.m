@@ -1509,7 +1509,7 @@
                 break;
         }
         
-        [self showImagePicker];
+        if (buttonIndex) [self showImagePicker];
     
     }
     
