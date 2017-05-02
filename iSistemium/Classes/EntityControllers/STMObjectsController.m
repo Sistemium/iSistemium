@@ -1178,6 +1178,8 @@
     
     for (NSString *entityName in entityDic.allKeys) {
         
+        if (![[self localDataModelEntityNames] containsObject:entityName]) continue;
+        
         double lifeTime = [entityDic[entityName][@"lifeTime"] doubleValue];
         NSDate *terminatorDate = [NSDate dateWithTimeInterval:-lifeTime*3600 sinceDate:startFlushing];
         
