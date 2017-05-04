@@ -69,6 +69,7 @@
 #import "STMShipmentPosition.h"
 #import "STMShipmentRoute.h"
 #import "STMShipmentRoutePoint.h"
+#import "STMShipmentRoutePointPhoto+CoreDataClass.h"
 #import "STMShippingLocation.h"
 #import "STMShippingLocationPicture.h"
 #import "STMStock.h"

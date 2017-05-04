@@ -14,6 +14,7 @@
 
 @interface STMShippingLocationPicturesPVC () <UIPageViewControllerDataSource, UIPageViewControllerDelegate>
 
+@property (nonatomic, strong) STMPhoto *photo;
 @property (nonatomic) NSUInteger nextIndex;
 
 
@@ -31,11 +32,10 @@
     } else {
         
         STMShippingLocationPictureVC *vc = [storyboard instantiateViewControllerWithIdentifier:@"photoVC"];
-        STMShippingLocationPicture *photo = self.photoArray[index];
+        STMPhoto *photo = self.photoArray[index];
         
         vc.index = index;
         vc.photo = photo;
-
         
         return vc;
         
@@ -57,7 +57,7 @@
 
 - (void)deletePhoto:(NSNotification *)notification {
     
-    STMShippingLocationPicture *photo = (notification.userInfo)[@"photo2delete"];
+    STMPhoto *photo = (notification.userInfo)[@"photo2delete"];
 //    STMShippingLocation *location = photo.shippingLocation;
     
     [STMObjectsController createRecordStatusAndRemoveObject:photo];

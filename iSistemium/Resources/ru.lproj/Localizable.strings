@@ -494,4 +494,7 @@
 "BY OUTLETS" = "по точкам";
 "CAMERA PERMISSION RESTRICTED" = "Доступ к камере ограничен. Обратитесь к владельцу устройства.";
 "CAMERA PERMISSION DENIED" = "Доступ к камере запрещён. Разрешите использование камеры в настройках программы.";
+"SELECT SHIPMENTROUTEPOINT PHOTO TYPE TITLE" = "Что фотографируем?";
+"SHIPPINGLOCATION PHOTO TYPE" = "Место разгрузки";
+"SHIPMENTROUTEPOINT PHOTO TYPE" = "Фото-отчёт";
 

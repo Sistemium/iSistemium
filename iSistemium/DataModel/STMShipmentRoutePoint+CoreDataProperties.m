@@ -2,16 +2,17 @@
 //  STMShipmentRoutePoint+CoreDataProperties.m
 //  iSistemium
 //
-//  Created by Maxim Grigoriev on 08/02/16.
-//  Copyright © 2016 Sistemium UAB. All rights reserved.
-//
-//  Choose "Create NSManagedObject Subclass…" from the Core Data editor menu
-//  to delete and recreate this implementation file for your updated model.
+//  Created by Maxim Grigoriev on 25/04/2017.
+//  Copyright © 2017 Sistemium UAB. All rights reserved.
 //
 
 #import "STMShipmentRoutePoint+CoreDataProperties.h"
 
 @implementation STMShipmentRoutePoint (CoreDataProperties)
+
++ (NSFetchRequest<STMShipmentRoutePoint *> *)fetchRequest {
+	return [[NSFetchRequest alloc] initWithEntityName:@"STMShipmentRoutePoint"];
+}
 
 @dynamic address;
 @dynamic commentText;
@@ -35,5 +36,6 @@
 @dynamic shipmentRoute;
 @dynamic shipments;
 @dynamic shippingLocation;
+@dynamic photos;
 
 @end

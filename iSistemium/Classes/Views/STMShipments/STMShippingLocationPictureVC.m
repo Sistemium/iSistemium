@@ -37,7 +37,7 @@
     
 }
 
-- (void)setPhoto:(STMShippingLocationPicture *)photo {
+- (void)setPhoto:(STMPhoto *)photo {
     
     if (photo != _photo) {
         _photo = photo;

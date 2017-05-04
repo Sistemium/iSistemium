@@ -32,6 +32,7 @@
 @interface STMShipmentRoutePointTVC () <UINavigationControllerDelegate,
                                         UIImagePickerControllerDelegate,
                                         UIAlertViewDelegate,
+                                        UIActionSheetDelegate,
                                         NSFetchedResultsControllerDelegate,
                                         UIPickerViewDataSource,
                                         UIPickerViewDelegate>
@@ -50,6 +51,8 @@
 @property (nonatomic, strong) UIView *cameraOverlayView;
 @property (nonatomic, strong) STMImagePickerController *imagePickerController;
 @property (nonatomic) UIImagePickerControllerSourceType selectedSourceType;
+
+@property (nonatomic, strong) NSString *currentPhotoType;
 
 @property (nonatomic ,strong) STMSpinnerView *spinner;
 
@@ -205,6 +208,16 @@
     
 }
 
+- (NSSet *)currentPhotos {
+    
+    NSSet *pointPhotos = self.point.photos ? self.point.photos : [NSSet set];
+    NSSet *photos = [self.point.shippingLocation.shippingLocationPictures setByAddingObjectsFromSet:pointPhotos];
+
+    return photos;
+    
+}
+
+
 #pragma mark - resultsController
 
 - (NSFetchedResultsController *)resultsController {
@@ -288,10 +301,7 @@
 }
 
 - (void)addPhotoButtonPressed {
-
-    [self showImagePickerForSourceType:UIImagePickerControllerSourceTypeCamera];
-//    [self showImagePickerForSourceType:UIImagePickerControllerSourceTypePhotoLibrary];
-    
+    [self showSelectPhotoTypeActionSheet];
 }
 
 - (void)photoButtonPressed:(id)sender {
@@ -356,15 +366,30 @@
 
 - (void)saveImage:(UIImage *)image {
     
-    STMShippingLocationPicture *shippingLocationPicture = (STMShippingLocationPicture *)[STMObjectsController newObjectForEntityName:NSStringFromClass([STMShippingLocationPicture class]) isFantom:NO];
+    if (!self.currentPhotoType) return;
     
+    STMPhoto *photo = (STMPhoto *)[STMObjectsController newObjectForEntityName:self.currentPhotoType
+                                                                      isFantom:NO];
+
     CGFloat jpgQuality = [STMPicturesController jpgQuality];
     
     [STMPicturesController setImagesFromData:UIImageJPEGRepresentation(image, jpgQuality)
-                                  forPicture:shippingLocationPicture
+                                  forPicture:photo
                                    andUpload:YES];
 
-    shippingLocationPicture.shippingLocation = self.point.shippingLocation;
+    if ([self.currentPhotoType isEqualToString:NSStringFromClass([STMShippingLocationPicture class])] &&
+        [photo respondsToSelector:@selector(shippingLocation)]) {
+        
+        [photo setValue:self.point.shippingLocation forKey:@"shippingLocation"];
+        
+    }
+
+    if ([self.currentPhotoType isEqualToString:NSStringFromClass([STMShipmentRoutePointPhoto class])] &&
+        [photo respondsToSelector:@selector(shipmentRoutePoint)]) {
+        
+        [photo setValue:self.point forKey:@"shipmentRoutePoint"];
+        
+    }
     
     [[self document] saveDocument:^(BOOL success) {
         
@@ -741,7 +766,8 @@
                     break;
                     
                 case 1:
-                    [self fillCell:cell withPhotos:self.point.shippingLocation.shippingLocationPictures];
+//                    [self fillCell:cell withPhotos:self.point.shippingLocation.shippingLocationPictures];
+                    [self fillCellWithPhotos:cell];
                     break;
                     
                 default:
@@ -924,6 +950,10 @@
 
     cell.accessoryType = UITableViewCellAccessoryNone;
 
+}
+
+- (void)fillCellWithPhotos:(UITableViewCell *)cell {
+    [self fillCell:cell withPhotos:[self currentPhotos]];
 }
 
 - (void)fillCell:(UITableViewCell *)cell withPhotos:(NSSet *)photos {
@@ -1290,6 +1320,35 @@
     
 }
 
+- (void)showSelectPhotoTypeActionSheet {
+    
+    [[NSOperationQueue mainQueue] addOperationWithBlock:^{
+        
+        if (self.point.photos.count) {
+            
+            self.currentPhotoType = NSStringFromClass([STMShipmentRoutePointPhoto class]);
+            [self showImagePicker];
+            return;
+            
+        }
+        
+        
+        UIActionSheet *actionSheet = [[UIActionSheet alloc] initWithTitle:NSLocalizedString(@"SELECT SHIPMENTROUTEPOINT PHOTO TYPE TITLE", nil)
+                                                                 delegate:self
+                                                        cancelButtonTitle:NSLocalizedString(@"CANCEL", nil)
+                                                   destructiveButtonTitle:nil
+                                                        otherButtonTitles:nil];
+        actionSheet.tag = 111;
+        
+        [actionSheet addButtonWithTitle:NSLocalizedString(@"SHIPPINGLOCATION PHOTO TYPE", nil)];
+        [actionSheet addButtonWithTitle:NSLocalizedString(@"SHIPMENTROUTEPOINT PHOTO TYPE", nil)];
+        
+        [actionSheet showInView:self.view];
+        
+    }];
+
+}
+
 - (void)shippingDidDone {
     
     [self.navigationController popToViewController:self animated:YES];
@@ -1380,7 +1439,8 @@
     
     if (self.arrivalButtonCellIndexPath) {
         
-        [self.tableView reloadSections:[NSIndexSet indexSetWithIndex:self.arrivalButtonCellIndexPath.section] withRowAnimation:UITableViewRowAnimationAutomatic];
+        [self.tableView reloadSections:[NSIndexSet indexSetWithIndex:self.arrivalButtonCellIndexPath.section]
+                      withRowAnimation:UITableViewRowAnimationAutomatic];
                 
     }
     
@@ -1422,6 +1482,45 @@
     
     [self performSegueWithIdentifier:@"showShipping" sender:self];
     
+}
+
+
+#pragma mark - UIActionSheetDelegate
+
+- (void)actionSheet:(UIActionSheet *)actionSheet didDismissWithButtonIndex:(NSInteger)buttonIndex {
+    
+    if (actionSheet.tag == 111) {
+        NSLog(@"buttonIndex %@", @(buttonIndex));
+        
+        switch (buttonIndex) {
+            case 0:
+                NSLog(@"cancel button pressed");
+                self.currentPhotoType = nil;
+                break;
+            case 1:
+                NSLog(@"shipping location photo type");
+                self.currentPhotoType = NSStringFromClass([STMShippingLocationPicture class]);
+                break;
+            case 2:
+                NSLog(@"shipment route point photo type");
+                self.currentPhotoType = NSStringFromClass([STMShipmentRoutePointPhoto class]);
+                break;
+                
+            default:
+                break;
+        }
+        
+        if (buttonIndex) [self showImagePicker];
+    
+    }
+    
+}
+
+- (void)showImagePicker {
+    
+    [self showImagePickerForSourceType:UIImagePickerControllerSourceTypeCamera];
+//    [self showImagePickerForSourceType:UIImagePickerControllerSourceTypePhotoLibrary];
+
 }
 
 
@@ -1474,9 +1573,9 @@
         STMShippingLocationPicturesPVC *picturesPVC = (STMShippingLocationPicturesPVC *)segue.destinationViewController;
         
         NSSortDescriptor *sortDesriptor = [NSSortDescriptor sortDescriptorWithKey:@"deviceTs" ascending:NO selector:@selector(compare:)];
-        NSArray *photoArray = [self.point.shippingLocation.shippingLocationPictures sortedArrayUsingDescriptors:@[sortDesriptor]];
+        NSArray *photoArray = [[self currentPhotos] sortedArrayUsingDescriptors:@[sortDesriptor]];
         
-        picturesPVC.photoArray = [photoArray mutableCopy];
+        picturesPVC.photoArray = photoArray.mutableCopy;
         picturesPVC.currentIndex = [self.picturesView.subviews indexOfObject:sender];
         picturesPVC.parentVC = self;
         
