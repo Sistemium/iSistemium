@@ -23,9 +23,9 @@
 
 
 #define SOCKET_URL @"https://socket.sistemium.com/socket.io-client"
-#define CHECK_AUTHORIZATION_DELAY 15
+#define CHECK_AUTHORIZATION_DELAY 30
 #define CHECK_SENDING_TIME_INTERVAL 600
-#define SOCKET_TIMEOUT 15
+#define SOCKET_TIMEOUT 30
 
 
 @interface STMSocketController() <NSFetchedResultsControllerDelegate>
@@ -809,6 +809,9 @@
         
     } else {
         
+        [[STMLogger sharedLogger] saveLogMessageWithText:[NSString stringWithFormat:@"Socket response: %@", response]
+                                                 numType:STMLogMessageTypeError];
+        
         errorString = @"response not a dictionary";
         NSLog(@"error: %@", data);
         
@@ -826,6 +829,9 @@
         [self sendEvent:STMSocketEventInfo withStringValue:errorString];
         
         if ([[errorString.lowercaseString stringByReplacingOccurrencesOfString:@" " withString:@""] isEqualToString:@"notauthorized"]) {
+            
+            [[STMLogger sharedLogger] saveLogMessageWithText:errorString
+                                                     numType:STMLogMessageTypeError];
             
             [[STMAuthController authController] logout];
             
