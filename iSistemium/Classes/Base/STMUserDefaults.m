@@ -11,6 +11,8 @@
 #import "STMFunctions.h"
 #import "STMLogger.h"
 
+#import <Fabric/Fabric.h>
+#import <Crashlytics/Crashlytics.h>
 
 #define STM_USER_DEFAULTS_URL @"stmUserDefaults"
 
@@ -211,6 +213,7 @@
         [[STMLogger sharedLogger] saveLogMessageWithText:logMessage
                                                  numType:STMLogMessageTypeError];
 
+        [[Crashlytics sharedInstance] throwException];
         
     }
     
