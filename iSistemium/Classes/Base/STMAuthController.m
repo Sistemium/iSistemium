@@ -540,11 +540,11 @@
                                   defaultSettingsFileName:@"settings"
                                            documentPrefix:[[NSBundle mainBundle] bundleIdentifier]];
     
-    [[NSNotificationCenter defaultCenter] addObserver:self
-                                             selector:@selector(sessionNotAuthorized)
-                                                 name:@"notAuthorized"
-                                               object:[STMSessionManager sharedManager].currentSession.syncer];
-    
+//    [[NSNotificationCenter defaultCenter] addObserver:self
+//                                             selector:@selector(sessionNotAuthorized)
+//                                                 name:@"notAuthorized"
+//                                               object:[STMSessionManager sharedManager].currentSession.syncer];
+//    
 }
 
 - (void)sessionNotAuthorized {
