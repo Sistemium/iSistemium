@@ -484,37 +484,40 @@
     
     if ([self isItCurrentSocket:socket failString:@"connectCallback"]) {
         
-        STMSocketController *ssc = [STMSocketController sharedInstance];
         STMLogger *logger = [STMLogger sharedLogger];
 
         NSString *logMessage = [NSString stringWithFormat:@"connectCallback socket %@ with sid: %@", socket, socket.sid];
         [logger saveLogMessageWithText:logMessage
                                numType:STMLogMessageTypeDebug];
-        
-        ssc.isAuthorized = NO;
 
-        [ssc startDelayedAuthorizationCheckForSocket:socket];
+        [self authorizeSocket:socket];
         
-        STMClientData *clientData = [STMClientDataController clientData];
-        NSMutableDictionary *dataDic = [[STMObjectsController dictionaryForObject:clientData][@"properties"] mutableCopy];
-        
-        NSDictionary *authDic = @{@"userId"         : [STMAuthController authController].userID,
-                                  @"accessToken"    : [STMAuthController authController].accessToken};
-        
-        [dataDic addEntriesFromDictionary:authDic];
-        
-//        logMessage = [NSString stringWithFormat:@"send authorization data %@ with socket %@ %@", dataDic, socket, socket.sid];
-//        [logger saveLogMessageWithText:logMessage
-//                               numType:STMLogMessageTypeInfo];
-        
-        NSString *event = [STMSocketController stringValueForEvent:STMSocketEventAuthorization];
-        
-        [[socket emitWithAck:event with:@[dataDic]] timingOutAfter:SOCKET_TIMEOUT callback:^(NSArray *data) {
-            [self socket:socket receiveAckWithData:data forEvent:event];
-        }];
-
     }
     
+}
+
++ (void)authorizeSocket:(SocketIOClient *)socket {
+
+    STMSocketController *ssc = [STMSocketController sharedInstance];
+    
+    ssc.isAuthorized = NO;
+    
+    [ssc startDelayedAuthorizationCheckForSocket:socket];
+    
+    STMClientData *clientData = [STMClientDataController clientData];
+    NSMutableDictionary *dataDic = [[STMObjectsController dictionaryForObject:clientData][@"properties"] mutableCopy];
+    
+    NSDictionary *authDic = @{@"userId"         : [STMAuthController authController].userID,
+                              @"accessToken"    : [STMAuthController authController].accessToken};
+    
+    [dataDic addEntriesFromDictionary:authDic];
+    
+    NSString *event = [STMSocketController stringValueForEvent:STMSocketEventAuthorization];
+    
+    [[socket emitWithAck:event with:@[dataDic]] timingOutAfter:SOCKET_TIMEOUT callback:^(NSArray *data) {
+        [self socket:socket receiveAckWithData:data forEvent:event];
+    }];
+
 }
 
 + (void)disconnectCallbackWithData:(NSArray *)data ack:(SocketAckEmitter *)ack socket:(SocketIOClient *)socket {
