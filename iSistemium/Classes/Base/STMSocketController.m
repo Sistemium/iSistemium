@@ -744,8 +744,20 @@
     
     if (![data.firstObject isKindOfClass:[NSDictionary class]]) {
         
-        [self notAuthorizedSocket:socket
-                        withError:@"socket receiveAuthorizationAck with data.firstObject is not a NSDictionary"];
+        if ([data.firstObject isEqual:@"NO ACK"]) {
+
+            NSString *logMessage = [NSString stringWithFormat:@"socket %@ %@ receiveAuthorizationAck with timout, repeat authorization procedure", socket, socket.sid];
+            [[STMLogger sharedLogger] saveLogMessageWithText:logMessage
+                                                     numType:STMLogMessageTypeError];
+            [self authorizeSocket:socket];
+
+        } else {
+        
+            [self notAuthorizedSocket:socket
+                            withError:@"socket receiveAuthorizationAck with data.firstObject is not a NSDictionary"];
+
+        }
+        
         return;
         
     }
