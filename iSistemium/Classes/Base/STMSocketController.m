@@ -726,59 +726,56 @@
 }
 
 + (void)socket:(SocketIOClient *)socket receiveAuthorizationAckWithData:(NSArray *)data {
+
+    if (![self isItCurrentSocket:socket failString:@"receiveAuthorizationAck"]) return;
     
-    if ([self isItCurrentSocket:socket failString:@"receiveAuthorizationAck"]) {
-     
-        STMLogger *logger = [STMLogger sharedLogger];
+    STMLogger *logger = [STMLogger sharedLogger];
+    
+    NSString *logMessage = [NSString stringWithFormat:@"socket %@ %@ receiveAuthorizationAckWithData %@", socket, socket.sid, data];
+    [logger saveLogMessageWithText:logMessage
+                           numType:STMLogMessageTypeInfo];
+    
+    if (socket.status != SocketIOClientStatusConnected) {
+        return;
+    }
+    
+    if (![data.firstObject isKindOfClass:[NSDictionary class]]) {
         
-        NSString *logMessage = [NSString stringWithFormat:@"socket %@ %@ receiveAuthorizationAckWithData %@", socket, socket.sid, data];
-        [logger saveLogMessageWithText:logMessage
-                               numType:STMLogMessageTypeInfo];
+        [self notAuthorizedSocket:socket
+                        withError:@"socket receiveAuthorizationAck with data.firstObject is not a NSDictionary"];
+        return;
         
-        if (socket.status != SocketIOClientStatusConnected) {
-            return;
-        }
+    }
+
+    NSDictionary *dataDic = data.firstObject;
+    BOOL isAuthorized = [dataDic[@"isAuthorized"] boolValue];
+    
+    if (!isAuthorized) {
+
+        [self notAuthorizedSocket:socket
+                        withError:@"socket receiveAuthorizationAck with dataDic.isAuthorized.boolValue == NO"];
+        return;
         
-        if ([data.firstObject isKindOfClass:[NSDictionary class]]) {
+    }
+
+    [self sharedInstance].isAuthorized = YES;
+    [self sharedInstance].isSendingData = NO;
+    [[self syncer] socketReceiveAuthorization];
+    
+    [[NSNotificationCenter defaultCenter] postNotificationName:@"socketAuthorizationSuccess"
+                                                        object:self];
+    
+    [self socket:socket sendEvent:STMSocketEventStatusChange withStringValue:[STMFunctions appStateString]];
+    
+    if ([[STMFunctions appStateString] isEqualToString:@"UIApplicationStateActive"]) {
+        
+        if ([[STMRootTBC sharedRootVC].selectedViewController class]) {
             
-            NSDictionary *dataDic = data.firstObject;
-            BOOL isAuthorized = [dataDic[@"isAuthorized"] boolValue];
+            Class _Nonnull rootVCClass = (Class _Nonnull)[[STMRootTBC sharedRootVC].selectedViewController class];
             
-            if (isAuthorized) {
-                
-//                logMessage = [NSString stringWithFormat:@"socket %@ %@ authorized", socket, socket.sid];
-//                [logger saveLogMessageWithText:logMessage
-//                                       numType:STMLogMessageTypeInfo];
-                
-                [self sharedInstance].isAuthorized = YES;
-                [self sharedInstance].isSendingData = NO;
-                [[self syncer] socketReceiveAuthorization];
-                
-                [[NSNotificationCenter defaultCenter] postNotificationName:@"socketAuthorizationSuccess" object:self];
-                
-                [self socket:socket sendEvent:STMSocketEventStatusChange withStringValue:[STMFunctions appStateString]];
-                
-                if ([[STMFunctions appStateString] isEqualToString:@"UIApplicationStateActive"]) {
-                    
-                    if ([[STMRootTBC sharedRootVC].selectedViewController class]) {
-                        
-                        Class _Nonnull rootVCClass = (Class _Nonnull)[[STMRootTBC sharedRootVC].selectedViewController class];
-                        
-                        NSString *stringValue = [@"selectedViewController: " stringByAppendingString:NSStringFromClass(rootVCClass)];
-                        [self socket:socket sendEvent:STMSocketEventStatusChange withStringValue:stringValue];
-                        
-                    }
-                    
-                }
-                
-            } else {
-                [self notAuthorizedSocket:socket
-                                withError:@"socket receiveAuthorizationAck with dataDic.isAuthorized.boolValue == NO"];
-            }
+            NSString *stringValue = [@"selectedViewController: " stringByAppendingString:NSStringFromClass(rootVCClass)];
+            [self socket:socket sendEvent:STMSocketEventStatusChange withStringValue:stringValue];
             
-        } else {
-            [self notAuthorizedSocket:socket
-                            withError:@"socket receiveAuthorizationAck with data.firstObject is not a NSDictionary"];
         }
         
     }
