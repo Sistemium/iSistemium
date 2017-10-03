@@ -2,5 +2,7 @@
 
 NSLocationAlwaysUsageDescription = "";
 NSLocationWhenInUseUsageDescription = "";
+NSLocationAlwaysAndWhenInUseUsageDescription = "";
 NSCameraUsageDescription = "Чтобы делать фотографии";
 NSPhotoLibraryUsageDescription = "Чтобы выбирать фотографии";
+NSPhotoLibraryAddUsageDescription = "Чтобы выбирать фотографии";
