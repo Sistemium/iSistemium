@@ -84,9 +84,10 @@
 
     if ([self isKindOfClass:[STMBarButtonItemDone class]]) {
         
-        UIFont *font = [UIFont boldSystemFontOfSize:17];
-        NSDictionary *textAttributes = @{NSFontAttributeName:font};
-        [self setTitleTextAttributes:textAttributes forState:UIControlStateNormal];
+#warning makes button invisible in ios 11
+//        UIFont *font = [UIFont boldSystemFontOfSize:17];
+//        NSDictionary *textAttributes = @{NSFontAttributeName:font};
+//        [self setTitleTextAttributes:textAttributes forState:UIControlStateNormal];
         
     } else if ([self isKindOfClass:[STMBarButtonItemCancel class]]) {
         
