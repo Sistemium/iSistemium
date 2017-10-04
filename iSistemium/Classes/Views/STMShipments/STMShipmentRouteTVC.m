@@ -268,6 +268,10 @@
     return [self heightForCellAtIndexPath:indexPath];
 }
 
+- (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath{
+    return UITableViewAutomaticDimension;
+}
+
 - (UITableViewCell *)cellForHeightCalculationForIndexPath:(NSIndexPath *)indexPath {
     
     if (indexPath.section == 0) {
