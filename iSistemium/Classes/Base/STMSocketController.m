@@ -763,6 +763,12 @@
     }
 
     NSDictionary *dataDic = data.firstObject;
+    
+    if (![dataDic objectForKey:@"isAuthorized"]) {
+        NSLog(@"Socket auth error: %@", dataDic);
+        return [[self sharedInstance] startDelayedAuthorizationCheckForSocket:socket];
+    }
+    
     BOOL isAuthorized = [dataDic[@"isAuthorized"] boolValue];
     
     if (!isAuthorized) {
