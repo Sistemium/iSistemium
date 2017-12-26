@@ -34,6 +34,12 @@
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
     
+    [STMAuthController authController];
+    
+    [self setupWindow];
+    
+    [STMAuthController.authController checkPhoneNumber];
+    
     [self startCrashlytics];
 
     NSLog(@"deviceUUID %@", [STMClientDataController deviceUUIDString]);
@@ -43,8 +49,6 @@
 //    NSString *logMessage = [NSString stringWithFormat:@"application didFinishLaunchingWithOptions: %@", launchOptions.description];
 //    [logger saveLogMessageWithText:logMessage
 //                           numType:STMLogMessageTypeImportant];
-
-    [STMAuthController authController];
     
     [self registerForNotification];
     
@@ -68,8 +72,6 @@
              object:[STMSessionManager sharedManager].currentSession];
     
     [STMSoundController initAudioSession];
-
-    [self setupWindow];
 
     [[UIApplication sharedApplication] setMinimumBackgroundFetchInterval:UIApplicationBackgroundFetchIntervalMinimum];
 

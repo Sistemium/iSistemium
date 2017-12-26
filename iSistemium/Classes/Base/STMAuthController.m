@@ -77,7 +77,6 @@
     if (self) {
 
         self.controllerState = STMAuthStarted;
-        [self checkPhoneNumber];
 
     }
     
@@ -171,7 +170,6 @@
         
         [[STMLogger sharedLogger] saveLogMessageWithText:@"login success"
                                                     type:@"important"];
-        [self startSession];
         
     }
     
@@ -658,6 +656,14 @@
     
     [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:YES];
     
+    if (self.stcTabs) {
+        
+        self.controllerState = STMAuthSuccess;
+        
+        [self startSession];
+        
+    }
+    
     NSURLRequest *request = [self authenticateRequest:[self requestForURL:ROLES_URL]];
     NSURLConnection *connection = [[NSURLConnection alloc] initWithRequest:request delegate:self];
     
@@ -705,6 +711,10 @@
         
         [self connectionErrorWhileRequestingRoles];
         
+    } else if (self.controllerState == STMAuthSuccess){
+    
+    
+    
     } else {
         
         self.controllerState = STMAuthEnterPhoneNumber;
@@ -894,6 +904,8 @@
             
         case STMAuthRequestRoles: {
             
+            BOOL wasLogged = !!self.stcTabs;
+            
             self.iSisDB = responseJSON[@"roles"][@"iSisDB"];
             
             id stcTabs = responseJSON[@"roles"][@"stcTabs"];
@@ -913,6 +925,12 @@
             }
             
             self.controllerState = STMAuthSuccess;
+            
+            if (!wasLogged){
+                
+                [self startSession];
+                
+            }
             
             break;
             
