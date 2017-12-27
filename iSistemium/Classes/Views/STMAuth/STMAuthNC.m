@@ -85,6 +85,8 @@
             
         case STMAuthSuccess:
             
+            [self setViewControllers:@[self.requestRolesVC] animated:YES];
+            
             break;
             
         default:
