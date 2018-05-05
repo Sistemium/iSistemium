@@ -530,6 +530,7 @@
         
     }
     
+    
     [[STMSessionManager sharedManager] startSessionForUID:self.userID
                                                    iSisDB:self.iSisDB
                                              authDelegate:self
@@ -537,6 +538,7 @@
                                             startSettings:startSettings
                                   defaultSettingsFileName:@"settings"
                                            documentPrefix:[[NSBundle mainBundle] bundleIdentifier]];
+    
     
 //    [[NSNotificationCenter defaultCenter] addObserver:self
 //                                             selector:@selector(sessionNotAuthorized)

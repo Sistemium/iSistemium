@@ -191,7 +191,7 @@
         
     } else if (document.documentState == UIDocumentStateClosed) {
         
-        [self openDocument:document];
+        [self openDocumentOverloaded:document];
         
     } else if (document.documentState == UIDocumentStateNormal) {
         
@@ -219,7 +219,7 @@
 
 }
 
-+ (void)openDocument:(STMDocument *)document {
++ (void)openDocumentOverloaded:(STMDocument *)document {
     
     [document openWithCompletionHandler:^(BOOL success) {
         

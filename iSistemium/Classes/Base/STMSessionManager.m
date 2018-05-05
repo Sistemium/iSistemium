@@ -95,13 +95,9 @@
 
             self.currentSessionUID = uid;
 
-            session.authDelegate = authDelegate;
-            session.status = STMSessionRunning;
-            session.logger.session = session;
-            
             if (session.document && session.document.documentState == UIDocumentStateClosed) {
                 
-                [STMDocument openDocument:session.document];
+//                [STMDocument openDocumentOverloaded:session.document];
                 
             } else {
                 
@@ -110,6 +106,10 @@
                 [session.logger saveLogMessageWithText:logMessage
                                                numType:STMLogMessageTypeError];
             }
+
+            session.authDelegate = authDelegate;
+            session.status = STMSessionRunning;
+            session.logger.session = session;
             
         }
         return session;

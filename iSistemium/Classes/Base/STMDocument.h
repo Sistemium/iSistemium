@@ -19,7 +19,7 @@
                    dataModelName:(NSString *)dataModelName
                           prefix:(NSString *)prefix;
 
-+ (void)openDocument:(STMDocument *)document;
++ (void)openDocumentOverloaded:(STMDocument *)document;
 
 - (void)saveDocument:(void (^)(BOOL success))completionHandler;
 
